@@ -6,7 +6,7 @@ namespace Singularity.Benchmark
 {
     class Program
     {
-        static void Main(string[] args)
+        static void Main()
         {
 			BenchmarkRunner.Run<InjectorBenchmark>();
 			Console.ReadKey();
@@ -15,7 +15,7 @@ namespace Singularity.Benchmark
 
 	public class InjectorBenchmark
 	{
-		private Container _singulairtyContainer;
+		private readonly Container _singulairtyContainer;
 		public InjectorBenchmark()
 		{
 			_singulairtyContainer = new Container();

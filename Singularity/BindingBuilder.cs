@@ -3,94 +3,157 @@ using System;
 using System.Collections.Generic;
 using System.Linq.Expressions;
 using System.Linq;
+using System.Reflection;
 
 namespace Singularity
 {
-	public class BindingBuilder : IDisposable
-	{
-		public event EventHandler<IEnumerable<IBinding>> OnFinishBuildingDependencies;
-		private Container _container;
-		private Dictionary<Type, IBinding> _bindings = new Dictionary<Type, IBinding>();
+    public class DependencyNode
+    {
+        public int? Depth { get; set; }
+        public ParameterDependency[] Dependencies { get; }
+        public Type DependencyType { get; }
+        public Expression Expression { get; }
 
-		public BindingBuilder(Container container)
-		{
-			_container = container;
-		}
+        public DependencyNode(Type dependencyType, Expression expression)
+        {
+            DependencyType = dependencyType;
+            Expression = expression;
+            Dependencies = GetParameterExpressions(expression);
+            if (Dependencies.Length == 0) Depth = 0;
+        }
 
-		public void Dispose()
-		{
-			ResolveDependencies();
-			OnFinishBuildingDependencies.Invoke(this, _bindings.Values);
-		}
+        private ParameterDependency[] GetParameterExpressions(Expression expression)
+        {
+            switch (expression)
+            {
+                case ConstantExpression _:
+                    return new ParameterDependency[0];
+                case LambdaExpression lambdaExpression:
+                    return lambdaExpression.Parameters.Select(x => new ParameterDependency(x)).ToArray();
+                case NewExpression newExpression:
+                    return newExpression.Arguments.Select(x => new ParameterDependency((ParameterExpression)x)).ToArray();
+                default:
+                    throw new NotSupportedException($"The expression of type {expression.GetType()} is not supported");
+            }
+        }
 
-		private void ResolveDependencies()
-		{
-			foreach (var dependency in _bindings.Values)
-			{
-				ResolveDependency(dependency);
-			}
-		}
+        public override string ToString()
+        {
+            return $"Depth {Depth} Type {DependencyType}";
+        }
+    }
 
-		private void ResolveDependency(IBinding binding)
-		{
-			if (binding.IsResolved) return;
-			Expression expression;
-			switch (binding.BindingExpression)
-			{
-				case LambdaExpression lambdaExpression:
-					{
-						var body = ResolveMethodCallExpression(binding, lambdaExpression.Parameters);
-						body.Add(lambdaExpression.Body);
-						expression = Expression.Block(lambdaExpression.Parameters, body);
-					}
-					break;
-				case NewExpression newExpression:
-					{						
-						var body = ResolveMethodCallExpression(binding, newExpression.Arguments);
-						body.Add(newExpression);
-						expression = Expression.Block(newExpression.Arguments.Cast<ParameterExpression>(), body);
-					}
-					break;
-				default:
-					throw new NotSupportedException($"The expression of type {binding.BindingExpression.GetType()} is not supported");
-			}
+    public class ParameterDependency
+    {
+        public DependencyNode Dependency { get; set; }
+        public ParameterExpression Parameter { get; }
 
-			if (binding.Lifetime == Lifetime.PerContainer)
-			{
-				var action = Expression.Lambda(expression).Compile();
-				var value = action.DynamicInvoke();
-				expression = Expression.Constant(value);
-			}
-			binding.BindingExpression = expression;
-			binding.IsResolved = true;
-		}
+        public ParameterDependency(ParameterExpression parameter)
+        {
+            Parameter = parameter;
+        }
 
-		private List<Expression> ResolveMethodCallExpression(IBinding binding, IReadOnlyCollection<Expression> parameterExpressions)
-		{
-			var body = new List<Expression>();
-			foreach (var unresolvedParameter in parameterExpressions)
-			{
-				if (_bindings.TryGetValue(unresolvedParameter.Type, out var dependency))
-				{
-					if (!dependency.IsResolved)
-					{
-						ResolveDependency(dependency);
-					}
-					body.Add(Expression.Assign(unresolvedParameter, dependency.BindingExpression));
-				}
-				else
-				{
-					throw new CannotResolveDependencyException($"Error while resolving internal dependencies for {binding.DependencyType}. A instance of type {unresolvedParameter} is needed but was not found in the container.");
-				}
-			}
-			return body;
-		}
+        public override string ToString()
+        {
+            return Dependency.ToString();
+        }
+    }
 
-		public Binding<TDependency> Bind<TDependency>()
-		{
-			var binding = new Binding<TDependency>();
-			_bindings.Add(binding.DependencyType, binding);
-			return binding;
-		}
-	}
+    public class BindingBuilder : IDisposable
+    {
+        public event EventHandler<IEnumerable<IBinding>> OnFinishBuildingDependencies;
+        public readonly Dictionary<Type, IBinding> Bindings = new Dictionary<Type, IBinding>();
+
+        public void Dispose()
+        {
+            ResolveDependencies();
+            ValidateBindings();
+            OnFinishBuildingDependencies?.Invoke(this, Bindings.Values);
+        }
+
+        private void ValidateBindings()
+        {
+            foreach (var binding in Bindings.Values)
+            {
+                if (binding.BindingExpression == null) throw new NullReferenceException();
+            }
+        }
+
+        private void ResolveDependencies()
+        {
+            foreach (var dependency in Bindings.Values)
+            {
+                ResolveDependency(dependency);
+            }
+        }
+
+        private void ResolveDependency(IBinding binding)
+        {
+            if (binding.IsResolved) return;
+            Expression expression;
+            switch (binding.BindingExpression)
+            {
+                case LambdaExpression lambdaExpression:
+                    {
+                        var body = ResolveMethodCallExpression(binding, lambdaExpression.Parameters);
+                        body.Add(lambdaExpression.Body);
+                        expression = Expression.Block(lambdaExpression.Parameters, body);
+                    }
+                    break;
+                case NewExpression newExpression:
+                    {
+                        var body = ResolveMethodCallExpression(binding, newExpression.Arguments);
+                        body.Add(newExpression);
+                        expression = Expression.Block(newExpression.Arguments.Cast<ParameterExpression>(), body);
+                    }
+                    break;
+                default:
+                    throw new NotSupportedException($"The expression of type {binding.BindingExpression.GetType()} is not supported");
+            }
+
+            switch (binding.Lifetime)
+            {
+                case Lifetime.PerCall:
+                    break;
+                case Lifetime.PerContainer:
+                    var action = Expression.Lambda(expression).Compile();
+                    var value = action.DynamicInvoke();
+                    expression = Expression.Constant(value);
+                    break;
+                default:
+                    throw new ArgumentOutOfRangeException();
+            }
+            binding.BindingExpression = expression;
+            binding.IsResolved = true;
+        }
+
+        private List<Expression> ResolveMethodCallExpression(IBinding binding, IReadOnlyCollection<Expression> parameterExpressions)
+        {
+            var body = new List<Expression>();
+            foreach (var unresolvedParameter in parameterExpressions)
+            {
+                if (Bindings.TryGetValue(unresolvedParameter.Type, out var dependency))
+                {
+                    if (!dependency.IsResolved)
+                    {
+                        ResolveDependency(dependency);
+                    }
+                    body.Add(Expression.Assign(unresolvedParameter, dependency.BindingExpression));
+                }
+                else
+                {
+                    throw new CannotResolveDependencyException($"Error while resolving internal dependencies for {binding.DependencyType}. A instance of type {unresolvedParameter} is needed but was not found in the container.");
+                }
+            }
+            return body;
+        }
+
+        public Binding<TDependency> Bind<TDependency>()
+        {
+            if (!typeof(TDependency).GetTypeInfo().IsInterface) throw new InterfaceExpectedException($"{typeof(TDependency)} is not a interface.");
+            var binding = new Binding<TDependency>();
+            Bindings.Add(binding.DependencyType, binding);
+            return binding;
+        }
+    }
 }
