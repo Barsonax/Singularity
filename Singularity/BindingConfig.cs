@@ -12,11 +12,13 @@ namespace Singularity
         public int? Depth { get; set; }
         public ParameterDependency[] Dependencies { get; }
         public Type DependencyType { get; }
+		public Type ActualType { get; }
         public Expression Expression { get; }
 
         public DependencyNode(Type dependencyType, Expression expression)
         {
             DependencyType = dependencyType;
+			ActualType = expression.Type;
             Expression = expression;
             Dependencies = GetParameterExpressions(expression);
             if (Dependencies.Length == 0) Depth = 0;
@@ -59,7 +61,7 @@ namespace Singularity
         }
     }
 
-    public class BindingBuilder : IDisposable
+    public class BindingConfig : IDisposable
     {
         public event EventHandler<IEnumerable<IBinding>> OnFinishBuildingDependencies;
         public readonly Dictionary<Type, IBinding> Bindings = new Dictionary<Type, IBinding>();

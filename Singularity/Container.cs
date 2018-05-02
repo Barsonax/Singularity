@@ -14,9 +14,9 @@ namespace Singularity
         private readonly Dictionary<Type, Action<object>> _injectionCache = new Dictionary<Type, Action<object>>(ReferenceEqualityComparer<Type>.Instance);
         private readonly Dictionary<Type, Func<object>> _getInstanceCache = new Dictionary<Type, Func<object>>(ReferenceEqualityComparer<Type>.Instance);
 
-        public BindingBuilder StartBuilding()
+        public BindingConfig StartBuilding()
         {
-            var builder = new BindingBuilder();
+            var builder = new BindingConfig();
             builder.OnFinishBuildingDependencies += (o, bindings) =>
             {
                 foreach (var binding in bindings)
