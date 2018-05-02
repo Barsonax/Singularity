@@ -32,6 +32,20 @@ namespace Singularity.Test
 		}
 
 		[Fact]
+		public void CircularDependency_Simple_Throws()
+		{
+			var config = new BindingConfig();
+
+			config.Bind<ICircularDependency1>().To<CircularDependency1>();
+			config.Bind<ICircularDependency2>().To<CircularDependency2>();
+
+			Assert.Throws<CircularDependencyException>(() =>
+			{
+				var graph = new DependencyGraph(config.Bindings.Values);
+			});			
+		}
+
+		[Fact]
 		public void CheckUpdateOrder_Simple2()
 		{
 			var builder = new BindingConfig();

@@ -35,19 +35,20 @@ namespace Singularity
 
 			foreach (var unresolvedNode in unresolvedNodes)
 			{
-				unresolvedNode.Depth = ResolveDepth(unresolvedNode);
+				unresolvedNode.Depth = ResolveDepth(unresolvedNode, unresolvedNode, true);
 			}
 
 			_updateOrder = Nodes.Values.GroupBy(x => x.Depth).OrderBy(x => x.Key).Select(x => x.ToList()).ToList();
 		}
 
-		private int ResolveDepth(DependencyNode dependencyNode)
+		private int ResolveDepth(DependencyNode dependencyNode, DependencyNode startNode, bool isRootCall = false)
 		{
+			if (!isRootCall && dependencyNode == startNode) throw new CircularDependencyException($"The dependencies for {dependencyNode.ActualType} could not be resolved because they contain circular dependencies");
 			var maxDepth = 0;
 			foreach (var parameterDependency in dependencyNode.Dependencies)
 			{
 				if (parameterDependency.Dependency.Depth == null)
-					parameterDependency.Dependency.Depth = ResolveDepth(parameterDependency.Dependency);
+					parameterDependency.Dependency.Depth = ResolveDepth(parameterDependency.Dependency, startNode);
 				var currentDepth = parameterDependency.Dependency.Depth.Value + 1;
 				if (currentDepth > maxDepth) maxDepth = currentDepth;
 			}
