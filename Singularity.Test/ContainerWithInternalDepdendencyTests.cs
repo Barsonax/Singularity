@@ -8,12 +8,12 @@ namespace Singularity.Test
         [Fact]
         public void GetInstance_1Deep_PerCallLifetime()
         {
-            var container = new Container();
-            using (var builder = container.StartBuilding())
-            {
-                builder.Bind<ITestService10>().To<TestService10>();
-                builder.Bind<ITestService11>().To<TestService11>();
-            }
+            var config = new BindingConfig();
+            config.Bind<ITestService10>().To<TestService10>();
+            config.Bind<ITestService11>().To<TestService11>();
+
+            var container = new Container(config);
+
             var value1 = container.GetInstance<ITestService11>();
             var value2 = container.GetInstance<ITestService11>();
             Assert.NotNull(value1);
@@ -28,12 +28,12 @@ namespace Singularity.Test
         [Fact]
         public void GetInstance_1Deep_PerContainerLifetime()
         {
-            var container = new Container();
-            using (var builder = container.StartBuilding())
-            {
-                builder.Bind<ITestService10>().To<TestService10>().SetLifetime(Lifetime.PerContainer);
-                builder.Bind<ITestService11>().To<TestService11>();
-            }
+            var config = new BindingConfig();
+            config.Bind<ITestService10>().To<TestService10>().SetLifetime(Lifetime.PerContainer);
+            config.Bind<ITestService11>().To<TestService11>();
+
+            var container = new Container(config);
+
             var value1 = container.GetInstance<ITestService11>();
             var value2 = container.GetInstance<ITestService11>();
             Assert.NotNull(value1);
@@ -48,13 +48,13 @@ namespace Singularity.Test
         [Fact]
         public void GetInstance_2Deep()
         {
-            var container = new Container();
-            using (var builder = container.StartBuilding())
-            {
-                builder.Bind<ITestService10>().To<TestService10>();
-                builder.Bind<ITestService11>().To<TestService11>();
-                builder.Bind<ITestService12>().To<TestService12>();
-            }
+            var config = new BindingConfig();
+            config.Bind<ITestService10>().To<TestService10>();
+            config.Bind<ITestService11>().To<TestService11>();
+            config.Bind<ITestService12>().To<TestService12>();
+
+            var container = new Container(config);
+
             var value = container.GetInstance<ITestService12>();
             Assert.Equal(typeof(TestService12), value.GetType());
             Assert.NotNull(value.TestService11);

@@ -9,22 +9,16 @@ namespace Singularity
 {
     public class Container
     {
-        private readonly Dictionary<Type, Expression> _dependencies = new Dictionary<Type, Expression>();
+        private readonly DependencyGraph _dependencyGraph;
 
         private readonly Dictionary<Type, Action<object>> _injectionCache = new Dictionary<Type, Action<object>>(ReferenceEqualityComparer<Type>.Instance);
         private readonly Dictionary<Type, Func<object>> _getInstanceCache = new Dictionary<Type, Func<object>>(ReferenceEqualityComparer<Type>.Instance);
+        
 
-        public BindingConfig StartBuilding()
+        public Container(BindingConfig bindingConfig)
         {
-            var builder = new BindingConfig();
-            builder.OnFinishBuildingDependencies += (o, bindings) =>
-            {
-                foreach (var binding in bindings)
-                {
-                    _dependencies.Add(binding.DependencyType, binding.BindingExpression);
-                }
-            };
-            return builder;
+            bindingConfig.ValidateBindings();
+            _dependencyGraph = new DependencyGraph(bindingConfig);       
         }
 
         public void Inject(object instance)
@@ -57,13 +51,13 @@ namespace Singularity
 
         private Func<object> GenerateGetInstanceExpression(Type type)
         {
-            if (_dependencies.TryGetValue(type, out var expression))
+            if (_dependencyGraph.Dependencies.TryGetValue(type, out var dependencyNode))
             {
-                if (expression is ConstantExpression constantExpression)
+                if (dependencyNode.Expression is ConstantExpression constantExpression)
                 {
                     return () => constantExpression.Value;
                 }
-                return Expression.Lambda<Func<object>>(expression).Compile();
+                return Expression.Lambda<Func<object>>(dependencyNode.Expression).Compile();
             }
             else
             {
@@ -87,9 +81,9 @@ namespace Singularity
                 for (int i = 0; i < parameterTypes.Length; i++)
                 {
                     var parameterType = parameterTypes[i].ParameterType;
-                    if (_dependencies.TryGetValue(parameterType, out var expression))
+                    if (_dependencyGraph.Dependencies.TryGetValue(parameterType, out var dependencyNode))
                     {
-                        parameterExpressions[i] = expression;
+                        parameterExpressions[i] = dependencyNode.Expression;
                     }
                     else
                     {

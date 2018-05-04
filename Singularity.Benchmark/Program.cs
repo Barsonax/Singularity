@@ -16,16 +16,15 @@ namespace Singularity.Benchmark
 	public class InjectorBenchmark
 	{
 		private readonly Container _singulairtyContainer;
+
 		public InjectorBenchmark()
 		{
-			_singulairtyContainer = new Container();
-			using (var builder = _singulairtyContainer.StartBuilding())
-			{
-				builder.Bind<IInjectorTest>().To(() => new InjectorTest()).SetLifetime(Lifetime.PerContainer);
-			}
+		    var config = new BindingConfig();
+		    config.Bind<IInjectorTest>().To(() => new InjectorTest()).SetLifetime(Lifetime.PerContainer);
+            _singulairtyContainer = new Container(config);
 		}
 
-		[Benchmark]
+        [Benchmark]
 		public IInjectorTest Singularity()
 		{
 			var value = _singulairtyContainer.GetInstance<IInjectorTest>();

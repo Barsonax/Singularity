@@ -8,11 +8,11 @@ namespace Singularity.Test
         [Fact]
         public void GetInstance_NoInternalDependencies()
         {
-            var container = new Container();
-            using (var builder = container.StartBuilding())
-            {
-                builder.Bind<ITestService10>().To<TestService10>();
-            }
+            var config = new BindingConfig();
+            config.Bind<ITestService10>().To<TestService10>();
+
+            var container = new Container(config);
+
             var value = container.GetInstance<ITestService10>();
             Assert.Equal(typeof(TestService10), value.GetType());
         }
@@ -20,11 +20,11 @@ namespace Singularity.Test
         [Fact]
         public void GetInstance_WithPerContainerLifetime()
         {
-            var container = new Container();
-            using (var builder = container.StartBuilding())
-            {
-                builder.Bind<ITestService10>().To<TestService10>().SetLifetime(Lifetime.PerContainer);
-            }
+            var config = new BindingConfig();
+            config.Bind<ITestService10>().To<TestService10>().SetLifetime(Lifetime.PerContainer);
+
+            var container = new Container(config);       
+
             var value1 = container.GetInstance<ITestService10>();
             var value2 = container.GetInstance<ITestService10>();
             Assert.NotNull(value1);
@@ -35,11 +35,11 @@ namespace Singularity.Test
         [Fact]
         public void GetInstance_WithPerCallLifetime()
         {
-            var container = new Container();
-            using (var builder = container.StartBuilding())
-            {
-                builder.Bind<ITestService10>().To<TestService10>();
-            }
+            var config = new BindingConfig();
+            config.Bind<ITestService10>().To<TestService10>();
+
+            var container = new Container(config);
+
             var value1 = container.GetInstance<ITestService10>();
             var value2 = container.GetInstance<ITestService10>();
             Assert.NotNull(value1);

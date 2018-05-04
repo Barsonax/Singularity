@@ -9,7 +9,7 @@ namespace Singularity.Test
         [Fact]
         public void GetInstance_MissingDependency_Throws()
         {
-            var container = new Container();
+            var container = new Container(new BindingConfig());
             Assert.Throws<DependencyNotFoundException>(() =>
             {
                 container.GetInstance<ITestService10>();
@@ -19,13 +19,12 @@ namespace Singularity.Test
         [Fact]
         public void GetInstance_MissingInternalDependency_Throws()
         {
-            var container = new Container();
+            
             Assert.Throws<CannotResolveDependencyException>(() =>
             {
-                using (var builder = container.StartBuilding())
-                {
-                    builder.Bind<ITestService11>().To<TestService11>();
-                }
+                var config = new BindingConfig();
+                config.Bind<ITestService11>().To<TestService11>();
+                var container = new Container(config);
             });
         }
     }

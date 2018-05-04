@@ -1,6 +1,7 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
+﻿using System.Linq;
+using System.Net;
+using Singularity.Extensions;
+using Singularity.Graph;
 using Singularity.Test.TestClasses;
 using Xunit;
 
@@ -17,21 +18,56 @@ namespace Singularity.Test
 			config.Bind<ITestService11>().To<TestService11>();
 			config.Bind<ITestService12>().To<TestService12>();
 
-			var graph = new DependencyGraph(config.Bindings.Values);
-			Assert.Equal(3, graph.Nodes.Count);
-			Assert.Equal(3, graph.UpdateOrder.Count);
+			var dependencyGraph = new DependencyGraph(config);
 
-			Assert.Equal(1, graph.UpdateOrder[0].Count);
-			Assert.Equal(typeof(TestService10), graph.UpdateOrder[0][0].ActualType);
+		    var graph = new Graph<DependencyNode>(dependencyGraph.Dependencies.Values);
+		    var updateOrder = graph.GetUpdateOrder(node => node.Expression.GetParameterExpressions().Select(x => dependencyGraph.GetDependency(x.Type)));
 
-			Assert.Equal(1, graph.UpdateOrder[1].Count);
-			Assert.Equal(typeof(TestService11), graph.UpdateOrder[1][0].ActualType);
+			Assert.Equal(3, dependencyGraph.Dependencies.Count);
+			Assert.Equal(3, updateOrder.Length);
 
-			Assert.Equal(1, graph.UpdateOrder[2].Count);
-			Assert.Equal(typeof(TestService12), graph.UpdateOrder[2][0].ActualType);
+			Assert.Equal(1, updateOrder[0].Length);
+			Assert.Equal(typeof(TestService10), updateOrder[0][0].Expression.Type);
+
+			Assert.Equal(1, updateOrder[1].Length);
+			Assert.Equal(typeof(TestService11), updateOrder[1][0].Expression.Type);
+
+			Assert.Equal(1, updateOrder[2].Length);
+			Assert.Equal(typeof(TestService12), updateOrder[2][0].Expression.Type);
 		}
 
-		[Fact]
+	    [Fact]
+	    public void CheckUpdateOrder_Complex()
+	    {
+	        var config = new BindingConfig();
+
+	        config.Bind<ICompositeTestService13>().To<CompositeTestService13>();
+	        config.Bind<ITestService10>().To<TestService10>();
+	        config.Bind<ITestService11>().To<TestService11>();
+	        config.Bind<ITestService12>().To<TestService12>();
+
+	        var dependencyGraph = new DependencyGraph(config);
+
+	        var graph = new Graph<DependencyNode>(dependencyGraph.Dependencies.Values);
+	        var updateOrder = graph.GetUpdateOrder(node => node.Expression.GetParameterExpressions().Select(x => dependencyGraph.GetDependency(x.Type)));
+
+            Assert.Equal(4, dependencyGraph.Dependencies.Count);
+	        Assert.Equal(4, updateOrder.Length);
+
+	        Assert.Equal(1, updateOrder[0].Length);
+	        Assert.Equal(typeof(TestService10), updateOrder[0][0].Expression.Type);
+
+	        Assert.Equal(1, updateOrder[1].Length);
+	        Assert.Equal(typeof(TestService11), updateOrder[1][0].Expression.Type);
+
+	        Assert.Equal(1, updateOrder[2].Length);
+	        Assert.Equal(typeof(TestService12), updateOrder[2][0].Expression.Type);
+
+	        Assert.Equal(1, updateOrder[3].Length);
+	        Assert.Equal(typeof(CompositeTestService13), updateOrder[3][0].Expression.Type);
+        }
+
+        [Fact]
 		public void CircularDependency_Simple_Throws()
 		{
 			var config = new BindingConfig();
@@ -41,29 +77,23 @@ namespace Singularity.Test
 
 			Assert.Throws<CircularDependencyException>(() =>
 			{
-				var graph = new DependencyGraph(config.Bindings.Values);
+				var graph = new DependencyGraph(config);
 			});			
 		}
 
-		[Fact]
-		public void CheckUpdateOrder_Simple2()
-		{
-			var builder = new BindingConfig();
+	    [Fact]
+	    public void CircularDependency_Complex_Throws()
+	    {
+	        var config = new BindingConfig();
 
-			builder.Bind<ICompositeTestService13>().To<CompositeTestService13>();
-			builder.Bind<ITestService10>().To<TestService10>();
-			builder.Bind<ITestService11>().To<TestService11>();
-			builder.Bind<ITestService12>().To<TestService12>();
+	        config.Bind<ICircularDependencyComplex1>().To<CircularDependencyComplex1>();
+	        config.Bind<ICircularDependencyComplex2>().To<CircularDependencyComplex2>();
+	        config.Bind<ICircularDependencyComplex3>().To<CircularDependencyComplex3>();
 
-			builder.Bind<ITestService20>().To<TestService20>();
-			builder.Bind<ITestService21>().To<TestService21>();
-			builder.Bind<ITestService22>().To<TestService22>();
-
-			builder.Bind<ITestService30>().To<TestService30>();
-			builder.Bind<ITestService31>().To<TestService31>();
-			builder.Bind<ITestService32>().To<TestService32>();
-
-			var graph = new DependencyGraph(builder.Bindings.Values);
-		}
+            Assert.Throws<CircularDependencyException>(() =>
+	        {
+	            var graph = new DependencyGraph(config);
+	        });
+	    }
 	}
 }
