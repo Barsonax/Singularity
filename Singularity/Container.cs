@@ -7,97 +7,105 @@ using System.Reflection;
 
 namespace Singularity
 {
-    public class Container
-    {
-        private readonly DependencyGraph _dependencyGraph;
+	public class Container
+	{
+		private readonly DependencyGraph _dependencyGraph;
 
-        private readonly Dictionary<Type, Action<object>> _injectionCache = new Dictionary<Type, Action<object>>(ReferenceEqualityComparer<Type>.Instance);
-        private readonly Dictionary<Type, Func<object>> _getInstanceCache = new Dictionary<Type, Func<object>>(ReferenceEqualityComparer<Type>.Instance);
-        
+		private readonly Dictionary<Type, Action<object>> _injectionCache = new Dictionary<Type, Action<object>>(ReferenceEqualityComparer<Type>.Instance);
+		private readonly Dictionary<Type, Func<object>> _getInstanceCache = new Dictionary<Type, Func<object>>(ReferenceEqualityComparer<Type>.Instance);
 
-        public Container(BindingConfig bindingConfig)
-        {
-            bindingConfig.ValidateBindings();
-            _dependencyGraph = new DependencyGraph(bindingConfig);       
-        }
 
-        public void Inject(object instance)
-        {
-            var type = instance.GetType();
-            if (!_injectionCache.TryGetValue(type, out var action))
-            {
-                action = GenerateInjectionExpression(type);
-                _injectionCache.Add(type, action);
-            }
-            action.Invoke(instance);
-        }
+		public Container(BindingConfig bindingConfig)
+		{
+			bindingConfig.ValidateBindings();
+			_dependencyGraph = new DependencyGraph(bindingConfig);
+		}
 
-        public T GetInstance<T>() where T : class
-        {
-            var value = GetInstance(typeof(T));
-            return (T)value;
-        }
+		public void Inject(IEnumerable<object> instances)
+		{
+			foreach (var instance in instances)
+			{
+				Inject(instance);
+			}
+		}
 
-        public object GetInstance(Type type)
-        {
-            if (!_getInstanceCache.TryGetValue(type, out var action))
-            {
-                action = GenerateGetInstanceExpression(type);
-                _getInstanceCache.Add(type, action);
-            }
-            var value = action.Invoke();
-            return value;
-        }
+		public void Inject(object instance)
+		{
+			var type = instance.GetType();
+			if (!_injectionCache.TryGetValue(type, out var action))
+			{
+				action = GenerateInjectionExpression(type);
+				_injectionCache.Add(type, action);
+			}
+			action.Invoke(instance);
+		}
 
-        private Func<object> GenerateGetInstanceExpression(Type type)
-        {
-            if (_dependencyGraph.Dependencies.TryGetValue(type, out var dependencyNode))
-            {
-                if (dependencyNode.Expression is ConstantExpression constantExpression)
-                {
-                    return () => constantExpression.Value;
-                }
-                return Expression.Lambda<Func<object>>(dependencyNode.Expression).Compile();
-            }
-            else
-            {
-                throw new DependencyNotFoundException($"No configured dependency found for {type}");
-            }
-        }
+		public T GetInstance<T>() where T : class
+		{
+			var value = GetInstance(typeof(T));
+			return (T)value;
+		}
 
-        private Action<object> GenerateInjectionExpression(Type type)
-        {
-            var instanceParameter = Expression.Parameter(typeof(object));
+		public object GetInstance(Type type)
+		{
+			if (!_getInstanceCache.TryGetValue(type, out var action))
+			{
+				action = GenerateGetInstanceExpression(type);
+				_getInstanceCache.Add(type, action);
+			}
+			var value = action.Invoke();
+			return value;
+		}
 
-            var body = new List<Expression>();
-            var instanceCasted = Expression.Variable(type, "instanceCasted");
-            body.Add(instanceCasted);
-            body.Add(Expression.Assign(instanceCasted, Expression.Convert(instanceParameter, type)));
-            foreach (var methodInfo in type.GetRuntimeMethods())
-            {
-                if (methodInfo.CustomAttributes.All(x => x.AttributeType != typeof(InjectAttribute))) continue;
-                var parameterTypes = methodInfo.GetParameters();
-                var parameterExpressions = new Expression[parameterTypes.Length];
-                for (int i = 0; i < parameterTypes.Length; i++)
-                {
-                    var parameterType = parameterTypes[i].ParameterType;
-                    if (_dependencyGraph.Dependencies.TryGetValue(parameterType, out var dependencyNode))
-                    {
-                        parameterExpressions[i] = dependencyNode.Expression;
-                    }
-                    else
-                    {
-                        throw new DependencyNotFoundException($"No configured dependency found for {parameterType}");
-                    }
-                }
+		private Func<object> GenerateGetInstanceExpression(Type type)
+		{
+			if (_dependencyGraph.Dependencies.TryGetValue(type, out var dependencyNode))
+			{
+				if (dependencyNode.Expression is ConstantExpression constantExpression)
+				{
+					return () => constantExpression.Value;
+				}
+				return Expression.Lambda<Func<object>>(dependencyNode.Expression).Compile();
+			}
+			else
+			{
+				throw new DependencyNotFoundException($"No configured dependency found for {type}");
+			}
+		}
 
-                body.Add(Expression.Call(instanceCasted, methodInfo, parameterExpressions));
-            }
-            var block = Expression.Block(new[] { instanceCasted }, body);
-            var expressionTree = Expression.Lambda<Action<object>>(block, instanceParameter);
+		private Action<object> GenerateInjectionExpression(Type type)
+		{
+			var instanceParameter = Expression.Parameter(typeof(object));
 
-            var action = expressionTree.Compile();
-            return action;
-        }
-    }
+			var body = new List<Expression>();
+			var instanceCasted = Expression.Variable(type, "instanceCasted");
+			body.Add(instanceCasted);
+			body.Add(Expression.Assign(instanceCasted, Expression.Convert(instanceParameter, type)));
+			foreach (var methodInfo in type.GetRuntimeMethods())
+			{
+				if (methodInfo.CustomAttributes.All(x => x.AttributeType != typeof(InjectAttribute))) continue;
+				var parameterTypes = methodInfo.GetParameters();
+				var parameterExpressions = new Expression[parameterTypes.Length];
+				for (int i = 0; i < parameterTypes.Length; i++)
+				{
+					var parameterType = parameterTypes[i].ParameterType;
+					if (_dependencyGraph.Dependencies.TryGetValue(parameterType, out var dependencyNode))
+					{
+						parameterExpressions[i] = dependencyNode.Expression;
+					}
+					else
+					{
+						throw new DependencyNotFoundException($"No configured dependency found for {parameterType}");
+					}
+				}
+
+				body.Add(Expression.Call(instanceCasted, methodInfo, parameterExpressions));
+			}
+			var block = Expression.Block(new[] { instanceCasted }, body);
+			var expressionTree = Expression.Lambda<Action<object>>(block, instanceParameter);
+
+			var action = expressionTree.Compile();
+			return action;
+		}
+	}
 }

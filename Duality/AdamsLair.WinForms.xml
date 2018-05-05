@@ -1,0 +1,305 @@
+<?xml version="1.0"?>
+<doc>
+    <assembly>
+        <name>AdamsLair.WinForms</name>
+    </assembly>
+    <members>
+        <member name="F:AdamsLair.WinForms.ColorControls.ColorPickerDialog.components">
+            <summary>
+            Required designer variable.
+            </summary>
+        </member>
+        <member name="M:AdamsLair.WinForms.ColorControls.ColorPickerDialog.Dispose(System.Boolean)">
+            <summary>
+            Clean up any resources being used.
+            </summary>
+            <param name="disposing">true if managed resources should be disposed; otherwise, false.</param>
+        </member>
+        <member name="M:AdamsLair.WinForms.ColorControls.ColorPickerDialog.InitializeComponent">
+            <summary>
+            Required method for Designer support - do not modify
+            the contents of this method with the code editor.
+            </summary>
+        </member>
+        <member name="T:AdamsLair.WinForms.Drawing.QualityLevel">
+            <summary>
+            Represents the level of drawing quality. It is guaranteed that higher levels also have higher numeric values.
+            </summary>
+        </member>
+        <member name="M:AdamsLair.WinForms.PropertyEditing.PropertyEditor.GetValue">
+            <summary>
+            Performs a get operation using the PropertyEditors <see cref="P:AdamsLair.WinForms.PropertyEditing.PropertyEditor.Getter"/>.
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:AdamsLair.WinForms.PropertyEditing.PropertyEditor.SetValues(System.Collections.Generic.IEnumerable{System.Object})">
+            <summary>
+            Performs a set operation using the PropertyEditors <see cref="P:AdamsLair.WinForms.PropertyEditing.PropertyEditor.Setter"/>.
+            </summary>
+            <param name="objEnum"></param>
+        </member>
+        <member name="M:AdamsLair.WinForms.PropertyEditing.PropertyEditor.SetValue(System.Object)">
+            <summary>
+            Performs a set operation using the PropertyEditors <see cref="P:AdamsLair.WinForms.PropertyEditing.PropertyEditor.Setter"/>.
+            </summary>
+            <param name="obj"></param>
+        </member>
+        <member name="M:AdamsLair.WinForms.PropertyEditing.PropertyEditor.VerifyReflectedTypeEditors(System.Collections.Generic.IEnumerable{System.Object})">
+            <summary>
+            This method is called in order to determine whether all of the editors children
+            are still valid regarding their dynamically reflected member Types. When a child
+            editor of an typeof(object) member has been dynamically typed to typeof(int) because
+            of its content, this method allows to switch re-initialize or re-create the editor
+            with an updated Type after the members value has changed from typeof(int) to typeof(float).
+            </summary>
+            <param name="values"></param>
+        </member>
+        <member name="M:AdamsLair.WinForms.PropertyEditing.PropertyEditor.BeginUpdate">
+            <summary>
+            Begins a refresh operation on this editor.
+            </summary>
+            <returns>
+            Returns whether this method call initialized the current refresh operation. 
+            False, if it already has been initialized by a previous call.
+            </returns>
+        </member>
+        <member name="M:AdamsLair.WinForms.PropertyEditing.PropertyEditor.EndUpdate">
+            <summary>
+            Ends a the current refresh operation on this editor.
+            </summary>
+            <returns>
+            Returns whether this method call terminated the current refresh operation. 
+            False, if termination will occur by one of the subsequent calls of this method.
+            </returns>
+        </member>
+        <member name="M:AdamsLair.WinForms.PropertyEditing.PropertyEditor.ReflectDynamicType(System.Type,System.Collections.Generic.IEnumerable{System.Object})">
+            <summary>
+            Determines the most specific shared Type of all the specified objects.
+            The specified static Type will be used as a shared fallback, if no other
+            common root is found.
+            </summary>
+            <param name="staticType"></param>
+            <param name="values"></param>
+            <returns></returns>
+        </member>
+        <member name="M:AdamsLair.WinForms.PropertyEditing.PropertyEditor.ReflectDynamicType(System.Type,System.Collections.Generic.IEnumerable{System.Type})">
+            <summary>
+            Determines the most specific shared Type of all the specified Types.
+            The specified static Type will be used as a shared fallback, if no other
+            common root is found.
+            </summary>
+            <param name="staticType"></param>
+            <param name="dynamicTypes"></param>
+            <returns></returns>
+        </member>
+        <member name="P:AdamsLair.WinForms.PropertyEditing.PropertyEditor.EditedType">
+            <summary>
+            [GET / SET] The Type of values that this PropertyEditor is able to edit.
+            </summary>
+        </member>
+        <member name="P:AdamsLair.WinForms.PropertyEditing.PropertyEditor.EditedMember">
+            <summary>
+            [GET / SET] The underlying reflected MemberInfo, which is edited by this PropertyEditor.
+            This is usually null for PropertyEditors that haven't been instantiated by <see cref="T:AdamsLair.WinForms.PropertyEditing.MemberwisePropertyEditor"/>
+            </summary>
+        </member>
+        <member name="P:AdamsLair.WinForms.PropertyEditing.PropertyEditor.ValueMutable">
+            <summary>
+            [GET / SET] Specifies whether this PropertyEditor can be modified, even when its parents are set to <see cref="P:AdamsLair.WinForms.PropertyEditing.PropertyEditor.ReadOnly"/> mode.
+            </summary>
+        </member>
+        <member name="P:AdamsLair.WinForms.PropertyEditing.PropertyEditor.NonPublic">
+            <summary>
+            [GET / SET] Specifies whether this PropertyEditor represents a non-public value. It will
+            usually be displayed "greyed out", so the user is able to make a distinction between
+            public and non-public data, which is only displayed for debugging purposes.
+            </summary>
+        </member>
+        <member name="P:AdamsLair.WinForms.PropertyEditing.PropertyEditor.IsUpdating">
+            <summary>
+            [GET] Returns whether or not this editor is currently performing a refresh operation.
+            </summary>
+        </member>
+        <member name="P:AdamsLair.WinForms.TimelineControls.TimelineViewTrackPaintEventArgs.TargetRect">
+            <summary>
+            [GET] The rectangular area that is occupied by the track that is currently painted. It won't be
+            altered due to clipping and partial repaints, and can be safely relied upon for determining
+            drawing geometry.
+            </summary>
+        </member>
+        <member name="P:AdamsLair.WinForms.TimelineControls.TimelineViewTrackPaintEventArgs.BeginTime">
+            <summary>
+            [GET] The begin of the currently painted timespan. This value may be altered due to clipping and
+            partial repaints, and does not reflect the tracks or track contents actual begin.
+            </summary>
+        </member>
+        <member name="P:AdamsLair.WinForms.TimelineControls.TimelineViewTrackPaintEventArgs.EndTime">
+            <summary>
+            [GET] The end of the currently painted timespan. This value may be altered due to clipping and
+            partial repaints, and does not reflect the tracks or track contents actual end.
+            </summary>
+        </member>
+        <member name="P:AdamsLair.WinForms.TimelineControls.TimelineView.AdaptiveDrawingQuality">
+            <summary>
+            [GET / SET] If true, the TimelineView will automatically adjust its drawing quality while scrolling and resizing in order to achieve maximum performance.
+            </summary>
+        </member>
+        <member name="M:AdamsLair.WinForms.PropertyEditing.MemberwisePropertyEditor.ReflectTypeForMember(System.Reflection.MemberInfo,System.Collections.Generic.IEnumerable{System.Object})">
+            <summary>
+            Determines the Type to use as a basis for generating a PropertyEditor for the specified member
+            by evaluating the members current value and static Type.
+            </summary>
+            <param name="member"></param>
+            <param name="values"></param>
+            <returns></returns>
+        </member>
+        <member name="T:AdamsLair.WinForms.Properties.Resources">
+            <summary>
+              A strongly-typed resource class, for looking up localized strings, etc.
+            </summary>
+        </member>
+        <member name="P:AdamsLair.WinForms.Properties.Resources.ResourceManager">
+            <summary>
+              Returns the cached ResourceManager instance used by this class.
+            </summary>
+        </member>
+        <member name="P:AdamsLair.WinForms.Properties.Resources.Culture">
+            <summary>
+              Overrides the current thread's CurrentUICulture property for all
+              resource lookups using this strongly typed resource class.
+            </summary>
+        </member>
+        <member name="P:AdamsLair.WinForms.Properties.Resources.ArrowDown">
+            <summary>
+              Looks up a localized resource of type System.Drawing.Bitmap.
+            </summary>
+        </member>
+        <member name="P:AdamsLair.WinForms.Properties.Resources.ArrowDownLeft">
+            <summary>
+              Looks up a localized resource of type System.Drawing.Bitmap.
+            </summary>
+        </member>
+        <member name="P:AdamsLair.WinForms.Properties.Resources.ArrowDownRight">
+            <summary>
+              Looks up a localized resource of type System.Drawing.Bitmap.
+            </summary>
+        </member>
+        <member name="P:AdamsLair.WinForms.Properties.Resources.ArrowLeft">
+            <summary>
+              Looks up a localized resource of type System.Drawing.Bitmap.
+            </summary>
+        </member>
+        <member name="P:AdamsLair.WinForms.Properties.Resources.ArrowRight">
+            <summary>
+              Looks up a localized resource of type System.Drawing.Bitmap.
+            </summary>
+        </member>
+        <member name="P:AdamsLair.WinForms.Properties.Resources.ArrowUp">
+            <summary>
+              Looks up a localized resource of type System.Drawing.Bitmap.
+            </summary>
+        </member>
+        <member name="P:AdamsLair.WinForms.Properties.Resources.ArrowUpLeft">
+            <summary>
+              Looks up a localized resource of type System.Drawing.Bitmap.
+            </summary>
+        </member>
+        <member name="P:AdamsLair.WinForms.Properties.Resources.ArrowUpRight">
+            <summary>
+              Looks up a localized resource of type System.Drawing.Bitmap.
+            </summary>
+        </member>
+        <member name="P:AdamsLair.WinForms.Properties.Resources.DropDownIcon">
+            <summary>
+              Looks up a localized resource of type System.Drawing.Bitmap.
+            </summary>
+        </member>
+        <member name="P:AdamsLair.WinForms.Properties.Resources.ExpandNodeClosedDisabled">
+            <summary>
+              Looks up a localized resource of type System.Drawing.Bitmap.
+            </summary>
+        </member>
+        <member name="P:AdamsLair.WinForms.Properties.Resources.ExpandNodeClosedHot">
+            <summary>
+              Looks up a localized resource of type System.Drawing.Bitmap.
+            </summary>
+        </member>
+        <member name="P:AdamsLair.WinForms.Properties.Resources.ExpandNodeClosedNormal">
+            <summary>
+              Looks up a localized resource of type System.Drawing.Bitmap.
+            </summary>
+        </member>
+        <member name="P:AdamsLair.WinForms.Properties.Resources.ExpandNodeClosedPressed">
+            <summary>
+              Looks up a localized resource of type System.Drawing.Bitmap.
+            </summary>
+        </member>
+        <member name="P:AdamsLair.WinForms.Properties.Resources.ExpandNodeOpenedDisabled">
+            <summary>
+              Looks up a localized resource of type System.Drawing.Bitmap.
+            </summary>
+        </member>
+        <member name="P:AdamsLair.WinForms.Properties.Resources.ExpandNodeOpenedHot">
+            <summary>
+              Looks up a localized resource of type System.Drawing.Bitmap.
+            </summary>
+        </member>
+        <member name="P:AdamsLair.WinForms.Properties.Resources.ExpandNodeOpenedNormal">
+            <summary>
+              Looks up a localized resource of type System.Drawing.Bitmap.
+            </summary>
+        </member>
+        <member name="P:AdamsLair.WinForms.Properties.Resources.ExpandNodeOpenedPressed">
+            <summary>
+              Looks up a localized resource of type System.Drawing.Bitmap.
+            </summary>
+        </member>
+        <member name="P:AdamsLair.WinForms.Properties.Resources.ImageAdd">
+            <summary>
+              Looks up a localized resource of type System.Drawing.Bitmap.
+            </summary>
+        </member>
+        <member name="P:AdamsLair.WinForms.Properties.Resources.ImageDelete">
+            <summary>
+              Looks up a localized resource of type System.Drawing.Bitmap.
+            </summary>
+        </member>
+        <member name="P:AdamsLair.WinForms.Properties.Resources.NumberGripIcon">
+            <summary>
+              Looks up a localized resource of type System.Drawing.Bitmap.
+            </summary>
+        </member>
+        <member name="P:AdamsLair.WinForms.Properties.Resources.PropertyGrid_N_Objects">
+            <summary>
+              Looks up a localized string similar to {0} Objects.
+            </summary>
+        </member>
+        <member name="P:AdamsLair.WinForms.Properties.Resources.PropertyName_Default">
+            <summary>
+              Looks up a localized string similar to Properties.
+            </summary>
+        </member>
+        <member name="M:AdamsLair.WinForms.ItemViews.TiledView.CreateItemEditor(System.Int32,System.Object,System.Drawing.Point)">
+            <summary>
+            Override this method to allow editing items in the <see cref="T:AdamsLair.WinForms.ItemViews.TiledView"/> using the provided editor.
+            </summary>
+            <param name="modelIndex"></param>
+            <param name="item"></param>
+            <param name="editorPos"></param>
+            <returns></returns>
+        </member>
+        <member name="M:AdamsLair.WinForms.ItemViews.TiledView.DestroyItemEditor(AdamsLair.WinForms.ItemViews.ITiledViewItemEditor)">
+            <summary>
+            Override this method to clean up after editing an item in the <see cref="T:AdamsLair.WinForms.ItemViews.TiledView"/>.
+            </summary>
+            <param name="editor"></param>
+        </member>
+        <member name="M:AdamsLair.WinForms.ReflectionHelper.GetDefaultInstanceOf(System.Type)">
+            <summary>
+            Returns the default instance of a Type. Equals <c>default(T)</c>, but works for Reflection.
+            </summary>
+            <param name="instanceType">The Type to create a default instance of.</param>
+            <returns></returns>
+        </member>
+    </members>
+</doc>

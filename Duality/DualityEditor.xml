@@ -1,0 +1,3412 @@
+<?xml version="1.0"?>
+<doc>
+    <assembly>
+        <name>DualityEditor</name>
+    </assembly>
+    <members>
+        <member name="T:Duality.Editor.AssetManagement.AssetExportFinishedEventArgs">
+            <summary>
+            Provides information about a finished export operation.
+            </summary>
+        </member>
+        <member name="P:Duality.Editor.AssetManagement.AssetExportFinishedEventArgs.IsSuccessful">
+            <summary>
+            [GET] Whether the operation was successful.
+            </summary>
+        </member>
+        <member name="P:Duality.Editor.AssetManagement.AssetExportFinishedEventArgs.Input">
+            <summary>
+            [GET] The <see cref="T:Duality.Resource"/> that was exported.
+            </summary>
+        </member>
+        <member name="P:Duality.Editor.AssetManagement.AssetExportFinishedEventArgs.Output">
+            <summary>
+            [GET] The list of output source files that were exported.
+            </summary>
+        </member>
+        <member name="T:Duality.Editor.AssetManagement.AssetInternalHelper">
+            <summary>
+            Provides some internal helper functions for asset-related tasks.
+            
+            If there is any other, more specific place a given function fits, that place should be preferred.
+            Due to the fact that it's a general collection of helper methods, in an ideal world, this class 
+            wouldn't even exist. Don't add stuff if it can be avoided.
+            </summary>
+        </member>
+        <member name="M:Duality.Editor.AssetManagement.AssetInternalHelper.GetSourceMediaBaseDir(Duality.ContentRef{Duality.Resource})">
+            <summary>
+            Determines the expected base directory of the specified <see cref="T:Duality.Resource"/> instances source files,
+            which were used during the most recent import and can be re-used during export and re-import operations 
+            of that <see cref="T:Duality.Resource"/>.
+            </summary>
+            <param name="resource"></param>
+            <returns></returns>
+        </member>
+        <member name="M:Duality.Editor.AssetManagement.AssetInternalHelper.GetAssetInfoCustomValue``1(Duality.Resource,System.String,``0@)">
+            <summary>
+            Retrieves a custom data value from the specified Resource's <see cref="T:Duality.Editor.AssetManagement.AssetInfo"/> data.
+            </summary>
+            <typeparam name="T"></typeparam>
+            <param name="resource"></param>
+            <param name="parameterName"></param>
+            <param name="value"></param>
+            <returns></returns>
+        </member>
+        <member name="M:Duality.Editor.AssetManagement.AssetInternalHelper.SetAssetInfoCustomValue``1(Duality.Resource,System.String,``0)">
+            <summary>
+            Sets a custom data value in the specified Resource's <see cref="T:Duality.Editor.AssetManagement.AssetInfo"/> data.
+            </summary>
+            <typeparam name="T"></typeparam>
+            <param name="resource"></param>
+            <param name="parameterName"></param>
+            <param name="value"></param>
+        </member>
+        <member name="M:Duality.Editor.AssetManagement.ExtMethodsIAssetExportEnvironment.GetParameter``1(Duality.Editor.AssetManagement.IAssetExportEnvironment,System.String,``0)">
+            <summary>
+            Retrieves the value of an export parameter for the exported <see cref="T:Duality.Resource"/>.
+            </summary>
+            <typeparam name="T"></typeparam>
+            <param name="env"></param>
+            <param name="parameterName">The name of the parameter.</param>
+            <param name="defaultValue">If the value wasn't defined for the given Resource, the default value will be used instead.</param>
+            <returns>The retrieved value, or the default value that was specified.</returns>
+        </member>
+        <member name="M:Duality.Editor.AssetManagement.ExtMethodsIAssetExportEnvironment.GetOrInitParameter``1(Duality.Editor.AssetManagement.IAssetExportEnvironment,System.String,``0)">
+            <summary>
+            Retrieves the value of an export parameter for the specified <see cref="T:Duality.Resource"/>.
+            If the parameter was undefined, it will be (persistently) initialized with the specified default value.
+            </summary>
+            <typeparam name="T"></typeparam>
+            <param name="env"></param>
+            <param name="parameterName">The name of the parameter.</param>
+            <param name="defaultValue">If the value wasn't defined for the given Resource, the default value will be used instead.</param>
+            <returns>The retrieved value, or the default value that was specified.</returns>
+        </member>
+        <member name="T:Duality.Editor.AssetManagement.AssetImportFinishedEventArgs">
+            <summary>
+            Provides information about a finished import operation.
+            </summary>
+        </member>
+        <member name="P:Duality.Editor.AssetManagement.AssetImportFinishedEventArgs.IsSuccessful">
+            <summary>
+            [GET] Whether the operation was successful.
+            </summary>
+        </member>
+        <member name="P:Duality.Editor.AssetManagement.AssetImportFinishedEventArgs.IsReImport">
+            <summary>
+            [GET] Whether this was a re-import of an existing <see cref="T:Duality.Resource"/>.
+            </summary>
+        </member>
+        <member name="P:Duality.Editor.AssetManagement.AssetImportFinishedEventArgs.Input">
+            <summary>
+            [GET] The list of input source files that were used as a basis for the operation.
+            </summary>
+        </member>
+        <member name="P:Duality.Editor.AssetManagement.AssetImportFinishedEventArgs.Output">
+            <summary>
+            [GET] The list of output Resources that were imported, along with the source files that each of them used.
+            </summary>
+        </member>
+        <member name="T:Duality.Editor.AssetManagement.AssetExportEnvironment">
+            <summary>
+            Environment class for an <see cref="T:Duality.Editor.AssetManagement.IAssetImporter"/> during an export operation.
+            It specifies the API that is used to interact with the overall export process and
+            acts as an abstraction layer between importer and editor. This allows to perform
+            simulated exports and manage detailed information about inputs and outputs.
+            </summary>
+        </member>
+        <member name="P:Duality.Editor.AssetManagement.AssetExportEnvironment.IsPrepareStep">
+            <summary>
+            [GET / SET] Whether the export operation is currently in the preparation phase.
+            </summary>
+        </member>
+        <member name="P:Duality.Editor.AssetManagement.AssetExportEnvironment.ExportDirectory">
+            <summary>
+            [GET] The directory to export the source files into.
+            </summary>
+        </member>
+        <member name="P:Duality.Editor.AssetManagement.AssetExportEnvironment.Input">
+            <summary>
+            [GET] The input <see cref="T:Duality.Resource"/> that should be exported to the <see cref="P:Duality.Editor.AssetManagement.AssetExportEnvironment.ExportDirectory"/>.
+            </summary>
+        </member>
+        <member name="P:Duality.Editor.AssetManagement.AssetExportEnvironment.IsHandled">
+            <summary>
+            [GET] Whether the operations input was handled by one of the available <see cref="T:Duality.Editor.AssetManagement.IAssetImporter"/> instances.
+            If this returns false, the input <see cref="T:Duality.Resource"/> might not have a suitable exporter.
+            </summary>
+        </member>
+        <member name="P:Duality.Editor.AssetManagement.AssetExportEnvironment.IsAssetInfoChanged">
+            <summary>
+            [GET] Whether the export operation modified export parameters of the exported <see cref="T:Duality.Resource"/>.
+            </summary>
+        </member>
+        <member name="P:Duality.Editor.AssetManagement.AssetExportEnvironment.OutputPaths">
+            <summary>
+            [GET] Enumerates the (simulated or actual) output paths that have been added by the active <see cref="T:Duality.Editor.AssetManagement.IAssetImporter"/>.
+            </summary>
+        </member>
+        <member name="M:Duality.Editor.AssetManagement.AssetExportEnvironment.ResetAcquiredData">
+            <summary>
+            Resets all working and result data of the environment. This is used as part of the exporter selection
+            in the preparation phase in order to provide a clean slate for each <see cref="T:Duality.Editor.AssetManagement.IAssetImporter"/> 
+            that is queried.
+            </summary>
+        </member>
+        <member name="M:Duality.Editor.AssetManagement.AssetExportEnvironment.AddOutputPath(System.String)">
+            <summary>
+            Registers the specified local file path as a result of this export operation, transforms it
+            according to the current source directory and returns a relative file path that can then
+            be used for writing the registered output file.
+            </summary>
+            <param name="localFilePath"></param>
+        </member>
+        <member name="M:Duality.Editor.AssetManagement.AssetExportEnvironment.GetParameter``1(System.String,``0@)">
+            <summary>
+            Retrieves the value of an export parameter for the exported <see cref="T:Duality.Resource"/>.
+            </summary>
+            <typeparam name="T"></typeparam>
+            <param name="parameterName">The name of the parameter.</param>
+            <param name="value">An out reference to the variable to which the retrieved value will be assigned.</param>
+            <returns>True, if the value was retrieved successfully. False otherwise.</returns>
+        </member>
+        <member name="M:Duality.Editor.AssetManagement.AssetExportEnvironment.SetParameter``1(System.String,``0)">
+            <summary>
+            Sets the value of an export parameter for the exported <see cref="T:Duality.Resource"/> 
+            </summary>
+            <typeparam name="T"></typeparam>
+            <param name="parameterName">The name of the parameter.</param>
+            <param name="value">The new value that should be assigned to the parameter.</param>
+        </member>
+        <member name="T:Duality.Editor.AssetManagement.AssetExportOperation">
+            <summary>
+            Encapsulates a single Resource export operation.
+            </summary>
+        </member>
+        <member name="P:Duality.Editor.AssetManagement.AssetExportOperation.Input">
+            <summary>
+            [GET] The <see cref="T:Duality.Resource"/> that is exported in this operation.
+            </summary>
+        </member>
+        <member name="P:Duality.Editor.AssetManagement.AssetExportOperation.OutputPaths">
+            <summary>
+            [GET] Enumerates all generated output paths. 
+            This result is only available after calling <see cref="M:Duality.Editor.AssetManagement.AssetExportOperation.Perform"/> or <see cref="M:Duality.Editor.AssetManagement.AssetExportOperation.SimulatePerform"/>.
+            </summary>
+        </member>
+        <member name="P:Duality.Editor.AssetManagement.AssetExportOperation.ImporterConflictHandler">
+            <summary>
+            [GET / SET] An optional delegate for resolving conflicts when multiple
+            <see cref="T:Duality.Editor.AssetManagement.IAssetImporter"/> instances are able to export a given <see cref="T:Duality.Resource"/>.
+            </summary>
+        </member>
+        <member name="P:Duality.Editor.AssetManagement.AssetExportOperation.IsAssetInfoChanged">
+            <summary>
+            [GET] Whether the export operation modified export parameters of the exported <see cref="T:Duality.Resource"/>.
+            </summary>
+        </member>
+        <member name="M:Duality.Editor.AssetManagement.AssetExportOperation.Perform">
+            <summary>
+            Performs the operation and returns whether it was successful.
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:Duality.Editor.AssetManagement.AssetExportOperation.SimulatePerform">
+            <summary>
+            Simulates performing the operation without actually doing anything, and returns
+            whether the simulation was successful.
+            This can be used to determine which files would be affected when performing
+            the operation.
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="T:Duality.Editor.AssetManagement.AssetImportOutput">
+            <summary>
+            Represents a single result item in an Asset import or re-import operation.
+            </summary>
+        </member>
+        <member name="P:Duality.Editor.AssetManagement.AssetImportOutput.Resource">
+            <summary>
+            [GET] A reference to the generated output <see cref="T:Duality.Resource"/>.
+            </summary>
+        </member>
+        <member name="P:Duality.Editor.AssetManagement.AssetImportOutput.InputPaths">
+            <summary>
+            [GET] The set of input paths that was used to generate this output.
+            </summary>
+        </member>
+        <member name="T:Duality.Editor.AssetManagement.AssetImportInput">
+            <summary>
+            Represents a single work item in an Asset import or re-import operation.
+            </summary>
+        </member>
+        <member name="P:Duality.Editor.AssetManagement.AssetImportInput.Path">
+            <summary>
+            [GET] The path where this input file is located.
+            </summary>
+        </member>
+        <member name="P:Duality.Editor.AssetManagement.AssetImportInput.RelativePath">
+            <summary>
+            [GET] The input path, relative to the input base directory of the import operation.
+            </summary>
+        </member>
+        <member name="P:Duality.Editor.AssetManagement.AssetImportInput.AssetName">
+            <summary>
+            [GET] The input's asset name. Use this to derive Resource names from input items during import operations.
+            </summary>
+        </member>
+        <member name="M:Duality.Editor.AssetManagement.ExtMethodsIAssetImportEnvironment.HandleAllInput(Duality.Editor.AssetManagement.IAssetImportEnvironment,System.Predicate{Duality.Editor.AssetManagement.AssetImportInput})">
+            <summary>
+            This is a shortcut method for interating over the available input and ask to handle each item
+            that matches the specified predicate. If no predicate is specified, this method will try to handle
+            all available input.
+            </summary>
+            <param name="env"></param>
+            <param name="predicate"></param>
+            <returns>Enumerates all input items which the requesting importer is allowed to handle.</returns>
+        </member>
+        <member name="M:Duality.Editor.AssetManagement.ExtMethodsIAssetImportEnvironment.AddOutput``1(Duality.Editor.AssetManagement.IAssetImportEnvironment,System.String,System.String)">
+            <summary>
+            Specifies that the current importer will create or modify a <see cref="T:Duality.Resource"/> with 
+            the specified name (see <see cref="P:Duality.Editor.AssetManagement.AssetImportInput.AssetName"/>).
+            </summary>
+            <typeparam name="T"></typeparam>
+            <param name="assetName">The name of the generated output <see cref="T:Duality.Resource"/> (see <see cref="P:Duality.Editor.AssetManagement.AssetImportInput.AssetName"/>).</param>
+            <param name="inputPath">The input path that is used to generate this output <see cref="T:Duality.Resource"/>.</param>
+        </member>
+        <member name="M:Duality.Editor.AssetManagement.ExtMethodsIAssetImportEnvironment.AddOutput(Duality.Editor.AssetManagement.IAssetImportEnvironment,Duality.IContentRef,System.String)">
+            <summary>
+            Submits the specified <see cref="T:Duality.Resource"/> as a generated output of the current importer.
+            </summary>
+            <param name="resource">A reference to the generated output <see cref="T:Duality.Resource"/>.</param>
+            <param name="inputPath">The input path that is used to generate this output <see cref="T:Duality.Resource"/>.</param>
+        </member>
+        <member name="M:Duality.Editor.AssetManagement.ExtMethodsIAssetImportEnvironment.GetParameter``1(Duality.Editor.AssetManagement.IAssetImportEnvironment,Duality.IContentRef,System.String,``0)">
+            <summary>
+            Retrieves the value of an import parameter for the specified <see cref="T:Duality.Resource"/>.
+            </summary>
+            <typeparam name="T"></typeparam>
+            <param name="env"></param>
+            <param name="resource">A reference to the <see cref="T:Duality.Resource"/> that is parameterized.</param>
+            <param name="parameterName">The name of the parameter.</param>
+            <param name="defaultValue">If the value wasn't defined for the given Resource, the default value will be used instead.</param>
+            <returns>The retrieved value, or the default value of the expected value type.</returns>
+        </member>
+        <member name="M:Duality.Editor.AssetManagement.ExtMethodsIAssetImportEnvironment.GetOrInitParameter``1(Duality.Editor.AssetManagement.IAssetImportEnvironment,Duality.IContentRef,System.String,``0)">
+            <summary>
+            Retrieves the value of an import parameter for the specified <see cref="T:Duality.Resource"/>.
+            If the parameter was undefined, it will be (persistently) initialized with the specified default value.
+            </summary>
+            <typeparam name="T"></typeparam>
+            <param name="env"></param>
+            <param name="resource">A reference to the <see cref="T:Duality.Resource"/> that is parameterized.</param>
+            <param name="parameterName">The name of the parameter.</param>
+            <param name="defaultValue">If the value wasn't defined for the given Resource, the default value will be used instead.</param>
+            <returns>The retrieved value, or the default value that was specified.</returns>
+        </member>
+        <member name="T:Duality.Editor.AssetManagement.IAssetExportEnvironment">
+            <summary>
+            Provides an API for an <see cref="T:Duality.Editor.AssetManagement.IAssetImporter"/> to use during export operations.
+            </summary>
+        </member>
+        <member name="P:Duality.Editor.AssetManagement.IAssetExportEnvironment.ExportDirectory">
+            <summary>
+            [GET] The directory to export the source files into.
+            </summary>
+        </member>
+        <member name="P:Duality.Editor.AssetManagement.IAssetExportEnvironment.Input">
+            <summary>
+            [GET] The input <see cref="T:Duality.Resource"/> that should be exported to the <see cref="P:Duality.Editor.AssetManagement.IAssetExportEnvironment.ExportDirectory"/>.
+            </summary>
+        </member>
+        <member name="M:Duality.Editor.AssetManagement.IAssetExportEnvironment.AddOutputPath(System.String)">
+            <summary>
+            Registers the specified local file path as a result of this export operation, transforms it
+            according to the current source directory and returns a relative file path that can then
+            be used for writing the registered output file.
+            </summary>
+            <param name="localFilePath"></param>
+        </member>
+        <member name="M:Duality.Editor.AssetManagement.IAssetExportEnvironment.GetParameter``1(System.String,``0@)">
+            <summary>
+            Retrieves the value of an export parameter for the exported <see cref="T:Duality.Resource"/>.
+            </summary>
+            <typeparam name="T"></typeparam>
+            <param name="parameterName">The name of the parameter.</param>
+            <param name="value">An out reference to the variable to which the retrieved value will be assigned.</param>
+            <returns>True, if the value was retrieved successfully. False otherwise.</returns>
+        </member>
+        <member name="M:Duality.Editor.AssetManagement.IAssetExportEnvironment.SetParameter``1(System.String,``0)">
+            <summary>
+            Sets the value of an export parameter for the exported <see cref="T:Duality.Resource"/> 
+            </summary>
+            <typeparam name="T"></typeparam>
+            <param name="parameterName">The name of the parameter.</param>
+            <param name="value">The new value that should be assigned to the parameter.</param>
+        </member>
+        <member name="T:Duality.Editor.AssetManagement.AssetImportEnvironment">
+            <summary>
+            Environment class for an <see cref="T:Duality.Editor.AssetManagement.IAssetImporter"/> during an import operation.
+            It specifies the API that is used to interact with the overall import process and
+            acts as an abstraction layer between importer and editor. This allows to perform
+            simulated imports and manage detailed information about inputs and outputs.
+            </summary>
+        </member>
+        <member name="P:Duality.Editor.AssetManagement.AssetImportEnvironment.IsPrepareStep">
+            <summary>
+            [GET / SET] Whether the import operation is currently in the preparation phase.
+            </summary>
+        </member>
+        <member name="P:Duality.Editor.AssetManagement.AssetImportEnvironment.IsReImport">
+            <summary>
+            [GET / SET] Whether or not the import operation deals with input files that map to
+            an already existing <see cref="T:Duality.Resource"/> and aims at updating it.
+            </summary>
+        </member>
+        <member name="P:Duality.Editor.AssetManagement.AssetImportEnvironment.TargetDirectory">
+            <summary>
+            [GET] The target (Data) base directory of this import operation.
+            </summary>
+        </member>
+        <member name="P:Duality.Editor.AssetManagement.AssetImportEnvironment.SourceDirectory">
+            <summary>
+            [GET] The source (Source/Media) base directory of this import operation.
+            </summary>
+        </member>
+        <member name="P:Duality.Editor.AssetManagement.AssetImportEnvironment.Input">
+            <summary>
+            [GET] Enumerates all input items that are to be imported.
+            </summary>
+        </member>
+        <member name="P:Duality.Editor.AssetManagement.AssetImportEnvironment.HandledInput">
+            <summary>
+            [GET] Enumerates all input items that are flagged as being handled by the <see cref="T:Duality.Editor.AssetManagement.IAssetImporter"/>.
+            </summary>
+        </member>
+        <member name="P:Duality.Editor.AssetManagement.AssetImportEnvironment.Output">
+            <summary>
+            [GET] Enumerates the (simulated or actual) output items that have been added by the active <see cref="T:Duality.Editor.AssetManagement.IAssetImporter"/>.
+            </summary>
+        </member>
+        <member name="P:Duality.Editor.AssetManagement.AssetImportEnvironment.AssetRenameMap">
+            <summary>
+            [GET] If a newly imported asset was automatically renamed due to naming conflicts, this property
+            provides a mapping from asset name to (renamed) target path. Import operations can use this information
+            from the preparation step in order to adjust input naming before entering the main import step.
+            </summary>
+        </member>
+        <member name="M:Duality.Editor.AssetManagement.AssetImportEnvironment.ResetAcquiredData">
+            <summary>
+            Resets all working and result data of the environment. This is used as part of the importer selection
+            in the preparation phase in order to provide a clean slate for each <see cref="T:Duality.Editor.AssetManagement.IAssetImporter"/> 
+            that is queried.
+            </summary>
+        </member>
+        <member name="M:Duality.Editor.AssetManagement.AssetImportEnvironment.HandleInput(System.String)">
+            <summary>
+            Requests the specified input path to be handled by the current importer.
+            </summary>
+            <param name="inputPath"></param>
+            <returns>True, if the current importer is allowed to handle this input item, false if not.</returns>
+        </member>
+        <member name="M:Duality.Editor.AssetManagement.AssetImportEnvironment.GetOutput``1(System.String)">
+            <summary>
+            Requests an output <see cref="T:Duality.Resource"/> with the specified name (see <see cref="P:Duality.Editor.AssetManagement.AssetImportInput.AssetName"/>).
+            Use this method to create a new Resource during import, or request the affected one during re-import.
+            </summary>
+            <typeparam name="T"></typeparam>
+            <param name="assetName">The name of the requested output <see cref="T:Duality.Resource"/> (see <see cref="P:Duality.Editor.AssetManagement.AssetImportInput.AssetName"/>).</param>
+            <returns></returns>
+        </member>
+        <member name="M:Duality.Editor.AssetManagement.AssetImportEnvironment.AddOutput``1(System.String,System.Collections.Generic.IEnumerable{System.String})">
+            <summary>
+            Specifies that the current importer will create or modify a <see cref="T:Duality.Resource"/> with 
+            the specified name (see <see cref="P:Duality.Editor.AssetManagement.AssetImportInput.AssetName"/>).
+            </summary>
+            <typeparam name="T"></typeparam>
+            <param name="assetName">The name of the generated output <see cref="T:Duality.Resource"/> (see <see cref="P:Duality.Editor.AssetManagement.AssetImportInput.AssetName"/>).</param>
+            <param name="inputPaths">An enumeration of input paths that are used to generate this output <see cref="T:Duality.Resource"/>.</param>
+        </member>
+        <member name="M:Duality.Editor.AssetManagement.AssetImportEnvironment.AddOutput(Duality.IContentRef,System.Collections.Generic.IEnumerable{System.String})">
+            <summary>
+            Submits the specified <see cref="T:Duality.Resource"/> as a generated output of the current importer.
+            </summary>
+            <param name="resource">A reference to the generated output <see cref="T:Duality.Resource"/>.</param>
+            <param name="inputPaths">An enumeration of input paths that are used to generate this output <see cref="T:Duality.Resource"/>.</param>
+        </member>
+        <member name="M:Duality.Editor.AssetManagement.AssetImportEnvironment.GetParameter``1(Duality.IContentRef,System.String,``0@)">
+            <summary>
+            Retrieves the value of an import parameter for the specified <see cref="T:Duality.Resource"/>.
+            </summary>
+            <typeparam name="T"></typeparam>
+            <param name="resource">A reference to the <see cref="T:Duality.Resource"/> that is parameterized.</param>
+            <param name="parameterName">The name of the parameter.</param>
+            <param name="value">An out reference to the variable to which the retrieved value will be assigned.</param>
+            <returns>True, if the value was retrieved successfully. False otherwise.</returns>
+        </member>
+        <member name="M:Duality.Editor.AssetManagement.AssetImportEnvironment.SetParameter``1(Duality.IContentRef,System.String,``0)">
+            <summary>
+            Sets the value of an import parameter for the specified <see cref="T:Duality.Resource"/> 
+            </summary>
+            <typeparam name="T"></typeparam>
+            <param name="resource">A reference to the <see cref="T:Duality.Resource"/> that is parameterized.</param>
+            <param name="parameterName">The name of the parameter.</param>
+            <param name="value">The new value that should be assigned to the parameter.</param>
+        </member>
+        <member name="T:Duality.Editor.AssetManagement.IAssetImportEnvironment">
+            <summary>
+            Provides an API for an <see cref="T:Duality.Editor.AssetManagement.IAssetImporter"/> to use during import operations.
+            </summary>
+        </member>
+        <member name="P:Duality.Editor.AssetManagement.IAssetImportEnvironment.TargetDirectory">
+            <summary>
+            [GET] The target (Data) base directory of this import operation.
+            </summary>
+        </member>
+        <member name="P:Duality.Editor.AssetManagement.IAssetImportEnvironment.SourceDirectory">
+            <summary>
+            [GET] The source (Source/Media) base directory of this import operation.
+            </summary>
+        </member>
+        <member name="P:Duality.Editor.AssetManagement.IAssetImportEnvironment.Input">
+            <summary>
+            [GET] Enumerates all input items that are to be imported.
+            </summary>
+        </member>
+        <member name="M:Duality.Editor.AssetManagement.IAssetImportEnvironment.HandleInput(System.String)">
+            <summary>
+            Requests the specified input path to be handled by the current importer.
+            </summary>
+            <param name="inputPath"></param>
+            <returns>True, if the current importer is allowed to handle this input item, false if not.</returns>
+        </member>
+        <member name="M:Duality.Editor.AssetManagement.IAssetImportEnvironment.GetOutput``1(System.String)">
+            <summary>
+            Requests an output <see cref="T:Duality.Resource"/> with the specified name (see <see cref="P:Duality.Editor.AssetManagement.AssetImportInput.AssetName"/>).
+            Use this method to create a new Resource during import, or request the affected one during re-import.
+            </summary>
+            <typeparam name="T"></typeparam>
+            <param name="assetName">The name of the requested output <see cref="T:Duality.Resource"/> (see <see cref="P:Duality.Editor.AssetManagement.AssetImportInput.AssetName"/>).</param>
+            <returns></returns>
+        </member>
+        <member name="M:Duality.Editor.AssetManagement.IAssetImportEnvironment.AddOutput``1(System.String,System.Collections.Generic.IEnumerable{System.String})">
+            <summary>
+            Specifies that the current importer will create or modify a <see cref="T:Duality.Resource"/> with 
+            the specified name (see <see cref="P:Duality.Editor.AssetManagement.AssetImportInput.AssetName"/>).
+            </summary>
+            <typeparam name="T"></typeparam>
+            <param name="assetName">The name of the generated output <see cref="T:Duality.Resource"/> (see <see cref="P:Duality.Editor.AssetManagement.AssetImportInput.AssetName"/>).</param>
+            <param name="inputPaths">An enumeration of input paths that are used to generate this output <see cref="T:Duality.Resource"/>.</param>
+        </member>
+        <member name="M:Duality.Editor.AssetManagement.IAssetImportEnvironment.AddOutput(Duality.IContentRef,System.Collections.Generic.IEnumerable{System.String})">
+            <summary>
+            Submits the specified <see cref="T:Duality.Resource"/> as a generated output of the current importer.
+            </summary>
+            <param name="resource">A reference to the generated output <see cref="T:Duality.Resource"/>.</param>
+            <param name="inputPaths">An enumeration of input paths that are used to generate this output <see cref="T:Duality.Resource"/>.</param>
+        </member>
+        <member name="M:Duality.Editor.AssetManagement.IAssetImportEnvironment.GetParameter``1(Duality.IContentRef,System.String,``0@)">
+            <summary>
+            Retrieves the value of an import parameter for the specified <see cref="T:Duality.Resource"/>.
+            </summary>
+            <typeparam name="T"></typeparam>
+            <param name="resource">A reference to the <see cref="T:Duality.Resource"/> that is parameterized.</param>
+            <param name="parameterName">The name of the parameter.</param>
+            <param name="value">An out reference to the variable to which the retrieved value will be assigned.</param>
+            <returns>True, if the value was retrieved successfully. False otherwise.</returns>
+        </member>
+        <member name="M:Duality.Editor.AssetManagement.IAssetImportEnvironment.SetParameter``1(Duality.IContentRef,System.String,``0)">
+            <summary>
+            Sets the value of an import parameter for the specified <see cref="T:Duality.Resource"/> 
+            </summary>
+            <typeparam name="T"></typeparam>
+            <param name="resource">A reference to the <see cref="T:Duality.Resource"/> that is parameterized.</param>
+            <param name="parameterName">The name of the parameter.</param>
+            <param name="value">The new value that should be assigned to the parameter.</param>
+        </member>
+        <member name="P:Duality.Editor.AssetManagement.IAssetImporter.Id">
+            <summary>
+            [GET] A fixed system ID that represents this importer.
+            </summary>
+        </member>
+        <member name="P:Duality.Editor.AssetManagement.IAssetImporter.Name">
+            <summary>
+            [GET] The user-friendly name of this importer.
+            </summary>
+        </member>
+        <member name="P:Duality.Editor.AssetManagement.IAssetImporter.Priority">
+            <summary>
+            [GET] The relative priority of this importer over others.
+            </summary>
+        </member>
+        <member name="M:Duality.Editor.AssetManagement.IAssetImporter.PrepareImport(Duality.Editor.AssetManagement.IAssetImportEnvironment)">
+            <summary>
+            In the preparation step of an import operation, an importer determines which (if any) of the
+            available files it is able to handle and registers the expected output Resources.
+            </summary>
+            <param name="env"></param>
+        </member>
+        <member name="M:Duality.Editor.AssetManagement.IAssetImporter.Import(Duality.Editor.AssetManagement.IAssetImportEnvironment)">
+            <summary>
+            Performs the previously prepared import operation. Creates and / or modifies Resources
+            according to the available input files.
+            </summary>
+            <param name="env"></param>
+        </member>
+        <member name="M:Duality.Editor.AssetManagement.IAssetImporter.PrepareExport(Duality.Editor.AssetManagement.IAssetExportEnvironment)">
+            <summary>
+            In the preparation step of an export operation, an importer determines whether it
+            is able to handle the specified Resource and registers the expected output source files.
+            </summary>
+            <param name="env"></param>
+        </member>
+        <member name="M:Duality.Editor.AssetManagement.IAssetImporter.Export(Duality.Editor.AssetManagement.IAssetExportEnvironment)">
+            <summary>
+            Performs the previously prepared export operation. Creates and / or modifies source files
+            according to the specified input Resource.
+            </summary>
+            <param name="env"></param>
+        </member>
+        <member name="F:Duality.Editor.AssetManagement.SelectAssetImporterDialog.components">
+            <summary>
+            Required designer variable.
+            </summary>
+        </member>
+        <member name="M:Duality.Editor.AssetManagement.SelectAssetImporterDialog.Dispose(System.Boolean)">
+            <summary>
+            Clean up any resources being used.
+            </summary>
+            <param name="disposing">true if managed resources should be disposed; otherwise, false.</param>
+        </member>
+        <member name="M:Duality.Editor.AssetManagement.SelectAssetImporterDialog.InitializeComponent">
+            <summary>
+            Required method for Designer support - do not modify
+            the contents of this method with the code editor.
+            </summary>
+        </member>
+        <member name="T:Duality.Editor.AssetManagement.AssetManager">
+            <summary>
+            A static helper class that allows to easily perform operations related to the import and export of Resources.
+            It takes care of resolving importer conflicts, error handling and notifying the editor of changes.
+            
+            In case you need a customized, hidden or strictly local asset operation, you can use asset operation classes
+            directly. Otherwise, prefer using the <see cref="T:Duality.Editor.AssetManagement.AssetManager"/>.
+            </summary>
+            <seealso cref="T:Duality.Editor.AssetManagement.AssetFirstImportOperation"/>
+            <seealso cref="T:Duality.Editor.AssetManagement.AssetReImportOperation"/>
+            <seealso cref="T:Duality.Editor.AssetManagement.AssetExportOperation"/>
+        </member>
+        <member name="E:Duality.Editor.AssetManagement.AssetManager.ImportFinished">
+            <summary>
+            A global event that is fired when an import or re-import operation is finished.
+            
+            Does not fire on simulated operations and only includes operations that are
+            performed using the <see cref="T:Duality.Editor.AssetManagement.AssetManager"/> API.
+            </summary>
+        </member>
+        <member name="E:Duality.Editor.AssetManagement.AssetManager.ExportFinished">
+            <summary>
+            A global event that is fired when an export operation is finished.
+            
+            Does not fire on simulated operations and only includes operations that are
+            performed using the <see cref="T:Duality.Editor.AssetManagement.AssetManager"/> API.
+            </summary>
+        </member>
+        <member name="P:Duality.Editor.AssetManagement.AssetManager.Importers">
+            <summary>
+            [GET] Enumerates all known <see cref="T:Duality.Editor.AssetManagement.IAssetImporter"/>s, each represented by a single instance
+            and sorted by priority.
+            </summary>
+        </member>
+        <member name="M:Duality.Editor.AssetManagement.AssetManager.ImportAssets(System.Collections.Generic.IEnumerable{System.String},System.String,System.String)">
+            <summary>
+            Imports the specified set of input source files and returns a set of output Resources.
+            </summary>
+            <param name="inputFiles">An enumerable of input source files that should be imported.</param>
+            <param name="targetBaseDir">The target directory that serves as a base for creating output Resources.</param>
+            <param name="inputBaseDir">
+            The base directory of the previously specified input source files, 
+            which is mapped to the target base directory.
+            </param>
+            <returns></returns>
+        </member>
+        <member name="M:Duality.Editor.AssetManagement.AssetManager.SimulateImportAssets(System.Collections.Generic.IEnumerable{System.String},System.String,System.String)">
+            <summary>
+            Simulates an import operation in order to determine the expected output. No changes are made.
+            </summary>
+            <param name="inputFiles">An enumerable of input source files that should be imported.</param>
+            <param name="targetBaseDir">The target directory that serves as a base for creating output Resources.</param>
+            <param name="inputBaseDir">
+            The base directory of the previously specified input source files, 
+            which is mapped to the target base directory.
+            </param>
+            <returns></returns>
+        </member>
+        <member name="M:Duality.Editor.AssetManagement.AssetManager.ReImportAssets(System.Collections.Generic.IEnumerable{System.String})">
+            <summary>
+            Re-Imports the specified set of input source files and returns a set of updated output Resources.
+            </summary>
+            <param name="localInputFiles">
+            An enumerable of input source files that are already part of the local media source folder.
+            </param>
+            <returns></returns>
+        </member>
+        <member name="M:Duality.Editor.AssetManagement.AssetManager.SimulateReImportAssets(System.Collections.Generic.IEnumerable{System.String})">
+            <summary>
+            Simulates a re-import operation in order to determine the expected output. No changes are made.
+            </summary>
+            <param name="localInputFiles">
+            An enumerable of input source files that are already part of the local media source folder.
+            </param>
+            <returns></returns>
+        </member>
+        <member name="M:Duality.Editor.AssetManagement.AssetManager.ExportAssets(Duality.ContentRef{Duality.Resource},System.String)">
+            <summary>
+            Exports the specified set of input Resources and returns a set of generated or updated output source files.
+            </summary>
+            <param name="inputResource">The <see cref="T:Duality.Resource"/> to be exported.</param>
+            <param name="exportDir">The target directory that serves as a base for creating output source files.</param>
+            <returns></returns>
+        </member>
+        <member name="M:Duality.Editor.AssetManagement.AssetManager.SimulateExportAssets(Duality.ContentRef{Duality.Resource},System.String)">
+            <summary>
+            Simulates an export operation in order to determine the expected output. No changes are made.
+            </summary>
+            <param name="inputResource">The <see cref="T:Duality.Resource"/> to be exported.</param>
+            <param name="exportDir">The target directory that serves as a base for creating output source files.</param>
+            <returns></returns>
+        </member>
+        <member name="M:Duality.Editor.AssetManagement.AssetManager.GetAssetSourceFiles(Duality.ContentRef{Duality.Resource})">
+            <summary>
+            Determines the source files of the specified <see cref="T:Duality.Resource"/>, which
+            were used during the most recent import and can be re-used during export and re-import operations.
+            </summary>
+            <param name="resource"></param>
+            <returns></returns>
+        </member>
+        <member name="T:Duality.Editor.Controls.AutoExpandTreeView">
+            <summary>
+            An extended TreeViewAdv.
+            Will automatically expand nodes that are being dragged over with another node.
+            A value of 0 in the constructor or setting the property AutoExpandDelay to 0 will disable this behaviour.
+            </summary>
+        </member>
+        <member name="M:Duality.Editor.Controls.PropertyEditors.VectorPropertyEditor.HandleValueEdited``1(System.Func{``0,``0,``0})">
+            <summary>
+            Generic handler for "edited" events of the individual vector editors, allowing to apply changes
+            to only a single sub-editor, without affecting any others. Also handles the usual boilerplate code
+            for retrieving, mergind and re-assigning values.
+            </summary>
+            <typeparam name="T"></typeparam>
+            <param name="mergeOldNew">
+            A merge function that applies the modified value but leaves the others unchanged. 
+            The first parameter is the old value, the second parameters is the new one.
+            </param>
+        </member>
+        <member name="T:Duality.Editor.Controls.PropertyEditors.DualityPropertyEditorProvider">
+            <summary>
+            The <see cref="T:Duality.Editor.Controls.PropertyEditors.DualityPropertyEditorProvider"/> is responsible for selecting a
+            matching <see cref="T:AdamsLair.WinForms.PropertyEditing.PropertyEditor"/> for each edited type inside a <see cref="T:Duality.Editor.Controls.DualitorPropertyGrid"/>,
+            such as the one used by the defautl Object Inspector. It uses reflection to retrieve all
+            available <see cref="T:AdamsLair.WinForms.PropertyEditing.PropertyEditor"/> classes as well as their <see cref="T:Duality.Editor.PropertyEditorAssignmentAttribute"/>
+            values, which are then used to determine the priority of the assignment.
+            </summary>
+        </member>
+        <member name="M:Duality.Editor.Controls.PropertyEditors.DualityPropertyEditorProvider.IsResponsibleFor(System.Type,AdamsLair.WinForms.PropertyEditing.ProviderContext)">
+            <summary>
+            Determines whether this provider is responsible for creating a <see cref="T:AdamsLair.WinForms.PropertyEditing.PropertyEditor"/>
+            that is able to edit objects of the specified base type.
+            </summary>
+            <param name="baseType"></param>
+            <param name="context"></param>
+            <returns></returns>
+        </member>
+        <member name="M:Duality.Editor.Controls.PropertyEditors.DualityPropertyEditorProvider.CreateEditor(System.Type,AdamsLair.WinForms.PropertyEditing.ProviderContext)">
+            <summary>
+            Creates a <see cref="T:AdamsLair.WinForms.PropertyEditing.PropertyEditor"/> that is able to edit objects
+            of the specified base type.
+            </summary>
+            <param name="baseType"></param>
+            <param name="context"></param>
+            <returns></returns>
+        </member>
+        <member name="M:Duality.Editor.Controls.PropertyEditors.DualityPropertyEditorProvider.RetrieveAssignments">
+            <summary>
+            Aggregates the cached list of all available <see cref="T:AdamsLair.WinForms.PropertyEditing.PropertyEditor"/>
+            instances, as well as their matching <see cref="T:Duality.Editor.PropertyEditorAssignmentAttribute"/>.
+            
+            Unlike cached core plugin type data, this list doesn't have to be cleared
+            when reloading plugins, since <see cref="T:AdamsLair.WinForms.PropertyEditing.PropertyEditor"/> classes can only be defined
+            in editor plugins - which require an editor restart anyway.
+            </summary>
+        </member>
+        <member name="T:Duality.Editor.EditorPluginManager">
+            <summary>
+            Manages loading, initialization and life cycle of Duality editor plugins.
+            
+            Since all assemblies are owned by the .Net runtime that only exposes a very limited
+            degree of control, this class should only be used statically: Disposing it would
+            only get rid of management data, not of the actual plugin assemblies, which would
+            then cause problems.
+            
+            A static instance of this class is available through <see cref="P:Duality.Editor.DualityEditorApp.PluginManager"/>.
+            </summary>
+        </member>
+        <member name="M:Duality.Editor.EditorPluginManager.#ctor">
+            <summary>
+            <see cref="T:Duality.Editor.EditorPluginManager"/> should usually not be instantiated by users due to 
+            its forced singleton-like usage. Use <see cref="P:Duality.DualityApp.PluginManager"/> instead.
+            </summary>
+        </member>
+        <member name="M:Duality.Editor.EditorPluginManager.GetAssemblies">
+            <summary>
+            Enumerates all currently loaded editor assemblies that are part of Duality, i.e. 
+            the editor Assembly itsself and all loaded plugins.
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:Duality.Editor.EditorPluginManager.LoadPlugins">
+            <summary>
+            Loads all available editor plugins, as well as auxilliary libraries.
+            </summary>
+        </member>
+        <member name="M:Duality.Editor.EditorPluginManager.InitPlugins">
+            <summary>
+            Initializes all previously loaded plugins.
+            </summary>
+        </member>
+        <member name="M:Duality.Editor.EditorPluginManager.SaveUserData(System.Xml.Linq.XElement)">
+            <summary>
+            Saves all editor plugin user data into the specified parent <see cref="T:System.Xml.Linq.XElement"/>.
+            </summary>
+            <param name="parentElement"></param>
+        </member>
+        <member name="M:Duality.Editor.EditorPluginManager.LoadUserData(System.Xml.Linq.XElement)">
+            <summary>
+            Loads all editor plugin user data from the specified parent <see cref="T:System.Xml.Linq.XElement"/>.
+            </summary>
+            <param name="parentElement"></param>
+        </member>
+        <member name="M:Duality.Editor.EditorPluginManager.DeserializeDockContent(System.String)">
+            <summary>
+            As part of the docking suite layout deserialization, this method resolves
+            a persistent type name to an instance of the desired type.
+            </summary>
+            <param name="typeName"></param>
+            <returns></returns>
+        </member>
+        <member name="F:Duality.Editor.ConvertOperation.Operation.Convert">
+            <summary>
+            A simple conversion operation that does not affect any data.
+            Example: Retrieving Texture from Material.
+            </summary>
+        </member>
+        <member name="F:Duality.Editor.ConvertOperation.Operation.CreateRes">
+            <summary>
+            A conversion that might create new resource data.
+            Example: Creating Material from Texture.
+            </summary>
+        </member>
+        <member name="F:Duality.Editor.ConvertOperation.Operation.CreateObj">
+            <summary>
+            A conversion that might create new object data.
+            Example: Construct a GameObject out of a set of Resources.
+            </summary>
+        </member>
+        <member name="M:Duality.Editor.ExtMethodsDataConverter.FindMatchingResources``2(Duality.Editor.DataConverter,``0,System.Func{``0,``1,System.Boolean})">
+            <summary>
+            Given a source <see cref="T:Duality.Resource"/> and matching function, this method finds an already existing
+            target <see cref="T:Duality.Resource"/> to be used in a <see cref="T:Duality.Editor.DataConverter"/> operation.
+            </summary>
+            <typeparam name="TTarget"></typeparam>
+            <typeparam name="TSource"></typeparam>
+            <param name="source"></param>
+            <param name="matchFunc"></param>
+            <returns></returns>
+        </member>
+        <member name="F:Duality.Editor.Forms.ObjectRefSelectionDialog.components">
+            <summary>
+            Required designer variable.
+            </summary>
+        </member>
+        <member name="M:Duality.Editor.Forms.ObjectRefSelectionDialog.Dispose(System.Boolean)">
+            <summary>
+            Clean up any resources being used.
+            </summary>
+            <param name="disposing">true if managed resources should be disposed; otherwise, false.</param>
+        </member>
+        <member name="M:Duality.Editor.Forms.ObjectRefSelectionDialog.InitializeComponent">
+            <summary>
+            Required method for Designer support - do not modify
+            the contents of this method with the code editor.
+            </summary>
+        </member>
+        <member name="F:Duality.Editor.Forms.CreateObjectDialog.components">
+            <summary>
+            Required designer variable.
+            </summary>
+        </member>
+        <member name="M:Duality.Editor.Forms.CreateObjectDialog.Dispose(System.Boolean)">
+            <summary>
+            Clean up any resources being used.
+            </summary>
+            <param name="disposing">true if managed resources should be disposed; otherwise, false.</param>
+        </member>
+        <member name="M:Duality.Editor.Forms.CreateObjectDialog.InitializeComponent">
+            <summary>
+            Required method for Designer support - do not modify
+            the contents of this method with the code editor.
+            </summary>
+        </member>
+        <member name="F:Duality.Editor.Forms.WelcomeDialog.components">
+            <summary>
+            Required designer variable.
+            </summary>
+        </member>
+        <member name="M:Duality.Editor.Forms.WelcomeDialog.Dispose(System.Boolean)">
+            <summary>
+            Clean up any resources being used.
+            </summary>
+            <param name="disposing">true if managed resources should be disposed; otherwise, false.</param>
+        </member>
+        <member name="M:Duality.Editor.Forms.WelcomeDialog.InitializeComponent">
+            <summary>
+            Required method for Designer support - do not modify
+            the contents of this method with the code editor.
+            </summary>
+        </member>
+        <member name="F:Duality.Editor.Forms.LicenseAcceptDialog.components">
+            <summary>
+            Required designer variable.
+            </summary>
+        </member>
+        <member name="M:Duality.Editor.Forms.LicenseAcceptDialog.Dispose(System.Boolean)">
+            <summary>
+            Clean up any resources being used.
+            </summary>
+            <param name="disposing">true if managed resources should be disposed; otherwise, false.</param>
+        </member>
+        <member name="M:Duality.Editor.Forms.LicenseAcceptDialog.InitializeComponent">
+            <summary>
+            Required method for Designer support - do not modify
+            the contents of this method with the code editor.
+            </summary>
+        </member>
+        <member name="F:Duality.Editor.Forms.PublishGameDialog.components">
+            <summary>
+            Required designer variable.
+            </summary>
+        </member>
+        <member name="M:Duality.Editor.Forms.PublishGameDialog.Dispose(System.Boolean)">
+            <summary>
+            Clean up any resources being used.
+            </summary>
+            <param name="disposing">true if managed resources should be disposed; otherwise, false.</param>
+        </member>
+        <member name="M:Duality.Editor.Forms.PublishGameDialog.InitializeComponent">
+            <summary>
+            Required method for Designer support - do not modify
+            the contents of this method with the code editor.
+            </summary>
+        </member>
+        <member name="F:Duality.Editor.Forms.AboutBox.components">
+            <summary>
+            Erforderliche Designervariable.
+            </summary>
+        </member>
+        <member name="M:Duality.Editor.Forms.AboutBox.Dispose(System.Boolean)">
+            <summary>
+            Verwendete Ressourcen bereinigen.
+            </summary>
+        </member>
+        <member name="M:Duality.Editor.Forms.AboutBox.InitializeComponent">
+            <summary>
+            Erforderliche Methode für die Designerunterstützung.
+            Der Inhalt der Methode darf nicht mit dem Code-Editor geändert werden.
+            </summary>
+        </member>
+        <member name="F:Duality.Editor.Forms.AppRunningDialog.components">
+            <summary>
+            Required designer variable.
+            </summary>
+        </member>
+        <member name="M:Duality.Editor.Forms.AppRunningDialog.Dispose(System.Boolean)">
+            <summary>
+            Clean up any resources being used.
+            </summary>
+            <param name="disposing">true if managed resources should be disposed; otherwise, false.</param>
+        </member>
+        <member name="M:Duality.Editor.Forms.AppRunningDialog.InitializeComponent">
+            <summary>
+            Required method for Designer support - do not modify
+            the contents of this method with the code editor.
+            </summary>
+        </member>
+        <member name="F:Duality.Editor.Forms.NewProjectDialog.components">
+            <summary>
+            Required designer variable.
+            </summary>
+        </member>
+        <member name="M:Duality.Editor.Forms.NewProjectDialog.Dispose(System.Boolean)">
+            <summary>
+            Clean up any resources being used.
+            </summary>
+            <param name="disposing">true if managed resources should be disposed; otherwise, false.</param>
+        </member>
+        <member name="M:Duality.Editor.Forms.NewProjectDialog.InitializeComponent">
+            <summary>
+            Required method for Designer support - do not modify
+            the contents of this method with the code editor.
+            </summary>
+        </member>
+        <member name="F:Duality.Editor.Forms.ProcessingBigTaskDialog.components">
+            <summary>
+            Required designer variable.
+            </summary>
+        </member>
+        <member name="M:Duality.Editor.Forms.ProcessingBigTaskDialog.Dispose(System.Boolean)">
+            <summary>
+            Clean up any resources being used.
+            </summary>
+            <param name="disposing">true if managed resources should be disposed; otherwise, false.</param>
+        </member>
+        <member name="M:Duality.Editor.Forms.ProcessingBigTaskDialog.InitializeComponent">
+            <summary>
+            Required method for Designer support - do not modify
+            the contents of this method with the code editor.
+            </summary>
+        </member>
+        <member name="F:Duality.Editor.Forms.MainForm.components">
+            <summary>
+            Erforderliche Designervariable.
+            </summary>
+        </member>
+        <member name="M:Duality.Editor.Forms.MainForm.Dispose(System.Boolean)">
+            <summary>
+            Verwendete Ressourcen bereinigen.
+            </summary>
+            <param name="disposing">True, wenn verwaltete Ressourcen gelöscht werden sollen; andernfalls False.</param>
+        </member>
+        <member name="M:Duality.Editor.Forms.MainForm.InitializeComponent">
+            <summary>
+            Erforderliche Methode für die Designerunterstützung.
+            Der Inhalt der Methode darf nicht mit dem Code-Editor geändert werden.
+            </summary>
+        </member>
+        <member name="M:Duality.Editor.Forms.ReloadCorePluginDialog.IsDependencyPlugin(System.String,System.Collections.Generic.IEnumerable{System.Reflection.Assembly})">
+            <summary>
+            Determines whether the plugin that is represented by the specified Assembly file is referenced by any of the
+            specified Assemblies.
+            </summary>
+            <param name="pluginFilePath"></param>
+            <param name="assemblies"></param>
+            <returns></returns>
+        </member>
+        <member name="F:Duality.Editor.Forms.ReloadCorePluginDialog.components">
+            <summary>
+            Required designer variable.
+            </summary>
+        </member>
+        <member name="M:Duality.Editor.Forms.ReloadCorePluginDialog.Dispose(System.Boolean)">
+            <summary>
+            Clean up any resources being used.
+            </summary>
+            <param name="disposing">true if managed resources should be disposed; otherwise, false.</param>
+        </member>
+        <member name="M:Duality.Editor.Forms.ReloadCorePluginDialog.InitializeComponent">
+            <summary>
+            Required method for Designer support - do not modify
+            the contents of this method with the code editor.
+            </summary>
+        </member>
+        <member name="F:Duality.Editor.Forms.SplashScreen.components">
+            <summary>
+            Required designer variable.
+            </summary>
+        </member>
+        <member name="M:Duality.Editor.Forms.SplashScreen.Dispose(System.Boolean)">
+            <summary>
+            Clean up any resources being used.
+            </summary>
+            <param name="disposing">true if managed resources should be disposed; otherwise, false.</param>
+        </member>
+        <member name="M:Duality.Editor.Forms.SplashScreen.InitializeComponent">
+            <summary>
+            Required method for Designer support - do not modify
+            the contents of this method with the code editor.
+            </summary>
+        </member>
+        <member name="T:Duality.Editor.PropertyEditorMatching">
+            <summary>
+            Calculates a PropertyEditorAssignment priority for the given property Type in a certain context.
+            </summary>
+            <param name="propertyType"></param>
+            <param name="context"></param>
+            <returns>The priority which connects the given Type to the PropertyEditor. Return <see cref="F:Duality.Editor.PropertyEditorAssignmentAttribute.PriorityNone"/> for no assignment.</returns>
+        </member>
+        <member name="T:Duality.Editor.PropertyEditorAssignmentAttribute">
+            <summary>
+            This attribute is utilized to match PropertyEditors to the property Types they are supposed to edit.
+            </summary>
+        </member>
+        <member name="M:Duality.Editor.PropertyEditorAssignmentAttribute.#ctor(System.Type,System.Int32)">
+            <summary>
+            Creates a static PropertyEditor assignment to the specified property Type.
+            </summary>
+            <param name="propertyType"></param>
+            <param name="priority"></param>
+        </member>
+        <member name="M:Duality.Editor.PropertyEditorAssignmentAttribute.#ctor(System.Type,System.String)">
+            <summary>
+            Creates a dynamic PropertyEditor assignment based on the specified static <see cref="T:Duality.Editor.PropertyEditorMatching"/> method.
+            </summary>
+            <param name="methodHostType"></param>
+            <param name="staticMethodName"></param>
+        </member>
+        <member name="M:Duality.Editor.PropertyEditorAssignmentAttribute.MatchToProperty(System.Type,AdamsLair.WinForms.PropertyEditing.ProviderContext)">
+            <summary>
+            Determines the matching level between a PropertyEditor and the specified property Type.
+            </summary>
+            <param name="propertyType"></param>
+            <param name="context"></param>
+            <returns></returns>
+        </member>
+        <member name="T:Duality.Editor.PackageManagement.PackageDependencyWalker">
+            <summary>
+            Implements an algorithm to walk a package dependency graph and determine
+            a packages transitive dependencies.
+            </summary>
+        </member>
+        <member name="P:Duality.Editor.PackageManagement.PackageDependencyWalker.VisitedPackages">
+            <summary>
+            [GET] Enumerates all packages that were visited in all walk operations 
+            since the last <see cref="M:Duality.Editor.PackageManagement.PackageDependencyWalker.Clear"/>.
+            </summary>
+        </member>
+        <member name="M:Duality.Editor.PackageManagement.PackageDependencyWalker.Clear">
+            <summary>
+            Resets the algorithm and clears all previous results, as well as the 
+            internal <see cref="M:Duality.Editor.PackageManagement.PackageDependencyWalker.IgnorePackage(System.String)"/> blacklist.
+            </summary>
+        </member>
+        <member name="M:Duality.Editor.PackageManagement.PackageDependencyWalker.IgnorePackage(System.String)">
+            <summary>
+            Configures the algorithm to not visit packages with the specified ID while
+            exploring the graph.
+            </summary>
+            <param name="id"></param>
+        </member>
+        <member name="M:Duality.Editor.PackageManagement.PackageDependencyWalker.WalkGraph(Duality.Editor.PackageManagement.PackageInfo)">
+            <summary>
+            Walks the specified packages dependency graph and adds 
+            new findings to the result list.
+            </summary>
+            <param name="package"></param>
+        </member>
+        <member name="M:Duality.Editor.PackageManagement.PackageDependencyWalker.WalkGraph(Duality.Editor.PackageManagement.PackageName)">
+            <summary>
+            Walks the specified packages dependency graph and adds 
+            new findings to the result list.
+            </summary>
+            <param name="packageName"></param>
+        </member>
+        <member name="M:Duality.Editor.PackageManagement.PackageDependencyWalker.WalkGraph(System.Collections.Generic.IEnumerable{Duality.Editor.PackageManagement.PackageInfo})">
+            <summary>
+            Walks the specified packages dependency graphs and adds 
+            new findings to the result list.
+            </summary>
+            <param name="packages"></param>
+        </member>
+        <member name="M:Duality.Editor.PackageManagement.PackageDependencyWalker.WalkGraph(System.Collections.Generic.IEnumerable{Duality.Editor.PackageManagement.PackageName})">
+            <summary>
+            Walks the specified packages dependency graphs and adds 
+            new findings to the result list.
+            </summary>
+            <param name="packageNames"></param>
+        </member>
+        <member name="M:Duality.Editor.PackageManagement.PackageDependencyWalker.GetDependencyCount(Duality.Editor.PackageManagement.PackageName)">
+            <summary>
+            Retrieves the transitive dependency count of the specified package.
+            </summary>
+            <param name="name"></param>
+            <returns></returns>
+        </member>
+        <member name="T:Duality.Editor.PackageManagement.PackageCache">
+            <summary>
+            Caches information about remote package repositories.
+            </summary>
+        </member>
+        <member name="M:Duality.Editor.PackageManagement.PackageCache.Clear">
+            <summary>
+            Clears the cache to allow querying updated information from the repository.
+            
+            Does not clear the internal mapping from fully qualified package names to
+            actual packages, as the repository is still the same and NuGet packages 
+            are read-only after publish.
+            </summary>
+        </member>
+        <member name="M:Duality.Editor.PackageManagement.PackageCache.GetLatestDualityPackages">
+            <summary>
+            Enumerates the latest available Duality packages in the remote repository.
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:Duality.Editor.PackageManagement.PackageCache.GetPackage(Duality.Editor.PackageManagement.PackageName)">
+            <summary>
+            Retrieves information about the specified package.
+            </summary>
+            <param name="name"></param>
+            <returns></returns>
+        </member>
+        <member name="M:Duality.Editor.PackageManagement.PackageCache.GetNuGetPackage(Duality.Editor.PackageManagement.PackageName)">
+            <summary>
+            Retrieves a NuGet package based on the specified name.
+            </summary>
+            <param name="name"></param>
+            <returns></returns>
+        </member>
+        <member name="T:Duality.Editor.PackageManagement.PackageManagerEnvironment">
+            <summary>
+            Describes the local working environment of a <see cref="T:Duality.Editor.PackageManagement.PackageManager"/>.
+            </summary>
+        </member>
+        <member name="P:Duality.Editor.PackageManagement.PackageManagerEnvironment.RootPath">
+            <summary>
+            [GET] The root path to work in, which is usually the Duality project folder.
+            </summary>
+        </member>
+        <member name="P:Duality.Editor.PackageManagement.PackageManagerEnvironment.TargetDataPath">
+            <summary>
+            [GET] The path where <see cref="T:Duality.Resource"/> package contents are copied to after installation.
+            </summary>
+        </member>
+        <member name="P:Duality.Editor.PackageManagement.PackageManagerEnvironment.TargetSourcePath">
+            <summary>
+            [GET] The path where source code package contents are copied to after installation.
+            </summary>
+        </member>
+        <member name="P:Duality.Editor.PackageManagement.PackageManagerEnvironment.TargetPluginPath">
+            <summary>
+            [GET] The path where plugin package contents are copied to after installation.
+            </summary>
+        </member>
+        <member name="P:Duality.Editor.PackageManagement.PackageManagerEnvironment.RepositoryPath">
+            <summary>
+            [GET] The path of the local package repository where packages will be installed to by NuGet.
+            After NuGet completed its installation, Duality will take care of copying each file to
+            its intended destination.
+            </summary>
+        </member>
+        <member name="P:Duality.Editor.PackageManagement.PackageManagerEnvironment.ConfigFilePath">
+            <summary>
+            [GET] The path where the local <see cref="T:Duality.Editor.PackageManagement.PackageSetup"/> config file is located.
+            </summary>
+        </member>
+        <member name="P:Duality.Editor.PackageManagement.PackageManagerEnvironment.UpdateFilePath">
+            <summary>
+            [GET] The path where the <see cref="T:Duality.Editor.PackageManagement.PackageUpdateSchedule"/> file is located.
+            </summary>
+        </member>
+        <member name="P:Duality.Editor.PackageManagement.PackageManagerEnvironment.UpdaterExecFilePath">
+            <summary>
+            [GET] The path of the binary that will be executed in order to apply a pending
+            update as scheduled in the <see cref="T:Duality.Editor.PackageManagement.PackageUpdateSchedule"/> at the <see cref="P:Duality.Editor.PackageManagement.PackageManagerEnvironment.UpdateFilePath"/>.
+            </summary>
+        </member>
+        <member name="P:Duality.Editor.PackageManagement.PackageManagerEnvironment.TargetPluginPathRelative">
+            <summary>
+            [GET] The (<see cref="P:Duality.Editor.PackageManagement.PackageManagerEnvironment.RootPath"/>-)relative path where plugin package contents are copied to after installation.
+            See <see cref="P:Duality.Editor.PackageManagement.PackageManagerEnvironment.TargetPluginPath"/> for a non-relative version.
+            </summary>
+        </member>
+        <member name="P:Duality.Editor.PackageManagement.PackageManagerEnvironment.TargetSolutionPathRelative">
+            <summary>
+            [GET] The (<see cref="P:Duality.Editor.PackageManagement.PackageManagerEnvironment.RootPath"/>-)relative path of the source code solution file where source code 
+            project files from packages will be integrated after installation.
+            </summary>
+        </member>
+        <member name="T:Duality.Editor.PackageManagement.PackageUpdateSchedule">
+            <summary>
+            Describes the required operations to apply a previously performed package operation.
+            
+            The schedule is what's usually stored in a file at the <see cref="P:Duality.Editor.PackageManagement.PackageManagerEnvironment.UpdateFilePath"/>,
+            which is read and executed by the updater application.
+            </summary>
+        </member>
+        <member name="F:Duality.Editor.PackageManagement.PackageUpdateSchedule.CopyItem">
+            <summary>
+            Element name of copy file update instructions. See <see cref="M:Duality.Editor.PackageManagement.PackageUpdateSchedule.AppendCopyFile(System.String,System.String)"/>.
+            </summary>
+        </member>
+        <member name="F:Duality.Editor.PackageManagement.PackageUpdateSchedule.DeleteItem">
+            <summary>
+            Element name of delete file update instructions. See <see cref="M:Duality.Editor.PackageManagement.PackageUpdateSchedule.AppendDeleteFile(System.String)"/>.
+            </summary>
+        </member>
+        <member name="F:Duality.Editor.PackageManagement.PackageUpdateSchedule.IntegrateProjectItem">
+            <summary>
+            Element name of project integration update instructions. See <see cref="M:Duality.Editor.PackageManagement.PackageUpdateSchedule.AppendIntegrateProject(System.String,System.String,System.String)"/>.
+            </summary>
+        </member>
+        <member name="F:Duality.Editor.PackageManagement.PackageUpdateSchedule.SeparateProjectItem">
+            <summary>
+            Element name of project separation update instructions. See <see cref="M:Duality.Editor.PackageManagement.PackageUpdateSchedule.AppendSeparateProject(System.String,System.String)"/>.
+            </summary>
+        </member>
+        <member name="P:Duality.Editor.PackageManagement.PackageUpdateSchedule.Items">
+            <summary>
+            [GET] Enumerates all update instruction items in the schedule.
+            The type of each instruction can be derived from the element names,
+            but be aware that both names and attributes are an implementation
+            detail that can be subject to change in future versions.
+            </summary>
+        </member>
+        <member name="M:Duality.Editor.PackageManagement.PackageUpdateSchedule.AppendCopyFile(System.String,System.String)">
+            <summary>
+            Appends a copy file instruction to the update schedule.
+            </summary>
+            <param name="copySource"></param>
+            <param name="copyTarget"></param>
+        </member>
+        <member name="M:Duality.Editor.PackageManagement.PackageUpdateSchedule.AppendDeleteFile(System.String)">
+            <summary>
+            Appends a delete file instruction to the update schedule.
+            </summary>
+            <param name="deleteTarget"></param>
+        </member>
+        <member name="M:Duality.Editor.PackageManagement.PackageUpdateSchedule.AppendIntegrateProject(System.String,System.String,System.String)">
+            <summary>
+            Appends a project integration instruction to the update schedule.
+            This instruction type will make sure that the specified source code project file
+            is referenced in the Duality project's primary source code solution file.
+            </summary>
+            <param name="projectFile"></param>
+            <param name="solutionFile"></param>
+            <param name="pluginDirectory"></param>
+        </member>
+        <member name="M:Duality.Editor.PackageManagement.PackageUpdateSchedule.AppendSeparateProject(System.String,System.String)">
+            <summary>
+            Appends a project separation instruction to the update schedule.
+            This instruction type will make sure that the specified source code project file
+            is no longer referenced in the Duality project's primary source code solution file.
+            </summary>
+            <param name="projectFile"></param>
+            <param name="solutionFile"></param>
+        </member>
+        <member name="M:Duality.Editor.PackageManagement.PackageUpdateSchedule.ApplyUpdaterChanges(System.String)">
+            <summary>
+            Applies all changes that affect the Duality updater itself, which for that
+            reason can't be done by the updater. The applied items will be removed from
+            the schedule.
+            </summary>
+            <param name="updaterPath"></param>
+        </member>
+        <member name="M:Duality.Editor.PackageManagement.PackageUpdateSchedule.ApplyChanges(System.Collections.Generic.IEnumerable{System.Xml.Linq.XElement})">
+            <summary>
+            Applies a set of scheduled update instructions immediately and removes them from the schedule.
+            
+            Note that this method only supports copy and delete operations. More complex operations are only
+            implemented in the updater application, as this is the one usually performing them. This method
+            exists only for applying updates to the updater itself, as well as for testing purposes.
+            </summary>
+            <param name="items"></param>
+        </member>
+        <member name="M:Duality.Editor.PackageManagement.PackageUpdateSchedule.Save(System.String)">
+            <summary>
+            Saves the update schedule to the specified file path.
+            </summary>
+            <param name="updateFilePath"></param>
+        </member>
+        <member name="M:Duality.Editor.PackageManagement.PackageUpdateSchedule.Load(System.String)">
+            <summary>
+            Loads an existing update schedule from the specified file path.
+            </summary>
+            <param name="updateFilePath"></param>
+            <returns></returns>
+        </member>
+        <member name="T:Duality.Editor.PackageManagement.PackageSetup">
+            <summary>
+            Describes the package setup that is required by a Duality project, including 
+            repository URLs, package Ids and versions. It is a data representation of what's
+            usually stored in the package config file.
+            </summary>
+        </member>
+        <member name="P:Duality.Editor.PackageManagement.PackageSetup.RepositoryUrls">
+            <summary>
+            [GET] A list of URLs to remote package repositories that will be used to pull packages from.
+            For convenience reasons, it is allowed to specify regular file paths instead of URLs when referring
+            to machine local repositories.
+            </summary>
+        </member>
+        <member name="P:Duality.Editor.PackageManagement.PackageSetup.IsFirstInstall">
+            <summary>
+            [GET / SET] Whether the next startup of the Duality editor will consider restoring packages
+            to be the very first installation. This affects how license agreement requirements are handled.
+            </summary>
+        </member>
+        <member name="P:Duality.Editor.PackageManagement.PackageSetup.Packages">
+            <summary>
+            [GET] A list of packages that are required by this project. If a package does not specify a
+            specific version, the latest available version will be installed.
+            </summary>
+        </member>
+        <member name="M:Duality.Editor.PackageManagement.PackageSetup.GetPackage(System.String)">
+            <summary>
+            Retrieves a local project package by its Id, ignoring version numbers.
+            Returns null if no such package is referenced.
+            </summary>
+            <param name="id"></param>
+            <returns></returns>
+        </member>
+        <member name="M:Duality.Editor.PackageManagement.PackageSetup.GetPackage(System.String,System.Version)">
+            <summary>
+            Retrieves a local project package by its Id and version.
+            Returns null if no such package is referenced.
+            </summary>
+            <param name="id"></param>
+            <param name="version"></param>
+            <returns></returns>
+        </member>
+        <member name="M:Duality.Editor.PackageManagement.PackageSetup.GetPackage(Duality.Editor.PackageManagement.PackageName)">
+            <summary>
+            Retrieves a local project package by its name, optionally requiring a specific version number.
+            Returns null if no such package is referenced.
+            </summary>
+            <param name="name"></param>
+            <returns></returns>
+        </member>
+        <member name="M:Duality.Editor.PackageManagement.PackageSetup.Populate(System.String)">
+            <summary>
+            Updates an existing <see cref="T:Duality.Editor.PackageManagement.PackageSetup"/> using information from the
+            config file at the specified path. Settings that are not specified in the
+            config file will remain as they were.
+            </summary>
+            <param name="configFilePath"></param>
+        </member>
+        <member name="M:Duality.Editor.PackageManagement.PackageSetup.Save(System.String)">
+            <summary>
+            Saves the <see cref="T:Duality.Editor.PackageManagement.PackageSetup"/> to a config file at the specified path.
+            </summary>
+            <param name="configFilePath"></param>
+        </member>
+        <member name="M:Duality.Editor.PackageManagement.PackageSetup.Load(System.String)">
+            <summary>
+            Loads an existing <see cref="T:Duality.Editor.PackageManagement.PackageSetup"/> from the config file at the
+            specified path.
+            </summary>
+            <param name="configFilePath"></param>
+            <returns></returns>
+        </member>
+        <member name="M:Duality.Editor.PackageManagement.PackageLicenseAgreementEventArgs.AcceptLicense">
+            <summary>
+            Marks the license as accepted. Only ever call this when the end user has seen and explicitly accepted the license terms.
+            </summary>
+        </member>
+        <member name="T:Duality.Editor.PackageManagement.LocalPackage">
+            <summary>
+            Describes a Duality package that is part of the local <see cref="T:Duality.Editor.PackageManagement.PackageSetup"/>.
+            </summary>
+        </member>
+        <member name="P:Duality.Editor.PackageManagement.LocalPackage.Name">
+            <summary>
+            [GET] The name of the package, including ID and version number.
+            Note that a local package may be version-invariant to flag itself
+            for an update to the newest available version during package verify.
+            </summary>
+        </member>
+        <member name="P:Duality.Editor.PackageManagement.LocalPackage.Id">
+            <summary>
+            [GET] The ID of the package.
+            </summary>
+        </member>
+        <member name="P:Duality.Editor.PackageManagement.LocalPackage.Version">
+            <summary>
+            [GET] The version of the package. Can be null, in which case the
+            package will be treated as version-invariant.
+            </summary>
+        </member>
+        <member name="P:Duality.Editor.PackageManagement.LocalPackage.Info">
+            <summary>
+            [GET] A <see cref="T:Duality.Editor.PackageManagement.PackageInfo"/> representing the locally installed
+            version of the package.
+            </summary>
+        </member>
+        <member name="T:Duality.Editor.PackageManagement.PackageManager">
+            <summary>
+            Allows to install, uninstall, update and query local and remote Duality packages.
+            </summary>
+        </member>
+        <member name="F:Duality.Editor.PackageManagement.PackageManager.DualityPackageNames">
+            <summary>
+            A list of package names that are considered "core" Duality packages.
+            If none of these show up anywhere in the deep dependency graph of a Duality package,
+            it will be assumed that dependencies are simply not specified properly.
+            </summary>
+        </member>
+        <member name="P:Duality.Editor.PackageManagement.PackageManager.IsPackageSyncRequired">
+            <summary>
+            [GET] Whether the local <see cref="T:Duality.Editor.PackageManagement.PackageSetup"/> and the actually installed packages
+            are currently out of sync.
+            </summary>
+        </member>
+        <member name="P:Duality.Editor.PackageManagement.PackageManager.LocalEnvironment">
+            <summary>
+            [GET] The local file system environment in which this <see cref="T:Duality.Editor.PackageManagement.PackageManager"/> operates.
+            </summary>
+        </member>
+        <member name="P:Duality.Editor.PackageManagement.PackageManager.LocalSetup">
+            <summary>
+            [GET / SET] A data class representing the local package setup. Do not change these 
+            values manually, but use <see cref="T:Duality.Editor.PackageManagement.PackageManager"/> API instead.
+            </summary>
+        </member>
+        <member name="M:Duality.Editor.PackageManagement.PackageManager.VerifyPackage(Duality.Editor.PackageManagement.LocalPackage)">
+            <summary>
+            Installs the specified package if it wasn't installed yet and synchronizes
+            the registered Duality package version number with the one that is present
+            in the local cache.
+            </summary>
+            <param name="localPackage"></param>
+        </member>
+        <member name="M:Duality.Editor.PackageManagement.PackageManager.UninstallNonRegisteredPackages">
+            <summary>
+            Uninstalls all Duality packages that are installed, but not registered. This
+            usually happens when a user manually edits the package config file and either
+            removes package entries explicitly, or changes their version numbers.
+            
+            Due to the nature of this operation, it is possible that package dependencies
+            are removed even though they might still be required by some installed packages.
+            To make sure this state doesn't persist, it is recommended to perform a package
+            verification step afterwards, which will re-install dependencies that might have
+            been accidentally removed.
+            </summary>
+        </member>
+        <member name="M:Duality.Editor.PackageManagement.PackageManager.InstallPackage(Duality.Editor.PackageManagement.PackageName)">
+            <summary>
+            Installs the specified package.
+            </summary>
+            <param name="packageName"></param>
+        </member>
+        <member name="M:Duality.Editor.PackageManagement.PackageManager.UninstallPackage(Duality.Editor.PackageManagement.PackageName)">
+            <summary>
+            Uninstalls the specified package.
+            </summary>
+            <param name="packageName"></param>
+        </member>
+        <member name="M:Duality.Editor.PackageManagement.PackageManager.CanUninstallPackage(Duality.Editor.PackageManagement.PackageName)">
+            <summary>
+            Determines whether the specified package can be uninstalled. Returns
+            false when other packages still depend on it.
+            </summary>
+            <param name="package"></param>
+            <returns></returns>
+        </member>
+        <member name="M:Duality.Editor.PackageManagement.PackageManager.UpdatePackage(Duality.Editor.PackageManagement.PackageName)">
+            <summary>
+            Updates the specified package to the latest available version.
+            </summary>
+            <param name="packageName"></param>
+        </member>
+        <member name="M:Duality.Editor.PackageManagement.PackageManager.ApplyUpdate(System.Boolean)">
+            <summary>
+            Starts applying any pending package updates and returns true when it is required
+            to shut down the current editor instance in order to complete them.
+            </summary>
+            <param name="restartEditor">
+            Whether the current editor instance should be restarted after the update has been applied.
+            </param>
+            <returns></returns>
+        </member>
+        <member name="M:Duality.Editor.PackageManagement.PackageManager.ClearCache">
+            <summary>
+            Clears the internal cache for remote repository packages, allowing
+            to retrieve updated information about the latest available packages
+            and package versions.
+            </summary>
+        </member>
+        <member name="M:Duality.Editor.PackageManagement.PackageManager.GetLatestDualityPackages">
+            <summary>
+            Enumerates the latest versions of all available Duality packages from
+            the remote repository.
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:Duality.Editor.PackageManagement.PackageManager.GetPackage(Duality.Editor.PackageManagement.PackageName)">
+            <summary>
+            Retrieves detailed information about the specified package from the
+            local or remote repository.
+            </summary>
+            <param name="name"></param>
+            <returns></returns>
+        </member>
+        <member name="M:Duality.Editor.PackageManagement.PackageManager.GetUpdatablePackages">
+            <summary>
+            Enumerates all target packages for local installs that could be updated.
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:Duality.Editor.PackageManagement.PackageManager.GetCompatibilityLevel(Duality.Editor.PackageManagement.PackageInfo)">
+            <summary>
+            Determines compatibility between the current package installs and the specified target package.
+            Works for both updates and new installs.
+            </summary>
+            <param name="target"></param>
+            <returns></returns>
+        </member>
+        <member name="M:Duality.Editor.PackageManagement.PackageManager.OrderByDependencies(System.Collections.Generic.IList{Duality.Editor.PackageManagement.PackageInfo})">
+            <summary>
+            Sorts the specified list of packages according to their dependencies, guaranteeing that no package
+            is listed before its dependencies. Use this to determine the order of batch updates and installs
+            to prevent conflicts from having different versions of the same packages.
+            </summary>
+        </member>
+        <member name="M:Duality.Editor.PackageManagement.PackageManager.OrderByDependencies(System.Collections.Generic.IList{Duality.Editor.PackageManagement.LocalPackage})">
+            <summary>
+            Sorts the specified list of packages according to their dependencies, guaranteeing that no package
+            is listed before its dependencies. Use this to determine the order of batch updates and installs
+            to prevent conflicts from having different versions of the same packages.
+            </summary>
+        </member>
+        <member name="M:Duality.Editor.DualityEditorApp.GetEditorActions(System.Type,System.Collections.Generic.IEnumerable{System.Object},System.String)">
+            <summary>
+            Enumerates editor user actions that can be applied to objects of the specified type.
+            A typical usage example for this are context menus that are populated dynamically
+            based on the selected object and the available editor plugin capabilities.
+            </summary>
+            <param name="subjectType">The type ob the object the action operates on.</param>
+            <param name="objects">
+            The set of objects the action will be applied on, which is used to
+            determine whether or not a given action can operate on the specific set of objects. If this is null, 
+            no such check is performed and all editor actions that match the other criteria are returned.
+            </param>
+            <param name="context">The context in which this action is performed.</param>
+            <returns></returns>
+        </member>
+        <member name="M:Duality.Editor.DualityEditorApp.Highlight(System.Object,Duality.Editor.ObjectSelection,Duality.Editor.HighlightMode)">
+            <summary>
+            Triggers a highlight event in the editor, to which the appropriate modules will
+            be able to react. This usually means flashing a certain tree view entry or similar.
+            </summary>
+            <param name="sender"></param>
+            <param name="obj"></param>
+            <param name="mode"></param>
+        </member>
+        <member name="T:Duality.Editor.Properties.GeneralResNames">
+            <summary>
+            Since directly accessing code generated from .resx files will result in a deserialization on
+            each Resource access, this class allows cached Resource access.
+            </summary>
+        </member>
+        <member name="T:Duality.Editor.Properties.GeneralRes">
+            <summary>
+              A strongly-typed resource class, for looking up localized strings, etc.
+            </summary>
+        </member>
+        <member name="P:Duality.Editor.Properties.GeneralRes.ResourceManager">
+            <summary>
+              Returns the cached ResourceManager instance used by this class.
+            </summary>
+        </member>
+        <member name="P:Duality.Editor.Properties.GeneralRes.Culture">
+            <summary>
+              Overrides the current thread's CurrentUICulture property for all
+              resource lookups using this strongly typed resource class.
+            </summary>
+        </member>
+        <member name="P:Duality.Editor.Properties.GeneralRes.arrow_redo">
+            <summary>
+              Looks up a localized resource of type System.Drawing.Bitmap.
+            </summary>
+        </member>
+        <member name="P:Duality.Editor.Properties.GeneralRes.arrow_undo">
+            <summary>
+              Looks up a localized resource of type System.Drawing.Bitmap.
+            </summary>
+        </member>
+        <member name="P:Duality.Editor.Properties.GeneralRes.Category_Advanced">
+            <summary>
+              Looks up a localized string similar to Advanced.
+            </summary>
+        </member>
+        <member name="P:Duality.Editor.Properties.GeneralRes.Category_Diagnostics">
+            <summary>
+              Looks up a localized string similar to Diagnostics.
+            </summary>
+        </member>
+        <member name="P:Duality.Editor.Properties.GeneralRes.Category_General">
+            <summary>
+              Looks up a localized string similar to General.
+            </summary>
+        </member>
+        <member name="P:Duality.Editor.Properties.GeneralRes.Category_Graphics">
+            <summary>
+              Looks up a localized string similar to Graphics.
+            </summary>
+        </member>
+        <member name="P:Duality.Editor.Properties.GeneralRes.Category_Physics">
+            <summary>
+              Looks up a localized string similar to Physics.
+            </summary>
+        </member>
+        <member name="P:Duality.Editor.Properties.GeneralRes.Category_Sound">
+            <summary>
+              Looks up a localized string similar to Sound.
+            </summary>
+        </member>
+        <member name="P:Duality.Editor.Properties.GeneralRes.ColorPick">
+            <summary>
+              Looks up a localized resource of type System.Drawing.Bitmap.
+            </summary>
+        </member>
+        <member name="P:Duality.Editor.Properties.GeneralRes.ColorWheel">
+            <summary>
+              Looks up a localized resource of type System.Drawing.Bitmap.
+            </summary>
+        </member>
+        <member name="P:Duality.Editor.Properties.GeneralRes.CursorArrow">
+            <summary>
+              Looks up a localized resource of type System.Drawing.Bitmap.
+            </summary>
+        </member>
+        <member name="P:Duality.Editor.Properties.GeneralRes.CursorArrowAction">
+            <summary>
+              Looks up a localized resource of type System.Drawing.Bitmap.
+            </summary>
+        </member>
+        <member name="P:Duality.Editor.Properties.GeneralRes.CursorArrowActionMove">
+            <summary>
+              Looks up a localized resource of type System.Drawing.Bitmap.
+            </summary>
+        </member>
+        <member name="P:Duality.Editor.Properties.GeneralRes.CursorArrowActionRotate">
+            <summary>
+              Looks up a localized resource of type System.Drawing.Bitmap.
+            </summary>
+        </member>
+        <member name="P:Duality.Editor.Properties.GeneralRes.CursorArrowActionScale">
+            <summary>
+              Looks up a localized resource of type System.Drawing.Bitmap.
+            </summary>
+        </member>
+        <member name="P:Duality.Editor.Properties.GeneralRes.CursorHandGrab">
+            <summary>
+              Looks up a localized resource of type System.Drawing.Bitmap.
+            </summary>
+        </member>
+        <member name="P:Duality.Editor.Properties.GeneralRes.CursorHandGrabbing">
+            <summary>
+              Looks up a localized resource of type System.Drawing.Bitmap.
+            </summary>
+        </member>
+        <member name="P:Duality.Editor.Properties.GeneralRes.DefaultEditorUserData">
+             <summary>
+               Looks up a localized string similar to &lt;?xml version=&quot;1.0&quot; encoding=&quot;utf-8&quot;?&gt;
+            &lt;UserData&gt;
+              &lt;EditorApp&gt;
+                &lt;Backups&gt;true&lt;/Backups&gt;
+                &lt;Autosaves&gt;ThirtyMinutes&lt;/Autosaves&gt;
+                &lt;FirstSession&gt;true&lt;/FirstSession&gt;
+              &lt;/EditorApp&gt;
+              &lt;Plugins&gt;
+                &lt;Plugin id=&quot;CamView&quot;&gt;
+                  &lt;CamView id=&quot;0&quot;&gt;
+                    &lt;Perspective&gt;Parallax&lt;/Perspective&gt;
+                    &lt;FocusDist&gt;500&lt;/FocusDist&gt;
+                    &lt;BackgroundColor&gt;
+                      &lt;R&gt;64&lt;/R&gt;
+                      &lt;G&gt;64&lt;/G&gt;
+                      &lt;B&gt;64&lt;/B&gt;
+                      &lt;A&gt;0&lt;/A&gt;
+                    &lt;/BackgroundColor&gt;
+                    &lt;SnapToGridSize&gt;
+                       [rest of string was truncated]&quot;;.
+             </summary>
+        </member>
+        <member name="P:Duality.Editor.Properties.GeneralRes.EditorApplicationTitle">
+            <summary>
+              Looks up a localized string similar to Dualitor.
+            </summary>
+        </member>
+        <member name="P:Duality.Editor.Properties.GeneralRes.ErrorHandlersTemplate">
+             <summary>
+               Looks up a localized string similar to using System;
+            using System.Collections.Generic;
+            using System.Linq;
+            using System.Text;
+            
+            using Duality;
+            using Duality.Serialization;
+            
+            namespace ROOTNAMESPACE.ErrorHandlers
+            {
+            	public class NewProjectErrorHandler : SerializeErrorHandler
+            	{
+            		public override void HandleError(SerializeError error)
+            		{
+            			ResolveTypeError resolveTypeError = error as ResolveTypeError;
+            			if (resolveTypeError != null)
+            			{
+            				string fixedTypeId = resolveTypeError.TypeId;
+            
+            				if (fixedTypeId.StartsWith(&quot;OLDROOTNA [rest of string was truncated]&quot;;.
+             </summary>
+        </member>
+        <member name="P:Duality.Editor.Properties.GeneralRes.GamePluginTemplate">
+            <summary>
+              Looks up a localized resource of type System.Byte[].
+            </summary>
+        </member>
+        <member name="P:Duality.Editor.Properties.GeneralRes.GameResTemplate">
+             <summary>
+               Looks up a localized string similar to /*
+             * A set of static helper classes that provide easy runtime access to the games resources.
+             * This file is auto-generated. Any changes made to it are lost as soon as Duality decides
+             * to regenerate it.
+             */
+            namespace GameRes
+            {
+            CONTENT
+            }
+            .
+             </summary>
+        </member>
+        <member name="P:Duality.Editor.Properties.GeneralRes.HelpInfo_NotAvailable_Desc">
+            <summary>
+              Looks up a localized string similar to No information available..
+            </summary>
+        </member>
+        <member name="P:Duality.Editor.Properties.GeneralRes.IconClass">
+            <summary>
+              Looks up a localized resource of type System.Drawing.Bitmap.
+            </summary>
+        </member>
+        <member name="P:Duality.Editor.Properties.GeneralRes.IconCog">
+            <summary>
+              Looks up a localized resource of type System.Drawing.Icon similar to (Icon).
+            </summary>
+        </member>
+        <member name="P:Duality.Editor.Properties.GeneralRes.IconNamespace">
+            <summary>
+              Looks up a localized resource of type System.Drawing.Bitmap.
+            </summary>
+        </member>
+        <member name="P:Duality.Editor.Properties.GeneralRes.IconWorkingFolder">
+            <summary>
+              Looks up a localized resource of type System.Drawing.Icon similar to (Icon).
+            </summary>
+        </member>
+        <member name="P:Duality.Editor.Properties.GeneralRes.ImageAppCreate">
+            <summary>
+              Looks up a localized resource of type System.Drawing.Bitmap.
+            </summary>
+        </member>
+        <member name="P:Duality.Editor.Properties.GeneralRes.ImageTemplateCurrent">
+            <summary>
+              Looks up a localized resource of type System.Drawing.Bitmap.
+            </summary>
+        </member>
+        <member name="P:Duality.Editor.Properties.GeneralRes.ImageTemplateEmpty">
+            <summary>
+              Looks up a localized resource of type System.Drawing.Bitmap.
+            </summary>
+        </member>
+        <member name="P:Duality.Editor.Properties.GeneralRes.Language">
+            <summary>
+              Looks up a localized string similar to English.
+            </summary>
+        </member>
+        <member name="P:Duality.Editor.Properties.GeneralRes.LicenseAcceptDialog_FirstStartGeneric">
+            <summary>
+              Looks up a localized string similar to This is the first time you are starting Duality. By using it, you are agreeing to its license terms, as linked below..
+            </summary>
+        </member>
+        <member name="P:Duality.Editor.Properties.GeneralRes.LicenseAcceptDialog_PackageDesc">
+            <summary>
+              Looks up a localized string similar to Installing package {0} requires a license agreement..
+            </summary>
+        </member>
+        <member name="P:Duality.Editor.Properties.GeneralRes.LicenseAcceptDialog_TranscriptUnavailable">
+            <summary>
+              Looks up a localized string similar to License text transcript unavailable. Check the License Url link below for the original license text source..
+            </summary>
+        </member>
+        <member name="P:Duality.Editor.Properties.GeneralRes.MenuItemInfo_ConfigureLauncher">
+            <summary>
+              Looks up a localized string similar to Select which launcher application should be used for external game tests. By default, the Duality Launcher is used..
+            </summary>
+        </member>
+        <member name="P:Duality.Editor.Properties.GeneralRes.MenuItemInfo_DebugGame">
+            <summary>
+              Looks up a localized string similar to If you&apos;re using a professional version of Visual Studio, this action will run the Duality launcher and trigger a debug event that allows you to attach the debugger to your game before anything happens. You can achieve the same by clicking the &quot;Run&quot; button of your Core Plugin in Visual Studio itself..
+            </summary>
+        </member>
+        <member name="P:Duality.Editor.Properties.GeneralRes.MenuItemInfo_NewProject">
+            <summary>
+              Looks up a localized string similar to Duality always works locally in a project folder. The New Project dialog will help you set up a new one..
+            </summary>
+        </member>
+        <member name="P:Duality.Editor.Properties.GeneralRes.MenuItemInfo_OpenProjectSource">
+            <summary>
+              Looks up a localized string similar to The project source code is where your game logic happens. To help you get started, Duality will create and open a suitable Visual Studio solution for you..
+            </summary>
+        </member>
+        <member name="P:Duality.Editor.Properties.GeneralRes.MenuItemInfo_ProfileGame">
+            <summary>
+              Looks up a localized string similar to Runs the game in profiling mode without VSync or any other frame rate limiting mechanism..
+            </summary>
+        </member>
+        <member name="P:Duality.Editor.Properties.GeneralRes.MenuItemInfo_PublishGame">
+            <summary>
+              Looks up a localized string similar to Creates a version of the game ready to distribute to others, with all necessary files.
+            </summary>
+        </member>
+        <member name="P:Duality.Editor.Properties.GeneralRes.MenuItemInfo_RunGame">
+            <summary>
+              Looks up a localized string similar to Want to see how your game looks like in its release version? This will save all project data and run the external Duality launcher..
+            </summary>
+        </member>
+        <member name="P:Duality.Editor.Properties.GeneralRes.MenuItemInfo_SandboxFaster">
+            <summary>
+              Looks up a localized string similar to Increases the Sandboxes game speed. This will not cause it to update more often, but simulate a higher timestep in each update..
+            </summary>
+        </member>
+        <member name="P:Duality.Editor.Properties.GeneralRes.MenuItemInfo_SandboxPause">
+            <summary>
+              Looks up a localized string similar to Pausing the Sandbox will suspend any game updates. Until being unpaused, the Sandbox will behave as if it wasn&apos;t there..
+            </summary>
+        </member>
+        <member name="P:Duality.Editor.Properties.GeneralRes.MenuItemInfo_SandboxPlay">
+            <summary>
+              Looks up a localized string similar to Unlike &quot;Run Game&quot;, entering the Sandbox mode doesn&apos;t rely on the Duality Launcher and will instead run the game directly inside the editor. This allows you to test and debug your game in real time while at the same time providing full editing functionality. Note that you&apos;ll have to focus a Cam View in &quot;Game View&quot; mode in order to pass on keyboard and mouse input to the game..
+            </summary>
+        </member>
+        <member name="P:Duality.Editor.Properties.GeneralRes.MenuItemInfo_SandboxSlower">
+            <summary>
+              Looks up a localized string similar to Decreases the Sandboxes game speed. This will not cause it to update less often, but simulate a lower timestep in each update..
+            </summary>
+        </member>
+        <member name="P:Duality.Editor.Properties.GeneralRes.MenuItemInfo_SandboxStep">
+            <summary>
+              Looks up a localized string similar to A Sandbox step will cause the game to advance exactly one standard frame..
+            </summary>
+        </member>
+        <member name="P:Duality.Editor.Properties.GeneralRes.MenuItemInfo_SandboxStop">
+            <summary>
+              Looks up a localized string similar to When leaving the Sandbox mode, the current Scene will be reset to its original state..
+            </summary>
+        </member>
+        <member name="P:Duality.Editor.Properties.GeneralRes.MenuItemInfo_SaveAll">
+            <summary>
+              Looks up a localized string similar to This will save all project data, i.e. all existing Resources. If you take a look at the Project View, you might notice that some Resources are written in italics - these are the ones that have been changed without being saved yet..
+            </summary>
+        </member>
+        <member name="P:Duality.Editor.Properties.GeneralRes.MenuItemInfo_SerializerUpdateAll">
+            <summary>
+              Looks up a localized string similar to This operation will load and re-save all existing Resources. Due to the serialization progress, all Resources will be guaranteed to use the same file format and to be up-to-date according to core plugin class definitions..
+            </summary>
+        </member>
+        <member name="P:Duality.Editor.Properties.GeneralRes.MenuItemInfo_ToggleBackups">
+            <summary>
+              Looks up a localized string similar to If active, Duality will backup each file before saving it..
+            </summary>
+        </member>
+        <member name="P:Duality.Editor.Properties.GeneralRes.MenuItemName_About">
+            <summary>
+              Looks up a localized string similar to About.
+            </summary>
+        </member>
+        <member name="P:Duality.Editor.Properties.GeneralRes.MenuItemName_ConfigureLauncher">
+            <summary>
+              Looks up a localized string similar to Select Launcher....
+            </summary>
+        </member>
+        <member name="P:Duality.Editor.Properties.GeneralRes.MenuItemName_NewProject">
+            <summary>
+              Looks up a localized string similar to New Project....
+            </summary>
+        </member>
+        <member name="P:Duality.Editor.Properties.GeneralRes.MenuItemName_ProfileGame">
+            <summary>
+              Looks up a localized string similar to Profile Game.
+            </summary>
+        </member>
+        <member name="P:Duality.Editor.Properties.GeneralRes.MenuItemName_PublishGame">
+            <summary>
+              Looks up a localized string similar to Publish Game.
+            </summary>
+        </member>
+        <member name="P:Duality.Editor.Properties.GeneralRes.MenuItemName_Quit">
+            <summary>
+              Looks up a localized string similar to Quit.
+            </summary>
+        </member>
+        <member name="P:Duality.Editor.Properties.GeneralRes.MenuItemName_Redo">
+            <summary>
+              Looks up a localized string similar to Redo: {0}.
+            </summary>
+        </member>
+        <member name="P:Duality.Editor.Properties.GeneralRes.MenuItemName_RedoEmpty">
+            <summary>
+              Looks up a localized string similar to Redo.
+            </summary>
+        </member>
+        <member name="P:Duality.Editor.Properties.GeneralRes.MenuItemName_SandboxFaster">
+            <summary>
+              Looks up a localized string similar to Increase Speed.
+            </summary>
+        </member>
+        <member name="P:Duality.Editor.Properties.GeneralRes.MenuItemName_SandboxSlower">
+            <summary>
+              Looks up a localized string similar to Decrease Speed.
+            </summary>
+        </member>
+        <member name="P:Duality.Editor.Properties.GeneralRes.MenuItemName_SerializerUpdateAll">
+            <summary>
+              Looks up a localized string similar to Update All.
+            </summary>
+        </member>
+        <member name="P:Duality.Editor.Properties.GeneralRes.MenuItemName_Undo">
+            <summary>
+              Looks up a localized string similar to Undo: {0}.
+            </summary>
+        </member>
+        <member name="P:Duality.Editor.Properties.GeneralRes.MenuItemName_UndoEmpty">
+            <summary>
+              Looks up a localized string similar to Undo.
+            </summary>
+        </member>
+        <member name="P:Duality.Editor.Properties.GeneralRes.MenuItemName_WelcomeDialog">
+            <summary>
+              Looks up a localized string similar to Getting Started.
+            </summary>
+        </member>
+        <member name="P:Duality.Editor.Properties.GeneralRes.MenuName_Edit">
+            <summary>
+              Looks up a localized string similar to Edit.
+            </summary>
+        </member>
+        <member name="P:Duality.Editor.Properties.GeneralRes.MenuName_File">
+            <summary>
+              Looks up a localized string similar to File.
+            </summary>
+        </member>
+        <member name="P:Duality.Editor.Properties.GeneralRes.MenuName_Help">
+            <summary>
+              Looks up a localized string similar to Help.
+            </summary>
+        </member>
+        <member name="P:Duality.Editor.Properties.GeneralRes.MenuName_Run">
+            <summary>
+              Looks up a localized string similar to Run.
+            </summary>
+        </member>
+        <member name="P:Duality.Editor.Properties.GeneralRes.MenuName_Settings">
+            <summary>
+              Looks up a localized string similar to Settings.
+            </summary>
+        </member>
+        <member name="P:Duality.Editor.Properties.GeneralRes.MenuName_Tools">
+            <summary>
+              Looks up a localized string similar to Tools.
+            </summary>
+        </member>
+        <member name="P:Duality.Editor.Properties.GeneralRes.MenuName_View">
+            <summary>
+              Looks up a localized string similar to View.
+            </summary>
+        </member>
+        <member name="P:Duality.Editor.Properties.GeneralRes.Msg_CantExport_Caption">
+            <summary>
+              Looks up a localized string similar to Can&apos;t export Resource.
+            </summary>
+        </member>
+        <member name="P:Duality.Editor.Properties.GeneralRes.Msg_CantExport_Text">
+            <summary>
+              Looks up a localized string similar to Can&apos;t export Resource &apos;{0}&apos;. None of the available importers is able to handle this Resource type..
+            </summary>
+        </member>
+        <member name="P:Duality.Editor.Properties.GeneralRes.Msg_CantImport_Caption">
+            <summary>
+              Looks up a localized string similar to Can&apos;t import file.
+            </summary>
+        </member>
+        <member name="P:Duality.Editor.Properties.GeneralRes.Msg_CantImport_Text">
+            <summary>
+              Looks up a localized string similar to Can&apos;t import file &apos;{0}&apos;. None of the available importers is able to handle the files format..
+            </summary>
+        </member>
+        <member name="P:Duality.Editor.Properties.GeneralRes.Msg_ConfirmBreakPrefabLink_Caption">
+            <summary>
+              Looks up a localized string similar to Break Prefab Link?.
+            </summary>
+        </member>
+        <member name="P:Duality.Editor.Properties.GeneralRes.Msg_ConfirmBreakPrefabLink_Desc">
+            <summary>
+              Looks up a localized string similar to This action will break the objects Prefab Link. Proceed?.
+            </summary>
+        </member>
+        <member name="P:Duality.Editor.Properties.GeneralRes.Msg_ConfirmDeleteSelectedObjects_Caption">
+            <summary>
+              Looks up a localized string similar to Delete selected objects?.
+            </summary>
+        </member>
+        <member name="P:Duality.Editor.Properties.GeneralRes.Msg_ConfirmDeleteSelectedObjects_Text">
+            <summary>
+              Looks up a localized string similar to Do you really want to delete the selected objects?.
+            </summary>
+        </member>
+        <member name="P:Duality.Editor.Properties.GeneralRes.Msg_ConfirmQuit_Caption">
+            <summary>
+              Looks up a localized string similar to Really quit?.
+            </summary>
+        </member>
+        <member name="P:Duality.Editor.Properties.GeneralRes.Msg_ConfirmQuit_Desc">
+            <summary>
+              Looks up a localized string similar to Do you really want to quit?.
+            </summary>
+        </member>
+        <member name="P:Duality.Editor.Properties.GeneralRes.Msg_ConfirmQuitUnsaved_Caption">
+            <summary>
+              Looks up a localized string similar to Really quit?.
+            </summary>
+        </member>
+        <member name="P:Duality.Editor.Properties.GeneralRes.Msg_ConfirmQuitUnsaved_Desc">
+            <summary>
+              Looks up a localized string similar to The following Resources have been modified without saving:{0}Do you want to save them before exiting?.
+            </summary>
+        </member>
+        <member name="P:Duality.Editor.Properties.GeneralRes.Msg_ConfirmQuitUnsaved_Desc_More">
+            <summary>
+              Looks up a localized string similar to [ and {0} more ].
+            </summary>
+        </member>
+        <member name="P:Duality.Editor.Properties.GeneralRes.Msg_ConfirmReloadResource_Caption">
+            <summary>
+              Looks up a localized string similar to Reload Resource?.
+            </summary>
+        </member>
+        <member name="P:Duality.Editor.Properties.GeneralRes.Msg_ConfirmReloadResource_Text">
+            <summary>
+              Looks up a localized string similar to The currently active Resource &apos;{0}&apos; has been modified externally. Do you want to reload it from file? Any unsaved changes might be lost..
+            </summary>
+        </member>
+        <member name="P:Duality.Editor.Properties.GeneralRes.Msg_CreateProjectErrorNestedFolder_Caption">
+            <summary>
+              Looks up a localized string similar to Invalid Target Directory.
+            </summary>
+        </member>
+        <member name="P:Duality.Editor.Properties.GeneralRes.Msg_CreateProjectErrorNestedFolder_Desc">
+            <summary>
+              Looks up a localized string similar to The specified target folder is located within the current working directory. Please select one that is located elsewhere..
+            </summary>
+        </member>
+        <member name="P:Duality.Editor.Properties.GeneralRes.Msg_CreateProjectErrorTargetExists_Caption">
+            <summary>
+              Looks up a localized string similar to Invalid Target Directory.
+            </summary>
+        </member>
+        <member name="P:Duality.Editor.Properties.GeneralRes.Msg_CreateProjectErrorTargetExists_Desc">
+            <summary>
+              Looks up a localized string similar to The specified target folder already exists and is not empty. Please select a different one..
+            </summary>
+        </member>
+        <member name="P:Duality.Editor.Properties.GeneralRes.Msg_CreateProjectErrorTargetIsFilePath_Desc">
+            <summary>
+              Looks up a localized string similar to The specified target folder is conflicting with an existing file. Please select a different one..
+            </summary>
+        </member>
+        <member name="P:Duality.Editor.Properties.GeneralRes.Msg_EnterSandboxUnsavedScene_Caption">
+            <summary>
+              Looks up a localized string similar to Save current Scene?.
+            </summary>
+        </member>
+        <member name="P:Duality.Editor.Properties.GeneralRes.Msg_EnterSandboxUnsavedScene_Desc">
+            <summary>
+              Looks up a localized string similar to You are about to enter Sandbox mode although the current Scene is temporary, so it won&apos;t be restored when leaving Sandbox mode. Do you want to make it restorable by saving it before?.
+            </summary>
+        </member>
+        <member name="P:Duality.Editor.Properties.GeneralRes.Msg_ErrorCantCreateProject_Caption">
+            <summary>
+              Looks up a localized string similar to Error Creating Project.
+            </summary>
+        </member>
+        <member name="P:Duality.Editor.Properties.GeneralRes.Msg_ErrorCantCreateProject_Desc">
+            <summary>
+              Looks up a localized string similar to Can&apos;t create a new project, because a error occurred : {1}{0}.
+            </summary>
+        </member>
+        <member name="P:Duality.Editor.Properties.GeneralRes.Msg_ErrorFirstDualityInstall_Caption">
+            <summary>
+              Looks up a localized string similar to First Duality Install.
+            </summary>
+        </member>
+        <member name="P:Duality.Editor.Properties.GeneralRes.Msg_ErrorFirstDualityInstall_Desc">
+             <summary>
+               Looks up a localized string similar to The first time you run the editor, Duality will self-install into this folder by downloading the latest packages from the central repository. 
+            
+            Unfortunately though, a connection doesn&apos;t seem to be possible right now. Please check your firewall and network status!.
+             </summary>
+        </member>
+        <member name="P:Duality.Editor.Properties.GeneralRes.Msg_ErrorPerformBigTask_Caption">
+            <summary>
+              Looks up a localized string similar to Failed to perform task.
+            </summary>
+        </member>
+        <member name="P:Duality.Editor.Properties.GeneralRes.Msg_ErrorPerformBigTask_Desc">
+            <summary>
+              Looks up a localized string similar to An error occurred while performing task &apos;{0}&apos;: {1}{2}.
+            </summary>
+        </member>
+        <member name="P:Duality.Editor.Properties.GeneralRes.Msg_ErrorReloadCorePlugin_Caption">
+            <summary>
+              Looks up a localized string similar to Can&apos;t reload core plugin.
+            </summary>
+        </member>
+        <member name="P:Duality.Editor.Properties.GeneralRes.Msg_ErrorReloadCorePlugin_Desc">
+            <summary>
+              Looks up a localized string similar to An error occurred reloading Duality core plugins: {0}{1}.
+            </summary>
+        </member>
+        <member name="P:Duality.Editor.Properties.GeneralRes.Msg_ImportConfirmOverwrite_Caption">
+            <summary>
+              Looks up a localized string similar to Overwrite file?.
+            </summary>
+        </member>
+        <member name="P:Duality.Editor.Properties.GeneralRes.Msg_ImportConfirmOverwrite_Text">
+            <summary>
+              Looks up a localized string similar to This import operation would overwrite already imported Resources or already present source / media files. Do you want to continue?.
+            </summary>
+        </member>
+        <member name="P:Duality.Editor.Properties.GeneralRes.Msg_InstallNewTemplate_Caption">
+            <summary>
+              Looks up a localized string similar to Install new Template?.
+            </summary>
+        </member>
+        <member name="P:Duality.Editor.Properties.GeneralRes.Msg_InstallNewTemplate_Desc">
+            <summary>
+              Looks up a localized string similar to The Template you selected is not located inside your global Template directory. Do you wish to send it there for future usage?.
+            </summary>
+        </member>
+        <member name="P:Duality.Editor.Properties.GeneralRes.Msg_PublishConfirmDeleteTargetDir_Caption">
+            <summary>
+              Looks up a localized string similar to Confirm Delete.
+            </summary>
+        </member>
+        <member name="P:Duality.Editor.Properties.GeneralRes.Msg_PublishConfirmDeleteTargetDir_Desc">
+            <summary>
+              Looks up a localized string similar to The specified directory already contains a non-empty folder named &apos;{0}&apos;. Delete folder in order to proceed?.
+            </summary>
+        </member>
+        <member name="P:Duality.Editor.Properties.GeneralRes.Msg_PublishProjectErrorNestedFolder_Caption">
+            <summary>
+              Looks up a localized string similar to Invalid Target Directory.
+            </summary>
+        </member>
+        <member name="P:Duality.Editor.Properties.GeneralRes.Msg_PublishProjectErrorNestedFolder_Desc">
+            <summary>
+              Looks up a localized string similar to The specified target folder is located within the current working directory. Please select one that is located elsewhere..
+            </summary>
+        </member>
+        <member name="P:Duality.Editor.Properties.GeneralRes.MsgLicenseNotAgreedAbort_Caption">
+            <summary>
+              Looks up a localized string similar to Package Install Canceled.
+            </summary>
+        </member>
+        <member name="P:Duality.Editor.Properties.GeneralRes.MsgLicenseNotAgreedAbort_Desc">
+            <summary>
+              Looks up a localized string similar to The install operation was canceled. You can only install this package when agreeing to its license terms..
+            </summary>
+        </member>
+        <member name="P:Duality.Editor.Properties.GeneralRes.OpenTemplateDialog_Filters">
+            <summary>
+              Looks up a localized string similar to Project Templates (*.zip)|*.zip.
+            </summary>
+        </member>
+        <member name="P:Duality.Editor.Properties.GeneralRes.OpenTemplateDialog_Title">
+            <summary>
+              Looks up a localized string similar to Select Project Template...
+            </summary>
+        </member>
+        <member name="P:Duality.Editor.Properties.GeneralRes.page_white">
+            <summary>
+              Looks up a localized resource of type System.Drawing.Bitmap.
+            </summary>
+        </member>
+        <member name="P:Duality.Editor.Properties.GeneralRes.PropertyGrid_N_Objects">
+            <summary>
+              Looks up a localized string similar to {0} objects.
+            </summary>
+        </member>
+        <member name="P:Duality.Editor.Properties.GeneralRes.SelectNewProjectFolderDialog_Desc">
+            <summary>
+              Looks up a localized string similar to Select the folder in which a new project will be created below..
+            </summary>
+        </member>
+        <member name="P:Duality.Editor.Properties.GeneralRes.TaskBarOverlay_ReloadCorePlugin_Desc">
+            <summary>
+              Looks up a localized string similar to Reloading core plugins....
+            </summary>
+        </member>
+        <member name="P:Duality.Editor.Properties.GeneralRes.TaskChangeDataFormat_Caption">
+            <summary>
+              Looks up a localized string similar to Changing project data format....
+            </summary>
+        </member>
+        <member name="P:Duality.Editor.Properties.GeneralRes.TaskChangeDataFormat_Desc">
+            <summary>
+              Looks up a localized string similar to The project data format has been changed to {0}. Existing Resource files will be converted shortly..
+            </summary>
+        </member>
+        <member name="P:Duality.Editor.Properties.GeneralRes.TaskFormatUpdateAll_Caption">
+            <summary>
+              Looks up a localized string similar to Updating all Resources....
+            </summary>
+        </member>
+        <member name="P:Duality.Editor.Properties.GeneralRes.TaskFormatUpdateAll_Desc">
+            <summary>
+              Looks up a localized string similar to All existing Resource files are being updated according to the current file format specifications..
+            </summary>
+        </member>
+        <member name="P:Duality.Editor.Properties.GeneralRes.TaskInstallPackages_Caption">
+            <summary>
+              Looks up a localized string similar to Installing Packages....
+            </summary>
+        </member>
+        <member name="P:Duality.Editor.Properties.GeneralRes.TaskInstallPackages_Desc">
+            <summary>
+              Looks up a localized string similar to Duality is installing some required packages. This may include downloading them from the central package repository..
+            </summary>
+        </member>
+        <member name="P:Duality.Editor.Properties.GeneralRes.TaskPrepareInfo">
+            <summary>
+              Looks up a localized string similar to Preparing operation....
+            </summary>
+        </member>
+        <member name="P:Duality.Editor.Properties.GeneralRes.TaskRenameContentRefs_Caption">
+            <summary>
+              Looks up a localized string similar to Relocating ContentRefs....
+            </summary>
+        </member>
+        <member name="P:Duality.Editor.Properties.GeneralRes.TaskRenameContentRefs_Desc">
+            <summary>
+              Looks up a localized string similar to One or more Resources have been moved or renamed. Duality is searching for references to these Resources in order to update them..
+            </summary>
+        </member>
+        <member name="P:Duality.Editor.Properties.GeneralRes.Template_Current_Desc">
+            <summary>
+              Looks up a localized string similar to Creates a new project by cloning the current one..
+            </summary>
+        </member>
+        <member name="P:Duality.Editor.Properties.GeneralRes.Template_Current_Name">
+            <summary>
+              Looks up a localized string similar to Current Project.
+            </summary>
+        </member>
+        <member name="P:Duality.Editor.Properties.GeneralRes.Template_Empty_Desc">
+            <summary>
+              Looks up a localized string similar to A project without any content..
+            </summary>
+        </member>
+        <member name="P:Duality.Editor.Properties.GeneralRes.Template_Empty_Name">
+            <summary>
+              Looks up a localized string similar to Empty Project.
+            </summary>
+        </member>
+        <member name="P:Duality.Editor.Properties.GeneralRes.UndoRedo_AddToDictionary">
+            <summary>
+              Looks up a localized string similar to Add {0} to IDictionaries.
+            </summary>
+        </member>
+        <member name="P:Duality.Editor.Properties.GeneralRes.UndoRedo_ApplyToPrefab">
+            <summary>
+              Looks up a localized string similar to Apply {0}.
+            </summary>
+        </member>
+        <member name="P:Duality.Editor.Properties.GeneralRes.UndoRedo_ApplyToPrefabMulti">
+            <summary>
+              Looks up a localized string similar to Apply  {0} GameObjects.
+            </summary>
+        </member>
+        <member name="P:Duality.Editor.Properties.GeneralRes.UndoRedo_BreakPrefabLink">
+            <summary>
+              Looks up a localized string similar to Unlink {0}.
+            </summary>
+        </member>
+        <member name="P:Duality.Editor.Properties.GeneralRes.UndoRedo_BreakPrefabLinkMulti">
+            <summary>
+              Looks up a localized string similar to Unlink  {0} GameObjects.
+            </summary>
+        </member>
+        <member name="P:Duality.Editor.Properties.GeneralRes.UndoRedo_CloneGameObject">
+            <summary>
+              Looks up a localized string similar to Clone {0}.
+            </summary>
+        </member>
+        <member name="P:Duality.Editor.Properties.GeneralRes.UndoRedo_CloneGameObjectMulti">
+            <summary>
+              Looks up a localized string similar to Clone {0} GameObjects.
+            </summary>
+        </member>
+        <member name="P:Duality.Editor.Properties.GeneralRes.UndoRedo_CreateComponent">
+            <summary>
+              Looks up a localized string similar to Create {0}.
+            </summary>
+        </member>
+        <member name="P:Duality.Editor.Properties.GeneralRes.UndoRedo_CreateComponentMulti">
+            <summary>
+              Looks up a localized string similar to Create {0} Components.
+            </summary>
+        </member>
+        <member name="P:Duality.Editor.Properties.GeneralRes.UndoRedo_CreateGameObject">
+            <summary>
+              Looks up a localized string similar to Create {0}.
+            </summary>
+        </member>
+        <member name="P:Duality.Editor.Properties.GeneralRes.UndoRedo_CreateGameObjectMulti">
+            <summary>
+              Looks up a localized string similar to Create {0} GameObjects.
+            </summary>
+        </member>
+        <member name="P:Duality.Editor.Properties.GeneralRes.UndoRedo_DeleteComponent">
+            <summary>
+              Looks up a localized string similar to Delete {0}.
+            </summary>
+        </member>
+        <member name="P:Duality.Editor.Properties.GeneralRes.UndoRedo_DeleteComponentMulti">
+            <summary>
+              Looks up a localized string similar to Delete {0} Components.
+            </summary>
+        </member>
+        <member name="P:Duality.Editor.Properties.GeneralRes.UndoRedo_DeleteGameObject">
+            <summary>
+              Looks up a localized string similar to Delete {0}.
+            </summary>
+        </member>
+        <member name="P:Duality.Editor.Properties.GeneralRes.UndoRedo_DeleteGameObjectMulti">
+            <summary>
+              Looks up a localized string similar to Delete {0} GameObjects.
+            </summary>
+        </member>
+        <member name="P:Duality.Editor.Properties.GeneralRes.UndoRedo_EditProperty">
+            <summary>
+              Looks up a localized string similar to Edit {0}.
+            </summary>
+        </member>
+        <member name="P:Duality.Editor.Properties.GeneralRes.UndoRedo_Macro">
+            <summary>
+              Looks up a localized string similar to Macro: {0} Actions.
+            </summary>
+        </member>
+        <member name="P:Duality.Editor.Properties.GeneralRes.UndoRedo_RemoveFromDictionary">
+            <summary>
+              Looks up a localized string similar to Remove {0} from IDictionaries.
+            </summary>
+        </member>
+        <member name="P:Duality.Editor.Properties.GeneralRes.UndoRedo_ResetComponent">
+            <summary>
+              Looks up a localized string similar to Reset {0}.
+            </summary>
+        </member>
+        <member name="P:Duality.Editor.Properties.GeneralRes.UndoRedo_ResetComponentMulti">
+            <summary>
+              Looks up a localized string similar to Reset {0} Components.
+            </summary>
+        </member>
+        <member name="P:Duality.Editor.Properties.GeneralRes.UndoRedo_ResetGameObject">
+            <summary>
+              Looks up a localized string similar to Revert {0}.
+            </summary>
+        </member>
+        <member name="P:Duality.Editor.Properties.GeneralRes.UndoRedo_ResetGameObjectMulti">
+            <summary>
+              Looks up a localized string similar to Revert {0} GameObjects.
+            </summary>
+        </member>
+        <member name="P:Duality.Editor.Properties.GeneralRes.UndoRedo_ResizeILists">
+            <summary>
+              Looks up a localized string similar to Resize ILists to {0} elements.
+            </summary>
+        </member>
+        <member name="P:Duality.Editor.Properties.GeneralRes.UndoRedo_SetComponentParent">
+            <summary>
+              Looks up a localized string similar to Re-Parent {0}.
+            </summary>
+        </member>
+        <member name="P:Duality.Editor.Properties.GeneralRes.UndoRedo_SetComponentParentMulti">
+            <summary>
+              Looks up a localized string similar to Re-Parent {0} Components.
+            </summary>
+        </member>
+        <member name="P:Duality.Editor.Properties.GeneralRes.UndoRedo_SetGameObjectName">
+            <summary>
+              Looks up a localized string similar to Rename {0}.
+            </summary>
+        </member>
+        <member name="P:Duality.Editor.Properties.GeneralRes.UndoRedo_SetGameObjectNameMulti">
+            <summary>
+              Looks up a localized string similar to Rename {0} GameObjects.
+            </summary>
+        </member>
+        <member name="P:Duality.Editor.Properties.GeneralRes.UndoRedo_SetGameObjectParent">
+            <summary>
+              Looks up a localized string similar to Re-Parent {0}.
+            </summary>
+        </member>
+        <member name="P:Duality.Editor.Properties.GeneralRes.UndoRedo_SetGameObjectParentMulti">
+            <summary>
+              Looks up a localized string similar to Re-Parent {0} GameObjects.
+            </summary>
+        </member>
+        <member name="T:Duality.Editor.Properties.GeneralResCache">
+            <summary>
+            Since directly accessing code generated from .resx files will result in a deserialization on
+            each Resource access, this class allows cached Resource access.
+            </summary>
+        </member>
+        <member name="T:Duality.Editor.Properties.Resources">
+            <summary>
+              Eine stark typisierte Ressourcenklasse zum Suchen von lokalisierten Zeichenfolgen usw.
+            </summary>
+        </member>
+        <member name="P:Duality.Editor.Properties.Resources.ResourceManager">
+            <summary>
+              Gibt die zwischengespeicherte ResourceManager-Instanz zurück, die von dieser Klasse verwendet wird.
+            </summary>
+        </member>
+        <member name="P:Duality.Editor.Properties.Resources.Culture">
+            <summary>
+              Überschreibt die CurrentUICulture-Eigenschaft des aktuellen Threads für alle
+              Ressourcenzuordnungen, die diese stark typisierte Ressourcenklasse verwenden.
+            </summary>
+        </member>
+        <member name="P:Duality.Editor.Properties.Resources.add">
+            <summary>
+              Sucht eine lokalisierte Ressource vom Typ System.Drawing.Bitmap.
+            </summary>
+        </member>
+        <member name="P:Duality.Editor.Properties.Resources.application_bug">
+            <summary>
+              Sucht eine lokalisierte Ressource vom Typ System.Drawing.Bitmap.
+            </summary>
+        </member>
+        <member name="P:Duality.Editor.Properties.Resources.application_go">
+            <summary>
+              Sucht eine lokalisierte Ressource vom Typ System.Drawing.Bitmap.
+            </summary>
+        </member>
+        <member name="P:Duality.Editor.Properties.Resources.application_stopwatch">
+            <summary>
+              Sucht eine lokalisierte Ressource vom Typ System.Drawing.Bitmap.
+            </summary>
+        </member>
+        <member name="P:Duality.Editor.Properties.Resources.arrow_refresh">
+            <summary>
+              Sucht eine lokalisierte Ressource vom Typ System.Drawing.Bitmap.
+            </summary>
+        </member>
+        <member name="P:Duality.Editor.Properties.Resources.control_pause_blue">
+            <summary>
+              Sucht eine lokalisierte Ressource vom Typ System.Drawing.Bitmap.
+            </summary>
+        </member>
+        <member name="P:Duality.Editor.Properties.Resources.control_play_blue">
+            <summary>
+              Sucht eine lokalisierte Ressource vom Typ System.Drawing.Bitmap.
+            </summary>
+        </member>
+        <member name="P:Duality.Editor.Properties.Resources.control_step_blue">
+            <summary>
+              Sucht eine lokalisierte Ressource vom Typ System.Drawing.Bitmap.
+            </summary>
+        </member>
+        <member name="P:Duality.Editor.Properties.Resources.control_stop_blue">
+            <summary>
+              Sucht eine lokalisierte Ressource vom Typ System.Drawing.Bitmap.
+            </summary>
+        </member>
+        <member name="P:Duality.Editor.Properties.Resources.cross">
+            <summary>
+              Sucht eine lokalisierte Ressource vom Typ System.Drawing.Bitmap.
+            </summary>
+        </member>
+        <member name="P:Duality.Editor.Properties.Resources.disk_multiple">
+            <summary>
+              Sucht eine lokalisierte Ressource vom Typ System.Drawing.Bitmap.
+            </summary>
+        </member>
+        <member name="P:Duality.Editor.Properties.Resources.drive_disk">
+            <summary>
+              Sucht eine lokalisierte Ressource vom Typ System.Drawing.Bitmap.
+            </summary>
+        </member>
+        <member name="P:Duality.Editor.Properties.Resources.DualitorLogoHalfSize">
+            <summary>
+              Sucht eine lokalisierte Ressource vom Typ System.Drawing.Bitmap.
+            </summary>
+        </member>
+        <member name="P:Duality.Editor.Properties.Resources.DualityIcon256">
+            <summary>
+              Sucht eine lokalisierte Ressource vom Typ System.Drawing.Bitmap.
+            </summary>
+        </member>
+        <member name="P:Duality.Editor.Properties.Resources.DualityIcon48">
+            <summary>
+              Sucht eine lokalisierte Ressource vom Typ System.Drawing.Bitmap.
+            </summary>
+        </member>
+        <member name="P:Duality.Editor.Properties.Resources.icon_color">
+            <summary>
+              Sucht eine lokalisierte Ressource vom Typ System.Drawing.Bitmap.
+            </summary>
+        </member>
+        <member name="P:Duality.Editor.Properties.Resources.page_code">
+            <summary>
+              Sucht eine lokalisierte Ressource vom Typ System.Drawing.Bitmap.
+            </summary>
+        </member>
+        <member name="P:Duality.Editor.Properties.Resources.page_gear">
+            <summary>
+              Sucht eine lokalisierte Ressource vom Typ System.Drawing.Bitmap.
+            </summary>
+        </member>
+        <member name="P:Duality.Editor.Properties.Resources.page_white_csharp">
+            <summary>
+              Sucht eine lokalisierte Ressource vom Typ System.Drawing.Bitmap.
+            </summary>
+        </member>
+        <member name="P:Duality.Editor.Properties.Resources.working_bigtask">
+            <summary>
+              Sucht eine lokalisierte Ressource vom Typ System.Drawing.Bitmap.
+            </summary>
+        </member>
+        <member name="T:Duality.Editor.ObjectPropertyChangedEventArgs">
+            <summary>
+            Event arguments that provide information about the properties of a set of objects being modified.
+            </summary>
+        </member>
+        <member name="P:Duality.Editor.ObjectPropertyChangedEventArgs.Objects">
+            <summary>
+            [GET] The list of affected objects.
+            </summary>
+        </member>
+        <member name="P:Duality.Editor.ObjectPropertyChangedEventArgs.PropInfos">
+            <summary>
+            [GET] The list of explicitly affected properties. However, properties can also be
+            affected indirectly, for example when a change is considered object-wide. To account
+            for these cases and check for specific properties, use <see cref="M:Duality.Editor.ObjectPropertyChangedEventArgs.HasProperty(System.Reflection.PropertyInfo)"/> instead.
+            </summary>
+        </member>
+        <member name="P:Duality.Editor.ObjectPropertyChangedEventArgs.CompleteChange">
+            <summary>
+            [GET] Whether the modification is considered to be complete / object-wide for the
+            specified set of objects.
+            </summary>
+        </member>
+        <member name="P:Duality.Editor.ObjectPropertyChangedEventArgs.PersistenceCritical">
+            <summary>
+            [GET] Whether the modification is considered to be persistence-critical, i.e. should
+            trigger flagging an object as unsaved.
+            </summary>
+        </member>
+        <member name="M:Duality.Editor.ObjectPropertyChangedEventArgs.HasObject(System.Object)">
+            <summary>
+            Determines whether the specified object has been modified.
+            </summary>
+            <param name="obj"></param>
+            <returns></returns>
+        </member>
+        <member name="M:Duality.Editor.ObjectPropertyChangedEventArgs.HasAnyObject(System.Collections.Generic.IEnumerable{System.Object})">
+            <summary>
+            Determines whether any of the specified objects has been modified.
+            </summary>
+            <param name="objEnum"></param>
+            <returns></returns>
+        </member>
+        <member name="M:Duality.Editor.ObjectPropertyChangedEventArgs.HasProperty(System.Reflection.PropertyInfo)">
+            <summary>
+            Determines whether the specified property has been modified.
+            </summary>
+            <param name="info"></param>
+            <returns></returns>
+        </member>
+        <member name="M:Duality.Editor.ObjectPropertyChangedEventArgs.HasAnyProperty(System.Reflection.PropertyInfo[])">
+            <summary>
+            Determines whether any of the specified properties has been modified.
+            </summary>
+            <param name="info"></param>
+            <returns></returns>
+        </member>
+        <member name="T:Duality.Editor.GlobalColorPickOperation">
+            <summary>
+            Represents a system-wide color picking operation that allows you to click anywhere
+            and pick the color of the pixel at that position. A single <see cref="T:Duality.Editor.GlobalColorPickOperation"/>
+            object can be used for any number of picking operations.
+            </summary>
+        </member>
+        <member name="P:Duality.Editor.GlobalColorPickOperation.InProgress">
+            <summary>
+            [GET] Whether the picking operation is currently in progress.
+            </summary>
+        </member>
+        <member name="P:Duality.Editor.GlobalColorPickOperation.IsCanceled">
+            <summary>
+            [GET] Whether the operation was canceled.
+            </summary>
+        </member>
+        <member name="P:Duality.Editor.GlobalColorPickOperation.PickedColor">
+            <summary>
+            [GET] The color that was picked at the cursor position.
+            </summary>
+        </member>
+        <member name="M:Duality.Editor.GlobalColorPickOperation.Start">
+            <summary>
+            Starts a global picking operation. This will disable some mouse interaction.
+            </summary>
+        </member>
+        <member name="M:Duality.Editor.GlobalColorPickOperation.Cancel">
+            <summary>
+            Cancels the currently active picking operation.
+            </summary>
+        </member>
+        <member name="T:Duality.Editor.SelectionChangeReason">
+            <summary>
+            Defines the reason why a selection change is occurring.
+            </summary>
+        </member>
+        <member name="F:Duality.Editor.SelectionChangeReason.Unknown">
+            <summary>
+            The exact reason for this selection change can't be determined
+            or doesn't match any of the specified reasons.
+            </summary>
+        </member>
+        <member name="F:Duality.Editor.SelectionChangeReason.UserInput">
+            <summary>
+            The selection has changed to reflect previous or current user input.
+            </summary>
+        </member>
+        <member name="F:Duality.Editor.SelectionChangeReason.ObjectDisposing">
+            <summary>
+            The selection has changed because some or all of the selected objects
+            have been or are being disposed and are no longer a valid selection target.
+            </summary>
+        </member>
+        <member name="F:Duality.Editor.HighlightMode.Conceptual">
+            <summary>
+            Highlights an objects conceptual representation, e.g. flashing its entry in an object overview.
+            </summary>
+        </member>
+        <member name="F:Duality.Editor.HighlightMode.Spatial">
+            <summary>
+            Highlights an objects spatial location, e.g. focusing it spatially in a scene view.
+            </summary>
+        </member>
+        <member name="T:Duality.Editor.ExtMethodsBitmap">
+            <summary>
+            Provides extension methods for <see cref="T:System.Drawing.Bitmap">Bitmaps</see>.
+            </summary>
+        </member>
+        <member name="M:Duality.Editor.ExtMethodsBitmap.SubImage(System.Drawing.Bitmap,System.Int32,System.Int32,System.Int32,System.Int32)">
+            <summary>
+            Extracts a rectangular portion of the original image.
+            </summary>
+            <param name="bm">The original Bitmap.</param>
+            <param name="x">The rectangular portion to extract.</param>
+            <param name="y">The rectangular portion to extract.</param>
+            <param name="w">The rectangular portion to extract.</param>
+            <param name="h">The rectangular portion to extract.</param>
+            <returns>A new Bitmap containing the selected area.</returns>
+        </member>
+        <member name="M:Duality.Editor.ExtMethodsBitmap.SubImage(System.Drawing.Bitmap,Duality.Rect)">
+            <summary>
+            Extracts a rectangular portion of the original image.
+            </summary>
+            <param name="bm">The original Bitmap.</param>
+            <param name="rect">The rectangular portion to extract.</param>
+            <returns>A new Bitmap containing the selected area.</returns>
+        </member>
+        <member name="M:Duality.Editor.ExtMethodsBitmap.SubImage(System.Drawing.Bitmap,System.Drawing.Rectangle)">
+            <summary>
+            Extracts a rectangular portion of the original image.
+            </summary>
+            <param name="bm">The original Bitmap.</param>
+            <param name="rect">The rectangular portion to extract.</param>
+            <returns>A new Bitmap containing the selected area.</returns>
+        </member>
+        <member name="M:Duality.Editor.ExtMethodsBitmap.Resize(System.Drawing.Bitmap,System.Int32,System.Int32,Duality.Alignment)">
+            <summary>
+            Creates a resized version of a Bitmap. Gained space will be empty, lost space will crop the image.
+            </summary>
+            <param name="bm">The original Bitmap.</param>
+            <param name="w">The desired width.</param>
+            <param name="h">The desired height.</param>
+            <param name="origin">The desired resize origin in the original image.</param>
+            <returns>A new Bitmap that has the specified size.</returns>
+        </member>
+        <member name="M:Duality.Editor.ExtMethodsBitmap.Rescale(System.Drawing.Bitmap,System.Int32,System.Int32,System.Drawing.Drawing2D.InterpolationMode)">
+            <summary>
+            Creates a rescaled version of a Bitmap.
+            </summary>
+            <param name="bm">The original Bitmap.</param>
+            <param name="w">The desired width.</param>
+            <param name="h">The desired height.</param>
+            <param name="mode">Specified how to interpolate the original image in order to calculate the result image.</param>
+            <returns>A new Bitmap that has been scaled to the specified size.</returns>
+        </member>
+        <member name="M:Duality.Editor.ExtMethodsBitmap.ScaleToFit(System.Drawing.Bitmap,System.Int32,System.Int32,System.Drawing.Drawing2D.InterpolationMode)">
+            <summary>
+            Scales the Bitmap to fit entirely within the specified boundaries, while keeping its original aspect ratio.
+            </summary>
+            <param name="bm"></param>
+            <param name="w"></param>
+            <param name="h"></param>
+            <param name="mode"></param>
+            <returns></returns>
+        </member>
+        <member name="M:Duality.Editor.ExtMethodsBitmap.Crop(System.Drawing.Bitmap,System.Boolean,System.Boolean)">
+            <summary>
+            Creates a cropped version of the specified Bitmap, removing transparent / empty border areas.
+            </summary>
+            <param name="bm">The original Bitmap.</param>
+            <param name="cropX">Whether the image should be cropped in X-direction</param>
+            <param name="cropY">Whether the image should be cropped in Y-direction</param>
+            <returns>A cropped version of the original Bitmap.</returns>
+        </member>
+        <member name="M:Duality.Editor.ExtMethodsBitmap.OpaqueBounds(System.Drawing.Bitmap)">
+            <summary>
+            Measures the bounding rectangle of the opaque pixels in a Bitmap.
+            </summary>
+            <param name="bm"></param>
+            <returns></returns>
+        </member>
+        <member name="M:Duality.Editor.ExtMethodsBitmap.GetAverageColor(System.Drawing.Bitmap,System.Boolean)">
+            <summary>
+            Determines the average color of a Bitmap.
+            </summary>
+            <param name="bm"></param>
+            <param name="weightTransparent">If true, the alpha value weights a pixels color value. </param>
+            <returns></returns>
+        </member>
+        <member name="M:Duality.Editor.ExtMethodsBitmap.GetPixelDataRgba(System.Drawing.Bitmap)">
+            <summary>
+            Extracts a Bitmaps pixel data.
+            </summary>
+            <param name="bm"></param>
+            <returns></returns>
+        </member>
+        <member name="M:Duality.Editor.ExtMethodsBitmap.GetPixelDataIntArgb(System.Drawing.Bitmap)">
+            <summary>
+            Extracts a Bitmaps pixel data as (signed) IntArgb values.
+            </summary>
+            <param name="bm"></param>
+        </member>
+        <member name="M:Duality.Editor.ExtMethodsBitmap.SetPixelDataRgba(System.Drawing.Bitmap,Duality.Drawing.ColorRgba[])">
+            <summary>
+            Replaces a Bitmaps pixel data.
+            </summary>
+            <param name="bm"></param>
+            <param name="pixelData"></param>
+        </member>
+        <member name="M:Duality.Editor.ExtMethodsBitmap.SetPixelDataRgba(System.Drawing.Bitmap,System.Byte[])">
+            <summary>
+            Replaces a Bitmaps pixel data.
+            </summary>
+            <param name="bm"></param>
+            <param name="pixelData"></param>
+        </member>
+        <member name="M:Duality.Editor.ExtMethodsBitmap.SetPixelDataIntArgb(System.Drawing.Bitmap,System.Int32[])">
+            <summary>
+            Replaces a Bitmaps pixel data.
+            </summary>
+            <param name="bm"></param>
+            <param name="pixelData"></param>
+        </member>
+        <member name="M:Duality.Editor.ExtMethodsMemberInfoEditorHint.GetEditorCategory(System.Type)">
+            <summary>
+            Returns the category tree which this Type prefers to be in.
+            </summary>
+            <param name="type"></param>
+            <returns></returns>
+        </member>
+        <member name="M:Duality.Editor.ExtMethodsMemberInfoEditorHint.GetEditorImage(System.Type)">
+            <summary>
+            Return the preferred icon image representation of the specified Type.
+            </summary>
+            <param name="type"></param>
+            <returns></returns>
+        </member>
+        <member name="P:Duality.Editor.EditorHelper.SourceCodeSolutionFilePath">
+            <summary>
+            The path to the *.sln solution file. Will return <see cref="F:Duality.Editor.EditorHelper.DefaultSourceCodeSolutionFile"/> if the solution file has not yet been created.
+            </summary>
+        </member>
+        <member name="M:Duality.Editor.ExtMethodsControl.GetHoveredToolStripItem(System.Windows.Forms.Control,System.Drawing.Point,System.Boolean@)">
+            <summary>
+            Retrieves the currently active item from all (immediate, not deep) child toolstrips of this <see cref="T:System.Windows.Forms.Control"/>.
+            An item is considered active when it is hovered by the mouse cursor while no other dropped down 
+            is open, which would capture the mouse. All items are considered, even if nested within dropdowns.
+            </summary>
+            <param name="control"></param>
+            <param name="globalPos"></param>
+            <param name="isOnActiveDropDown"></param>
+            <returns></returns>
+        </member>
+        <member name="M:Duality.Editor.ExtMethodsDataObject.SetWrappedData(System.Windows.Forms.IDataObject,System.Object)">
+            <summary>
+            Stores the specified non-<see cref="T:System.SerializableAttribute"/> data inside the specified data object using a serializable wrapper.
+            </summary>
+            <param name="data"></param>
+            <param name="value"></param>
+        </member>
+        <member name="M:Duality.Editor.ExtMethodsDataObject.GetWrappedDataPresent(System.Windows.Forms.IDataObject,System.Type)">
+            <summary>
+            Determines whether the specified type of wrapped non-<see cref="T:System.SerializableAttribute"/> data is available in the data object.
+            </summary>
+            <param name="data"></param>
+            <param name="format"></param>
+            <returns></returns>
+        </member>
+        <member name="M:Duality.Editor.ExtMethodsDataObject.GetWrappedDataPresent(System.Windows.Forms.IDataObject,System.String)">
+            <summary>
+            Determines whether the specified type of wrapped non-<see cref="T:System.SerializableAttribute"/> data is available in the data object.
+            </summary>
+            <param name="data"></param>
+            <param name="format"></param>
+            <returns></returns>
+        </member>
+        <member name="M:Duality.Editor.ExtMethodsDataObject.GetWrappedData(System.Windows.Forms.IDataObject,System.Type)">
+            <summary>
+            Retrieves the specified non-<see cref="T:System.SerializableAttribute"/> data from the specified data object using a serializable wrapper.
+            </summary>
+            <param name="data"></param>
+            <param name="format"></param>
+            <returns></returns>
+        </member>
+        <member name="M:Duality.Editor.ExtMethodsDataObject.GetWrappedData(System.Windows.Forms.IDataObject,System.String)">
+            <summary>
+            Retrieves the specified non-<see cref="T:System.SerializableAttribute"/> data from the specified data object using a serializable wrapper.
+            </summary>
+            <param name="data"></param>
+            <param name="format"></param>
+            <returns></returns>
+        </member>
+        <member name="P:Duality.Editor.EditorPlugin.Id">
+            <summary>
+            The Plugins ID. This should be unique.
+            </summary>
+        </member>
+        <member name="M:Duality.Editor.EditorPlugin.InitPlugin(Duality.Editor.Forms.MainForm)">
+            <summary>
+            This method is called when all plugins and the editors user data and layout are loaded. May initialize GUI.
+            </summary>
+            <param name="main"></param>
+        </member>
+        <member name="M:Duality.Editor.EditorPlugin.SaveUserData(System.Xml.Linq.XElement)">
+            <summary>
+            Saves the plugins user data to the provided Xml Node.
+            </summary>
+            <param name="node"></param>
+        </member>
+        <member name="M:Duality.Editor.EditorPlugin.LoadUserData(System.Xml.Linq.XElement)">
+            <summary>
+            Loads the plugins user data from the provided Xml Node.
+            </summary>
+            <param name="node"></param>
+        </member>
+        <member name="M:Duality.Editor.EditorPlugin.DeserializeDockContent(System.Type)">
+            <summary>
+            Called when initializing the editors layout and trying to set up one of this plugins DockContent.
+            Returns an IDockContent instance of the specified dockContentType. May return already existing
+            DockContent, a new an pre-setup instance or null as default.
+            </summary>
+            <param name="dockContentType"></param>
+            <returns></returns>
+        </member>
+        <member name="T:Duality.Editor.ExtMethodsForm">
+            <summary>
+            Provides extension methods for <see cref="T:System.Windows.Forms.Form"/>.
+            </summary>
+        </member>
+        <member name="M:Duality.Editor.ExtMethodsForm.ShowCentered(System.Windows.Forms.Form,System.Windows.Forms.Form)">
+            <summary>
+            Shows the <see cref="T:System.Windows.Forms.Form"/> centered on its parent, even though it
+            isn't modal. (The default <see cref="M:System.Windows.Forms.Form.Show(System.Windows.Forms.IWin32Window)"/> method 
+            ignores <see cref="F:System.Windows.Forms.FormStartPosition.CenterParent"/> settings.)
+            </summary>
+            <param name="form"></param>
+            <param name="parent"></param>
+        </member>
+        <member name="M:Duality.Editor.ExtMethodsForm.SetTaskbarOverlayIcon(System.Windows.Forms.Form,System.Drawing.Icon,System.String)">
+            <summary>
+            Draws the specified overlay icon over this form's taskbar button.
+            </summary>
+            <param name="form">The form.</param>
+            <param name="icon">The overlay icon.</param>
+            <param name="description">The overlay icon's description.</param>
+        </member>
+        <member name="M:Duality.Editor.ExtMethodsForm.SetTaskbarProgress(System.Windows.Forms.ProgressBar)">
+            <summary>
+            Sets the progress bar in the containing form's taskbar button
+            to this progress bar's progress.
+            </summary>
+            <param name="progressBar">The progress bar.</param>
+        </member>
+        <member name="M:Duality.Editor.ExtMethodsForm.SetTaskbarProgress(System.Windows.Forms.ToolStripProgressBar)">
+            <summary>
+            Sets the progress bar in the containing form's taskbar button
+            to this toolstrip progress bar's progress.
+            </summary>
+            <param name="progressBar">The progress bar.</param>
+        </member>
+        <member name="M:Duality.Editor.ExtMethodsForm.SetTaskbarProgress(System.Windows.Forms.Form,System.Single)">
+            <summary>
+            Sets the progress bar of this form's taskbar button to the
+            specified percentage.
+            </summary>
+            <param name="form">The form.</param>
+            <param name="percent">The progress percentage.</param>
+        </member>
+        <member name="M:Duality.Editor.ExtMethodsForm.SetTaskbarProgressState(System.Windows.Forms.Form,Duality.Editor.ThumbnailProgressState)">
+            <summary>
+            Sets the progress bar of this form's taskbar button to the
+            specified state.
+            </summary>
+            <param name="form">The form.</param>
+            <param name="state">The taskbar progress state.</param>
+        </member>
+        <member name="T:Duality.Editor.ThumbnailProgressState">
+            <summary>
+            Represents the thumbnail progress bar state.
+            </summary>
+        </member>
+        <member name="F:Duality.Editor.ThumbnailProgressState.NoProgress">
+            <summary>
+            No progress is displayed.
+            </summary>
+        </member>
+        <member name="F:Duality.Editor.ThumbnailProgressState.Indeterminate">
+            <summary>
+            The progress is indeterminate (marquee).
+            </summary>
+        </member>
+        <member name="F:Duality.Editor.ThumbnailProgressState.Normal">
+            <summary>
+            Normal progress is displayed.
+            </summary>
+        </member>
+        <member name="F:Duality.Editor.ThumbnailProgressState.Error">
+            <summary>
+            An error occurred (red).
+            </summary>
+        </member>
+        <member name="F:Duality.Editor.ThumbnailProgressState.Paused">
+            <summary>
+            The operation is paused (yellow).
+            </summary>
+        </member>
+        <member name="M:Duality.Editor.ExtMethodsToolStrip.GetActiveDropDown(System.Windows.Forms.ToolStrip)">
+            <summary>
+            Returns the currently dropped down item of this <see cref="T:System.Windows.Forms.ToolStrip"/>.
+            Returns null, if no dropdown is active.
+            </summary>
+            <param name="toolstrip"></param>
+            <returns></returns>
+        </member>
+        <member name="T:Duality.Editor.NativeMethods.FileOperationFlags">
+            <summary>
+            Possible flags for the SHFileOperation method.
+            </summary>
+        </member>
+        <member name="F:Duality.Editor.NativeMethods.FileOperationFlags.FOF_SILENT">
+            <summary>
+            Do not show a dialog during the process
+            </summary>
+        </member>
+        <member name="F:Duality.Editor.NativeMethods.FileOperationFlags.FOF_NOCONFIRMATION">
+            <summary>
+            Do not ask the user to confirm selection
+            </summary>
+        </member>
+        <member name="F:Duality.Editor.NativeMethods.FileOperationFlags.FOF_ALLOWUNDO">
+            <summary>
+            Delete the file to the recycle bin.  (Required flag to send a file to the bin
+            </summary>
+        </member>
+        <member name="F:Duality.Editor.NativeMethods.FileOperationFlags.FOF_SIMPLEPROGRESS">
+            <summary>
+            Do not show the names of the files or folders that are being recycled.
+            </summary>
+        </member>
+        <member name="F:Duality.Editor.NativeMethods.FileOperationFlags.FOF_NOERRORUI">
+            <summary>
+            Surpress errors, if any occur during the process.
+            </summary>
+        </member>
+        <member name="F:Duality.Editor.NativeMethods.FileOperationFlags.FOF_WANTNUKEWARNING">
+            <summary>
+            Warn if files are too big to fit in the recycle bin and will need
+            to be deleted completely.
+            </summary>
+        </member>
+        <member name="T:Duality.Editor.NativeMethods.FileOperationType">
+            <summary>
+            File Operation Function Type for SHFileOperation
+            </summary>
+        </member>
+        <member name="F:Duality.Editor.NativeMethods.FileOperationType.FO_MOVE">
+            <summary>
+            Move the objects
+            </summary>
+        </member>
+        <member name="F:Duality.Editor.NativeMethods.FileOperationType.FO_COPY">
+            <summary>
+            Copy the objects
+            </summary>
+        </member>
+        <member name="F:Duality.Editor.NativeMethods.FileOperationType.FO_DELETE">
+            <summary>
+            Delete (or recycle) the objects
+            </summary>
+        </member>
+        <member name="F:Duality.Editor.NativeMethods.FileOperationType.FO_RENAME">
+            <summary>
+            Rename the object(s)
+            </summary>
+        </member>
+        <member name="T:Duality.Editor.PathHelper">
+            <summary>
+            Provides helper methods for handling <see cref="T:System.IO.Path">Paths</see>.
+            </summary>
+        </member>
+        <member name="P:Duality.Editor.PathHelper.ExecutingAssemblyDir">
+            <summary>
+            Returns the directory
+            </summary>
+        </member>
+        <member name="M:Duality.Editor.PathHelper.GetFreePath(System.String,System.String)">
+            <summary>
+            Returns a path that isn't taken yet.
+            </summary>
+            <param name="pathBase">The path to use as base for finding a available path.</param>
+            <param name="pathExt">The (file) extension to add to the new path.</param>
+            <returns>A path that doesn't relate to any existing file or directory.</returns>
+            <example>
+            Assuming the directory <c>C:\SomeDir\</c> contains the file <c>File.txt</c>,
+            the code <c>PathHelper.GetFreePath(@"C:\SomeDir\File", ".txt");</c>
+            will return <c>C:\SomeDir\File (2).txt</c>.
+            </example>
+        </member>
+        <member name="M:Duality.Editor.PathHelper.MakeFilePathRelative(System.String,System.String)">
+            <summary>
+            Returns the relative path from one path to another.
+            </summary>
+            <param name="filePath">The path to make relative.</param>
+            <param name="relativeToDir">The path to make it relative to.</param>
+            <returns>A path that, if <see cref="M:System.IO.Path.Combine(System.String,System.String)">combined</see> with <c>relativeTo</c>, equals the original path.</returns>
+            <example>
+            <c>PathHelper.MakePathRelative(@"C:\SomeDir\SubDir\File.txt", @"C:\SomeDir")</c> will return <c>SubDir\File.txt</c>.
+            </example>
+        </member>
+        <member name="M:Duality.Editor.PathHelper.MakeDirectoryPathRelative(System.String,System.String)">
+            <summary>
+            Same as <see cref="M:Duality.Editor.PathHelper.MakeFilePathRelative(System.String,System.String)"/>, but for directories.
+            </summary>
+            <param name="directoryPath"></param>
+            <param name="relativeToDir"></param>
+            <returns></returns>
+        </member>
+        <member name="M:Duality.Editor.PathHelper.GetMutualBaseDirectory(System.Collections.Generic.IEnumerable{System.String})">
+            <summary>
+            Determines the mutual base directory of a set of paths.
+            </summary>
+            <param name="paths"></param>
+            <returns></returns>
+        </member>
+        <member name="M:Duality.Editor.PathHelper.IsPathVisible(System.String)">
+            <summary>
+            Returns whether the specified file or directory is visible, i.e. not hidden.
+            If visibility for a certain path can not be determined conclusively, it
+            will be assumed that the path is visible.
+            </summary>
+            <param name="path"></param>
+            <returns></returns>
+        </member>
+        <member name="M:Duality.Editor.PathHelper.IsPathValid(System.String)">
+            <summary>
+            Returns whether the specified path is considered a valid file or folder path.
+            Does not check whether the file or folder actually exists, only if the path can
+            be validly used to address one.
+            </summary>
+            <param name="path"></param>
+            <returns></returns>
+        </member>
+        <member name="M:Duality.Editor.PathHelper.CopyDirectory(System.String,System.String,System.Boolean,System.Predicate{System.String})">
+            <summary>
+            Deep-Copies the source directory to the target path.
+            </summary>
+            <param name="sourcePath"></param>
+            <param name="targetPath"></param>
+            <param name="overwrite"></param>
+            <param name="filter"></param>
+            <returns></returns>
+        </member>
+        <member name="M:Duality.Editor.PathHelper.DeleteEmptyDirectory(System.String,System.Boolean)">
+            <summary>
+            Checks whether the specified directory is empty and deletes it, if it is.
+            </summary>
+            <param name="path"></param>
+            <param name="recursive">If true, each deleted directories parent directory will be evaluated as well.</param>
+        </member>
+        <member name="M:Duality.Editor.PathHelper.FilesEqual(System.String,System.String)">
+            <summary>
+            Determines whether the contents of two files are completely equal.
+            </summary>
+            <param name="filePathA"></param>
+            <param name="filePathB"></param>
+            <returns></returns>
+        </member>
+        <member name="T:Duality.Editor.RecycleBin">
+            <summary>
+            Provides an API to send files and directories to the recycle bin. 
+            
+            Note that each operation comes with an overhead, so it is usually a 
+            lot better to call an API method once for N files than N times for each 
+            file individually.
+            </summary>
+        </member>
+        <member name="M:Duality.Editor.RecycleBin.Send(System.Collections.Generic.IEnumerable{System.String},Duality.Editor.NativeMethods.FileOperationFlags)">
+            <summary>
+            Send file to recycle bin
+            </summary>
+            <param name="path">Location of directory or file to recycle</param>
+            <param name="flags">FileOperationFlags to add in addition to FOF_ALLOWUNDO</param>
+        </member>
+        <member name="M:Duality.Editor.RecycleBin.Send(System.String)">
+            <summary>
+            Send file to the recycle bin. Display dialog, display warning if files are too big to fit (FOF_WANTNUKEWARNING)
+            </summary>
+            <param name="path">Location of directory or file to recycle</param>
+        </member>
+        <member name="M:Duality.Editor.RecycleBin.Send(System.Collections.Generic.IEnumerable{System.String})">
+            <summary>
+            Send a list of files to the recycle bin.  Display dialog, display warning if files are too big to fit (FOF_WANTNUKEWARNING)
+            </summary>
+            <param name="paths">Location of directories or files to recycle</param>
+        </member>
+        <member name="M:Duality.Editor.RecycleBin.SendSilent(System.String)">
+            <summary>
+            Send file silently to recycle bin. Suppress dialog, suppress errors, delete if too large.
+            </summary>
+            <param name="path">Location of directory or file to recycle</param>
+        </member>
+        <member name="M:Duality.Editor.RecycleBin.SendSilent(System.Collections.Generic.IEnumerable{System.String})">
+            <summary>
+            Send a list of files silently to the recycle bin. Suppress dialog, suppress errors, delete if too large.
+            </summary>
+            <param name="paths">Location of directories or files to recycle</param>
+        </member>
+        <member name="T:Duality.Editor.SerializableWrapper">
+            <summary>
+            A wrapper object that stores a non-<see cref="T:System.SerializableAttribute"/> object in a serializable way.
+            </summary>
+        </member>
+        <member name="T:Duality.Editor.UndoRedoManager">
+            <summary>
+            Manages the editor's global Undo / Redo system.
+            </summary>
+        </member>
+        <member name="T:Duality.Editor.UndoRedoManager.MacroDeriveName">
+            <summary>
+            Describes different modes of deriving the grouped name of an Undo / Redo
+            macro from its individual actions.
+            </summary>
+        </member>
+        <member name="F:Duality.Editor.UndoRedoManager.MacroDeriveName.UseGeneric">
+            <summary>
+            Use a generic macro name, not describing contents any further.
+            </summary>
+        </member>
+        <member name="F:Duality.Editor.UndoRedoManager.MacroDeriveName.FromFirst">
+            <summary>
+            The macro will assume the name of its first action item.
+            </summary>
+        </member>
+        <member name="F:Duality.Editor.UndoRedoManager.MacroDeriveName.FromLast">
+            <summary>
+            The macro will assume the name of its last action item.
+            </summary>
+        </member>
+        <member name="E:Duality.Editor.UndoRedoManager.StackChanged">
+            <summary>
+            Event that is fired whenever the Undo / Redo stack is modified.
+            </summary>
+        </member>
+        <member name="P:Duality.Editor.UndoRedoManager.MaxUndoActions">
+            <summary>
+            [GET / SET] The maximum amount of Undo / Redo actions that is stored on the stack
+            before removing the oldest actions permanently.
+            </summary>
+        </member>
+        <member name="P:Duality.Editor.UndoRedoManager.CanUndo">
+            <summary>
+            [GET] Whether it is currently possible to perform an undo step.
+            </summary>
+        </member>
+        <member name="P:Duality.Editor.UndoRedoManager.CanRedo">
+            <summary>
+            [GET] Whether it is currently possible to perform a redo step.
+            </summary>
+        </member>
+        <member name="P:Duality.Editor.UndoRedoManager.PrevActionInfo">
+            <summary>
+            [GET] Provides user information on the previously performed action for Undo.
+            </summary>
+        </member>
+        <member name="P:Duality.Editor.UndoRedoManager.NextActionInfo">
+            <summary>
+            [GET] Provides user information on the action that will be performed next on Redo.
+            </summary>
+        </member>
+        <member name="P:Duality.Editor.UndoRedoManager.ActionStack">
+            <summary>
+            [GET] The action stack containing all currently logged Undo / Redo actions.
+            New elements are added at the end while old elements are discarded at the beginning.
+            </summary>
+        </member>
+        <member name="P:Duality.Editor.UndoRedoManager.ActionIndex">
+            <summary>
+            [GET] The <see cref="P:Duality.Editor.UndoRedoManager.ActionStack"/> index of the action that was performed last.
+            </summary>
+        </member>
+        <member name="P:Duality.Editor.UndoRedoManager.PrevAction">
+            <summary>
+            [GET] The previously performed action for Undo.
+            </summary>
+        </member>
+        <member name="P:Duality.Editor.UndoRedoManager.NextAction">
+            <summary>
+            [GET] The action that will be performed next on Redo.
+            </summary>
+        </member>
+        <member name="M:Duality.Editor.UndoRedoManager.Clear">
+            <summary>
+            Clears the entire Undo / Redo stack. This will discard all actions.
+            </summary>
+        </member>
+        <member name="M:Duality.Editor.UndoRedoManager.Do(System.String,Duality.Editor.UndoRedoAction[])">
+            <summary>
+            Performs a pre-defined macro action and puts it on the Undo / Redo stack
+            as a single user operation.
+            </summary>
+            <param name="macroName"></param>
+            <param name="macro"></param>
+        </member>
+        <member name="M:Duality.Editor.UndoRedoManager.Do(Duality.Editor.UndoRedoAction)">
+            <summary>
+            Performs the specified user operation and puts it on the Undo / Redo stack.
+            </summary>
+            <param name="action"></param>
+        </member>
+        <member name="M:Duality.Editor.UndoRedoManager.Finish">
+            <summary>
+            Indicates that the last user operation that was put on the Undo / Redo stack
+            is considered finished and thus cannot be merged with future user operations.
+            </summary>
+        </member>
+        <member name="M:Duality.Editor.UndoRedoManager.Redo">
+            <summary>
+            Performs a Redo operation, i.e. applies the next action on the stack.
+            </summary>
+        </member>
+        <member name="M:Duality.Editor.UndoRedoManager.Undo">
+            <summary>
+            Performs an Undo operation, i.e. reverts the last action on the stack.
+            </summary>
+        </member>
+        <member name="M:Duality.Editor.UndoRedoManager.BeginMacro(System.String)">
+            <summary>
+            Begins a macro with the specified name.
+            </summary>
+            <param name="name"></param>
+        </member>
+        <member name="M:Duality.Editor.UndoRedoManager.EndMacro(System.String)">
+            <summary>
+            Ends the currently active macro and merges all actions that have been
+            performed since into a single Undo / Redo action on the stack.
+            </summary>
+            <param name="name"></param>
+        </member>
+        <member name="M:Duality.Editor.UndoRedoManager.EndMacro(Duality.Editor.UndoRedoManager.MacroDeriveName)">
+            <summary>
+            Ends the currently active macro and merges all actions that have been
+            performed since into a single Undo / Redo action on the stack.
+            </summary>
+            <param name="name"></param>
+        </member>
+        <member name="T:Duality.Editor.IUndoRedoActionInfo">
+            <summary>
+            Provides user information about an Undo / Redo action.
+            </summary>
+        </member>
+        <member name="P:Duality.Editor.IUndoRedoActionInfo.Name">
+            <summary>
+            [GET] The name of the user action.
+            </summary>
+        </member>
+        <member name="P:Duality.Editor.IUndoRedoActionInfo.Help">
+            <summary>
+            [GET] An optional help topic dealing with the user action in detail.
+            </summary>
+        </member>
+        <member name="T:Duality.Editor.UndoRedoAction">
+            <summary>
+            Defines and implements an Undo / Redo user action.
+            </summary>
+        </member>
+        <member name="F:Duality.Editor.UndoRedoAction.BackupCloneContext">
+            <summary>
+            A cloning context that doesn't preserve (i.e. clones and overwrites) identity-relevant 
+            object fields because it is intended to be used for creating object backups.
+            </summary>
+        </member>
+        <member name="P:Duality.Editor.UndoRedoAction.Name">
+            <summary>
+            [GET] The name of the user action.
+            </summary>
+        </member>
+        <member name="P:Duality.Editor.UndoRedoAction.IsVoid">
+            <summary>
+            [GET] Whether or not this user action should be considered devoid of content.
+            If this action does nothing, this property should return true.
+            </summary>
+        </member>
+        <member name="P:Duality.Editor.UndoRedoAction.Help">
+            <summary>
+            [GET] An optional help topic dealing with the user action in detail.
+            </summary>
+        </member>
+        <member name="M:Duality.Editor.UndoRedoAction.CanAppend(Duality.Editor.UndoRedoAction)">
+            <summary>
+            Determines whether the specified action could be merged with this one.
+            </summary>
+            <param name="action"></param>
+            <returns></returns>
+        </member>
+        <member name="M:Duality.Editor.UndoRedoAction.Append(Duality.Editor.UndoRedoAction,System.Boolean)">
+            <summary>
+            Merges the specified action with this one and performs it before doing so, if requested.
+            </summary>
+            <param name="action"></param>
+            <param name="performAction"></param>
+        </member>
+        <member name="M:Duality.Editor.UndoRedoAction.Do">
+            <summary>
+            Applies the intended changes of this user action.
+            </summary>
+        </member>
+        <member name="M:Duality.Editor.UndoRedoAction.Undo">
+            <summary>
+            Reverts the previously applied changes of this user action.
+            </summary>
+        </member>
+    </members>
+</doc>

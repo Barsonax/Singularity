@@ -259,3 +259,20 @@ paket-files/
 # Python Tools for Visual Studio (PTVS)
 __pycache__/
 *.pyc
+/Duality/Temp
+/Duality/Plugins/Singularity.Duality.core.xml
+/Duality/Plugins/Singularity.Duality.core.dll
+/Duality/Plugins/Singularity.dll
+/Duality/Plugins/Singularity.deps.json
+/Duality/Source/Code/EditorPlugin
+/Duality/Source/Code/CorePlugin
+/Duality/Source/Code/ProjectPlugins.sln
+/Duality/logfile_editor.txt
+/Duality/logfile.txt
+/Duality/perflog_editor.txt
+/Duality/perflog.txt
+/Duality/EditorUserData.xml
+/Duality/UserData.dat
+/Duality/DesignTimeData.dat
+/Duality/DefaultUserData.dat
+/Duality/AppData.dat

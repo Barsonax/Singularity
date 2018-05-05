@@ -9,6 +9,8 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Singularity.Test", "Singula
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Singularity.Benchmark", "Singularity.Benchmark\Singularity.Benchmark.csproj", "{A6CEF3E9-C75E-48CB-90F4-21C99007C406}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Singularity.Duality", "Duality\Source\Code\Singularity.Duality\Singularity.Duality.csproj", "{AFE883F3-72B4-4C7C-A1D1-44EDC09C8F6E}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -27,6 +29,10 @@ Global
 		{A6CEF3E9-C75E-48CB-90F4-21C99007C406}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{A6CEF3E9-C75E-48CB-90F4-21C99007C406}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{A6CEF3E9-C75E-48CB-90F4-21C99007C406}.Release|Any CPU.Build.0 = Release|Any CPU
+		{AFE883F3-72B4-4C7C-A1D1-44EDC09C8F6E}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{AFE883F3-72B4-4C7C-A1D1-44EDC09C8F6E}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{AFE883F3-72B4-4C7C-A1D1-44EDC09C8F6E}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{AFE883F3-72B4-4C7C-A1D1-44EDC09C8F6E}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
