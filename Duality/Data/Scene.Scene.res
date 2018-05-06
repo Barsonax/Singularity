@@ -212,6 +212,41 @@
       <parent />
       <prefabLink />
     </item>
+    <item dataType="Struct" type="Duality.GameObject" id="3320221098">
+      <active dataType="Bool">true</active>
+      <children />
+      <compList dataType="Struct" type="System.Collections.Generic.List`1[[Duality.Component]]" id="1519024308">
+        <_items dataType="Array" type="Duality.Component[]" id="3309743524" length="4">
+          <item dataType="Struct" type="Singularity.Duality.CustomComponent" id="2976027073">
+            <active dataType="Bool">true</active>
+            <gameobj dataType="ObjectRef">3320221098</gameobj>
+          </item>
+        </_items>
+        <_size dataType="Int">1</_size>
+      </compList>
+      <compMap dataType="Struct" type="System.Collections.Generic.Dictionary`2[[System.Type],[Duality.Component]]" id="4234272758" surrogate="true">
+        <header />
+        <body>
+          <keys dataType="Array" type="System.Object[]" id="2766076318">
+            <item dataType="Type" id="60659600" value="Singularity.Duality.CustomComponent" />
+          </keys>
+          <values dataType="Array" type="System.Object[]" id="1071016330">
+            <item dataType="ObjectRef">2976027073</item>
+          </values>
+        </body>
+      </compMap>
+      <compTransform />
+      <identifier dataType="Struct" type="System.Guid" surrogate="true">
+        <header>
+          <data dataType="Array" type="System.Byte[]" id="3367906414">/qijskg/HUeL2KVRuWqxjw==</data>
+        </header>
+        <body />
+      </identifier>
+      <initState dataType="Enum" type="Duality.InitState" name="Initialized" value="1" />
+      <name dataType="String">CustomComponent</name>
+      <parent />
+      <prefabLink />
+    </item>
   </serializeObj>
   <visibilityStrategy dataType="Struct" type="Duality.Components.DefaultRendererVisibilityStrategy" id="2035693768" />
 </root>

@@ -12,7 +12,7 @@ namespace Singularity.Duality
 		protected override void OnGameStarting()
 		{
 			var config = new BindingConfig();
-			//TODO add logic to configure the dependencies
+			//TODO add logic to make it possible configure the dependencies.
 
 			_container = new Container(config);
 			Scene.ComponentAdded += Scene_ComponentAdded;

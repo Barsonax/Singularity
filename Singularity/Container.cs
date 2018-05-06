@@ -9,6 +9,8 @@ namespace Singularity
 {
 	public class Container
 	{
+		//TODO handle disposable objects.
+
 		private readonly DependencyGraph _dependencyGraph;
 
 		private readonly Dictionary<Type, Action<object>> _injectionCache = new Dictionary<Type, Action<object>>(ReferenceEqualityComparer<Type>.Instance);

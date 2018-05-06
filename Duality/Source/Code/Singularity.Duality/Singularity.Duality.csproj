@@ -57,6 +57,7 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="CustomComponent.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="SingularityPlugin.cs" />
   </ItemGroup>
