@@ -12,10 +12,5 @@ namespace Singularity
             Lifetime = lifetime;
             Expression = expression;
         }
-
-        public override string ToString()
-        {
-            return $"Type {Expression.Type} Lifetime {Lifetime}";
-        }
     }
 }

@@ -12,25 +12,32 @@ namespace Singularity
         public Binding<TDependency> To<TInstance>()
             where TInstance : TDependency
         {
-            Expression = typeof(TInstance).AutoResolveConstructor();
-            return this;
+            return To(typeof(TInstance));
         }
 
         public Binding<TDependency> To(Type type)
         {
-            Expression = type.AutoResolveConstructor();
-            return this;
+            return SetExpression(type.AutoResolveConstructor());
+        }
+
+        private Binding<TDependency> To(Expression expression)
+        {
+            return SetExpression(expression);
         }
 
         public Binding<TDependency> To<TInstance>(Expression<Func<TInstance>> expression)
             where TInstance : TDependency
         {
-            Expression = expression;
-            return this;
+            return SetExpression(expression);
         }
 
         public Binding<TDependency> To<TInstance, TP1>(Expression<Func<TP1, TInstance>> expression)
             where TInstance : TDependency
+        {
+            return SetExpression(expression);
+        }
+
+        private Binding<TDependency> SetExpression(Expression expression)
         {
             Expression = expression;
             return this;

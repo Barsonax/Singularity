@@ -37,15 +37,20 @@ namespace Singularity.Graph
 
             foreach (var unresolvedNode in unresolvedNodes)
             {
-                unresolvedNode.Depth = ResolveDepth(unresolvedNode, unresolvedNode, true);
+                unresolvedNode.Depth = ResolveDepth(unresolvedNode);
             }
 
             return _nodes.Values.GroupBy(x => x.Depth).OrderBy(x => x.Key).Select(x => x.Select(y => y.Value).ToArray()).ToArray();
         }
 
-        private int ResolveDepth(Node<T> dependencyNode, Node<T> startNode, bool isRootCall = false)
+        private int ResolveDepth(Node<T> dependencyNode, Node<T> startNode = null)
         {
-            if (!isRootCall && dependencyNode == startNode) throw new CircularDependencyException();
+            if (startNode == null)
+            {
+                startNode = dependencyNode;
+            }
+            else if (dependencyNode == startNode) throw new CircularDependencyException($"{startNode.Value} has circular dependencies!");
+            
             var maxDepth = 0;
 
             foreach (var parent in dependencyNode.Parents)

@@ -20,7 +20,17 @@
 		}
 	}
 
-	public class Component : IComponent { }
+    public class DecoratorWrongInterface : ITestService10
+    {
+        public IComponent Component { get; }
+
+        public DecoratorWrongInterface(IComponent decoratee)
+        {
+            Component = decoratee;
+        }
+    }
+
+    public class Component : IComponent { }
 
 	public interface IComponent { }
 

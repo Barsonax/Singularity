@@ -9,7 +9,7 @@ namespace Singularity.Test
         public void GetInstance_Decorate_Simple()
         {
             var config = new BindingConfig();
-            config.RegisterDecorator<Decorator1>().To<IComponent>();
+            config.Decorate<Decorator1>().On<IComponent>();
             config.Bind<IComponent>().To<Component>();
 
             var container = new Container(config);
@@ -27,8 +27,8 @@ namespace Singularity.Test
         {
             var config = new BindingConfig();
 
-            config.RegisterDecorator<Decorator1>().To<IComponent>();
-            config.RegisterDecorator<Decorator2>().To<IComponent>();
+            config.Decorate<Decorator1>().On<IComponent>();
+            config.Decorate<Decorator2>().On<IComponent>();
 
             config.Bind<IComponent>().To<Component>();
 
@@ -51,7 +51,7 @@ namespace Singularity.Test
         {
             var config = new BindingConfig();
 
-            config.RegisterDecorator<TestService11_Decorator1>().To<ITestService11>();
+            config.Decorate<TestService11_Decorator1>().On<ITestService11>();
 
             config.Bind<ITestService10>().To<TestService10>();
             config.Bind<ITestService11>().To<TestService11>();
@@ -77,8 +77,8 @@ namespace Singularity.Test
         {
             var config = new BindingConfig();
 
-            config.RegisterDecorator<TestService11_Decorator1>().To<ITestService11>();
-            config.RegisterDecorator<TestService11_Decorator2>().To<ITestService11>();
+            config.Decorate<TestService11_Decorator1>().On<ITestService11>();
+            config.Decorate<TestService11_Decorator2>().On<ITestService11>();
 
             config.Bind<ITestService10>().To<TestService10>();
             config.Bind<ITestService11>().To<TestService11>();

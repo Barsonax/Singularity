@@ -1,3 +1,4 @@
+using System.Collections.Generic;
 using Singularity.Test.TestClasses;
 using Xunit;
 
@@ -15,6 +16,41 @@ namespace Singularity.Test
 
             var value = container.GetInstance<ITestService10>();
             Assert.Equal(typeof(TestService10), value.GetType());
+        }
+
+        [Fact]
+        public void Inject_NoInternalDependencies()
+        {
+            var config = new BindingConfig();
+            config.Bind<ITestService10>().To<TestService10>();
+
+            var container = new Container(config);
+
+            var instance = new MethodInjectionClass();
+            container.Inject(instance);
+            
+            Assert.Equal(typeof(TestService10), instance.TestService10.GetType());
+        }
+
+        [Fact]
+        public void InjectMultiple_NoInternalDependencies()
+        {
+            var config = new BindingConfig();
+            config.Bind<ITestService10>().To<TestService10>();
+
+            var container = new Container(config);
+
+            var instances = new List<MethodInjectionClass>();
+            for (var i = 0; i < 10; i++)
+            {
+                instances.Add(new MethodInjectionClass());
+            }
+            container.Inject(instances);
+
+            foreach (var instance in instances)
+            {
+                Assert.Equal(typeof(TestService10), instance.TestService10.GetType());
+            }            
         }
 
         [Fact]

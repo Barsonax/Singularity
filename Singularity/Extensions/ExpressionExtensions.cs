@@ -17,7 +17,7 @@ namespace Singularity.Extensions
                 case NewExpression newExpression:
                     return newExpression.Arguments.Select(x => (ParameterExpression)x).ToArray();
                 case BlockExpression blockExpression:
-                    return blockExpression.Variables.OfType<ParameterExpression>().ToArray();
+                    return blockExpression.Variables.ToArray();
                 default:
                     throw new NotSupportedException($"The expression of type {expression.GetType()} is not supported");
             }

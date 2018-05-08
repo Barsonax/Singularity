@@ -16,24 +16,15 @@ namespace Singularity
             return binding;
         }
 
-        public DecoratorBinding<TDecorator> RegisterDecorator<TDecorator>()
+        public DecoratorBinding<TDecorator> Decorate<TDecorator>()
         {
             var decorator = new DecoratorBinding<TDecorator>(this);
 
             return decorator;
         }
 
-        public void Add(IEnumerable<IBinding> bindings)
-        {
-            foreach (var binding in bindings)
-            {
-                Add(binding);
-            }
-        }
-
         public void Add(IBinding binding)
-        {
-            if (!binding.DependencyType.GetTypeInfo().IsInterface) throw new InterfaceExpectedException($"{binding.DependencyType} is not a interface.");
+        {            
             Bindings.Add(binding.DependencyType, binding);
         }
 
