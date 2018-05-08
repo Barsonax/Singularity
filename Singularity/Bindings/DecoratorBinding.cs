@@ -19,7 +19,17 @@ namespace Singularity
 			Expression = typeof(TDecorator).AutoResolveConstructor();
 		}
 
-		public DecoratorBinding<TDecorator> On(Type type)
+        /// <summary>
+        /// Sets the type which should be wrapped by the decorator
+        /// </summary>
+        /// <typeparam name="TDependency"></typeparam>
+        /// <returns></returns>
+	    public DecoratorBinding<TDecorator> On<TDependency>()
+	    {
+	        return On(typeof(TDependency));
+	    }
+
+        public DecoratorBinding<TDecorator> On(Type type)
 		{
 		    var typeInfo = type.GetTypeInfo();
 		    if (!typeInfo.IsInterface) throw new InterfaceExpectedException($"{type} is not a interface.");
@@ -35,11 +45,6 @@ namespace Singularity
 			}
 			decorators.Add(this);
 			return this;
-		}
-
-		public DecoratorBinding<TDecorator> On<TDependency>()
-		{
-			return On(typeof(TDependency));
 		}
 	}
 }

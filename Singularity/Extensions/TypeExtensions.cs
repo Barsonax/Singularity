@@ -7,6 +7,13 @@ namespace Singularity
 {
     public static class TypeExtensions
     {
+        /// <summary>
+        /// Tries to create a <see cref="NewExpression"/> representing the call to the constructor.
+        /// </summary>
+        /// <param name="type"></param>
+        /// <exception cref="NoConstructorException">If there is no public constructor</exception>
+        /// <exception cref="CannotAutoResolveConstructorException">If there is more than 1 public constructors</exception>
+        /// <returns></returns>
         public static NewExpression AutoResolveConstructor(this Type type)
         {
             var constructors = type.GetTypeInfo().DeclaredConstructors.Where(x => x.IsPublic).ToArray();

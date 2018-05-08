@@ -33,6 +33,12 @@ namespace Singularity
             }
         }
 
+        /// <summary>
+        /// Injects dependencies by calling all methods marked with <see cref="InjectAttribute"/> on the <paramref name="instances"/>.
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        /// <param name="instances"></param>
+        /// <exception cref="DependencyNotFoundException">If the method had parameters that couldnt be resolved</exception>
         public void InjectAll<T>(IEnumerable<T> instances)
         {
             foreach (var instance in instances)
@@ -41,6 +47,12 @@ namespace Singularity
             }
         }
 
+        /// <summary>
+        /// Injects dependencies by calling all methods marked with <see cref="InjectAttribute"/> on the <paramref name="instance"/>.
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        /// <param name="instance"></param>
+        /// <exception cref="DependencyNotFoundException">If the method had parameters that couldnt be resolved</exception>
         public void Inject<T>(T instance)
         {
             var type = instance.GetType();
@@ -52,12 +64,24 @@ namespace Singularity
             action.Invoke(instance);
         }
 
+        /// <summary>
+        /// Resolves a instance for the given dependency type
+        /// </summary>
+        /// <typeparam name="T">The type of the dependency</typeparam>
+        /// <exception cref="DependencyNotFoundException">If the dependency is not configured</exception>
+        /// <returns></returns>
         public T GetInstance<T>() where T : class
         {
             var value = GetInstance(typeof(T));
             return (T)value;
         }
 
+        /// <summary>
+        /// Resolves a instance for the given dependency type
+        /// </summary>
+        /// <param name="type">The type of the dependency</param>
+        /// <exception cref="DependencyNotFoundException">If the dependency is not configured</exception>
+        /// <returns></returns>
         public object GetInstance(Type type)
         {
             if (!_getInstanceCache.TryGetValue(type, out var action))

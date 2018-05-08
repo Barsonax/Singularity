@@ -9,6 +9,11 @@ namespace Singularity
         public Expression Expression { get; set; }
         public Lifetime Lifetime { get; private set; }
 
+        /// <summary>
+        /// Sets the actual type that will be used for the dependency and auto generates a <see cref="System.Linq.Expressions.Expression"/> to call the constructor
+        /// </summary>
+        /// <typeparam name="TInstance"></typeparam>
+        /// <returns></returns>
         public Binding<TDependency> To<TInstance>()
             where TInstance : TDependency
         {
