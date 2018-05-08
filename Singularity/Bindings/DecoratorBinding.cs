@@ -1,6 +1,5 @@
 ﻿using Singularity.Extensions;
 using System;
-using System.Collections.Generic;
 using System.Linq;
 using System.Linq.Expressions;
 using System.Reflection;
@@ -11,11 +10,9 @@ namespace Singularity
 	{
 		public Type DependencyType { get; private set; }
 		public Expression Expression { get; set; }
-		private readonly BindingConfig _bindingConfig;
 
-		public DecoratorBinding(BindingConfig bindingConfig)
+		public DecoratorBinding()
 		{
-			_bindingConfig = bindingConfig;
 			Expression = typeof(TDecorator).AutoResolveConstructor();
 		}
 
@@ -33,17 +30,12 @@ namespace Singularity
 		{
 		    var typeInfo = type.GetTypeInfo();
 		    if (!typeInfo.IsInterface) throw new InterfaceExpectedException($"{type} is not a interface.");
-		    if (!typeInfo.IsAssignableFrom(typeof(TDecorator).GetTypeInfo())) throw new InterfaceNotImplementedException($"{type} is not implemented by {typeof(TDecorator)}");
-            DependencyType = type;
+		    if (!typeInfo.IsAssignableFrom(typeof(TDecorator).GetTypeInfo())) throw new InterfaceNotImplementedException($"{type} is not implemented by {typeof(TDecorator)}");          
 
 			var parameters = Expression.GetParameterExpressions();
 			if (parameters.All(x => x.Type != type)) throw new InvalidExpressionArgumentsException($"Cannot decorate {type} since the expression to create {typeof(TDecorator)} does not have a parameter for {type}");
-			if (!_bindingConfig.Decorators.TryGetValue(type, out var decorators))
-			{
-				decorators = new List<IDecoratorBinding>();
-				_bindingConfig.Decorators.Add(type, decorators);
-			}
-			decorators.Add(this);
+
+			DependencyType = type;
 			return this;
 		}
 	}

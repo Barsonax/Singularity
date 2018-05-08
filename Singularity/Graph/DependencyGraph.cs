@@ -16,9 +16,21 @@ namespace Singularity
         public DependencyGraph(BindingConfig bindingConfig)
         {
             _dependencies = new Dictionary<Type, DependencyNode>();
+
+			var decoratorsDic = new Dictionary<Type, List<IDecoratorBinding>>();
+	        foreach (var decoratorBinding in bindingConfig.Decorators)
+	        {
+				if (!decoratorsDic.TryGetValue(decoratorBinding.DependencyType, out var decorators))
+				{
+					decorators = new List<IDecoratorBinding>();
+					decoratorsDic.Add(decoratorBinding.DependencyType, decorators);
+				}
+				decorators.Add(decoratorBinding);
+			}
+
             foreach (var binding in bindingConfig.Bindings.Values)
             {
-                var expression = GetDependencyExpression(binding, bindingConfig.Decorators.TryGetDefaultValue(binding.DependencyType));
+                var expression = GetDependencyExpression(binding, decoratorsDic.TryGetDefaultValue(binding.DependencyType));
                 var node = new DependencyNode(expression, binding.Lifetime);
                 _dependencies.Add(binding.DependencyType, node);
             }

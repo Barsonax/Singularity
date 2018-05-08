@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Linq.Expressions;
 
-namespace Singularity
+namespace Singularity.Bindings
 {
     public class Binding<TDependency> : IBinding
     {

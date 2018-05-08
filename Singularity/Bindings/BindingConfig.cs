@@ -1,13 +1,13 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Reflection;
+using Singularity.Bindings;
 
 namespace Singularity
 {
     public class BindingConfig
     {
         public readonly Dictionary<Type, IBinding> Bindings = new Dictionary<Type, IBinding>();
-        public readonly Dictionary<Type, List<IDecoratorBinding>> Decorators = new Dictionary<Type, List<IDecoratorBinding>>();
+        public readonly List<IDecoratorBinding> Decorators = new List<IDecoratorBinding>();
 
         /// <summary>
         /// Begins configuring a binding for a certain dependency
@@ -17,7 +17,7 @@ namespace Singularity
         public Binding<TDependency> Bind<TDependency>()
         {
             var binding = new Binding<TDependency>();
-            Add(binding);
+            AddBinding(binding);
             return binding;
         }
 
@@ -28,12 +28,12 @@ namespace Singularity
         /// <returns></returns>
         public DecoratorBinding<TDecorator> Decorate<TDecorator>()
         {
-            var decorator = new DecoratorBinding<TDecorator>(this);
-
+            var decorator = new DecoratorBinding<TDecorator>();
+			Decorators.Add(decorator);
             return decorator;
         }
 
-        public void Add(IBinding binding)
+        public void AddBinding(IBinding binding)
         {            
             Bindings.Add(binding.DependencyType, binding);
         }

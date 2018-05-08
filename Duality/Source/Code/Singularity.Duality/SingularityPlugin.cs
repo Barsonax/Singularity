@@ -11,16 +11,27 @@ namespace Singularity.Duality
 
 		protected override void OnGameStarting()
 		{
-			var config = new BindingConfig();
-			//TODO add logic to make it possible configure the dependencies.
-
-			_container = new Container(config);
 			Scene.ComponentAdded += Scene_ComponentAdded;
 			Scene.Entered += Scene_Entered;
+			Scene.Leaving += Scene_Leaving;
+		}
+
+		private void Scene_Leaving(object sender, EventArgs e)
+		{
+			_container?.Dispose();
 		}
 
 		private void Scene_Entered(object sender, EventArgs e)
 		{
+			var modules = Scene.Current.FindComponents<IModule>();
+			var config = new BindingConfig();
+			foreach (var module in modules)
+			{
+				module.Register(config);
+			}
+
+			_container = new Container(config);
+
 			InjectGameObjects(Scene.Current.AllObjects);
 		}
 

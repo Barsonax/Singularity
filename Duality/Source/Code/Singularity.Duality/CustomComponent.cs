@@ -5,7 +5,7 @@ namespace Singularity.Duality
 	public class CustomComponent : Component, ICmpInitializable
 	{
 		[Inject]
-		public void Initialize()
+		public void Initialize(IDummyDependency dummyDependency)
 		{
 
 		}
@@ -18,6 +18,24 @@ namespace Singularity.Duality
 		public void OnShutdown(ShutdownContext context)
 		{
 			
+		}
+	}
+
+	public class DummyDependency : IDummyDependency
+	{
+
+	}
+
+	public interface IDummyDependency
+	{
+
+	}
+
+	public class DependencyComponent : Component, IModule
+	{
+		public void Register(BindingConfig bindingConfig)
+		{
+			bindingConfig.Bind<IDummyDependency>().To<DummyDependency>();
 		}
 	}
 }
