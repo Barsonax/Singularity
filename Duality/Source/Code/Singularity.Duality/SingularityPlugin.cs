@@ -39,7 +39,7 @@ namespace Singularity.Duality
 		{
 			foreach (var gameObject in gameObjects)
 			{
-				_container.Inject(gameObject.GetComponents<Component>());
+				_container.InjectAll(gameObject.GetComponents<Component>());
 			}
 		}
 	}
