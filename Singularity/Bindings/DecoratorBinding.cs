@@ -6,36 +6,38 @@ using System.Reflection;
 
 namespace Singularity
 {
-	public class DecoratorBinding<TDecorator> : IDecoratorBinding
+	public class DecoratorBinding<TDependency> : IDecoratorBinding
 	{
 		public Type DependencyType { get; private set; }
 		public Expression Expression { get; set; }
 
 		public DecoratorBinding()
 		{
-			Expression = typeof(TDecorator).AutoResolveConstructor();
+			var type = typeof(TDependency);
+			if (!type.GetTypeInfo().IsInterface) throw new InterfaceExpectedException($"{type} is not a interface.");
+			DependencyType = type;			
 		}
 
-        /// <summary>
-        /// Sets the type which should be wrapped by the decorator
-        /// </summary>
-        /// <typeparam name="TDependency"></typeparam>
-        /// <returns></returns>
-	    public DecoratorBinding<TDecorator> On<TDependency>()
-	    {
-	        return On(typeof(TDependency));
-	    }
-
-        public DecoratorBinding<TDecorator> On(Type type)
+		/// <summary>
+		/// Sets the type which should be wrapped by the decorator
+		/// </summary>
+		/// <typeparam name="TDecorator"></typeparam>
+		/// <returns></returns>
+		public DecoratorBinding<TDependency> With<TDecorator>()
+			where TDecorator : TDependency
 		{
-		    var typeInfo = type.GetTypeInfo();
-		    if (!typeInfo.IsInterface) throw new InterfaceExpectedException($"{type} is not a interface.");
-		    if (!typeInfo.IsAssignableFrom(typeof(TDecorator).GetTypeInfo())) throw new InterfaceNotImplementedException($"{type} is not implemented by {typeof(TDecorator)}");          
+			return With(typeof(TDecorator));
+		}
 
+		public DecoratorBinding<TDependency> With(Type type)
+		{
+			var typeInfo = type.GetTypeInfo();
+			if (!DependencyType.GetTypeInfo().IsAssignableFrom(typeInfo)) throw new InterfaceNotImplementedException($"{DependencyType} is not implemented by {type}");
+
+			Expression = type.AutoResolveConstructor();
 			var parameters = Expression.GetParameterExpressions();
-			if (parameters.All(x => x.Type != type)) throw new InvalidExpressionArgumentsException($"Cannot decorate {type} since the expression to create {typeof(TDecorator)} does not have a parameter for {type}");
+			if (parameters.All(x => x.Type != DependencyType)) throw new InvalidExpressionArgumentsException($"Cannot decorate {DependencyType} since the expression to create {type} does not have a parameter for {DependencyType}");
 
-			DependencyType = type;
 			return this;
 		}
 	}

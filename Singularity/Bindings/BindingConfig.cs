@@ -21,14 +21,15 @@ namespace Singularity
             return binding;
         }
 
-        /// <summary>
-        /// Begins configuring a decorator to wrap around a certain type.
-        /// </summary>
-        /// <typeparam name="TDecorator"></typeparam>
-        /// <returns></returns>
-        public DecoratorBinding<TDecorator> Decorate<TDecorator>()
+		/// <summary>
+		/// Begins configuring a decorator to for <see cref="TDependency"/>.
+		/// </summary>
+		/// <typeparam name="TDependency">The type to decorate</typeparam>
+		/// <exception cref="InterfaceExpectedException">If <typeparamref name="TDependency"/> is not a interface</exception>
+		/// <returns></returns>
+		public DecoratorBinding<TDependency> Decorate<TDependency>()
         {
-            var decorator = new DecoratorBinding<TDecorator>();
+            var decorator = new DecoratorBinding<TDependency>();
 			Decorators.Add(decorator);
             return decorator;
         }

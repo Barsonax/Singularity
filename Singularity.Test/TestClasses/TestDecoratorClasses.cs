@@ -1,5 +1,15 @@
 ﻿namespace Singularity.Test.TestClasses
 {
+	public class DecoratorWithNoInterface : TestService10
+	{
+		public TestService10 TestService10 { get; }
+
+		public DecoratorWithNoInterface(DecoratorWithNoInterface decoratee)
+		{
+			TestService10 = decoratee;
+		}
+	}
+
 	public class Decorator2 : IComponent
 	{
 		public IComponent Component { get; }

@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.Linq;
 using System.Linq.Expressions;
 using Singularity.Exceptions;
@@ -10,30 +11,20 @@ namespace Singularity
 {
     public class DependencyGraph
     {
-        public IReadOnlyDictionary<Type, DependencyNode> Dependencies => _dependencies;
-        private readonly Dictionary<Type, DependencyNode> _dependencies;
+        public ReadOnlyDictionary<Type, DependencyNode> Dependencies { get; }
 
         public DependencyGraph(BindingConfig bindingConfig)
-        {
-            _dependencies = new Dictionary<Type, DependencyNode>();
+        {          
+	        var decoratorsDic = bindingConfig.Decorators.GroupBy(x => x.DependencyType).ToDictionary(x => x.Key, bindings => bindings.ToArray());
 
-			var decoratorsDic = new Dictionary<Type, List<IDecoratorBinding>>();
-	        foreach (var decoratorBinding in bindingConfig.Decorators)
-	        {
-				if (!decoratorsDic.TryGetValue(decoratorBinding.DependencyType, out var decorators))
-				{
-					decorators = new List<IDecoratorBinding>();
-					decoratorsDic.Add(decoratorBinding.DependencyType, decorators);
-				}
-				decorators.Add(decoratorBinding);
-			}
-
-            foreach (var binding in bindingConfig.Bindings.Values)
+	        var dependencies = new Dictionary<Type, DependencyNode>();
+			foreach (var binding in bindingConfig.Bindings.Values)
             {
                 var expression = GetDependencyExpression(binding, decoratorsDic.TryGetDefaultValue(binding.DependencyType));
                 var node = new DependencyNode(expression, binding.Lifetime);
-                _dependencies.Add(binding.DependencyType, node);
+                dependencies.Add(binding.DependencyType, node);
             }
+			Dependencies = new ReadOnlyDictionary<Type, DependencyNode>(dependencies);
 
             var graph = new Graph<DependencyNode>(Dependencies.Values);
             var updateOrder = graph.GetUpdateOrder(node => node.Expression.GetParameterExpressions().Select(x => GetDependency(x.Type)));
@@ -56,11 +47,11 @@ namespace Singularity
             throw new CannotResolveDependencyException($"Dependency {type} was not registered");
         }
 
-        private Expression GetDependencyExpression(IBinding binding, List<IDecoratorBinding> decorators)
+        private Expression GetDependencyExpression(IBinding binding, IDecoratorBinding[] decorators)
         {
             var expression = binding.Expression;
 
-            if (decorators != null && decorators.Count > 0)
+            if (decorators != null && decorators.Length > 0)
             {
                 var body = new List<Expression>();
                 var allParameters = new List<ParameterExpression>();
