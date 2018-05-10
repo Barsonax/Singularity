@@ -8,8 +8,8 @@ namespace Singularity
 {
 	public class StronglyTypedDecoratorBinding<TDependency> : IDecoratorBinding
 	{
-		public Type DependencyType { get; private set; }
-		public Expression Expression { get; set; }
+		public Type DependencyType { get; }
+		public Expression Expression { get; private set; }
 
 		public StronglyTypedDecoratorBinding()
 		{

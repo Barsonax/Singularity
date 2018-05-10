@@ -6,6 +6,6 @@ namespace Singularity
     public interface IDecoratorBinding
     {
         Type DependencyType { get; }
-        Expression Expression { get; set; }
+        Expression Expression { get; }
     }
 }
