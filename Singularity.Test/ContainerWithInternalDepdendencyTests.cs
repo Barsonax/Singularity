@@ -9,8 +9,8 @@ namespace Singularity.Test
         public void GetInstance_1Deep_PerCallLifetime()
         {
             var config = new BindingConfig();
-            config.Bind<ITestService10>().To<TestService10>();
-            config.Bind<ITestService11>().To<TestService11>();
+            config.For<ITestService10>().Inject<TestService10>();
+            config.For<ITestService11>().Inject<TestService11>();
 
             var container = new Container(config);
 
@@ -29,8 +29,8 @@ namespace Singularity.Test
         public void GetInstance_1Deep_PerContainerLifetime()
         {
             var config = new BindingConfig();
-            config.Bind<ITestService10>().To<TestService10>().SetLifetime(Lifetime.PerContainer);
-            config.Bind<ITestService11>().To<TestService11>();
+            config.For<ITestService10>().Inject<TestService10>().With(Lifetime.PerContainer);
+            config.For<ITestService11>().Inject<TestService11>();
 
             var container = new Container(config);
 
@@ -49,9 +49,9 @@ namespace Singularity.Test
         public void GetInstance_2Deep()
         {
             var config = new BindingConfig();
-            config.Bind<ITestService10>().To<TestService10>();
-            config.Bind<ITestService11>().To<TestService11>();
-            config.Bind<ITestService12>().To<TestService12>();
+            config.For<ITestService10>().Inject<TestService10>();
+            config.For<ITestService11>().Inject<TestService11>();
+            config.For<ITestService12>().Inject<TestService12>();
 
             var container = new Container(config);
 

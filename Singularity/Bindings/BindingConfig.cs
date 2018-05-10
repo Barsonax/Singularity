@@ -14,9 +14,9 @@ namespace Singularity
         /// </summary>
         /// <typeparam name="TDependency"></typeparam>
         /// <returns></returns>
-        public Binding<TDependency> Bind<TDependency>()
+        public StronglyTypedBinding<TDependency> For<TDependency>()
         {
-            var binding = new Binding<TDependency>();
+            var binding = new StronglyTypedBinding<TDependency>();
             AddBinding(binding);
             return binding;
         }
@@ -27,9 +27,9 @@ namespace Singularity
 		/// <typeparam name="TDependency">The type to decorate</typeparam>
 		/// <exception cref="InterfaceExpectedException">If <typeparamref name="TDependency"/> is not a interface</exception>
 		/// <returns></returns>
-		public DecoratorBinding<TDependency> Decorate<TDependency>()
+		public StronglyTypedDecoratorBinding<TDependency> Decorate<TDependency>()
         {
-            var decorator = new DecoratorBinding<TDependency>();
+            var decorator = new StronglyTypedDecoratorBinding<TDependency>();
 			Decorators.Add(decorator);
             return decorator;
         }
@@ -43,7 +43,7 @@ namespace Singularity
         {
             foreach (var binding in Bindings.Values)
             {
-                if (binding.Expression == null) throw new NullReferenceException();
+                if (binding.ConfiguredBinding?.Expression == null) throw new NullReferenceException();
             }
         }
     }

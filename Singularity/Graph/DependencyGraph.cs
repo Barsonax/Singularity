@@ -21,7 +21,7 @@ namespace Singularity
 			foreach (var binding in bindingConfig.Bindings.Values)
             {
                 var expression = GetDependencyExpression(binding, decoratorsDic.TryGetDefaultValue(binding.DependencyType));
-                var node = new DependencyNode(expression, binding.Lifetime);
+                var node = new DependencyNode(expression, binding.ConfiguredBinding.Lifetime);
                 dependencies.Add(binding.DependencyType, node);
             }
 			Dependencies = new ReadOnlyDictionary<Type, DependencyNode>(dependencies);
@@ -49,7 +49,7 @@ namespace Singularity
 
         private Expression GetDependencyExpression(IBinding binding, IDecoratorBinding[] decorators)
         {
-            var expression = binding.Expression;
+            var expression = binding.ConfiguredBinding.Expression;
 
             if (decorators != null && decorators.Length > 0)
             {

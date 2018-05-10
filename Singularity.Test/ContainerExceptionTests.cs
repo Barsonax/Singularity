@@ -23,7 +23,7 @@ namespace Singularity.Test
             Assert.Throws<CannotResolveDependencyException>(() =>
             {
                 var config = new BindingConfig();
-                config.Bind<ITestService11>().To<TestService11>();
+                config.For<ITestService11>().Inject<TestService11>();
                 var container = new Container(config);
             });
         }

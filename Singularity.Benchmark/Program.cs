@@ -20,7 +20,7 @@ namespace Singularity.Benchmark
 		public InjectorBenchmark()
 		{
 		    var config = new BindingConfig();
-		    config.Bind<IInjectorTest>().To(() => new InjectorTest()).SetLifetime(Lifetime.PerContainer);
+		    config.For<IInjectorTest>().Inject(() => new InjectorTest()).With(Lifetime.PerContainer);
             _singulairtyContainer = new Container(config);
 		}
 

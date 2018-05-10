@@ -11,7 +11,7 @@ namespace Singularity.Test
         public void GetInstance_NoInternalDependencies()
         {
             var config = new BindingConfig();
-            config.Bind<ITestService10>().To<TestService10>();
+            config.For<ITestService10>().Inject<TestService10>();
 
             var container = new Container(config);
 
@@ -23,7 +23,7 @@ namespace Singularity.Test
         public void Inject_NoInternalDependencies()
         {
             var config = new BindingConfig();
-            config.Bind<ITestService10>().To<TestService10>();
+            config.For<ITestService10>().Inject<TestService10>();
 
             var container = new Container(config);
 
@@ -37,7 +37,7 @@ namespace Singularity.Test
         public void InjectMultiple_NoInternalDependencies()
         {
             var config = new BindingConfig();
-            config.Bind<ITestService10>().To<TestService10>();
+            config.For<ITestService10>().Inject<TestService10>();
 
             var container = new Container(config);
 
@@ -58,7 +58,7 @@ namespace Singularity.Test
         public void GetInstance_WithPerContainerLifetime()
         {
             var config = new BindingConfig();
-            config.Bind<ITestService10>().To<TestService10>().SetLifetime(Lifetime.PerContainer);
+            config.For<ITestService10>().Inject<TestService10>().With(Lifetime.PerContainer);
 
             var container = new Container(config);
 
@@ -73,7 +73,7 @@ namespace Singularity.Test
         public void GetInstance_WithPerContainerLifetime_IsDisposed()
         {
             var config = new BindingConfig();
-            config.Bind<IDisposable>().To<Disposable>().SetLifetime(Lifetime.PerContainer);
+            config.For<IDisposable>().Inject<Disposable>().With(Lifetime.PerContainer);
 
             var container = new Container(config);
 
@@ -91,7 +91,7 @@ namespace Singularity.Test
         public void GetInstance_WithPerCallLifetime()
         {
             var config = new BindingConfig();
-            config.Bind<ITestService10>().To<TestService10>();
+            config.For<ITestService10>().Inject<TestService10>();
 
             var container = new Container(config);
 

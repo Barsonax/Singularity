@@ -35,7 +35,7 @@ namespace Singularity.Duality
 	{
 		public void Register(BindingConfig bindingConfig)
 		{
-			bindingConfig.Bind<IDummyDependency>().To<DummyDependency>();
+			bindingConfig.For<IDummyDependency>().Inject<DummyDependency>();
 		}
 	}
 }

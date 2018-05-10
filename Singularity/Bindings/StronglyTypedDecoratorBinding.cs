@@ -6,12 +6,12 @@ using System.Reflection;
 
 namespace Singularity
 {
-	public class DecoratorBinding<TDependency> : IDecoratorBinding
+	public class StronglyTypedDecoratorBinding<TDependency> : IDecoratorBinding
 	{
 		public Type DependencyType { get; private set; }
 		public Expression Expression { get; set; }
 
-		public DecoratorBinding()
+		public StronglyTypedDecoratorBinding()
 		{
 			var type = typeof(TDependency);
 			if (!type.GetTypeInfo().IsInterface) throw new InterfaceExpectedException($"{type} is not a interface.");
@@ -23,13 +23,13 @@ namespace Singularity
 		/// </summary>
 		/// <typeparam name="TDecorator"></typeparam>
 		/// <returns></returns>
-		public DecoratorBinding<TDependency> With<TDecorator>()
+		public StronglyTypedDecoratorBinding<TDependency> With<TDecorator>()
 			where TDecorator : TDependency
 		{
 			return With(typeof(TDecorator));
 		}
 
-		public DecoratorBinding<TDependency> With(Type type)
+		public StronglyTypedDecoratorBinding<TDependency> With(Type type)
 		{
 			var typeInfo = type.GetTypeInfo();
 			if (!DependencyType.GetTypeInfo().IsAssignableFrom(typeInfo)) throw new InterfaceNotImplementedException($"{DependencyType} is not implemented by {type}");
