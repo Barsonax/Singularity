@@ -8,6 +8,41 @@ namespace Singularity.Test
     public class ContainerNoInternalDepedendencyTests
     {
         [Fact]
+        public void GetInstanceFactory_NoInternalDependencies()
+        {
+            var config = new BindingConfig();
+            config.For<ITestService10>().Inject<TestService10>();
+
+            var container = new Container(config);
+
+            var value = container.GetInstanceFactory<ITestService10>().Invoke();
+
+            Assert.Equal(typeof(TestService10), value.GetType());
+        }
+
+        [Fact]
+        public void GetInstance_NestedContainerNoInternalDependencies()
+        {
+            var config = new BindingConfig();
+            config.For<ITestService10>().Inject<TestService10>();
+
+            using (var container = new Container(config))
+            {
+                var nestedConfig = new BindingConfig();
+
+                nestedConfig.For<ITestService10>().Inject<TestService10Variant>();
+                using (var nestedContainer = container.GetNestedContainer(nestedConfig))
+                {
+                    var nestedValue = nestedContainer.GetInstance<ITestService10>();
+                    Assert.Equal(typeof(TestService10Variant), nestedValue.GetType());
+                }
+
+                var value = container.GetInstance<ITestService10>();
+                Assert.Equal(typeof(TestService10), value.GetType());
+            }            
+        }
+
+        [Fact]
         public void GetInstance_NoInternalDependencies()
         {
             var config = new BindingConfig();
@@ -28,7 +63,7 @@ namespace Singularity.Test
             var container = new Container(config);
 
             var instance = new MethodInjectionClass();
-            container.Inject(instance);
+            container.MethodInject(instance);
 
             Assert.Equal(typeof(TestService10), instance.TestService10.GetType());
         }
@@ -46,7 +81,7 @@ namespace Singularity.Test
             {
                 instances.Add(new MethodInjectionClass());
             }
-            container.InjectAll(instances);
+            container.MethodInjectAll(instances);
 
             foreach (var instance in instances)
             {

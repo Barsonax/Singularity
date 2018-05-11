@@ -30,11 +30,11 @@
 		}
 	}
 
-    public class DecoratorWrongInterface : ITestService10
+    public class DecoratorWrongConstructorArguments : ITestService10
     {
         public IComponent Component { get; }
 
-        public DecoratorWrongInterface(IComponent decoratee)
+        public DecoratorWrongConstructorArguments(IComponent decoratee)
         {
             Component = decoratee;
         }

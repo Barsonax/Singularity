@@ -12,9 +12,11 @@ namespace Singularity
     public class DependencyGraph
     {
         public ReadOnlyDictionary<Type, DependencyNode> Dependencies { get; }
+        public ReadOnlyBindingConfig BindingConfig { get; }
 
-        public DependencyGraph(BindingConfig bindingConfig)
-        {          
+        public DependencyGraph(IBindingConfig bindingConfig)
+        {
+            BindingConfig = new ReadOnlyBindingConfig(bindingConfig);
 	        var decoratorsDic = bindingConfig.Decorators.GroupBy(x => x.DependencyType).ToDictionary(x => x.Key, bindings => bindings.ToArray());
 
 	        var dependencies = new Dictionary<Type, DependencyNode>();

@@ -15,13 +15,23 @@ namespace Singularity.Test
 			});
 		}
 
-		[Fact]
+        [Fact]
+        public void Decorate_WrongConstructorArguments_Throws()
+        {
+            var config = new BindingConfig();
+            Assert.Throws<InterfaceNotImplementedException>(() =>
+            {
+                config.Decorate<ITestService10>().With(typeof(Component));
+            });
+        }
+
+        [Fact]
         public void Decorate_InvalidConstructorArguments_Throws()
         {
             var config = new BindingConfig();
             Assert.Throws<InvalidExpressionArgumentsException>(() =>
             {
-                config.Decorate<ITestService10>().With<DecoratorWrongInterface>();
+                config.Decorate<ITestService10>().With<DecoratorWrongConstructorArguments>();
             });
         }
     }

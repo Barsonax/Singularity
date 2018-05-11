@@ -4,21 +4,28 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Linq.Expressions;
 using System.Reflection;
+using System.Runtime.CompilerServices;
 
 namespace Singularity
 {
     public class Container : IDisposable
     {
+        private readonly Container _parentContainer;
+
         private readonly DependencyGraph _dependencyGraph;
         private readonly List<IDisposable> _disposables = new List<IDisposable>();
 
         private readonly Dictionary<Type, Action<object>> _injectionCache = new Dictionary<Type, Action<object>>(ReferenceEqualityComparer<Type>.Instance);
         private readonly Dictionary<Type, Func<object>> _getInstanceCache = new Dictionary<Type, Func<object>>(ReferenceEqualityComparer<Type>.Instance);
 
-
-        public Container(BindingConfig bindingConfig)
+        public Container(IBindingConfig bindingConfig, Container parentContainer = null)
         {
-            bindingConfig.ValidateBindings();
+            _parentContainer = parentContainer;
+
+            if (parentContainer != null)
+            {
+                //TODO generate new binding config that overrides the parent one
+            }
             _dependencyGraph = new DependencyGraph(bindingConfig);
             foreach (var node in _dependencyGraph.Dependencies.Values)
             {
@@ -33,17 +40,22 @@ namespace Singularity
             }
         }
 
+        public Container GetNestedContainer(BindingConfig bindingConfig)
+        {
+            return new Container(bindingConfig, this);
+        }
+
         /// <summary>
         /// Injects dependencies by calling all methods marked with <see cref="InjectAttribute"/> on the <paramref name="instances"/>.
         /// </summary>
         /// <typeparam name="T"></typeparam>
         /// <param name="instances"></param>
         /// <exception cref="DependencyNotFoundException">If the method had parameters that couldnt be resolved</exception>
-        public void InjectAll<T>(IEnumerable<T> instances)
+        public void MethodInjectAll<T>(IEnumerable<T> instances)
         {
             foreach (var instance in instances)
             {
-                Inject(instance);
+                MethodInject(instance);
             }
         }
 
@@ -53,15 +65,33 @@ namespace Singularity
         /// <typeparam name="T"></typeparam>
         /// <param name="instance"></param>
         /// <exception cref="DependencyNotFoundException">If the method had parameters that couldnt be resolved</exception>
-        public void Inject<T>(T instance)
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public void MethodInject<T>(T instance)
         {
-            var type = instance.GetType();
+            GetMethodInjector(instance.GetType()).Invoke(instance);
+        }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public Action<object> GetMethodInjector(Type type)
+        {
             if (!_injectionCache.TryGetValue(type, out var action))
             {
-                action = GenerateInjectionExpression(type);
+                action = GenerateMethodInjector(type);
                 _injectionCache.Add(type, action);
             }
-            action.Invoke(instance);
+            return action;
+        }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public Action<object> GetMethodInjector<T>()
+        {
+            var type = typeof(T);
+            if (!_injectionCache.TryGetValue(type, out var action))
+            {
+                action = GenerateMethodInjector(type);
+                _injectionCache.Add(type, action);
+            }
+            return action;
         }
 
         /// <summary>
@@ -70,10 +100,16 @@ namespace Singularity
         /// <typeparam name="T">The type of the dependency</typeparam>
         /// <exception cref="DependencyNotFoundException">If the dependency is not configured</exception>
         /// <returns></returns>
-        public T GetInstance<T>() where T : class
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public Func<T> GetInstanceFactory<T>() where T : class
         {
-            var value = GetInstance(typeof(T));
-            return (T)value;
+            var type = typeof(T);
+            if (!_getInstanceCache.TryGetValue(type, out var action))
+            {
+                action = GenerateInstanceFactory<T>();
+                _getInstanceCache.Add(type, action);
+            }
+            return (Func<T>)action;
         }
 
         /// <summary>
@@ -82,34 +118,69 @@ namespace Singularity
         /// <param name="type">The type of the dependency</param>
         /// <exception cref="DependencyNotFoundException">If the dependency is not configured</exception>
         /// <returns></returns>
-        public object GetInstance(Type type)
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public Func<object> GetInstanceFactory(Type type)
         {
             if (!_getInstanceCache.TryGetValue(type, out var action))
             {
-                action = GenerateGetInstanceExpression(type);
+                action = GenerateInstanceFactory(type);
                 _getInstanceCache.Add(type, action);
             }
-            var value = action.Invoke();
-            return value;
+            return action;
         }
 
-        private Func<object> GenerateGetInstanceExpression(Type type)
+        /// <summary>
+        /// Resolves a instance for the given dependency type
+        /// </summary>
+        /// <typeparam name="T">The type of the dependency</typeparam>
+        /// <exception cref="DependencyNotFoundException">If the dependency is not configured</exception>
+        /// <returns></returns>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public T GetInstance<T>() where T : class
+        {
+            return GetInstanceFactory<T>().Invoke();
+        }
+
+        /// <summary>
+        /// Resolves a instance for the given dependency type
+        /// </summary>
+        /// <param name="type">The type of the dependency</param>
+        /// <exception cref="DependencyNotFoundException">If the dependency is not configured</exception>
+        /// <returns></returns>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public object GetInstance(Type type)
+        {
+            return GetInstanceFactory(type).Invoke();
+        }
+
+        private Func<object> GenerateInstanceFactory(Type type)
+        {
+            var expression = GetDependencyExpression(type) ?? throw new DependencyNotFoundException($"No configured dependency found for {type}");
+            return (Func<object>)Expression.Lambda(expression).Compile();
+        }
+
+        private Func<T> GenerateInstanceFactory<T>()
+        {
+            var expression = GetDependencyExpression(typeof(T)) ?? throw new DependencyNotFoundException($"No configured dependency found for {typeof(T)}");
+            return Expression.Lambda<Func<T>>(expression).Compile();
+        }
+
+        private Expression GetDependencyExpression(Type type)
         {
             if (_dependencyGraph.Dependencies.TryGetValue(type, out var dependencyNode))
             {
-                if (dependencyNode.Expression is ConstantExpression constantExpression)
-                {
-                    return () => constantExpression.Value;
-                }
-                return Expression.Lambda<Func<object>>(dependencyNode.Expression).Compile();
+                return dependencyNode.Expression;
             }
-            else
+
+            if (_parentContainer != null)
             {
-                throw new DependencyNotFoundException($"No configured dependency found for {type}");
+                return _parentContainer.GetDependencyExpression(type);
             }
+
+            throw new DependencyNotFoundException($"No configured dependency found for {type}");
         }
 
-        private Action<object> GenerateInjectionExpression(Type type)
+        private Action<object> GenerateMethodInjector(Type type)
         {
             var instanceParameter = Expression.Parameter(typeof(object));
 
@@ -125,14 +196,7 @@ namespace Singularity
                 for (int i = 0; i < parameterTypes.Length; i++)
                 {
                     var parameterType = parameterTypes[i].ParameterType;
-                    if (_dependencyGraph.Dependencies.TryGetValue(parameterType, out var dependencyNode))
-                    {
-                        parameterExpressions[i] = dependencyNode.Expression;
-                    }
-                    else
-                    {
-                        throw new DependencyNotFoundException($"No configured dependency found for {parameterType}");
-                    }
+                    parameterExpressions[i] = GetDependencyExpression(parameterType) ?? throw new DependencyNotFoundException($"No configured dependency found for {parameterType}");
                 }
 
                 body.Add(Expression.Call(instanceCasted, methodInfo, parameterExpressions));

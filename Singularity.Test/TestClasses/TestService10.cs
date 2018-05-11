@@ -5,4 +5,9 @@
     {
         public TestService10() { }
     }
+
+    public class TestService10Variant : ITestService10
+    {
+        public TestService10Variant() { }
+    }
 }

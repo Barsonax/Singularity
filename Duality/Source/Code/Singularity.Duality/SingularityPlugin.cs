@@ -43,14 +43,14 @@ namespace Singularity.Duality
 
 		private void Scene_ComponentAdded(object sender, ComponentEventArgs e)
 		{
-			_container.Inject(e.Component);
+			_container.MethodInject(e.Component);
 		}
 
 		public void InjectGameObjects(IEnumerable<GameObject> gameObjects)
 		{
 			foreach (var gameObject in gameObjects)
 			{
-				_container.InjectAll(gameObject.GetComponents<Component>());
+				_container.MethodInjectAll(gameObject.GetComponents<Component>());
 			}
 		}
 	}

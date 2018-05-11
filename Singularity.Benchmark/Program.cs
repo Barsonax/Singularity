@@ -16,21 +16,67 @@ namespace Singularity.Benchmark
 	public class InjectorBenchmark
 	{
 		private readonly Container _singulairtyContainer;
+	    private readonly Func<IInjectorTest> _instanceFactoryGeneric;
+	    private readonly Func<object> _instanceFactory;
+        private readonly MethodInjectorTest _methodInjectorTest = new MethodInjectorTest();
+	    private readonly Action<object> _methodInjector;
 
-		public InjectorBenchmark()
+        public InjectorBenchmark()
 		{
 		    var config = new BindingConfig();
 		    config.For<IInjectorTest>().Inject<InjectorTest>().With(Lifetime.PerContainer);
             _singulairtyContainer = new Container(config);
-		}
+		    _instanceFactoryGeneric = _singulairtyContainer.GetInstanceFactory<IInjectorTest>();
+		    _instanceFactory = _singulairtyContainer.GetInstanceFactory(typeof(IInjectorTest));
+		    _methodInjector = _singulairtyContainer.GetMethodInjector(typeof(MethodInjectorTest));
+		   var f =  (IInjectorTest)_singulairtyContainer.GetInstance(typeof(IInjectorTest));
+        }
+
+	    [Benchmark]
+	    public void MethodInjectorInvoke()
+	    {
+            _methodInjector.Invoke(_methodInjectorTest);
+	    }
 
         [Benchmark]
-		public IInjectorTest Singularity()
-		{
-			var value = _singulairtyContainer.GetInstance<IInjectorTest>();
-			return value;
-		}
-	}
+	    public void MethodInjection()
+	    {
+	        _singulairtyContainer.MethodInject(_methodInjectorTest);
+	    }
+
+        [Benchmark]
+        public IInjectorTest GetInstanceFactoryGenericInvoke()
+        {
+            return _instanceFactoryGeneric.Invoke();
+        }
+
+        [Benchmark]
+        public IInjectorTest GetInstanceFactoryInvoke()
+        {
+            return _instanceFactoryGeneric.Invoke();
+        }
+
+        [Benchmark]
+        public IInjectorTest GetInstanceGeneric()
+        {
+            return _singulairtyContainer.GetInstance<IInjectorTest>();
+        }
+
+        [Benchmark]
+        public IInjectorTest GetInstance()
+        {
+            return (IInjectorTest)_singulairtyContainer.GetInstance(typeof(IInjectorTest));
+        }
+    }
+
+    public class MethodInjectorTest
+    {
+
+        public void Init(IInjectorTest iiInjectorTest)
+        {
+
+        }
+    }
 
 	public class InjectorTest : IInjectorTest
 	{

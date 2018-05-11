@@ -1,13 +1,37 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using Singularity.Bindings;
 
 namespace Singularity
 {
-    public class BindingConfig
+    public interface IBindingConfig
     {
-        public readonly Dictionary<Type, IBinding> Bindings = new Dictionary<Type, IBinding>();
-        public readonly List<IDecoratorBinding> Decorators = new List<IDecoratorBinding>();
+        IReadOnlyDictionary<Type, IBinding> Bindings { get; }
+        IEnumerable<IDecoratorBinding> Decorators { get; }
+    }
+
+    public class ReadOnlyBindingConfig : IBindingConfig
+    {
+        public IReadOnlyDictionary<Type, IBinding> Bindings { get; }
+
+        public IEnumerable<IDecoratorBinding> Decorators { get; }        
+
+        public ReadOnlyBindingConfig(IBindingConfig bindingConfig)
+        {
+            Bindings = bindingConfig.Bindings;
+            Decorators = bindingConfig.Decorators.ToArray();
+        }
+    }
+
+    public class BindingConfig : IBindingConfig
+    {
+        private readonly Dictionary<Type, IBinding> _bindings = new Dictionary<Type, IBinding>();
+        private readonly List<IDecoratorBinding> _decorators = new List<IDecoratorBinding>();
+
+        public IReadOnlyDictionary<Type, IBinding> Bindings => _bindings;
+
+        public IEnumerable<IDecoratorBinding> Decorators => _decorators;
 
         /// <summary>
         /// Begins configuring a binding for a certain dependency
@@ -30,13 +54,13 @@ namespace Singularity
 		public StronglyTypedDecoratorBinding<TDependency> Decorate<TDependency>()
         {
             var decorator = new StronglyTypedDecoratorBinding<TDependency>();
-			Decorators.Add(decorator);
+			_decorators.Add(decorator);
             return decorator;
         }
 
         public void AddBinding(IBinding binding)
         {            
-            Bindings.Add(binding.DependencyType, binding);
+            _bindings.Add(binding.DependencyType, binding);
         }
 
         public void ValidateBindings()
