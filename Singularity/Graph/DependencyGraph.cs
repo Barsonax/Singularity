@@ -13,7 +13,7 @@ namespace Singularity
     {
         public ReadOnlyDictionary<Type, DependencyNode> Dependencies { get; }
 
-        public DependencyGraph(IBindingConfig bindingConfig, DependencyGraph parentGraph = null)
+        public DependencyGraph(IBindingConfig bindingConfig, IReadOnlyDictionary<Type, DependencyNode> parentDependencies = null)
         {
 	        var decoratorsDic = bindingConfig.Decorators.GroupBy(x => x.DependencyType).ToDictionary(x => x.Key, bindings => bindings.ToArray());
 
@@ -25,9 +25,9 @@ namespace Singularity
                 dependencies.Add(binding.DependencyType, node);
             }
 
-	        if (parentGraph != null)
+	        if (parentDependencies != null)
 	        {
-		        foreach (var parentGraphDependency in parentGraph.Dependencies)
+		        foreach (var parentGraphDependency in parentDependencies)
 		        {
 			        if(!dependencies.ContainsKey(parentGraphDependency.Key)) dependencies.Add(parentGraphDependency.Key, parentGraphDependency.Value);
 		        }

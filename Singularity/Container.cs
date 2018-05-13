@@ -16,9 +16,9 @@ namespace Singularity
         private readonly Dictionary<Type, Action<object>> _injectionCache = new Dictionary<Type, Action<object>>(ReferenceEqualityComparer<Type>.Instance);
         private readonly Dictionary<Type, Func<object>> _getInstanceCache = new Dictionary<Type, Func<object>>(ReferenceEqualityComparer<Type>.Instance);
 
-        public Container(IBindingConfig bindingConfig, Container parentContainer = null)
+        public Container(IBindingConfig bindingConfig, IReadOnlyDictionary<Type, DependencyNode> parentDependencies = null)
         {
-            _dependencyGraph = new DependencyGraph(bindingConfig, parentContainer?._dependencyGraph);
+            _dependencyGraph = new DependencyGraph(bindingConfig, parentDependencies);
             foreach (var keyValuePair in _dependencyGraph.Dependencies.Where(x => bindingConfig.Bindings.ContainsKey(x.Key)))
             {
                 if (keyValuePair.Value.Lifetime == Lifetime.PerContainer)
@@ -34,7 +34,7 @@ namespace Singularity
 
         public Container GetNestedContainer(BindingConfig bindingConfig)
         {
-            return new Container(bindingConfig, this);
+            return new Container(bindingConfig, _dependencyGraph.Dependencies);
         }
 
         /// <summary>
