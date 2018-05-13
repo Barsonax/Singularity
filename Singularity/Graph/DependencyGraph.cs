@@ -12,11 +12,9 @@ namespace Singularity
     public class DependencyGraph
     {
         public ReadOnlyDictionary<Type, DependencyNode> Dependencies { get; }
-        public ReadOnlyBindingConfig BindingConfig { get; }
 
-        public DependencyGraph(IBindingConfig bindingConfig)
+        public DependencyGraph(IBindingConfig bindingConfig, DependencyGraph parentGraph = null)
         {
-            BindingConfig = new ReadOnlyBindingConfig(bindingConfig);
 	        var decoratorsDic = bindingConfig.Decorators.GroupBy(x => x.DependencyType).ToDictionary(x => x.Key, bindings => bindings.ToArray());
 
 	        var dependencies = new Dictionary<Type, DependencyNode>();
@@ -26,6 +24,14 @@ namespace Singularity
                 var node = new DependencyNode(expression, binding.ConfiguredBinding.Lifetime);
                 dependencies.Add(binding.DependencyType, node);
             }
+
+	        if (parentGraph != null)
+	        {
+		        foreach (var parentGraphDependency in parentGraph.Dependencies)
+		        {
+			        if(!dependencies.ContainsKey(parentGraphDependency.Key)) dependencies.Add(parentGraphDependency.Key, parentGraphDependency.Value);
+		        }
+	        }
 			Dependencies = new ReadOnlyDictionary<Type, DependencyNode>(dependencies);
 
             var graph = new Graph<DependencyNode>(Dependencies.Values);

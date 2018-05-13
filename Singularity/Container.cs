@@ -10,8 +10,6 @@ namespace Singularity
 {
     public class Container : IDisposable
     {
-        private readonly Container _parentContainer;
-
         private readonly DependencyGraph _dependencyGraph;
         private readonly List<IDisposable> _disposables = new List<IDisposable>();
 
@@ -20,18 +18,12 @@ namespace Singularity
 
         public Container(IBindingConfig bindingConfig, Container parentContainer = null)
         {
-            _parentContainer = parentContainer;
-
-            if (parentContainer != null)
+            _dependencyGraph = new DependencyGraph(bindingConfig, parentContainer?._dependencyGraph);
+            foreach (var keyValuePair in _dependencyGraph.Dependencies.Where(x => bindingConfig.Bindings.ContainsKey(x.Key)))
             {
-                //TODO generate new binding config that overrides the parent one
-            }
-            _dependencyGraph = new DependencyGraph(bindingConfig);
-            foreach (var node in _dependencyGraph.Dependencies.Values)
-            {
-                if (node.Lifetime == Lifetime.PerContainer)
+                if (keyValuePair.Value.Lifetime == Lifetime.PerContainer)
                 {
-                    var value = ((ConstantExpression)node.Expression).Value;
+                    var value = ((ConstantExpression)keyValuePair.Value.Expression).Value;
                     if (value is IDisposable disposable)
                     {
                         _disposables.Add(disposable);
@@ -170,11 +162,6 @@ namespace Singularity
             if (_dependencyGraph.Dependencies.TryGetValue(type, out var dependencyNode))
             {
                 return dependencyNode.Expression;
-            }
-
-            if (_parentContainer != null)
-            {
-                return _parentContainer.GetDependencyExpression(type);
             }
 
             throw new DependencyNotFoundException($"No configured dependency found for {type}");

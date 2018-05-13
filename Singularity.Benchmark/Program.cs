@@ -53,7 +53,7 @@ namespace Singularity.Benchmark
         [Benchmark]
         public IInjectorTest GetInstanceFactoryInvoke()
         {
-            return _instanceFactoryGeneric.Invoke();
+            return (IInjectorTest)_instanceFactory.Invoke();
         }
 
         [Benchmark]
