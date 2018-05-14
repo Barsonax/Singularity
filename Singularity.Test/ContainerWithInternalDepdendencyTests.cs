@@ -60,5 +60,27 @@ namespace Singularity.Test
             Assert.NotNull(value.TestService11);
             Assert.NotNull(value.TestService11.TestService10);
         }
-    }
+
+	    [Fact]
+	    public void GetInstance_NestedContainerWithInternalDependencies()
+	    {
+		    var config = new BindingConfig();
+		    config.For<ITestService10>().Inject<TestService10>();
+
+		    using (var container = new Container(config))
+		    {
+			    var nestedConfig = new BindingConfig();
+
+			    nestedConfig.For<ITestService11>().Inject<TestService11>();
+			    using (var nestedContainer = container.GetNestedContainer(nestedConfig))
+			    {
+				    var nestedValue = nestedContainer.GetInstance<ITestService11>();
+				    Assert.Equal(typeof(TestService11), nestedValue.GetType());
+			    }
+
+			    var value = container.GetInstance<ITestService10>();
+			    Assert.Equal(typeof(TestService10), value.GetType());
+		    }
+	    }
+	}
 }
