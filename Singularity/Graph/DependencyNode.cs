@@ -1,4 +1,5 @@
-﻿using System.Linq.Expressions;
+﻿using System;
+using System.Linq.Expressions;
 
 namespace Singularity
 {
@@ -6,11 +7,15 @@ namespace Singularity
 	{
         public Expression Expression { get; internal set; }
         public Lifetime Lifetime { get; }
+        public Action<object> OnDeath { get; }
+        public bool IsExternal { get; }
 
-        public DependencyNode(Expression expression, Lifetime lifetime)
+	    public DependencyNode(Expression expression, Lifetime lifetime, Action<object> onDeath, bool isExternal = false)
         {
             Lifetime = lifetime;
             Expression = expression;
+            OnDeath = onDeath;
+            IsExternal = isExternal;
         }
     }
 }

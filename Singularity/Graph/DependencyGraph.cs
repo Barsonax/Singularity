@@ -21,7 +21,7 @@ namespace Singularity
 			foreach (var binding in bindingConfig.Bindings.Values)
             {
                 var expression = GetDependencyExpression(binding, decoratorsDic.TryGetDefaultValue(binding.DependencyType));
-                var node = new DependencyNode(expression, binding.ConfiguredBinding.Lifetime);
+                var node = new DependencyNode(expression, binding.ConfiguredBinding.Lifetime, binding.ConfiguredBinding.OnDeath);
                 dependencies.Add(binding.DependencyType, node);
             }
 
@@ -29,7 +29,11 @@ namespace Singularity
 	        {
 		        foreach (var parentGraphDependency in parentDependencies)
 		        {
-			        if(!dependencies.ContainsKey(parentGraphDependency.Key)) dependencies.Add(parentGraphDependency.Key, parentGraphDependency.Value);
+		            if (!dependencies.ContainsKey(parentGraphDependency.Key))
+		            {
+                        var externalNode = new DependencyNode(parentGraphDependency.Value.Expression, parentGraphDependency.Value.Lifetime, parentGraphDependency.Value.OnDeath, true);
+		                dependencies.Add(parentGraphDependency.Key, externalNode);
+		            }
 		        }
 	        }
 			Dependencies = new ReadOnlyDictionary<Type, DependencyNode>(dependencies);

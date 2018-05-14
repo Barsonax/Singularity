@@ -46,7 +46,7 @@ namespace Singularity.Test
 		public void GetInstance_NestedContainerWithPerContainerLifetime_IsDisposed()
 		{
 			var config = new BindingConfig();
-			config.For<IDisposable>().Inject<Disposable>().With(Lifetime.PerContainer);
+			config.For<IDisposable>().Inject<Disposable>().With(Lifetime.PerContainer).OnDeath(x => x.Dispose());
 
 			var container = new Container(config);
 
@@ -56,7 +56,7 @@ namespace Singularity.Test
 
 			{
 				var nestedConfig = new BindingConfig();
-				nestedConfig.For<IDisposable>().Inject<Disposable>().With(Lifetime.PerContainer);
+				nestedConfig.For<IDisposable>().Inject<Disposable>().With(Lifetime.PerContainer).OnDeath(x => x.Dispose());
 				var nestedContainer = container.GetNestedContainer(nestedConfig);
 				var nestedInstance = nestedContainer.GetInstance<IDisposable>();
 
@@ -141,7 +141,7 @@ namespace Singularity.Test
 		public void GetInstance_WithPerContainerLifetime_IsDisposed()
 		{
 			var config = new BindingConfig();
-			config.For<IDisposable>().Inject<Disposable>().With(Lifetime.PerContainer);
+			config.For<IDisposable>().Inject<Disposable>().With(Lifetime.PerContainer).OnDeath(x => x.Dispose());
 
 			var container = new Container(config);
 

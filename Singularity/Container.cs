@@ -11,7 +11,7 @@ namespace Singularity
     public class Container : IDisposable
     {
         private readonly DependencyGraph _dependencyGraph;
-        private readonly List<IDisposable> _disposables = new List<IDisposable>();
+        private readonly List<Action> _disposables = new List<Action>();
 
         private readonly Dictionary<Type, Action<object>> _injectionCache = new Dictionary<Type, Action<object>>(ReferenceEqualityComparer<Type>.Instance);
         private readonly Dictionary<Type, Func<object>> _getInstanceCache = new Dictionary<Type, Func<object>>(ReferenceEqualityComparer<Type>.Instance);
@@ -21,13 +21,10 @@ namespace Singularity
             _dependencyGraph = new DependencyGraph(bindingConfig, parentDependencies);
             foreach (var keyValuePair in _dependencyGraph.Dependencies.Where(x => bindingConfig.Bindings.ContainsKey(x.Key)))
             {
-                if (keyValuePair.Value.Lifetime == Lifetime.PerContainer)
-                {
+                if (keyValuePair.Value.Lifetime == Lifetime.PerContainer && keyValuePair.Value.OnDeath != null)
+                {                   
                     var value = ((ConstantExpression)keyValuePair.Value.Expression).Value;
-                    if (value is IDisposable disposable)
-                    {
-                        _disposables.Add(disposable);
-                    }
+                    _disposables.Add(() => keyValuePair.Value.OnDeath(value));
                 }
             }
         }
@@ -199,7 +196,7 @@ namespace Singularity
         {
             foreach (var disposable in _disposables)
             {
-                disposable.Dispose();
+                disposable.Invoke();
             }
         }
     }

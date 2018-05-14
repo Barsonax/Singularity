@@ -1,4 +1,5 @@
-﻿using System.Linq.Expressions;
+﻿using System;
+using System.Linq.Expressions;
 
 namespace Singularity.Bindings
 {
@@ -6,5 +7,6 @@ namespace Singularity.Bindings
 	{
 		Expression Expression { get; }
 		Lifetime Lifetime { get; }
-	}
+        Action<object> OnDeath { get; }
+    }
 }
