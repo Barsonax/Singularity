@@ -3,158 +3,172 @@ using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
 using System.Linq.Expressions;
+using System.Reflection;
 using Singularity.Exceptions;
 using Singularity.Extensions;
 using Singularity.Graph;
 
 namespace Singularity
 {
-    public class DependencyGraph
-    {
-        public ReadOnlyDictionary<Type, DependencyNode> Dependencies { get; }
+	public class DependencyGraph
+	{
+		public ReadOnlyDictionary<Type, DependencyNode> Dependencies { get; }
+		public List<object> _disposableObjects { get; } = new List<object>();
 
-        public DependencyGraph(IBindingConfig bindingConfig, IReadOnlyDictionary<Type, DependencyNode> parentDependencies = null)
-        {
-	        var decoratorsDic = bindingConfig.Decorators.GroupBy(x => x.DependencyType).ToDictionary(x => x.Key, bindings => bindings.ToArray());
+		public DependencyGraph(IBindingConfig bindingConfig, IReadOnlyDictionary<Type, DependencyNode> parentDependencies = null)
+		{
+			var decoratorsDic = bindingConfig.Decorators.GroupBy(x => x.DependencyType).ToDictionary(x => x.Key, bindings => bindings.ToArray());
 
-	        var dependencies = new Dictionary<Type, DependencyNode>();
+			var dependencies = new Dictionary<Type, DependencyNode>();
 			foreach (var binding in bindingConfig.Bindings.Values)
-            {
-                var expression = GetDependencyExpression(binding, decoratorsDic.TryGetDefaultValue(binding.DependencyType));
-                var node = new DependencyNode(expression, binding.ConfiguredBinding.Lifetime, binding.ConfiguredBinding.OnDeath);
-                dependencies.Add(binding.DependencyType, node);
-            }
+			{
+				var expression = GetDependencyExpression(binding, decoratorsDic.TryGetDefaultValue(binding.DependencyType));
+				var node = new DependencyNode(expression, binding.ConfiguredBinding.Lifetime, binding.ConfiguredBinding.OnDeath);
+				dependencies.Add(binding.DependencyType, node);
+			}
 
-	        if (parentDependencies != null)
-	        {
-		        foreach (var parentGraphDependency in parentDependencies)
-		        {
-		            if (!dependencies.ContainsKey(parentGraphDependency.Key))
-		            {
-                        var externalNode = new DependencyNode(parentGraphDependency.Value.Expression, parentGraphDependency.Value.Lifetime, parentGraphDependency.Value.OnDeath, true);
-		                dependencies.Add(parentGraphDependency.Key, externalNode);
-		            }
-		        }
-	        }
+			if (parentDependencies != null)
+			{
+				foreach (var parentGraphDependency in parentDependencies)
+				{
+					if (!dependencies.ContainsKey(parentGraphDependency.Key))
+					{
+						var externalNode = new DependencyNode(parentGraphDependency.Value.Expression, parentGraphDependency.Value.Lifetime, parentGraphDependency.Value.OnDeath, true);
+						dependencies.Add(parentGraphDependency.Key, externalNode);
+					}
+				}
+			}
 			Dependencies = new ReadOnlyDictionary<Type, DependencyNode>(dependencies);
 
-            var graph = new Graph<DependencyNode>(Dependencies.Values);
-            var updateOrder = graph.GetUpdateOrder(node => node.Expression.GetParameterExpressions().Select(x => GetDependency(x.Type)));
+			var graph = new Graph<DependencyNode>(Dependencies.Values);
+			var updateOrder = graph.GetUpdateOrder(node => node.Expression.GetParameterExpressions().Select(x => GetDependency(x.Type)));
 
-            foreach (var dependencyNodes in updateOrder)
-            {
-                foreach (var dependencyNode in dependencyNodes)
-                {
-                    ResolveDependency(dependencyNode);
-                }
-            }
-        }
+			foreach (var dependencyNodes in updateOrder)
+			{
+				foreach (var dependencyNode in dependencyNodes)
+				{
+					ResolveDependency(dependencyNode);
+				}
+			}
+		}
 
-        private DependencyNode GetDependency(Type type)
-        {
-            if (Dependencies.TryGetValue(type, out var parent))
-            {
-                return parent;
-            }
-            throw new CannotResolveDependencyException($"Dependency {type} was not registered");
-        }
+		private DependencyNode GetDependency(Type type)
+		{
+			if (Dependencies.TryGetValue(type, out var parent))
+			{
+				return parent;
+			}
+			throw new CannotResolveDependencyException($"Dependency {type} was not registered");
+		}
 
-        private Expression GetDependencyExpression(IBinding binding, IDecoratorBinding[] decorators)
-        {
-            var expression = binding.ConfiguredBinding.Expression;
+		private Expression GetDependencyExpression(IBinding binding, IDecoratorBinding[] decorators)
+		{
+			var expression = binding.ConfiguredBinding.Expression;
 
-            if (decorators != null && decorators.Length > 0)
-            {
-                var body = new List<Expression>();
-                var allParameters = new List<ParameterExpression>();
-                allParameters.AddRange(expression.GetParameterExpressions());
 
-                var instanceParameter = Expression.Variable(binding.DependencyType, $"{expression.Type} instance");
-                var variables = new List<ParameterExpression> { instanceParameter };
+			var body = new List<Expression>();
+			var allParameters = new List<ParameterExpression>();
+			allParameters.AddRange(expression.GetParameterExpressions());
 
-                body.Add(Expression.Assign(instanceParameter, Expression.Convert(expression, binding.DependencyType)));
-                var previousDecorator = instanceParameter;
-                foreach (var decorator in decorators)
-                {
-                    var decoratorInstance = Expression.Variable(binding.DependencyType, $"{decorator.Expression.Type} instance");
-                    variables.Add(decoratorInstance);
-                    var visitor = new ReplaceExpressionVisitor(decorator.Expression.GetParameterExpressions().First(x => x.Type == binding.DependencyType), previousDecorator);
-                    var decoratorExpression = visitor.Visit(decorator.Expression);
-                    foreach (var parameterExpression in decoratorExpression.GetParameterExpressions())
-                    {
-                        if (parameterExpression.Type != binding.DependencyType)
-                            allParameters.Add(parameterExpression);
-                    }
+			var instanceParameter = Expression.Variable(binding.DependencyType, $"{expression.Type} instance");
+			var variables = new List<ParameterExpression> { instanceParameter };
 
-                    body.Add(Expression.Assign(decoratorInstance, decoratorExpression));
-                    previousDecorator = decoratorInstance;
-                }
+			body.Add(Expression.Assign(instanceParameter, Expression.Convert(expression, binding.DependencyType)));
+			var addMethodInfo = _disposableObjects.GetType().GetRuntimeMethod("Add", new[] { typeof(object) });
+			if (binding.ConfiguredBinding.OnDeath != null)
+			{
+				body.Add(Expression.Call(Expression.Constant(_disposableObjects), addMethodInfo, instanceParameter));
+			}
+			if (decorators != null && decorators.Length > 0)
+			{
+				var previousDecorator = instanceParameter;
+				foreach (var decorator in decorators)
+				{
+					var decoratorInstance = Expression.Variable(binding.DependencyType, $"{decorator.Expression.Type} instance");
+					variables.Add(decoratorInstance);
+					var visitor = new ReplaceExpressionVisitor(decorator.Expression.GetParameterExpressions().First(x => x.Type == binding.DependencyType), previousDecorator);
+					var decoratorExpression = visitor.Visit(decorator.Expression);
+					foreach (var parameterExpression in decoratorExpression.GetParameterExpressions())
+					{
+						if (parameterExpression.Type != binding.DependencyType)
+							allParameters.Add(parameterExpression);
+					}
 
-                expression = Expression.Lambda(Expression.Block(allParameters.Concat(variables), body), allParameters);
-            }
-            return expression;
-        }
+					body.Add(Expression.Assign(decoratorInstance, decoratorExpression));
+					previousDecorator = decoratorInstance;
+				}
+				return Expression.Lambda(Expression.Block(allParameters.Concat(variables), body), allParameters);
+			}
+			body.Add(instanceParameter);
+			expression = Expression.Lambda(Expression.Block(allParameters.Concat(variables), body), allParameters);
+			return expression;
+		}
 
-        private void ResolveDependency(DependencyNode dependencyNode)
-        {
-            var expression = ResolveMethodCallExpression(dependencyNode.Expression);
+		private void ResolveDependency(DependencyNode dependencyNode)
+		{
+			var expression = ResolveMethodCallExpression(dependencyNode.Expression);
 
-            switch (dependencyNode.Lifetime)
-            {
-                case Lifetime.PerCall:
-                    break;
-                case Lifetime.PerContainer:
-                    var action = Expression.Lambda(expression).Compile();
-                    var value = action.DynamicInvoke();
-                    expression = Expression.Constant(value);
-                    break;
-                default:
-                    throw new ArgumentOutOfRangeException();
-            }
-            dependencyNode.Expression = expression;
-        }
+			switch (dependencyNode.Lifetime)
+			{
+				case Lifetime.PerCall:
+					break;
+				case Lifetime.PerContainer:
+					var action = Expression.Lambda(expression).Compile();
+					var value = action.DynamicInvoke();
+					expression = Expression.Constant(value);
+					break;
+				default:
+					throw new ArgumentOutOfRangeException();
+			}
+			dependencyNode.Expression = expression;
+		}
 
-        private Expression ResolveMethodCallExpression(Expression expression)
-        {
-            switch (expression)
-            {
-                case LambdaExpression lambdaExpression:
-                    {
-                        var body = ResolveMethodCallParameters(lambdaExpression.Parameters);
-                        var blockExpression = (BlockExpression)lambdaExpression.Body;
-                        var newBody = Expression.Block(blockExpression.Variables, body.Concat(blockExpression.Expressions));
-                        expression = Expression.Block(lambdaExpression.Parameters, newBody);
-                    }
-                    break;
-                case NewExpression newExpression:
-                    {
-                        if (newExpression.Arguments.Count == 0) break;
-                        var body = ResolveMethodCallParameters(newExpression.Arguments);
-                        body.Add(newExpression);
-                        expression = Expression.Block(newExpression.Arguments.Cast<ParameterExpression>(), body);
-                    }
-                    break;
-                default:
-                    throw new NotSupportedException($"The expression of type {expression.GetType()} is not supported");
-            }
-            return expression;
-        }
+		private Expression ResolveMethodCallExpression(Expression expression)
+		{
+			switch (expression)
+			{
+				case LambdaExpression lambdaExpression:
+					{
+						var body = ResolveMethodCallParameters(lambdaExpression.Parameters);
+						var blockExpression = (BlockExpression)lambdaExpression.Body;
+						var newBody = Expression.Block(blockExpression.Variables, body.Concat(blockExpression.Expressions));
+						expression = Expression.Block(lambdaExpression.Parameters, newBody);
+					}
+					break;
+				case NewExpression newExpression:
+					{
+						if (newExpression.Arguments.Count == 0) break;
+						var body = ResolveMethodCallParameters(newExpression.Arguments);
+						body.Add(newExpression);
+						expression = Expression.Block(newExpression.Arguments.Cast<ParameterExpression>(), body);
+					}
+					break;
+				case BlockExpression blockExpression:
+					{
+						expression = blockExpression;
+					}
+					break;
+				default:
+					throw new NotSupportedException($"The expression of type {expression.GetType()} is not supported");
+			}
+			return expression;
+		}
 
-        private List<Expression> ResolveMethodCallParameters(IEnumerable<Expression> parameterExpressions)
-        {
-            var body = new List<Expression>();
-            foreach (var unresolvedParameter in parameterExpressions)
-            {
-                if (Dependencies.TryGetValue(unresolvedParameter.Type, out var dependency))
-                {
-                    body.Add(Expression.Assign(unresolvedParameter, dependency.Expression));
-                }
-                else
-                {
-                    throw new CannotResolveDependencyException($"A instance of type {unresolvedParameter} is needed but was not found in the container.");
-                }
-            }
-            return body;
-        }
-    }
+		private List<Expression> ResolveMethodCallParameters(IEnumerable<Expression> parameterExpressions)
+		{
+			var body = new List<Expression>();
+			foreach (var unresolvedParameter in parameterExpressions)
+			{
+				if (Dependencies.TryGetValue(unresolvedParameter.Type, out var dependency))
+				{
+					body.Add(Expression.Assign(unresolvedParameter, dependency.Expression));
+				}
+				else
+				{
+					throw new CannotResolveDependencyException($"A instance of type {unresolvedParameter} is needed but was not found in the container.");
+				}
+			}
+			return body;
+		}
+	}
 }
