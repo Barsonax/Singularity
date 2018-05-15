@@ -9,7 +9,7 @@ namespace Singularity.Bindings
         public Expression Expression { get; }
         public Lifetime Lifetime { get; private set; }
         public Action<TInstance> OnDeathAction { get; private set; }
-        Action<object> IConfiguredBinding.OnDeath => obj => OnDeathAction((TInstance)obj);
+        Action<object> IConfiguredBinding.OnDeath => OnDeathAction != null ? (Action<object>) (obj => OnDeathAction((TInstance) obj)) : null;
 
         public StronglyTypedConfiguredBinding(Expression expression)
         {

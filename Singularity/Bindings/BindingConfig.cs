@@ -29,6 +29,37 @@ namespace Singularity
         private readonly Dictionary<Type, IBinding> _bindings = new Dictionary<Type, IBinding>();
         private readonly List<IDecoratorBinding> _decorators = new List<IDecoratorBinding>();
 
+        public BindingConfig()
+        {
+
+        }
+
+        internal BindingConfig(IBindingConfig childBindingConfig, IBindingConfig parentBindingConfig = null)
+        {
+            foreach (var keyValuePair in childBindingConfig.Bindings)
+            {
+                _bindings.Add(keyValuePair.Key, keyValuePair.Value);
+            }
+
+            foreach (var decoratorBinding in childBindingConfig.Decorators)
+            {
+                _decorators.Add(decoratorBinding);
+            }
+
+            if (parentBindingConfig != null)
+            {
+                foreach (var keyValuePair in parentBindingConfig.Bindings)
+                {
+                    if(!_bindings.ContainsKey(keyValuePair.Key)) _bindings.Add(keyValuePair.Key, keyValuePair.Value);
+                }
+
+                foreach (var decoratorBinding in parentBindingConfig.Decorators)
+                {
+                    _decorators.Add(decoratorBinding);
+                }
+            }
+        }
+
         public IReadOnlyDictionary<Type, IBinding> Bindings => _bindings;
 
         public IEnumerable<IDecoratorBinding> Decorators => _decorators;
