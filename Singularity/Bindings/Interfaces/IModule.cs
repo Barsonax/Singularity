@@ -1,4 +1,6 @@
-﻿namespace Singularity
+﻿using Singularity.Bindings;
+
+namespace Singularity
 {
     public interface IModule
     {

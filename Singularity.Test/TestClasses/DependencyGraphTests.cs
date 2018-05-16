@@ -1,7 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
+﻿using Singularity.Bindings;
 using Singularity.Exceptions;
+using Singularity.Graph;
 using Xunit;
 
 namespace Singularity.Test.TestClasses

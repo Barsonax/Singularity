@@ -1,5 +1,5 @@
-using System;
 using System.Collections.Generic;
+using Singularity.Bindings;
 using Singularity.Test.TestClasses;
 using Xunit;
 
@@ -40,39 +40,6 @@ namespace Singularity.Test
 				var value = container.GetInstance<ITestService10>();
 				Assert.Equal(typeof(TestService10), value.GetType());
 			}
-		}
-
-		[Fact]
-		public void GetInstance_NestedContainerWithPerContainerLifetime_IsDisposed()
-		{
-			var config = new BindingConfig();
-			config.For<IDisposable>().Inject<Disposable>().With(Lifetime.PerContainer).OnDeath(x => x.Dispose());
-
-			var container = new Container(config);
-
-			var topLevelInstance = container.GetInstance<IDisposable>();
-			Assert.NotNull(topLevelInstance);
-			Assert.Equal(typeof(Disposable), topLevelInstance.GetType());
-
-			{
-				var nestedConfig = new BindingConfig();
-				nestedConfig.For<IDisposable>().Inject<Disposable>().With(Lifetime.PerContainer).OnDeath(x => x.Dispose());
-				var nestedContainer = container.GetNestedContainer(nestedConfig);
-				var nestedInstance = nestedContainer.GetInstance<IDisposable>();
-
-				Assert.NotNull(nestedInstance);
-				Assert.Equal(typeof(Disposable), nestedInstance.GetType());
-
-				var castednestedInstance = (Disposable)nestedInstance;
-				Assert.False(castednestedInstance.IsDisposed);
-				nestedContainer.Dispose();
-				Assert.True(castednestedInstance.IsDisposed);
-			}
-
-			var castedTopLevelInstance = (Disposable)topLevelInstance;
-			Assert.False(castedTopLevelInstance.IsDisposed);
-			container.Dispose();
-			Assert.True(castedTopLevelInstance.IsDisposed);
 		}
 
 		[Fact]
@@ -135,24 +102,6 @@ namespace Singularity.Test
 			Assert.NotNull(value1);
 			Assert.NotNull(value2);
 			Assert.Equal(value1, value2);
-		}
-
-		[Fact]
-		public void GetInstance_WithPerContainerLifetime_IsDisposed()
-		{
-			var config = new BindingConfig();
-			config.For<IDisposable>().Inject<Disposable>().With(Lifetime.PerContainer).OnDeath(x => x.Dispose());
-
-			var container = new Container(config);
-
-			var disposable = container.GetInstance<IDisposable>();
-			Assert.NotNull(disposable);
-			Assert.Equal(typeof(Disposable), disposable.GetType());
-
-			var value = (Disposable)disposable;
-			Assert.False(value.IsDisposed);
-			container.Dispose();
-			Assert.True(value.IsDisposed);
 		}
 
 		[Fact]

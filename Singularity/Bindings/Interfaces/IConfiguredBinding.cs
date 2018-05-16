@@ -8,5 +8,5 @@ namespace Singularity.Bindings
 		Expression Expression { get; }
 		Lifetime Lifetime { get; }
         Action<object> OnDeath { get; }
-    }
+	}
 }

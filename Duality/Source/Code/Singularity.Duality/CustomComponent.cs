@@ -1,4 +1,5 @@
 ﻿using Duality;
+using Singularity.Bindings;
 
 namespace Singularity.Duality
 {

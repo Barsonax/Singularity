@@ -14,11 +14,13 @@
   </Target>
 
   <ItemGroup>
-    <PackageReference Include="System.ValueTuple" Version="4.3.0" />
+    <Compile Remove="General\**" />
+    <EmbeddedResource Remove="General\**" />
+    <None Remove="General\**" />
   </ItemGroup>
 
   <ItemGroup>
-    <Folder Include="General\" />
+    <PackageReference Include="System.ValueTuple" Version="4.3.0" />
   </ItemGroup>
 
 </Project>

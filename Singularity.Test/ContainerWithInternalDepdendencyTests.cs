@@ -1,3 +1,4 @@
+using Singularity.Bindings;
 using Singularity.Test.TestClasses;
 using Xunit;
 
