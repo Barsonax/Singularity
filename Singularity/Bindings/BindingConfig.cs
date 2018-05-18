@@ -34,17 +34,17 @@ namespace Singularity.Bindings
 
 		internal BindingConfig(IBindingConfig childBindingConfig, DependencyGraph parentDependencyGraph)
 		{
-			foreach (var keyValuePair in childBindingConfig.Bindings)
+			foreach (var binding in childBindingConfig.Bindings.Values)
 			{
-				_bindings.Add(keyValuePair.Key, keyValuePair.Value);
+				_bindings.Add(binding.DependencyType, binding);
 			}
 
-			foreach (var keyValuePair in parentDependencyGraph._bindingConfig.Bindings)
+			foreach (var parentBinding in parentDependencyGraph._bindingConfig.Bindings.Values)
 			{
-				if (_bindings.TryGetValue(keyValuePair.Key, out var binding))
+				if (_bindings.TryGetValue(parentBinding.DependencyType, out var binding))
 				{
 					if (binding.ConfiguredBinding != null) continue;				
-					var oldConfiguredBinding = binding.ConfiguredBinding ?? keyValuePair.Value.ConfiguredBinding;
+					var oldConfiguredBinding = binding.ConfiguredBinding ?? parentBinding.ConfiguredBinding;
 
 					List<IDecoratorBinding> decorators;
 					Expression expression;
@@ -58,7 +58,7 @@ namespace Singularity.Bindings
 					else
 					{
 						onDeathAction = oldConfiguredBinding.OnDeath;
-						decorators = keyValuePair.Value.Decorators.Concat(binding.Decorators).ToList();
+						decorators = parentBinding.Decorators.Concat(binding.Decorators).ToList();
 						expression = oldConfiguredBinding.Expression;
 					}
 					var weaklyTypedConfiguredBinding = new WeaklyTypedConfiguredBinding(expression, oldConfiguredBinding.Lifetime, onDeathAction);
@@ -67,17 +67,17 @@ namespace Singularity.Bindings
 				}
 				else
 				{
-					if (keyValuePair.Value.ConfiguredBinding?.Lifetime == Lifetime.PerContainer)
+					if (parentBinding.ConfiguredBinding?.Lifetime == Lifetime.PerContainer)
 					{
 						var weaklyTypedConfiguredBinding = new WeaklyTypedConfiguredBinding(
-							keyValuePair.Value.ConfiguredBinding.Expression, keyValuePair.Value.ConfiguredBinding.Lifetime, null);
+							parentBinding.ConfiguredBinding.Expression, parentBinding.ConfiguredBinding.Lifetime, null);
 						var weaklyTypedBinding =
-							new WeaklyTypedBinding(keyValuePair.Key, weaklyTypedConfiguredBinding, keyValuePair.Value.Decorators);
-						_bindings.Add(keyValuePair.Key, weaklyTypedBinding);
+							new WeaklyTypedBinding(parentBinding.DependencyType, weaklyTypedConfiguredBinding, parentBinding.Decorators);
+						_bindings.Add(parentBinding.DependencyType, weaklyTypedBinding);
 					}
 					else
 					{
-						_bindings.Add(keyValuePair.Key, keyValuePair.Value);
+						_bindings.Add(parentBinding.DependencyType, parentBinding);
 					}
 				}
 			}

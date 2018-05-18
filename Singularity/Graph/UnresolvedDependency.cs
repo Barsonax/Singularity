@@ -18,7 +18,7 @@ namespace Singularity
 	{
         public Expression Expression { get; internal set; }
         public Lifetime Lifetime { get; }
-        public Action<object> OnDeath { get; }
+        public Action<object> OnDeath { get; internal set; }
 
 	    public UnresolvedDependency(Expression expression, Lifetime lifetime, Action<object> onDeath)
         {

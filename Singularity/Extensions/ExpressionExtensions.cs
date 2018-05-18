@@ -15,7 +15,7 @@ namespace Singularity.Extensions
                 case LambdaExpression lambdaExpression:
                     return lambdaExpression.Parameters.ToArray();
                 case NewExpression newExpression:
-                    return newExpression.Arguments.Select(x => (ParameterExpression)x).ToArray();
+                    return newExpression.Arguments.OfType<ParameterExpression>().ToArray();
                 case BlockExpression blockExpression:
                     return blockExpression.Variables.ToArray();
                 default:

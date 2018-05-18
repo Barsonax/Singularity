@@ -163,7 +163,6 @@ namespace Singularity
 
             var body = new List<Expression>();
             var instanceCasted = Expression.Variable(type, "instanceCasted");
-            body.Add(instanceCasted);
             body.Add(Expression.Assign(instanceCasted, Expression.Convert(instanceParameter, type)));
             foreach (var methodInfo in type.GetRuntimeMethods())
             {
