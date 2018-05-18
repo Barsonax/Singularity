@@ -52,7 +52,7 @@ namespace Singularity.Bindings
 					if (oldConfiguredBinding.Lifetime == Lifetime.PerContainer)
 					{
 						expression = parentDependencyGraph.Dependencies[binding.DependencyType].ResolvedDependency.Expression;
-						decorators = keyValuePair.Value.Decorators.Concat(binding.Decorators).ToList();
+						decorators = binding.Decorators.ToList();
 						onDeathAction = null;
 					}
 					else

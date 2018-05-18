@@ -19,14 +19,12 @@ namespace Singularity
         public Expression Expression { get; internal set; }
         public Lifetime Lifetime { get; }
         public Action<object> OnDeath { get; }
-        public bool IsExternal { get; }
 
-	    public UnresolvedDependency(Expression expression, Lifetime lifetime, Action<object> onDeath, bool isExternal = false)
+	    public UnresolvedDependency(Expression expression, Lifetime lifetime, Action<object> onDeath)
         {
             Lifetime = lifetime;
             Expression = expression;
             OnDeath = onDeath;
-            IsExternal = isExternal;
         }
 	}
 

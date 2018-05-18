@@ -135,5 +135,43 @@ namespace Singularity.Test
 			Assert.NotNull(testService11.TestService10);
 			Assert.Equal(typeof(TestService10), testService11.TestService10.GetType());
 		}
-	}
+
+	    [Fact]
+	    public void GetInstance_DecorateNestedContainer()
+	    {
+	        var config = new BindingConfig();
+
+	        config.Decorate<ITestService11>().With<TestService11_Decorator1>();
+
+	        config.For<ITestService10>().Inject<TestService10>();
+	        config.For<ITestService11>().Inject<TestService11>().With(Lifetime.PerContainer);
+
+	        var container = new Container(config);
+
+	        var value = container.GetInstance<ITestService11>();
+
+	        Assert.NotNull(value);
+	        Assert.Equal(typeof(TestService11_Decorator1), value.GetType());
+	        var decorator1 = (TestService11_Decorator1)value;
+
+	        Assert.NotNull(decorator1.TestService11);
+	        Assert.Equal(typeof(TestService11), decorator1.TestService11.GetType());
+	        var testService11 = (TestService11)decorator1.TestService11;
+
+	        Assert.NotNull(testService11.TestService10);
+	        Assert.Equal(typeof(TestService10), testService11.TestService10.GetType());
+
+            var nestedConfig = new BindingConfig();
+            nestedConfig.Decorate<ITestService11>().With<TestService11_Decorator2>();
+            var nestedContainer = container.GetNestedContainer(nestedConfig);
+
+	        var nestedInstance = nestedContainer.GetInstance<ITestService11>();
+
+            Assert.Equal(typeof(TestService11_Decorator2), nestedInstance.GetType());
+	        var nestedDecorator2 = (TestService11_Decorator2) nestedInstance;
+            Assert.Equal(typeof(TestService11_Decorator1), nestedDecorator2.TestService11.GetType());
+	        var nestedDecorator1 = (TestService11_Decorator1)nestedDecorator2.TestService11;
+            Assert.Equal(typeof(TestService11), nestedDecorator1.TestService11.GetType());
+	    }
+    }
 }

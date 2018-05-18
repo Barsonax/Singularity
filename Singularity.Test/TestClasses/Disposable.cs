@@ -11,4 +11,19 @@ namespace Singularity.Test.TestClasses
             IsDisposed = true;
         }
     }
+
+    public class DisposableDecorator : IDisposable
+    {
+        public IDisposable Disposable { get; }
+
+        public DisposableDecorator(IDisposable disposable)
+        {
+            Disposable = disposable;
+        }
+
+        public void Dispose()
+        {
+            Disposable.Dispose();
+        }
+    }
 }
