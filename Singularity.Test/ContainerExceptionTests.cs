@@ -33,11 +33,11 @@ namespace Singularity.Test
 				var graphException = (GraphAggregrateException)e;
 
 				Assert.Equal(1, graphException.InnerExceptions.Length);
-				Assert.Equal(typeof(CannotResolveDependenciesException), graphException.InnerExceptions[0].GetType());
-				var cannotResolveDependenciesException = (CannotResolveDependenciesException)graphException.InnerExceptions[0];
+				Assert.Equal(typeof(DependenciesNotFoundException), graphException.InnerExceptions[0].GetType());
+				var cannotResolveDependenciesException = (DependenciesNotFoundException)graphException.InnerExceptions[0];
 
-				Assert.Equal(1, cannotResolveDependenciesException.UnresolvedTypes.Length);
-				Assert.Equal(typeof(ITestService10), cannotResolveDependenciesException.UnresolvedTypes[0]);
+				Assert.Equal(1, cannotResolveDependenciesException.MissingDependencies.Length);
+				Assert.Equal(typeof(ITestService10), cannotResolveDependenciesException.MissingDependencies[0]);
 			}
 		}
 	}

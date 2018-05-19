@@ -1,4 +1,6 @@
-﻿using Singularity.Graph;
+﻿using System;
+using System.Linq;
+using Singularity.Graph;
 using Xunit;
 
 namespace Singularity.Test
@@ -77,11 +79,19 @@ namespace Singularity.Test
 			node1.Parents.Add(node2);
 			node2.Parents.Add(node1);
 
-			Assert.Throws<CircularDependencyException>(() =>
+			try
 			{
 				var graph = new Graph<TestNode>(nodeCollection);
 				var updateOrder = graph.GetUpdateOrder(node => node.Parents);
-			});
+			}
+			catch (Exception e)
+			{
+				Assert.Equal(typeof(GraphAggregrateException), e.GetType());
+				var graphAggregrateException = (GraphAggregrateException)e;
+				Assert.Equal(2, graphAggregrateException.InnerExceptions.Length);
+				Assert.Equal(typeof(CircularDependencyException), graphAggregrateException.InnerExceptions[0].GetType());
+				Assert.Equal(typeof(CircularDependencyException), graphAggregrateException.InnerExceptions[1].GetType());
+			}
 		}
 
 		[Fact]
@@ -97,11 +107,20 @@ namespace Singularity.Test
 			node2.Parents.Add(node1);
 			node3.Parents.Add(node2);
 
-			Assert.Throws<CircularDependencyException>(() =>
+			try
 			{
 				var graph = new Graph<TestNode>(nodeCollection);
 				var updateOrder = graph.GetUpdateOrder(node => node.Parents);
-			});
+			}
+			catch (Exception e)
+			{
+				Assert.Equal(typeof(GraphAggregrateException), e.GetType());
+				var graphAggregrateException = (GraphAggregrateException)e;
+				Assert.Equal(3, graphAggregrateException.InnerExceptions.Length);
+				Assert.Equal(typeof(CircularDependencyException), graphAggregrateException.InnerExceptions[0].GetType());
+				Assert.Equal(typeof(CircularDependencyException), graphAggregrateException.InnerExceptions[1].GetType());
+				Assert.Equal(typeof(CircularDependencyException), graphAggregrateException.InnerExceptions[2].GetType());
+			}
 		}
 	}
 }

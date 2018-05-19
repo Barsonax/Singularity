@@ -154,7 +154,7 @@ namespace Singularity
                 return dependencyNode.ResolvedDependency.Expression;
             }
 
-            throw new DependencyNotFoundException($"No configured dependency found for {type}");
+            throw new DependencyNotFoundException(type);
         }
 
         private Action<object> GenerateMethodInjector(Type type)

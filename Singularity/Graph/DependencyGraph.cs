@@ -100,19 +100,19 @@ namespace Singularity.Graph
 		{
 			var parameters = dependencyNode.UnresolvedDependency.Expression.GetParameterExpressions();
 			var resolvedDependencies = new List<DependencyNode>();
-			var unresolvedDependencies = new List<Type>();
+			var missingDependencies = new List<Type>();
 			foreach (var parameterExpression in parameters)
 			{
 				try
 				{
 					resolvedDependencies.Add(GetDependency(parameterExpression.Type));
 				}
-				catch (CannotResolveDependencyException e)
+				catch (DependencyNotFoundException e)
 				{
-					unresolvedDependencies.Add(e.Type);
+					missingDependencies.Add(e.Type);
 				}
 			}
-			if (unresolvedDependencies.Count > 0) throw new CannotResolveDependenciesException(dependencyNode.UnresolvedDependency.Expression.Type, unresolvedDependencies);
+			if (missingDependencies.Count > 0) throw new DependenciesNotFoundException(dependencyNode.UnresolvedDependency.Expression.Type, missingDependencies);
 
 			return resolvedDependencies;
 		}
@@ -123,7 +123,7 @@ namespace Singularity.Graph
 			{
 				return parent;
 			}
-			throw new CannotResolveDependencyException(type);
+			throw new DependencyNotFoundException(type);
 		}
 
 		private ResolvedDependency ResolveDependency(UnresolvedDependency unresolvedDependency)

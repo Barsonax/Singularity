@@ -15,6 +15,7 @@ namespace Singularity.Graph
 	}
 
 	public class Graph<T>
+		where T : class
 	{
 		private readonly Dictionary<T, Node<T>> _nodes = new Dictionary<T, Node<T>>();
 
@@ -60,26 +61,43 @@ namespace Singularity.Graph
 
 			foreach (var unresolvedNode in unresolvedNodes)
 			{
-				unresolvedNode.Depth = ResolveDepth(unresolvedNode);
+				try
+				{
+					unresolvedNode.Depth = ResolveDepth(unresolvedNode);
+				}
+				catch (Exception e)
+				{
+					exceptions.Add(e);
+				}
+			}
+			if (exceptions.Count > 0)
+			{
+				throw new GraphAggregrateException($"The following exceptions occured while calculating the depth of the nodes in the graph:{Environment.NewLine}", exceptions);
 			}
 
 			return _nodes.Values.GroupBy(x => x.Depth).OrderBy(x => x.Key).Select(x => x.Select(y => y.Value).ToArray()).ToArray();
 		}
 
-		private int ResolveDepth(Node<T> dependencyNode, Node<T> startNode = null)
+		private int ResolveDepth(Node<T> dependencyNode, List<Node<T>> visitedNodes = null)
 		{
-			if (startNode == null)
+			if (visitedNodes == null)
 			{
-				startNode = dependencyNode;
+				visitedNodes = new List<Node<T>>();
 			}
-			else if (dependencyNode == startNode) throw new CircularDependencyException($"{startNode.Value} has circular dependencies!");
+			else if (visitedNodes.Contains(dependencyNode))
+			{
+				visitedNodes.Add(dependencyNode);
+				throw new CircularDependencyException(visitedNodes.Select(x => x.Value).ToArray());
+			}
+
+			visitedNodes.Add(dependencyNode);
 
 			var maxDepth = 0;
 
 			foreach (var parent in dependencyNode.Parents)
 			{
 				if (parent.Depth == null)
-					parent.Depth = ResolveDepth(parent, startNode);
+					parent.Depth = ResolveDepth(parent, visitedNodes);
 				var currentDepth = parent.Depth.Value + 1;
 				if (currentDepth > maxDepth) maxDepth = currentDepth;
 			}
@@ -88,6 +106,7 @@ namespace Singularity.Graph
 	}
 
 	public class Node<T>
+		where T : class
 	{
 		public int? Depth { get; set; }
 		public Node<T>[] Parents { get; set; }

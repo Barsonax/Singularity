@@ -4,8 +4,11 @@ namespace Singularity.Exceptions
 {
 	public class DependencyNotFoundException : Exception
 	{
-		public DependencyNotFoundException(string message) : base(message)
+		public Type Type { get; }
+
+		public DependencyNotFoundException(Type type) : base($"Could not find dependency {type}")
 		{
+			Type = type;
 		}
 	}
 }
