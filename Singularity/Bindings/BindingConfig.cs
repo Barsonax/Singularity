@@ -39,7 +39,7 @@ namespace Singularity.Bindings
 				_bindings.Add(binding.DependencyType, binding);
 			}
 
-			foreach (var parentBinding in parentDependencyGraph._bindingConfig.Bindings.Values)
+			foreach (var parentBinding in parentDependencyGraph.BindingConfig.Bindings.Values)
 			{
 				if (_bindings.TryGetValue(parentBinding.DependencyType, out var binding))
 				{
