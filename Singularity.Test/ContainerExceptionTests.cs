@@ -30,9 +30,10 @@ namespace Singularity.Test
 			}
 			catch (Exception e)
 			{
-				var graphException = (GraphAggregrateException)e;
+				Assert.Equal(typeof(SingularityAggregateException), e.GetType());
+				var graphException = (SingularityAggregateException)e;
 
-				Assert.Equal(1, graphException.InnerExceptions.Length);
+				Assert.Equal(1, graphException.InnerExceptions.Count);
 				Assert.Equal(typeof(DependenciesNotFoundException), graphException.InnerExceptions[0].GetType());
 				var cannotResolveDependenciesException = (DependenciesNotFoundException)graphException.InnerExceptions[0];
 

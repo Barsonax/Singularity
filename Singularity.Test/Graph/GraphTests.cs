@@ -86,11 +86,11 @@ namespace Singularity.Test
 			}
 			catch (Exception e)
 			{
-				Assert.Equal(typeof(GraphAggregrateException), e.GetType());
-				var graphAggregrateException = (GraphAggregrateException)e;
-				Assert.Equal(2, graphAggregrateException.InnerExceptions.Length);
-				Assert.Equal(typeof(CircularDependencyException), graphAggregrateException.InnerExceptions[0].GetType());
-				Assert.Equal(typeof(CircularDependencyException), graphAggregrateException.InnerExceptions[1].GetType());
+				Assert.Equal(typeof(SingularityAggregateException), e.GetType());
+				var singularityAggregateException = (SingularityAggregateException)e;
+				Assert.Equal(2, singularityAggregateException.InnerExceptions.Count);
+				Assert.Equal(typeof(CircularDependencyException), singularityAggregateException.InnerExceptions[0].GetType());
+				Assert.Equal(typeof(CircularDependencyException), singularityAggregateException.InnerExceptions[1].GetType());
 			}
 		}
 
@@ -114,12 +114,12 @@ namespace Singularity.Test
 			}
 			catch (Exception e)
 			{
-				Assert.Equal(typeof(GraphAggregrateException), e.GetType());
-				var graphAggregrateException = (GraphAggregrateException)e;
-				Assert.Equal(3, graphAggregrateException.InnerExceptions.Length);
-				Assert.Equal(typeof(CircularDependencyException), graphAggregrateException.InnerExceptions[0].GetType());
-				Assert.Equal(typeof(CircularDependencyException), graphAggregrateException.InnerExceptions[1].GetType());
-				Assert.Equal(typeof(CircularDependencyException), graphAggregrateException.InnerExceptions[2].GetType());
+				Assert.Equal(typeof(SingularityAggregateException), e.GetType());
+				var singularityAggregateException = (SingularityAggregateException)e;
+				Assert.Equal(3, singularityAggregateException.InnerExceptions.Count);
+				Assert.Equal(typeof(CircularDependencyException), singularityAggregateException.InnerExceptions[0].GetType());
+				Assert.Equal(typeof(CircularDependencyException), singularityAggregateException.InnerExceptions[1].GetType());
+				Assert.Equal(typeof(CircularDependencyException), singularityAggregateException.InnerExceptions[2].GetType());
 			}
 		}
 	}
