@@ -7,6 +7,6 @@ namespace Singularity.Bindings
 	{
 		Type DependencyType { get; }
 		IConfiguredBinding ConfiguredBinding { get; }
-		List<IDecoratorBinding> Decorators { get; }
+		IReadOnlyList<IDecoratorBinding> Decorators { get; }
 	}
 }

@@ -7,9 +7,9 @@ namespace Singularity.Bindings
 	{
 		public Type DependencyType { get; }
 		public IConfiguredBinding ConfiguredBinding { get; }
-		public List<IDecoratorBinding> Decorators { get; }
+		public IReadOnlyList<IDecoratorBinding> Decorators { get; }
 
-		public WeaklyTypedBinding(Type dependencyType, IConfiguredBinding configuredBinding, List<IDecoratorBinding> decorators)
+		public WeaklyTypedBinding(Type dependencyType, IConfiguredBinding configuredBinding, IReadOnlyList<IDecoratorBinding> decorators)
 		{
 			DependencyType = dependencyType;
 			ConfiguredBinding = configuredBinding;

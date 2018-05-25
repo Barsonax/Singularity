@@ -2,7 +2,6 @@ using System;
 using Singularity.Bindings;
 using Xunit;
 using Singularity.Exceptions;
-using Singularity.Graph;
 using Singularity.Test.TestClasses;
 
 namespace Singularity.Test
@@ -28,17 +27,16 @@ namespace Singularity.Test
 				config.For<ITestService11>().Inject<TestService11>();
 				var container = new Container(config);
 			}
-			catch (Exception e)
+			catch (AggregateException e)
 			{
-				Assert.Equal(typeof(SingularityAggregateException), e.GetType());
-				var graphException = (SingularityAggregateException)e;
+			    Assert.Equal(typeof(SingularityAggregateException), e.GetType());
+				var aggregateException = e.Flatten();
 
-				Assert.Equal(1, graphException.InnerExceptions.Count);
-				Assert.Equal(typeof(DependenciesNotFoundException), graphException.InnerExceptions[0].GetType());
-				var cannotResolveDependenciesException = (DependenciesNotFoundException)graphException.InnerExceptions[0];
+				Assert.Equal(1, aggregateException.InnerExceptions.Count);
+				Assert.Equal(typeof(DependencyNotFoundException), aggregateException.InnerExceptions[0].GetType());
+				var dependencyNotFoundException = (DependencyNotFoundException)aggregateException.InnerExceptions[0];
 
-				Assert.Equal(1, cannotResolveDependenciesException.MissingDependencies.Length);
-				Assert.Equal(typeof(ITestService10), cannotResolveDependenciesException.MissingDependencies[0]);
+				Assert.Equal(typeof(ITestService10), dependencyNotFoundException.Type);
 			}
 		}
 	}
