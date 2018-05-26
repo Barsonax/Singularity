@@ -7,7 +7,9 @@ namespace Singularity.Bindings
 	public class StronglyTypedBinding<TDependency> : IBinding
 	{
 		public IConfiguredBinding ConfiguredBinding { get; set; }
-		public List<IDecoratorBinding> Decorators { get; } = new List<IDecoratorBinding>();
+
+	    public List<IDecoratorBinding> Decorators { get; } = new List<IDecoratorBinding>();
+	    IReadOnlyList<IDecoratorBinding> IBinding.Decorators => Decorators;
 		public Type DependencyType { get; } = typeof(TDependency);
 
 		/// <summary>

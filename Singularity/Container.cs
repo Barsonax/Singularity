@@ -6,6 +6,7 @@ using System.Linq.Expressions;
 using System.Reflection;
 using System.Runtime.CompilerServices;
 using Singularity.Bindings;
+using Singularity.Collections;
 using Singularity.Graph;
 
 namespace Singularity
@@ -17,9 +18,17 @@ namespace Singularity
         private readonly Dictionary<Type, Action<object>> _injectionCache = new Dictionary<Type, Action<object>>(ReferenceEqualityComparer<Type>.Instance);
         private readonly Dictionary<Type, Func<object>> _getInstanceCache = new Dictionary<Type, Func<object>>(ReferenceEqualityComparer<Type>.Instance);
 
+        private readonly ObjectActionContainer _objectActionContainer;
+
         public Container(IBindingConfig bindingConfig, DependencyGraph parentDependencies = null)
         {
-            _dependencyGraph = new DependencyGraph(bindingConfig, parentDependencies);
+            var generators = new List<IDependencyExpressionGenerator>();
+            _objectActionContainer = new ObjectActionContainer();
+
+            generators.Add(new OnDeathExpressionGenerator(_objectActionContainer));
+            generators.Add(new DecoratorExpressionGenerator());
+            
+            _dependencyGraph = new DependencyGraph(bindingConfig, generators, parentDependencies);
         }
 
         public Container GetNestedContainer(BindingConfig bindingConfig)
@@ -185,7 +194,7 @@ namespace Singularity
 
         public void Dispose()
         {
-            _dependencyGraph.Dispose();
+            _objectActionContainer.Invoke();
         }
     }
 }
