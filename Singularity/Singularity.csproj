@@ -2,6 +2,12 @@
 
   <PropertyGroup>
     <TargetFramework>netstandard1.0</TargetFramework>
+    <Version>0.0.1</Version>
+    <Authors>Barsonax</Authors>
+    <Description>The core library for the singularity ioc container</Description>
+    <PackageProjectUrl>https://github.com/Barsonax/Singularity</PackageProjectUrl>
+    <PackageTags>ioc</PackageTags>
+    <RepositoryUrl>https://github.com/Barsonax/Singularity</RepositoryUrl>
   </PropertyGroup>
 
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">

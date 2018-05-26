@@ -1,0 +1,8 @@
+{
+  "profiles": {
+    "Singularity.Duality": {
+      "commandName": "Executable",
+      "executablePath": "C:\\Users\\Rick-\\Source\\Repos\\Pathfindax_Netstandard\\DualityLauncher.exe"
+    }
+  }
+}
