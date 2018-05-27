@@ -5,28 +5,40 @@ namespace Singularity.Collections
 {
 	public class ObjectActionContainer
 	{
-		public Dictionary<Type, (Action<object> action, List<object> objects)> ActionObjectLists { get; } = new Dictionary<Type, (Action<object> action, List<object> objects)>();
+		private Dictionary<Type, ObjectActionList> ObjectActionLists { get; } = new Dictionary<Type, ObjectActionList>();
 
 		public void AddAction(Type type, Action<object> action)
 		{
-			ActionObjectLists.Add(type, (action, new List<object>()));
+			ObjectActionLists.Add(type, new ObjectActionList(action));
 		}
 
 		public void Add(object obj)
 		{
 			var type = obj.GetType();
-			var list = ActionObjectLists[type];
-			list.objects.Add(obj);
+			var objectActionList = ObjectActionLists[type];
+			objectActionList.Objects.Add(obj);
 		}
 
 		public void Invoke()
 		{
-			foreach (var (action, objects) in ActionObjectLists.Values)
+			foreach (var objectActionList in ObjectActionLists.Values)
 			{
-				foreach (var obj in objects)
+				foreach (var obj in objectActionList.Objects)
 				{
-					action.Invoke(obj);
+					objectActionList.Action.Invoke(obj);
 				}
+			}
+		}
+
+		private struct ObjectActionList
+		{
+			public Action<object> Action { get; }
+			public List<object> Objects { get; }
+
+			public ObjectActionList(Action<object> action)
+			{
+				Action = action;
+				Objects = new List<object>();
 			}
 		}
 	}
