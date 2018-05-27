@@ -3,15 +3,17 @@
   <PropertyGroup>
     <TargetFramework>netstandard2.0</TargetFramework>
     <AssemblyName>Singularity.Duality.core</AssemblyName>
-    <PackageLicenseUrl></PackageLicenseUrl>
+    <PackageLicenseUrl>https://github.com/Barsonax/Singularity/blob/master/LICENSE</PackageLicenseUrl>
     <PackageProjectUrl>https://github.com/Barsonax/Singularity</PackageProjectUrl>
     <PackageIconUrl></PackageIconUrl>
     <RepositoryUrl>https://github.com/Barsonax/Singularity</RepositoryUrl>
     <NoWarn>1701;1702;1705;1591;NU1701</NoWarn>
     <Authors>Barsonax</Authors>
-    <PackageTags>Duality Plugin ioc</PackageTags>
+    <PackageTags>Duality Plugin ioc inversion control dependency injection</PackageTags>
     <Version>0.0.1</Version>
     <Description>Plugin that adds a ioc container to duality</Description>
+    <Copyright>https://github.com/Barsonax/Singularity/blob/master/LICENSE</Copyright>
+    <NeutralLanguage>en</NeutralLanguage>
   </PropertyGroup>
   <Target Name="PostBuild" AfterTargets="PostBuildEvent">
     <Exec Command="mkdir &quot;$(SolutionDir)Duality/Plugins&quot;&#xD;&#xA;copy &quot;$(TargetPath)&quot; &quot;$(SolutionDir)Duality/Plugins&quot;&#xD;&#xA;copy &quot;$(TargetDir)$(TargetName).pdb&quot; &quot;$(SolutionDir)Duality/Plugins&quot;&#xD;&#xA;xcopy /Y &quot;$(TargetDir)*.core.xml&quot; &quot;$(SolutionDir)Duality/Plugins&quot;" />
