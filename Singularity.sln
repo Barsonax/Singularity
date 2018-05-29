@@ -9,12 +9,16 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Singularity.Test", "Singula
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Singularity.Benchmark", "Singularity.Benchmark\Singularity.Benchmark.csproj", "{A6CEF3E9-C75E-48CB-90F4-21C99007C406}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Singularity.Duality", "Duality\Source\Code\Singularity.Duality\Singularity.Duality.csproj", "{AFE883F3-72B4-4C7C-A1D1-44EDC09C8F6E}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Singularity.Duality", "Duality\Source\Code\Singularity.Duality\Singularity.Duality.csproj", "{AFE883F3-72B4-4C7C-A1D1-44EDC09C8F6E}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{F07B1110-A580-458C-92DB-09A67CEF6CBA}"
 	ProjectSection(SolutionItems) = preProject
 		appveyor.yml = appveyor.yml
 	EndProjectSection
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Examples", "Examples", "{45EDBBA9-9BFB-4B23-8A08-0A4AD26BE42A}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Singularity.Duality.Examples", "Duality\Source\Code\Singularity.Duality.Examples\Singularity.Duality.Examples.csproj", "{DC6835B4-63D5-465A-9590-08544ABB2DDB}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -38,9 +42,16 @@ Global
 		{AFE883F3-72B4-4C7C-A1D1-44EDC09C8F6E}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{AFE883F3-72B4-4C7C-A1D1-44EDC09C8F6E}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{AFE883F3-72B4-4C7C-A1D1-44EDC09C8F6E}.Release|Any CPU.Build.0 = Release|Any CPU
+		{DC6835B4-63D5-465A-9590-08544ABB2DDB}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{DC6835B4-63D5-465A-9590-08544ABB2DDB}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{DC6835B4-63D5-465A-9590-08544ABB2DDB}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{DC6835B4-63D5-465A-9590-08544ABB2DDB}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(NestedProjects) = preSolution
+		{DC6835B4-63D5-465A-9590-08544ABB2DDB} = {45EDBBA9-9BFB-4B23-8A08-0A4AD26BE42A}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {BD420494-AD08-423A-8393-09273048EF76}

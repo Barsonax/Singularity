@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using Singularity.Bindings;
 using Singularity.Test.TestClasses;
@@ -52,6 +53,48 @@ namespace Singularity.Test
 
 			var value = container.GetInstance<ITestService10>();
 			Assert.Equal(typeof(TestService10), value.GetType());
+		}
+
+		[Fact]
+		public void GetInstance_NoInternalDependenciesFuncWithMethodCall()
+		{
+			var config = new BindingConfig();
+			config.For<ITestService10>().Inject(() => CreateTestService());
+
+			var container = new Container(config);
+
+			var value = container.GetInstance<ITestService10>();
+			Assert.Equal(typeof(TestService10), value.GetType());
+		}
+
+		[Fact]
+		public void GetInstance_NoInternalDependenciesFuncWithConstructorCall()
+		{
+			var config = new BindingConfig();
+			config.For<ITestService10>().Inject(() => new TestService10());
+
+			var container = new Container(config);
+
+			var value = container.GetInstance<ITestService10>();
+			Assert.Equal(typeof(TestService10), value.GetType());
+		}
+
+		[Fact]
+		public void GetInstance_NoInternalDependenciesFuncWithDelegateCall()
+		{
+			var config = new BindingConfig();
+			Func<TestService10> func = () => new TestService10();
+			config.For<ITestService10>().Inject(() => func.Invoke());
+
+			var container = new Container(config);
+
+			var value = container.GetInstance<ITestService10>();
+			Assert.Equal(typeof(TestService10), value.GetType());
+		}
+
+		private TestService10 CreateTestService()
+		{
+			return new TestService10();
 		}
 
 		[Fact]

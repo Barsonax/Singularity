@@ -117,10 +117,10 @@ namespace Singularity.Graph
                 case LambdaExpression lambdaExpression:
                     {
                         var body = ResolveMethodCallParameters(lambdaExpression.Parameters);
-                        var blockExpression = (BlockExpression)lambdaExpression.Body;
-                        var newBody = Expression.Block(blockExpression.Variables, body.Concat(blockExpression.Expressions));
-                        expression = Expression.Block(lambdaExpression.Parameters, newBody);
-                    }
+	                    var innerVariables = lambdaExpression.Body.GetParameterExpressions();
+	                    var expressions = lambdaExpression.Body.FlattenExpression();
+                        expression = Expression.Block(innerVariables, body.Concat(expressions));
+					}
                     break;
                 case NewExpression newExpression:
                     {
