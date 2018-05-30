@@ -31,12 +31,9 @@ namespace Singularity
             _dependencyGraph = new DependencyGraph(bindingConfig, generators, parentDependencies);
         }
 
-        public Container GetNestedContainer(BindingConfig bindingConfig)
-        {
-            return new Container(bindingConfig, _dependencyGraph);
-        }
+        public Container GetNestedContainer(BindingConfig bindingConfig) => new Container(bindingConfig, _dependencyGraph);
 
-        /// <summary>
+	    /// <summary>
         /// Injects dependencies by calling all methods marked with <see cref="InjectAttribute"/> on the <paramref name="instances"/>.
         /// </summary>
         /// <typeparam name="T"></typeparam>
@@ -57,26 +54,11 @@ namespace Singularity
         /// <param name="instance"></param>
         /// <exception cref="DependencyNotFoundException">If the method had parameters that couldnt be resolved</exception>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public void MethodInject<T>(T instance)
-        {
-            GetMethodInjector(instance.GetType()).Invoke(instance);
-        }
+        public void MethodInject(object instance) => GetMethodInjector(instance.GetType()).Invoke(instance);
 
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+	    [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public Action<object> GetMethodInjector(Type type)
         {
-            if (!_injectionCache.TryGetValue(type, out var action))
-            {
-                action = GenerateMethodInjector(type);
-                _injectionCache.Add(type, action);
-            }
-            return action;
-        }
-
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public Action<object> GetMethodInjector<T>()
-        {
-            var type = typeof(T);
             if (!_injectionCache.TryGetValue(type, out var action))
             {
                 action = GenerateMethodInjector(type);
@@ -92,18 +74,9 @@ namespace Singularity
         /// <exception cref="DependencyNotFoundException">If the dependency is not configured</exception>
         /// <returns></returns>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public Func<T> GetInstanceFactory<T>() where T : class
-        {
-            var type = typeof(T);
-            if (!_getInstanceCache.TryGetValue(type, out var action))
-            {
-                action = GenerateInstanceFactory<T>();
-                _getInstanceCache.Add(type, action);
-            }
-            return (Func<T>)action;
-        }
+        public Func<T> GetInstanceFactory<T>() where T : class => (Func<T>)GetInstanceFactory(typeof(T));
 
-        /// <summary>
+	    /// <summary>
         /// Resolves a instance for the given dependency type
         /// </summary>
         /// <param name="type">The type of the dependency</param>
@@ -127,33 +100,21 @@ namespace Singularity
         /// <exception cref="DependencyNotFoundException">If the dependency is not configured</exception>
         /// <returns></returns>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public T GetInstance<T>() where T : class
-        {
-            return GetInstanceFactory<T>().Invoke();
-        }
+        public T GetInstance<T>() where T : class => (T)GetInstance(typeof(T));
 
-        /// <summary>
+	    /// <summary>
         /// Resolves a instance for the given dependency type
         /// </summary>
         /// <param name="type">The type of the dependency</param>
         /// <exception cref="DependencyNotFoundException">If the dependency is not configured</exception>
         /// <returns></returns>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public object GetInstance(Type type)
-        {
-            return GetInstanceFactory(type).Invoke();
-        }
+        public object GetInstance(Type type) => GetInstanceFactory(type).Invoke();
 
-        private Func<object> GenerateInstanceFactory(Type type)
+	    private Func<object> GenerateInstanceFactory(Type type)
         {
             var expression = GetDependencyExpression(type);
             return (Func<object>)Expression.Lambda(expression).Compile();
-        }
-
-        private Func<T> GenerateInstanceFactory<T>()
-        {
-            var expression = GetDependencyExpression(typeof(T));
-            return Expression.Lambda<Func<T>>(expression).Compile();
         }
 
         private Expression GetDependencyExpression(Type type)
