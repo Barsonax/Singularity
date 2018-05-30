@@ -4,7 +4,7 @@ configuration: Release
 shallow_clone: true
 dotnet_csproj:
   patch: true
-  file: '**\*.csproj'
+  file: 'Singularity\Singularity.csproj';'Singularity.Test\Singularity.Test.csproj';'Duality\Source\Code\Singularity.Duality\Singularity.Duality.csproj'
   version: '{version}'
   package_version: '{version}'
   assembly_version: '{version}'

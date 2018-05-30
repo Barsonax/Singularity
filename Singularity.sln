@@ -18,7 +18,7 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution 
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Examples", "Examples", "{45EDBBA9-9BFB-4B23-8A08-0A4AD26BE42A}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Singularity.Duality.Examples", "Duality\Source\Code\Singularity.Duality.Examples\Singularity.Duality.Examples.csproj", "{DC6835B4-63D5-465A-9590-08544ABB2DDB}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Singularity.Duality.Examples", "Duality\Source\Code\Singularity.Duality.Examples\Singularity.Duality.Examples.csproj", "{DC6835B4-63D5-465A-9590-08544ABB2DDB}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
