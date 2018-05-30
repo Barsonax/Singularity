@@ -6,7 +6,7 @@ Singularity is a ioc container that focuses on the following things
 
 ## Getting started
 ### Installation
-`Singularity` can be installed through nuget. The packages that are available can be found in the nuget section 
+`Singularity` can be installed through nuget. The packages that are available can be found in the [nuget](#nuget) section 
 
 ### A simple example
 Its easy to setup a container and request a instance:
@@ -20,7 +20,7 @@ var value = container.GetInstance<ITestService10>();
 ```
 However `Singularity` can do much more than this simple example
 
-# Documentation
+## Documentation
 More info about `Singularity` can be found on the wiki. I suggest you to start [here](https://github.com/Barsonax/Singularity/wiki/Configuring-Dependencies). 
 
 For duality users there is also a guide on how to use `Singularity.Duality` in duality [here](https://github.com/Barsonax/Singularity/wiki/Using-Singularity-in-Duality).
