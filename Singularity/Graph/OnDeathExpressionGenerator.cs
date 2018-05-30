@@ -19,9 +19,9 @@ namespace Singularity.Graph
 
         public void Generate(IBinding binding, ParameterExpression instanceParameter, List<ParameterExpression> parameters, List<Expression> body)
         {
-            if (binding.ConfiguredBinding.OnDeath != null)
+            if (binding.OnDeath != null)
             {
-                _objectActionContainer.AddAction(binding.ConfiguredBinding.Expression.Type, binding.ConfiguredBinding.OnDeath);
+                _objectActionContainer.AddAction(binding.Expression.Type, binding.OnDeath);
                 body.Add(Expression.Call(Expression.Constant(_objectActionContainer), _addMethod, instanceParameter));
             }
         }

@@ -12,16 +12,12 @@ namespace Singularity.Graph
     public class DependencyGraph
     {
         public ReadOnlyDictionary<Type, DependencyNode> Dependencies { get; }
-        public IBindingConfig BindingConfig { get; }
+        public ReadOnlyBindingConfig BindingConfig { get; }
 
         public DependencyGraph(IBindingConfig bindingConfig, IEnumerable<IDependencyExpressionGenerator> dependencyExpressionGenerators, DependencyGraph parentDependencyGraph = null)
         {
-            if (parentDependencyGraph != null)
-                bindingConfig = new BindingConfig(bindingConfig, parentDependencyGraph);
-            BindingConfig = bindingConfig;
-            BindingConfig.ValidateBindings();
-
-            var dependencies = GenerateDependencyNodes(bindingConfig, dependencyExpressionGenerators);
+	        bindingConfig = BindingConfig = MergeBindings(bindingConfig, parentDependencyGraph);	       
+			var dependencies = GenerateDependencyNodes(bindingConfig, dependencyExpressionGenerators);
 
             Dependencies = new ReadOnlyDictionary<Type, DependencyNode>(dependencies);
 
@@ -37,14 +33,70 @@ namespace Singularity.Graph
             }
         }
 
+	    private ReadOnlyBindingConfig MergeBindings(IBindingConfig childBindingConfig, DependencyGraph parentDependencyGraph)
+	    {
+			var newBindings = new Dictionary<Type, IBinding>();
+			foreach (var binding in childBindingConfig.Bindings.Values)
+			{
+				newBindings.Add(binding.DependencyType, new ReadOnlyBinding(binding));
+			}
+
+		    if (parentDependencyGraph != null)
+		    {
+			    foreach (var parentBinding in parentDependencyGraph.BindingConfig.Bindings.Values)
+			    {
+				    if (newBindings.TryGetValue(parentBinding.DependencyType, out var binding))
+				    {
+					    if (binding.Expression != null) continue;
+
+					    List<IDecoratorBinding> decorators;
+					    Expression expression;
+					    Action<object> onDeathAction;
+					    if (parentBinding.Lifetime == Lifetime.PerContainer)
+					    {
+						    expression = parentDependencyGraph.Dependencies[binding.DependencyType].ResolvedDependency.Expression;
+						    decorators = binding.Decorators.ToList();
+						    onDeathAction = null;
+					    }
+					    else
+					    {
+						    expression = parentBinding.Expression;
+						    decorators = parentBinding.Decorators.Concat(binding.Decorators).ToList();
+						    onDeathAction = parentBinding.OnDeath;
+					    }
+
+					    var readonlyBinding = new ReadOnlyBinding(binding.DependencyType, expression, parentBinding.Lifetime,
+						    onDeathAction, decorators);
+					    newBindings[binding.DependencyType] = readonlyBinding;
+				    }
+				    else
+				    {
+					    if (parentBinding.Lifetime == Lifetime.PerContainer)
+					    {
+						    var readonlyBinding =
+							    new ReadOnlyBinding(parentBinding.DependencyType, parentBinding.Expression, parentBinding.Lifetime, null,
+								    parentBinding.Decorators);
+						    newBindings.Add(parentBinding.DependencyType, readonlyBinding);
+					    }
+					    else
+					    {
+						    newBindings.Add(parentBinding.DependencyType, new ReadOnlyBinding(parentBinding));
+					    }
+				    }
+			    }
+		    }
+
+		    return new ReadOnlyBindingConfig(newBindings.Values);
+		}
+
         private Dictionary<Type, DependencyNode> GenerateDependencyNodes(IBindingConfig bindingConfig, IEnumerable<IDependencyExpressionGenerator> dependencyExpressionGenerators)
         {
             var dependencies = new Dictionary<Type, DependencyNode>();
             foreach (var binding in bindingConfig.Bindings.Values)
             {
-                if (binding.ConfiguredBinding == null && binding.Decorators.Count > 0) continue;
+                if (binding.Expression == null && binding.Decorators.Count > 0) continue;
                 var expression = GenerateDependencyExpression(binding, dependencyExpressionGenerators);
-                var node = new DependencyNode(new UnresolvedDependency(expression, binding.ConfiguredBinding.Lifetime, binding.ConfiguredBinding.OnDeath));
+                var node = new DependencyNode(new UnresolvedDependency(expression, binding.Lifetime, binding.OnDeath));
                 dependencies.Add(binding.DependencyType, node);
             }
 
@@ -53,7 +105,7 @@ namespace Singularity.Graph
 
         private Expression GenerateDependencyExpression(IBinding binding, IEnumerable<IDependencyExpressionGenerator> dependencyExpressionGenerators)
         {
-            var expression = binding.ConfiguredBinding.Expression;
+            var expression = binding.Expression;
             var dependencyType = binding.DependencyType;
             var body = new List<Expression>();
             var parameters = new List<ParameterExpression>();

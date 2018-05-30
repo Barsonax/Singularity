@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Linq;
 using Singularity.Graph;
 using Xunit;
 
@@ -91,6 +90,16 @@ namespace Singularity.Test
 				Assert.Equal(2, singularityAggregateException.InnerExceptions.Count);
 				Assert.Equal(typeof(CircularDependencyException), singularityAggregateException.InnerExceptions[0].GetType());
 				Assert.Equal(typeof(CircularDependencyException), singularityAggregateException.InnerExceptions[1].GetType());
+
+				var circularDependencyException1 = (CircularDependencyException)singularityAggregateException.InnerExceptions[0];
+				Assert.Equal(3, circularDependencyException1.VisitedNodes.Count);
+				Assert.Contains(node1, circularDependencyException1.VisitedNodes);
+				Assert.Contains(node2, circularDependencyException1.VisitedNodes);
+
+				var circularDependencyException2 = (CircularDependencyException)singularityAggregateException.InnerExceptions[1];
+				Assert.Equal(3, circularDependencyException2.VisitedNodes.Count);
+				Assert.Contains(node1, circularDependencyException2.VisitedNodes);
+				Assert.Contains(node2, circularDependencyException2.VisitedNodes);
 			}
 		}
 
@@ -120,6 +129,24 @@ namespace Singularity.Test
 				Assert.Equal(typeof(CircularDependencyException), singularityAggregateException.InnerExceptions[0].GetType());
 				Assert.Equal(typeof(CircularDependencyException), singularityAggregateException.InnerExceptions[1].GetType());
 				Assert.Equal(typeof(CircularDependencyException), singularityAggregateException.InnerExceptions[2].GetType());
+
+				var circularDependencyException1 = (CircularDependencyException)singularityAggregateException.InnerExceptions[0];
+				Assert.Equal(4, circularDependencyException1.VisitedNodes.Count);
+				Assert.Contains(node1, circularDependencyException1.VisitedNodes);
+				Assert.Contains(node2, circularDependencyException1.VisitedNodes);
+				Assert.Contains(node3, circularDependencyException1.VisitedNodes);
+
+				var circularDependencyException2 = (CircularDependencyException)singularityAggregateException.InnerExceptions[1];
+				Assert.Equal(4, circularDependencyException2.VisitedNodes.Count);
+				Assert.Contains(node1, circularDependencyException2.VisitedNodes);
+				Assert.Contains(node2, circularDependencyException2.VisitedNodes);
+				Assert.Contains(node3, circularDependencyException2.VisitedNodes);
+
+				var circularDependencyException3 = (CircularDependencyException)singularityAggregateException.InnerExceptions[2];
+				Assert.Equal(4, circularDependencyException3.VisitedNodes.Count);
+				Assert.Contains(node1, circularDependencyException3.VisitedNodes);
+				Assert.Contains(node2, circularDependencyException3.VisitedNodes);
+				Assert.Contains(node3, circularDependencyException3.VisitedNodes);
 			}
 		}
 	}

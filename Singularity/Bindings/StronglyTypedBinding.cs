@@ -6,11 +6,14 @@ namespace Singularity.Bindings
 {
 	public class StronglyTypedBinding<TDependency> : IBinding
 	{
-		public IConfiguredBinding ConfiguredBinding { get; set; }
-
-	    public List<IDecoratorBinding> Decorators { get; } = new List<IDecoratorBinding>();
+		public IConfiguredBinding ConfiguredBinding { get; set; }		
+		public List<IDecoratorBinding> Decorators { get; } = new List<IDecoratorBinding>();
 	    IReadOnlyList<IDecoratorBinding> IBinding.Decorators => Decorators;
 		public Type DependencyType { get; } = typeof(TDependency);
+
+		public Expression Expression => ConfiguredBinding?.Expression;
+		public Lifetime Lifetime => ConfiguredBinding?.Lifetime ?? Lifetime.PerCall;
+		public Action<object> OnDeath => ConfiguredBinding?.OnDeath;
 
 		/// <summary>
 		/// Sets the actual type that will be used for the dependency and auto generates a <see cref="System.Linq.Expressions.Expression"/> to call the constructor

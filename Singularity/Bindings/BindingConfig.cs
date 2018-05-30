@@ -1,87 +1,13 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Linq.Expressions;
-using Singularity.Graph;
 
 namespace Singularity.Bindings
 {
-    public interface IBindingConfig
-    {
-        IReadOnlyDictionary<Type, IBinding> Bindings { get; }
-    }
-
-    public class ReadOnlyBindingConfig : IBindingConfig
-    {
-        public IReadOnlyDictionary<Type, IBinding> Bindings { get; }
-
-        public ReadOnlyBindingConfig(IBindingConfig bindingConfig)
-        {
-            Bindings = bindingConfig.Bindings;
-        }
-    }
-
-    public class BindingConfig : IBindingConfig
+	public class BindingConfig : IBindingConfig
     {
         private readonly Dictionary<Type, IBinding> _bindings = new Dictionary<Type, IBinding>();
 
         public IReadOnlyDictionary<Type, IBinding> Bindings => _bindings;
-
-        public BindingConfig()
-        {
-
-        }
-
-        internal BindingConfig(IBindingConfig childBindingConfig, DependencyGraph parentDependencyGraph)
-        {
-            foreach (var binding in childBindingConfig.Bindings.Values)
-            {
-                _bindings.Add(binding.DependencyType, binding);
-            }
-
-            foreach (var parentBinding in parentDependencyGraph.BindingConfig.Bindings.Values)
-            {
-                if (_bindings.TryGetValue(parentBinding.DependencyType, out var binding))
-                {
-                    if (binding.ConfiguredBinding != null) continue;
-                    var oldConfiguredBinding = binding.ConfiguredBinding ?? parentBinding.ConfiguredBinding;
-
-                    List<IDecoratorBinding> decorators;
-                    Expression expression;
-                    Action<object> onDeathAction;
-                    if (oldConfiguredBinding.Lifetime == Lifetime.PerContainer)
-                    {
-                        expression = parentDependencyGraph.Dependencies[binding.DependencyType].ResolvedDependency.Expression;
-                        decorators = binding.Decorators.ToList();
-                        onDeathAction = null;
-                    }
-                    else
-                    {
-                        onDeathAction = oldConfiguredBinding.OnDeath;
-                        decorators = parentBinding.Decorators.Concat(binding.Decorators).ToList();
-                        expression = oldConfiguredBinding.Expression;
-                    }
-                    var weaklyTypedConfiguredBinding = new WeaklyTypedConfiguredBinding(expression, oldConfiguredBinding.Lifetime, onDeathAction);
-                    var weaklyTypedBinding = new WeaklyTypedBinding(binding.DependencyType, weaklyTypedConfiguredBinding, decorators);
-                    _bindings[binding.DependencyType] = weaklyTypedBinding;
-                }
-                else
-                {
-                    if (parentBinding.ConfiguredBinding?.Lifetime == Lifetime.PerContainer)
-                    {
-                        var weaklyTypedConfiguredBinding = new WeaklyTypedConfiguredBinding(
-                            parentBinding.ConfiguredBinding.Expression, parentBinding.ConfiguredBinding.Lifetime, null);
-                        var weaklyTypedBinding =
-                            new WeaklyTypedBinding(parentBinding.DependencyType, weaklyTypedConfiguredBinding, parentBinding.Decorators);
-                        _bindings.Add(parentBinding.DependencyType, weaklyTypedBinding);
-                    }
-                    else
-                    {
-                        _bindings.Add(parentBinding.DependencyType, parentBinding);
-                    }
-                }
-            }
-        }
 
         /// <summary>
         /// Begins configuring a binding for a certain dependency
