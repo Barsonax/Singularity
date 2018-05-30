@@ -1,10 +1,10 @@
 version: 0.1.0.{build}
 image: Visual Studio 2017
-configuration: Release
+configuration: z_CI_config
 shallow_clone: true
 dotnet_csproj:
   patch: true
-  file: 'Singularity\Singularity.csproj;Singularity.Test\Singularity.Test.csproj;Duality\Source\Code\Singularity.Duality\Singularity.Duality.csproj'
+  file: '**\*.csproj'
   version: '{version}'
   package_version: '{version}'
   assembly_version: '{version}'
