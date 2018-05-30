@@ -5,7 +5,15 @@ Singularity is a ioc container that focuses on the following things
 - Clear error messages and fail fast to point you in the right direction as fast as possible.
 
 # Installation
-`Singularity` can be installed through nuget. There is also support for the [Duality](https://duality.adamslair.net/) game engine through the `Singularity.Duality` nuget package
+`Singularity` can be installed through nuget. The following packages are available:
+
+| Library | Version |
+|-------------|--------|
+| Singularity      | [![NuGet Badge](https://buildstats.info/nuget/Singularity)](https://www.nuget.org/packages/Singularity/) |
+| Singularity.Duality.core      | [![NuGet Badge](https://buildstats.info/nuget/Singularity.Duality.core)](https://www.nuget.org/packages/Singularity.Duality.core/)|
+
 
 # Documentation
-More info about `Singularity` can be found on the wiki. I suggest you to start [here](https://github.com/Barsonax/Singularity/wiki/Configuring-Dependencies). For duality users there is also a guide on how to use `Singularity` in duality [here](https://github.com/Barsonax/Singularity/wiki/Using-Singularity-in-Duality).
+More info about `Singularity` can be found on the wiki. I suggest you to start [here](https://github.com/Barsonax/Singularity/wiki/Configuring-Dependencies). 
+
+For duality users there is also a guide on how to use `Singularity.Duality` in duality [here](https://github.com/Barsonax/Singularity/wiki/Using-Singularity-in-Duality).
