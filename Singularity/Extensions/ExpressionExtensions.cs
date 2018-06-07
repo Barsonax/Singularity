@@ -25,18 +25,5 @@ namespace Singularity.Extensions
 					throw new NotSupportedException($"The expression of type {expression.GetType()} is not supported");
 			}
 		}
-
-		public static IEnumerable<Expression> FlattenExpression(this Expression expression)
-		{
-			switch (expression)
-			{
-				case BlockExpression blockExpression:
-					return blockExpression.Expressions;
-				case Expression ex:
-					return new[] { ex };
-				default:
-					throw new NotSupportedException($"The expression of type {expression.GetType()} is not supported");
-			}
-		}
 	}
 }
