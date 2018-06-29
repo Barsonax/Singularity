@@ -5,7 +5,7 @@
     <AssemblyName>Singularity.Duality.core</AssemblyName>
     <PackageLicenseUrl>https://github.com/Barsonax/Singularity/blob/master/LICENSE</PackageLicenseUrl>
     <PackageProjectUrl>https://github.com/Barsonax/Singularity</PackageProjectUrl>
-    <PackageIconUrl></PackageIconUrl>
+    <PackageIconUrl>https://raw.githubusercontent.com/Barsonax/Singularity/master/Icon.png</PackageIconUrl>
     <RepositoryUrl>https://github.com/Barsonax/Singularity</RepositoryUrl>
     <NoWarn>1701;1702;1705;1591;NU1701</NoWarn>
     <Authors>Barsonax</Authors>

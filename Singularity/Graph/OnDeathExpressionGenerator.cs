@@ -17,7 +17,7 @@ namespace Singularity.Graph
             _addMethod = typeof(ObjectActionContainer).GetRuntimeMethod(nameof(ObjectActionContainer.Add), new[] { typeof(object) });
         }
 
-        public void Generate(IBinding binding, ParameterExpression instanceParameter, List<ParameterExpression> parameters, List<Expression> body)
+        public void Generate(UnresolvedDependency binding, ParameterExpression instanceParameter, List<ParameterExpression> parameters, List<Expression> body)
         {
             if (binding.OnDeath != null)
             {

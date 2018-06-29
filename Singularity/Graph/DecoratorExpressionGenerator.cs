@@ -8,7 +8,7 @@ namespace Singularity.Graph
 {
     public class DecoratorExpressionGenerator : IDependencyExpressionGenerator
     {
-        public void Generate(IBinding binding, ParameterExpression instanceParameter, List<ParameterExpression> parameters, List<Expression> body)
+        public void Generate(UnresolvedDependency binding, ParameterExpression instanceParameter, List<ParameterExpression> parameters, List<Expression> body)
         {
             if (binding.Decorators.Count > 0)
             {

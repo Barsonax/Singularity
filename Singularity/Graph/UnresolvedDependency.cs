@@ -1,29 +1,39 @@
 ﻿using System;
+using System.Collections.Generic;
+using System.Collections.ObjectModel;
+using System.Linq;
 using System.Linq.Expressions;
+using Singularity.Bindings;
+using Singularity.Extensions;
 
 namespace Singularity
 {
-	public class DependencyNode
+	public class Dependency
 	{
 		public UnresolvedDependency UnresolvedDependency { get; }
-		public ResolvedDependency ResolvedDependency { get; internal set; }
+		public ResolvedDependency ResolvedDependency { get; }
 
-		public DependencyNode(UnresolvedDependency unresolvedDependency)
+		public Dependency(UnresolvedDependency unresolvedDependency, ResolvedDependency resolvedDependency)
 		{
 			UnresolvedDependency = unresolvedDependency;
+			ResolvedDependency = resolvedDependency;
 		}
 	}
 
 	public sealed class UnresolvedDependency
 	{
-		public Expression Expression { get; internal set; }
+		public Type DependencyType { get; }
+		public Expression Expression { get; }
 		public Lifetime Lifetime { get; }
-		public Action<object> OnDeath { get; internal set; }
+		public Action<object> OnDeath { get; }
+		public IReadOnlyCollection<IDecoratorBinding> Decorators { get; }
 
-		public UnresolvedDependency(Expression expression, Lifetime lifetime, Action<object> onDeath)
+		public UnresolvedDependency(Type dependencyType, Expression expression, Lifetime lifetime, IReadOnlyCollection<IDecoratorBinding> decorators, Action<object> onDeath)
 		{
+			DependencyType = dependencyType;
 			Lifetime = lifetime;
 			Expression = expression;
+			Decorators = decorators;
 			OnDeath = onDeath;
 		}
 	}
