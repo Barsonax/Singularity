@@ -86,6 +86,30 @@ namespace Singularity.Test
                     var nestedDecorator1 = (TestService11_Decorator1)nestedDecorator2.TestService11;
                     Assert.Equal(typeof(TestService11), nestedDecorator1.TestService11.GetType());
                 }
+
+				[Fact]
+	            public void GetInstance_PerContainerLifetime_SameInstanceIsReturned()
+	            {
+		            var config = new BindingConfig();
+		            config.For<IComponent>().Inject<Component>().With(Lifetime.PerContainer);
+
+		            using (var container = new Container(config))
+		            {
+			            var value = container.GetInstance<IComponent>();
+			            Assert.NotNull(value);
+			            Assert.Equal(typeof(Component), value.GetType());
+
+			            var nestedConfig = new BindingConfig();
+			            nestedConfig.Decorate<IComponent>().With<Decorator1>();
+			            using (var nestedContainer = container.GetNestedContainer(nestedConfig))
+			            {
+				            var nestedValue = nestedContainer.GetInstance<IComponent>();
+				            Assert.NotNull(nestedValue);
+				            Assert.Equal(typeof(Decorator1), nestedValue.GetType());
+				            Assert.Equal(value, ((Decorator1)nestedValue).Component);						
+			            }
+		            }
+				}
             }
 
             public class Disposed
