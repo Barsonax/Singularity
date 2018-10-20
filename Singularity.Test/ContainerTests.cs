@@ -355,7 +355,30 @@ namespace Singularity.Test
         {
             public class Exceptions
             {
-                [Fact]
+	            [Fact]
+	            public void GetInstance_MissingDecoratorDependency_Throws()
+	            {
+		            try
+		            {
+			            var config = new BindingConfig();
+			            config.For<ITestService10>().Inject<TestService10>();
+			            config.Decorate<ITestService10>().With<TestService10_Decorator1>();
+			            var container = new Container(config);
+					}
+		            catch (AggregateException e)
+		            {
+			            Assert.Equal(typeof(SingularityAggregateException), e.GetType());
+			            var aggregateException = e.Flatten();
+
+			            Assert.Equal(1, aggregateException.InnerExceptions.Count);
+			            Assert.Equal(typeof(DependencyNotFoundException), aggregateException.InnerExceptions[0].GetType());
+			            var dependencyNotFoundException = (DependencyNotFoundException)aggregateException.InnerExceptions[0];
+
+			            Assert.Equal(typeof(int), dependencyNotFoundException.Type);
+					}
+				}
+
+				[Fact]
                 public void GetInstance_MissingDependency_Throws()
                 {
                     var container = new Container(new BindingConfig());

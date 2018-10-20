@@ -44,7 +44,17 @@
 
 	public interface IComponent { }
 
-    public class TestService11_Decorator1 : ITestService11
+	public class TestService10_Decorator1 : ITestService10
+	{
+		public ITestService10 TestService10 { get; }
+
+		public TestService10_Decorator1(ITestService10 testService10, int dummyValue)
+		{
+			TestService10 = testService10;
+		}
+	}
+
+	public class TestService11_Decorator1 : ITestService11
     {
         public ITestService10 TestService10 => TestService11.TestService10;
         public ITestService11 TestService11 { get; }
