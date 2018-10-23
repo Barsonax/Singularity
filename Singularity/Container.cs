@@ -20,6 +20,11 @@ namespace Singularity
 
 		private readonly ObjectActionContainer _objectActionContainer;
 
+		public Container(IEnumerable<IModule> modules) : this(modules.ToBindings(), null)
+		{
+
+		}
+
 		public Container(IEnumerable<IBinding> bindings) : this(bindings, null)
 		{
 
@@ -35,6 +40,7 @@ namespace Singularity
 			_dependencyGraph = new DependencyGraph(bindings, generators, parentDependencies);
 		}
 
+		public Container GetNestedContainer(IEnumerable<IModule> modules) => new Container(modules.ToBindings(), _dependencyGraph.Dependencies);
 		public Container GetNestedContainer(IEnumerable<IBinding> bindings) => new Container(bindings, _dependencyGraph.Dependencies);
 
 		/// <summary>
