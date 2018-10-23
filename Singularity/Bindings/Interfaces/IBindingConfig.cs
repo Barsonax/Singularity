@@ -1,10 +1,9 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 
 namespace Singularity.Bindings
 {
-	public interface IBindingConfig
+	public interface IBindingConfig : IEnumerable<IBinding>
 	{
-		IReadOnlyDictionary<Type, IBinding> Bindings { get; }
+		
 	}
 }

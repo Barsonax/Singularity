@@ -1,6 +1,4 @@
-﻿using Singularity.Bindings;
-
-namespace Singularity
+﻿namespace Singularity.Bindings
 {
     public interface IModule
     {

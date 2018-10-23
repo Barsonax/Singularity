@@ -1,10 +1,11 @@
 ﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 
 namespace Singularity.Bindings
 {
 	public class BindingConfig : IBindingConfig
-    {
+	{
         private readonly Dictionary<Type, IBinding> _bindings = new Dictionary<Type, IBinding>();
 
         public IReadOnlyDictionary<Type, IBinding> Bindings => _bindings;
@@ -33,20 +34,30 @@ namespace Singularity.Bindings
             return decorator;
         }
 
-        private StronglyTypedBinding<TDependency> GetOrCreateBinding<TDependency>()
-        {
-            if (Bindings.TryGetValue(typeof(TDependency), out var weaklyTypedBinding))
-            {
-                return (StronglyTypedBinding<TDependency>)weaklyTypedBinding;
-            }
-            var binding = new StronglyTypedBinding<TDependency>();
-            AddBinding(binding);
-            return binding;
-        }
-
         public void AddBinding(IBinding binding)
         {
             _bindings.Add(binding.DependencyType, binding);
         }
-    }
+
+		public IEnumerator<IBinding> GetEnumerator()
+		{
+			return Bindings.Values.GetEnumerator();
+		}
+
+		IEnumerator IEnumerable.GetEnumerator()
+		{
+			return GetEnumerator();
+		}
+
+		private StronglyTypedBinding<TDependency> GetOrCreateBinding<TDependency>()
+		{
+			if (Bindings.TryGetValue(typeof(TDependency), out var weaklyTypedBinding))
+			{
+				return (StronglyTypedBinding<TDependency>)weaklyTypedBinding;
+			}
+			var binding = new StronglyTypedBinding<TDependency>();
+			AddBinding(binding);
+			return binding;
+		}
+	}
 }

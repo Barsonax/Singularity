@@ -13,9 +13,9 @@ namespace Singularity.Graph
 	{
 		public ReadOnlyDictionary<Type, Dependency> Dependencies { get; }
 
-		public DependencyGraph(IBindingConfig bindingConfig, IEnumerable<IDependencyExpressionGenerator> dependencyExpressionGenerators, DependencyGraph parentDependencyGraph = null)
+		public DependencyGraph(IEnumerable<IBinding> bindings, IEnumerable<IDependencyExpressionGenerator> dependencyExpressionGenerators, IReadOnlyDictionary<Type, Dependency> parentDependencies = null)
 		{
-			var unresolvedDependencies = MergeBindings(bindingConfig.Bindings.Values, parentDependencyGraph?.Dependencies);
+			var unresolvedDependencies = MergeBindings(bindings, parentDependencies);
 
 			var graph = new Graph<UnresolvedDependency>(unresolvedDependencies.Values);
 			var updateOrder = graph.GetUpdateOrder(x => GetDependencies(x, unresolvedDependencies));
@@ -28,7 +28,7 @@ namespace Singularity.Graph
 					var resolvedDependency = ResolveDependency(unresolvedDependency.DependencyType, unresolvedDependency, dependencyExpressionGenerators, dependencies);
 					dependencies.Add(unresolvedDependency.DependencyType, new Dependency(unresolvedDependency, resolvedDependency));
 				}
-			}
+			} 
 			Dependencies = new ReadOnlyDictionary<Type, Dependency>(dependencies);
 		}
 
@@ -128,7 +128,7 @@ namespace Singularity.Graph
 					expression = Expression.Constant(value);
 					break;
 				default:
-					throw new ArgumentOutOfRangeException();
+					throw new ArgumentOutOfRangeException(nameof(unresolvedDependency.Lifetime));
 			}
 			return new ResolvedDependency(expression);
 		}

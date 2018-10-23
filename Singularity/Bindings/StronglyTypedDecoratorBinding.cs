@@ -1,11 +1,10 @@
-﻿using Singularity.Extensions;
-using System;
+﻿using System;
 using System.Linq;
 using System.Linq.Expressions;
 using System.Reflection;
-using Singularity.Bindings;
+using Singularity.Extensions;
 
-namespace Singularity
+namespace Singularity.Bindings
 {
 	public class StronglyTypedDecoratorBinding<TDependency> : IDecoratorBinding
 	{
