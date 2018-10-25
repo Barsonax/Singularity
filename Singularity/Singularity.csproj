@@ -6,7 +6,7 @@
     <Authors>Barsonax</Authors>
     <Description>The core library for the singularity ioc container</Description>
     <PackageProjectUrl>https://github.com/Barsonax/Singularity</PackageProjectUrl>
-    <PackageTags>ioc inversion control dependency injection</PackageTags>
+    <PackageTags>ioc di inversion control dependency injection container</PackageTags>
     <RepositoryUrl>https://github.com/Barsonax/Singularity</RepositoryUrl>
     <PackageLicenseUrl>https://github.com/Barsonax/Singularity/blob/master/LICENSE</PackageLicenseUrl>
     <NeutralLanguage>en</NeutralLanguage>
