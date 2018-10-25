@@ -180,6 +180,7 @@
         <_items dataType="Array" type="Duality.Component[]" id="158670638" length="4">
           <item dataType="Struct" type="Singularity.Duality.Examples.Components.ExampleComponent" id="558334838">
             <_x003C_GameManager_x003E_k__BackingField />
+            <_x003C_Pathfinder_x003E_k__BackingField />
             <active dataType="Bool">true</active>
             <gameobj dataType="ObjectRef">3082649165</gameobj>
           </item>

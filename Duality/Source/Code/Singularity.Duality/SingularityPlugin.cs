@@ -14,7 +14,7 @@ namespace Singularity.Duality
 
 		protected override void OnGameEnded()
 		{			
-			_gameScope.Dispose();
+			_gameScope?.Dispose();
 		}
 	}
 }
