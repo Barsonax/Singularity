@@ -3,17 +3,23 @@
 	[string]$outputFolder = '.\coverage\'
  )
 
-$filter = '+[Singularity*]* -[Singularity.Test]*'
+$opencover_console = 'C:\ProgramData\chocolatey\bin\OpenCover.Console.exe'
 $target = 'C:\Program Files\dotnet\dotnet.exe'
+$output = $outputFolder + 'test.coverage.xml'
 
-$projectname = 'Singularity.Test'
-$targetArgs = ' test .\Singularity.Test\Singularity.Test.csproj -c ' + $configuration
-
-
+Remove-Item $outputFolder -Recurse -ErrorAction Ignore
 If(!(test-path $outputFolder ))
 {
       New-Item -ItemType Directory -Force -Path $outputFolder 
 }
 
-$output = $outputFolder + $projectname + '.coverage.xml'
-OpenCover.Console.exe -register:user -target:$target -targetargs:$targetArgs -filter:$filter -output:$output -oldStyle
+$project = "Singularity.Test\Singularity.Test.csproj"
+$filter = '+[Singularity*]* -[Singularity*.Test]*'
+$targetArgs = ' test .\Tests\' + $project + ' -c ' + $configuration
+
+&$opencover_console -register:user -target:$target -targetargs:$targetArgs -filter:$filter -output:$output -oldStyle
+
+$project = "Singularity.Duality.Test\Singularity.Duality.Test.csproj"
+$targetArgs = ' test .\Tests\' + $project + ' -c ' + $configuration
+	
+&$opencover_console -register:user -target:$target -targetargs:$targetArgs -filter:$filter -output:$output -oldStyle -mergeoutput -mergebyhash
