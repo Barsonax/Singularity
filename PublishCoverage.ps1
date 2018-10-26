@@ -3,5 +3,5 @@
 	[string]$coverageFolder = '.\coverage\'
  )
 
-$coverageXml = $coverageFolder + "Singularity.Test.coverage.xml"
+$coverageXml = $coverageFolder + "test.coverage.xml"
 codecov -f $coverageXml -t $codegovtoken

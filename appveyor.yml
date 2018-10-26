@@ -19,6 +19,7 @@ deploy:
   on:
     branch: /^(master|develop)$/
 test_script:
-  - ps: choco install codecov
+  - ps: choco install codecov --limit-output
+  - ps: choco install opencover.portable --limit-output
   - ps: Invoke-Expression .\RunOpenCover.ps1 
   - ps: Invoke-Expression ".\PublishCoverage.ps1 -codegovtoken:$env:codegov_token"
