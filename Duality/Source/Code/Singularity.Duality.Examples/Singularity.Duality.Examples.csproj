@@ -1,7 +1,8 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <TargetFramework>netstandard2.0</TargetFramework>
+    <TargetFramework>netstandard1.1</TargetFramework>
+    <PackageTargetFallback>$(PackageTargetFallback);net00</PackageTargetFallback>
     <AssemblyName>Singularity.Duality.Examples.core</AssemblyName>
     <NoWarn>1701;1702;1705;1591;NU1701</NoWarn>
   </PropertyGroup>
