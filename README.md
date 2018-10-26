@@ -26,13 +26,13 @@ More info about `Singularity` can be found on the wiki. I suggest you to start [
 For duality users there is also a guide on how to use `Singularity.Duality` in duality [here](https://github.com/Barsonax/Singularity/wiki/Using-Singularity-in-Duality).
 
 ## Other
-[![codecov](https://codecov.io/gh/Barsonax/Singularity/branch/develop/graph/badge.svg)](https://codecov.io/gh/Barsonax/Singularity)
+
 
 ### Build status
-| Branch | Status |
-|-------------|--------|
-| master      | [![Build status](https://ci.appveyor.com/api/projects/status/7fp2lnmhmgld0l37/branch/master?svg=true)](https://ci.appveyor.com/project/Barsonax/singularity/branch/master) |
-| develop      | [![Build status](https://ci.appveyor.com/api/projects/status/7fp2lnmhmgld0l37/branch/develop?svg=true)](https://ci.appveyor.com/project/Barsonax/singularity/branch/develop) |
+| Branch | Status | Coverage |
+|-------------|--------|-----|
+| master      | [![Build status](https://ci.appveyor.com/api/projects/status/7fp2lnmhmgld0l37/branch/master?svg=true)](https://ci.appveyor.com/project/Barsonax/singularity/branch/master) | [![codecov](https://codecov.io/gh/Barsonax/Singularity/branch/master/graph/badge.svg)](https://codecov.io/gh/Barsonax/Singularity) |
+| develop      | [![Build status](https://ci.appveyor.com/api/projects/status/7fp2lnmhmgld0l37/branch/develop?svg=true)](https://ci.appveyor.com/project/Barsonax/singularity/branch/develop) | [![codecov](https://codecov.io/gh/Barsonax/Singularity/branch/develop/graph/badge.svg)](https://codecov.io/gh/Barsonax/Singularity) |
 
 ### Nuget
 
