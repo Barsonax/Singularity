@@ -18,8 +18,11 @@ deploy:
     secure: csIJIcTOAQ930rX3eOmufGO46xPDHZxrRpjCyU5xEQz3EwWx7+1Ed4pUE0prQyqY
   on:
     branch: /^(master|develop)$/
+cache:
+  - C:\ProgramData\chocolatey\lib -> appveyor.yml
+  - C:\ProgramData\chocolatey\bin -> appveyor.yml
 test_script:
-  - ps: choco install codecov --limit-output
-  - ps: choco install opencover.portable --limit-output
+  - ps: choco install codecov --limitoutput
+  - ps: choco install opencover.portable --limitoutput
   - ps: Invoke-Expression .\RunOpenCover.ps1 
   - ps: Invoke-Expression ".\PublishCoverage.ps1 -codegovtoken:$env:codegov_token"
