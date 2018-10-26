@@ -1,5 +1,8 @@
 image: Visual Studio 2017
 configuration: z_CI_config
+environment:
+  codegov_token:
+    secure: HdCtITC0uUqTr/C3OSs4M1Ao79R8UULQtiRUqSrGuQpmqrZXPfNGz+s0uibvyz49
 nuget:
   project_feed: true
 before_build:
@@ -15,3 +18,7 @@ deploy:
     secure: csIJIcTOAQ930rX3eOmufGO46xPDHZxrRpjCyU5xEQz3EwWx7+1Ed4pUE0prQyqY
   on:
     branch: /^(master|develop)$/
+test_script:
+  - ps: choco install codecov
+  - ps: Invoke-Expression .\RunOpenCover.ps1 
+  - ps: Invoke-Expression ".\PublishCoverage.ps1 -codegovtoken:$env:codegov_token"
