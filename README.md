@@ -26,6 +26,8 @@ More info about `Singularity` can be found on the wiki. I suggest you to start [
 For duality users there is also a guide on how to use `Singularity.Duality` in duality [here](https://github.com/Barsonax/Singularity/wiki/Using-Singularity-in-Duality).
 
 ## Other
+[![codecov](https://codecov.io/gh/Barsonax/Singularity/branch/develop/graph/badge.svg)](https://codecov.io/gh/Barsonax/Singularity)
+
 ### Build status
 | Branch | Status |
 |-------------|--------|
