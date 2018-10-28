@@ -3,6 +3,7 @@
 	[string]$outputFolder = '.\coverage\'
  )
 
+$ErrorActionPreference='Stop'
 $opencover_console = 'C:\ProgramData\chocolatey\bin\OpenCover.Console.exe'
 $target = 'C:\Program Files\dotnet\dotnet.exe'
 $output = $outputFolder + 'test.coverage.xml'
@@ -17,9 +18,9 @@ $project = "Singularity.Test\Singularity.Test.csproj"
 $filter = '+[Singularity*]* -[Singularity*.Test]*'
 $targetArgs = ' test .\Tests\' + $project + ' -c ' + $configuration
 
-&$opencover_console -register:user -target:$target -targetargs:$targetArgs -filter:$filter -output:$output -oldStyle
+$coverOutput = &$opencover_console -register:user -target:$target -targetargs:$targetArgs -filter:$filter -output:$output -oldStyle -returntargetcode
 
 $project = "Singularity.Duality.Test\Singularity.Duality.Test.csproj"
 $targetArgs = ' test .\Tests\' + $project + ' -c ' + $configuration
 	
-&$opencover_console -register:user -target:$target -targetargs:$targetArgs -filter:$filter -output:$output -oldStyle -mergeoutput -mergebyhash
+$coverOutput = &$opencover_console -register:user -target:$target -targetargs:$targetArgs -filter:$filter -output:$output -oldStyle -mergeoutput -mergebyhash -returntargetcode
