@@ -23,6 +23,7 @@ EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "CI", "CI", "{89675F4E-9165-406B-8CF0-F68A615B7EA8}"
 	ProjectSection(SolutionItems) = preProject
 		appveyor.yml = appveyor.yml
+		codecov.yml = codecov.yml
 		GitVersion.yml = GitVersion.yml
 		PublishCoverage.ps1 = PublishCoverage.ps1
 		RunOpenCover.ps1 = RunOpenCover.ps1
