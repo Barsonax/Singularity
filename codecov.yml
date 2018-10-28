@@ -1,0 +1,11 @@
+coverage:
+  status:
+    patch: off
+    project:
+      default: false
+      Singularity:
+        target: 90% 
+        paths: "Singularity/" 
+      Singularity.Duality:
+        target: 80%
+        paths: "Duality/Source/Code/Singularity.Duality/" 
