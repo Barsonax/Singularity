@@ -5,7 +5,6 @@ using System.Linq;
 using System.Linq.Expressions;
 using Singularity.Bindings;
 using Singularity.Exceptions;
-using Singularity.Extensions;
 
 namespace Singularity.Graph
 {

@@ -40,7 +40,7 @@ namespace Singularity
 			_dependencyGraph = new DependencyGraph(bindings, generators, parentDependencies);
 		}
 
-		public Container GetNestedContainer(IEnumerable<IModule> modules) => new Container(modules.ToBindings(), _dependencyGraph.Dependencies);
+		public Container GetNestedContainer(IEnumerable<IModule> modules) => GetNestedContainer(modules.ToBindings());
 		public Container GetNestedContainer(IEnumerable<IBinding> bindings) => new Container(bindings, _dependencyGraph.Dependencies);
 
 		/// <summary>

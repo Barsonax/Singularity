@@ -1,10 +1,11 @@
 ﻿using System;
+using System.Collections;
 using System.Linq;
 using Singularity.Bindings;
 using Singularity.Test.TestClasses;
 using Xunit;
 
-namespace Singularity.Test
+namespace Singularity.Test.Bindings
 {
     public class BindingConfigTests
     {
@@ -18,7 +19,24 @@ namespace Singularity.Test
 			});
 		}
 
-        [Fact]
+	    [Fact]
+	    public void Enumerable_Enumerate()
+	    {
+		    var config = new BindingConfig();
+		    config.For<ITestService10>().Inject<TestService10>();
+		    config.For<ITestService11>().Inject<TestService11>();
+		    config.For<ITestService12>().Inject<TestService12>();
+
+		    IEnumerable enumerable = config;
+
+		    var bindings = enumerable.OfType<IBinding>();
+			Assert.Equal(3, bindings.Count());
+		    Assert.Contains(bindings, x => x.DependencyType == typeof(ITestService10));
+		    Assert.Contains(bindings, x => x.DependencyType == typeof(ITestService11));
+		    Assert.Contains(bindings, x => x.DependencyType == typeof(ITestService12));
+		}
+
+		[Fact]
         public void Decorate_WrongConstructorArguments_Throws()
         {
             var config = new BindingConfig();
