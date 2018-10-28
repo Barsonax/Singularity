@@ -10,7 +10,7 @@
     <Exec Command="if $(ConfigurationName) == Debug (&#xD;&#xA;mkdir &quot;$(SolutionDir)Duality/Plugins&quot;&#xD;&#xA;copy &quot;$(TargetPath)&quot; &quot;$(SolutionDir)Duality/Plugins&quot;&#xD;&#xA;copy &quot;$(TargetDir)$(TargetName).pdb&quot; &quot;$(SolutionDir)Duality/Plugins&quot;&#xD;&#xA;xcopy /Y &quot;$(TargetDir)*.core.xml&quot; &quot;$(SolutionDir)Duality/Plugins&quot;&#xD;&#xA;)" />
   </Target>
   <ItemGroup>
-    <PackageReference Include="AdamsLair.Duality" Version="2.14.8" />
+    <PackageReference Include="AdamsLair.Duality" Version="2.14.9" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\..\..\..\Singularity\Singularity.csproj" />

@@ -13,6 +13,7 @@ namespace Singularity
 {
 	public class Container : IDisposable
 	{
+		public bool IsDisposed { get; private set; }
 		private readonly DependencyGraph _dependencyGraph;
 
 		private readonly Dictionary<Type, Action<object>> _injectionCache = new Dictionary<Type, Action<object>>(ReferenceEqualityComparer<Type>.Instance);
@@ -166,6 +167,7 @@ namespace Singularity
 		public void Dispose()
 		{
 			_objectActionContainer.Invoke();
+			IsDisposed = true;
 		}
 	}
 }

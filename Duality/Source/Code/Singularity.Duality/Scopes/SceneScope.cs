@@ -1,26 +1,35 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using Duality;
 using Duality.Resources;
 using Singularity.Bindings;
 
 namespace Singularity.Duality.Scopes
 {
-	public class SceneScope
+	public class SceneScope : IDisposable
 	{
+		public bool IsDisposed { get; private set; }
 		public Container Container { get; }
 
-		public SceneScope(GameScope gameScope, Scene scene)
+		public SceneScope(Container parentContainer, Scene scene)
 		{
-			Container = gameScope.Container.GetNestedContainer(scene.FindComponents<IModule>());
+			Container = parentContainer.GetNestedContainer(scene.FindComponents<IModule>());
 
 			InjectGameObjects(Scene.Current.AllObjects);
 			Scene.ComponentAdded += Scene_ComponentAdded;
+			Scene.GameObjectsAdded += Scene_GameObjectsAdded;
 		}
 
 		public void Dispose()
 		{
 			Scene.ComponentAdded -= Scene_ComponentAdded;
 			Container.Dispose();
+			IsDisposed = true;
+		}
+
+		private void Scene_GameObjectsAdded(object sender, GameObjectGroupEventArgs e)
+		{
+			InjectGameObjects(e.Objects);
 		}
 
 		private void Scene_ComponentAdded(object sender, ComponentEventArgs e)

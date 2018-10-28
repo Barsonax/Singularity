@@ -11,16 +11,23 @@ namespace Singularity.Duality.Scopes
 	{
 		public Container Container { get; }
 		private SceneScope _sceneScope;
+		private readonly ILogger _logger;
+		private readonly ISceneScopeFactory _sceneScopeFactory;
 
-		public GameScope()
+		public GameScope(ILogger logger, ISceneScopeFactory sceneScopeFactory, IEnumerable<ContentRef<SingularityModules>> moduleResources)
 		{
-			var dependencyResources = ContentProvider.GetAvailableContent<SingularityModules>();
+			_sceneScopeFactory = sceneScopeFactory;
+			_logger = logger;
 			var modules = new List<IModule>();
-			foreach (var dependencyResource in dependencyResources)
+			foreach (var dependencyResource in moduleResources)
 			{
 				foreach (var moduleRef in dependencyResource.Res.Modules)
 				{
-					if (TryCreateModule(moduleRef, out var module))
+					if (moduleRef == null)
+					{
+						_logger.WriteWarning($"{nameof(Singularity)}: {dependencyResource.FullName} contains a null module");
+					}
+					else if (TryCreateModule(moduleRef, out var module))
 					{
 						modules.Add(module);
 					}
@@ -38,7 +45,7 @@ namespace Singularity.Duality.Scopes
 			var type = moduleRef.Type;
 			if (type == null)
 			{
-				Log.Game.WriteWarning($"{nameof(Singularity)}: Could not resolve the type {moduleRef}");
+				_logger.WriteWarning($"{nameof(Singularity)}: Could not resolve the type {moduleRef}");
 			}
 			else
 			{
@@ -48,7 +55,7 @@ namespace Singularity.Duality.Scopes
 
 					if (!(instance is IModule castedInstance))
 					{
-						Log.Game.WriteWarning($"{nameof(Singularity)}: The type {moduleRef} does not implement {nameof(IModule)}");
+						_logger.WriteWarning($"{nameof(Singularity)}: The type {moduleRef} does not implement {nameof(IModule)}");
 					}
 					else
 					{
@@ -58,7 +65,7 @@ namespace Singularity.Duality.Scopes
 				}
 				catch (Exception e)
 				{
-					Log.Game.WriteWarning($"{nameof(Singularity)}: Could create a instance of the type {moduleRef}. The following exception was thrown {e}");
+					_logger.WriteWarning($"{nameof(Singularity)}: Could create a instance of the type {moduleRef}. The following exception was thrown {e}");
 				}
 			}
 			module = null;
@@ -75,7 +82,7 @@ namespace Singularity.Duality.Scopes
 
 		private void Scene_Entered(object sender, EventArgs e)
 		{
-			_sceneScope = new SceneScope(this, Scene.Current);
+			_sceneScope = _sceneScopeFactory.Create(this, Scene.Current);
 		}
 
 		private void Scene_Leaving(object sender, EventArgs e)
