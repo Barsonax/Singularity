@@ -10,7 +10,7 @@
     <RepositoryUrl>https://github.com/Barsonax/Singularity</RepositoryUrl>
     <NoWarn>1701;1702;1705;1591;NU1701</NoWarn>
     <Authors>Barsonax</Authors>
-    <PackageTags>Duality Plugin ioc inversion control dependency injection</PackageTags>
+    <PackageTags>Duality Plugin ioc di inversion control dependency injection container</PackageTags>
     <Version>0.0.1</Version>
     <Description>Plugin that adds a ioc container to duality</Description>
     <Copyright>https://github.com/Barsonax/Singularity/blob/master/LICENSE</Copyright>
