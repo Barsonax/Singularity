@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Reflection;
 using Duality.Editor;
 
 namespace Singularity.Duality.Resources
@@ -24,6 +25,16 @@ namespace Singularity.Duality.Resources
 		public string Name { get; set; }
 
 		public Type Type => Type.GetType(ToString());
+
+		public static ModuleRef FromType(Type type)
+		{			
+			return new ModuleRef
+			{
+				Assembly = type.GetTypeInfo().Assembly.ManifestModule.Name.Replace(".dll", ""),
+				NameSpace = type.Namespace,
+				Name = type.Name
+			};
+		}
 
 		public override string ToString()
 		{

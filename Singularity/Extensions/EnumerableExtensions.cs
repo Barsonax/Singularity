@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Diagnostics;
 
-namespace Singularity.Extensions
+namespace Singularity
 {
 	public static class EnumerableExtensions
 	{

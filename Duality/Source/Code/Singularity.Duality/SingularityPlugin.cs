@@ -1,4 +1,5 @@
 ﻿using Duality;
+using Singularity.Duality.Resources;
 using Singularity.Duality.Scopes;
 
 namespace Singularity.Duality
@@ -9,11 +10,13 @@ namespace Singularity.Duality
 
 		protected override void OnGameStarting()
 		{
-			_gameScope = new GameScope();		
+			var logger = new LoggerAdapter(Log.Game);
+			var moduleResources = ContentProvider.GetAvailableContent<SingularityModules>();
+			_gameScope = new GameScope(logger, new SceneScopeFactory(), moduleResources);
 		}
 
 		protected override void OnGameEnded()
-		{			
+		{
 			_gameScope?.Dispose();
 		}
 	}

@@ -2,7 +2,6 @@
 using System.Linq;
 using System.Linq.Expressions;
 using System.Reflection;
-using Singularity.Extensions;
 
 namespace Singularity.Bindings
 {
