@@ -22,6 +22,7 @@ namespace Singularity.Duality.Scopes
 
 		public void Dispose()
 		{
+			Scene.GameObjectsAdded -= Scene_GameObjectsAdded;
 			Scene.ComponentAdded -= Scene_ComponentAdded;
 			Container.Dispose();
 			IsDisposed = true;
