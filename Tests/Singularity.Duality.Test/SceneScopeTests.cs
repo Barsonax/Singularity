@@ -1,12 +1,7 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Linq.Expressions;
-using System.Text;
+﻿using System.Linq;
 using Duality;
 using Duality.Resources;
 using Singularity.Bindings;
-using Singularity.Duality.Resources;
 using Singularity.Duality.Scopes;
 using Xunit;
 
