@@ -13,15 +13,18 @@ namespace Singularity.Duality.Scopes
 		private SceneScope _sceneScope;
 		private readonly ILogger _logger;
 		private readonly ISceneScopeFactory _sceneScopeFactory;
+		private readonly ISceneEventsProvider _sceneEventsProvider;
 
-		public GameScope(ILogger logger, ISceneScopeFactory sceneScopeFactory, IEnumerable<ContentRef<SingularityModules>> moduleResources)
+
+		public GameScope(ILogger logger, ISceneScopeFactory sceneScopeFactory, ISceneEventsProvider sceneEventsProvider, IEnumerable<SingularityModules> moduleResources)
 		{
+			_sceneEventsProvider = sceneEventsProvider;
 			_sceneScopeFactory = sceneScopeFactory;
 			_logger = logger;
 			var modules = new List<IModule>();
 			foreach (var dependencyResource in moduleResources)
 			{
-				foreach (var moduleRef in dependencyResource.Res.Modules)
+				foreach (var moduleRef in dependencyResource.Modules)
 				{
 					if (moduleRef == null)
 					{
@@ -36,8 +39,8 @@ namespace Singularity.Duality.Scopes
 
 			Container = new Container(modules);
 
-			Scene.Entered += Scene_Entered;
-			Scene.Leaving += Scene_Leaving;
+			_sceneEventsProvider.Entered += Scene_Entered;
+			_sceneEventsProvider.Leaving += Scene_Leaving;
 		}
 
 		private bool TryCreateModule(ModuleRef moduleRef, out IModule module)
@@ -74,15 +77,15 @@ namespace Singularity.Duality.Scopes
 
 		public void Dispose()
 		{
+			_sceneEventsProvider.Dispose();
 			Container.Dispose();
-
-			Scene.Entered -= Scene_Entered;
-			Scene.Leaving -= Scene_Leaving;
+			_sceneEventsProvider.Entered -= Scene_Entered;
+			_sceneEventsProvider.Leaving -= Scene_Leaving;
 		}
 
 		private void Scene_Entered(object sender, EventArgs e)
 		{
-			_sceneScope = _sceneScopeFactory.Create(this, Scene.Current);
+			_sceneScope = _sceneScopeFactory.Create(this, Scene.Current, _sceneEventsProvider);
 		}
 
 		private void Scene_Leaving(object sender, EventArgs e)

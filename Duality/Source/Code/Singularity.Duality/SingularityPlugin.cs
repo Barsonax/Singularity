@@ -1,4 +1,5 @@
-﻿using Duality;
+﻿using System.Linq;
+using Duality;
 using Singularity.Duality.Resources;
 using Singularity.Duality.Scopes;
 
@@ -11,8 +12,8 @@ namespace Singularity.Duality
 		protected override void OnGameStarting()
 		{
 			var logger = new LoggerAdapter(Log.Game);
-			var moduleResources = ContentProvider.GetAvailableContent<SingularityModules>();
-			_gameScope = new GameScope(logger, new SceneScopeFactory(), moduleResources);
+			var moduleResources = ContentProvider.GetAvailableContent<SingularityModules>().Select(x => x.Res);
+			_gameScope = new GameScope(logger, new SceneScopeFactory(), new SceneEventsProvider(), moduleResources);
 		}
 
 		protected override void OnGameEnded()
