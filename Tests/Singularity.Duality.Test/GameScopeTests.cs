@@ -17,8 +17,10 @@ namespace Singularity.Duality.Test
 		{
 			var logger = new LoggerMockup();
 			var moduleResources = new[] { new ContentRef<SingularityModules>(new SingularityModules()), };
-			var scope = new GameScope(logger, Substitute.For<ISceneScopeFactory>(), moduleResources);
-			Assert.Single(logger.Warnings);
+		    using (var scope = new GameScope(logger, Substitute.For<ISceneScopeFactory>(), moduleResources))
+		    {
+		        Assert.Single(logger.Warnings);
+            }
 		}
 
 		[Fact]
@@ -28,8 +30,10 @@ namespace Singularity.Duality.Test
 			var moduleResource = new SingularityModules();
 			moduleResource.Modules[0] = new ModuleRef();
 			var moduleResources = new[] { new ContentRef<SingularityModules>(moduleResource) };
-			var scope = new GameScope(logger, Substitute.For<ISceneScopeFactory>(), moduleResources);
-			Assert.Single(logger.Warnings);
+		    using (var scope = new GameScope(logger, Substitute.For<ISceneScopeFactory>(), moduleResources))
+		    {
+		        Assert.Single(logger.Warnings);
+            }
 		}
 
 		[Fact]
@@ -41,8 +45,10 @@ namespace Singularity.Duality.Test
 
 			moduleResource.Modules[0] = ModuleRef.FromType(type);
 			var moduleResources = new[] { new ContentRef<SingularityModules>(moduleResource) };
-			var scope = new GameScope(logger, Substitute.For<ISceneScopeFactory>(), moduleResources);
-			Assert.Single(logger.Warnings);
+		    using (var scope = new GameScope(logger, Substitute.For<ISceneScopeFactory>(), moduleResources))
+		    {
+		        Assert.Single(logger.Warnings);
+            }
 		}
 
 		[Fact]
@@ -54,8 +60,10 @@ namespace Singularity.Duality.Test
 
 			moduleResource.Modules[0] = ModuleRef.FromType(type);
 			var moduleResources = new[] { new ContentRef<SingularityModules>(moduleResource) };
-			var scope = new GameScope(logger, Substitute.For<ISceneScopeFactory>(), moduleResources);
-			Assert.Single(logger.Warnings);
+		    using (var scope = new GameScope(logger, Substitute.For<ISceneScopeFactory>(), moduleResources))
+		    {
+		        Assert.Single(logger.Warnings);
+            }
 		}
 
 		[Fact]
@@ -67,10 +75,12 @@ namespace Singularity.Duality.Test
 
 			moduleResource.Modules[0] = ModuleRef.FromType(type);
 			var moduleResources = new[] { new ContentRef<SingularityModules>(moduleResource) };
-			var scope = new GameScope(logger, Substitute.For<ISceneScopeFactory>(), moduleResources);
-			Assert.Empty(logger.Warnings);
-			var instance = scope.Container.GetInstance<IModule>();
-			Assert.IsType<TestModule>(instance);
+		    using (var scope = new GameScope(logger, Substitute.For<ISceneScopeFactory>(), moduleResources))
+		    {
+		        Assert.Empty(logger.Warnings);
+		        var instance = scope.Container.GetInstance<IModule>();
+		        Assert.IsType<TestModule>(instance);
+            }		    
 		}
 
 		[Fact]
@@ -79,10 +89,12 @@ namespace Singularity.Duality.Test
 			var logger = new LoggerMockup();
 
 			var moduleResources = new ContentRef<SingularityModules>[0];
-			var scope = new GameScope(logger, Substitute.For<ISceneScopeFactory>(), moduleResources);
-			Assert.False(scope.Container.IsDisposed);
-			scope.Dispose();
-			Assert.True(scope.Container.IsDisposed);
+		    using (var scope = new GameScope(logger, Substitute.For<ISceneScopeFactory>(), moduleResources))
+		    {
+		        Assert.False(scope.Container.IsDisposed);
+		        scope.Dispose();
+		        Assert.True(scope.Container.IsDisposed);
+		    }
 		}
 
 		[Fact]
@@ -92,12 +104,13 @@ namespace Singularity.Duality.Test
 			var sceneScopeFactory = new SceneScopeFactoryMockup();
 
 			var moduleResources = new ContentRef<SingularityModules>[0];
-			var scope = new GameScope(logger, sceneScopeFactory, moduleResources);
+		    using (var scope = new GameScope(logger, sceneScopeFactory, moduleResources))
+		    {
+		        var scene = new Scene();
+		        Scene.SwitchTo(new ContentRef<Scene>(scene));
 
-			var scene = new Scene();
-			Scene.SwitchTo(new ContentRef<Scene>(scene));
-
-			Assert.Single(sceneScopeFactory.CreateCalls);
+		        Assert.Single(sceneScopeFactory.CreateCalls);
+            }
 		}
 
 		[Fact]
@@ -107,16 +120,17 @@ namespace Singularity.Duality.Test
 			var sceneScopeFactory = new SceneScopeFactoryMockup();
 
 			var moduleResources = new ContentRef<SingularityModules>[0];
-			var scope = new GameScope(logger, sceneScopeFactory, moduleResources);
+		    using (var scope = new GameScope(logger, sceneScopeFactory, moduleResources))
+		    {
+		        var scene = new Scene();
+		        Scene.SwitchTo(new ContentRef<Scene>(scene));
 
-			var scene = new Scene();
-			Scene.SwitchTo(new ContentRef<Scene>(scene));
-
-			var createdSceneScope = sceneScopeFactory.CreatedSceneScopes[0];
-			Assert.False(createdSceneScope.IsDisposed);
-			scene = new Scene();
-			Scene.SwitchTo(new ContentRef<Scene>(scene));
-			Assert.True(createdSceneScope.IsDisposed);
+		        var createdSceneScope = sceneScopeFactory.CreatedSceneScopes[0];
+		        Assert.False(createdSceneScope.IsDisposed);
+		        scene = new Scene();
+		        Scene.SwitchTo(new ContentRef<Scene>(scene));
+		        Assert.True(createdSceneScope.IsDisposed);
+            }
 		}
 	}
 }

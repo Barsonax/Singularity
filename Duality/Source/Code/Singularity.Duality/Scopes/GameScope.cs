@@ -7,7 +7,7 @@ using Singularity.Duality.Resources;
 
 namespace Singularity.Duality.Scopes
 {
-	public class GameScope
+	public class GameScope : IDisposable
 	{
 		public Container Container { get; }
 		private SceneScope _sceneScope;
