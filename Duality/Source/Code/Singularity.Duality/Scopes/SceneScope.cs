@@ -10,20 +10,22 @@ namespace Singularity.Duality.Scopes
 	{
 		public bool IsDisposed { get; private set; }
 		public Container Container { get; }
+		private readonly ISceneEventsProvider _sceneEventsProvider;
 
-		public SceneScope(Container parentContainer, Scene scene)
+		public SceneScope(Container parentContainer, Scene scene, ISceneEventsProvider sceneEventsProvider)
 		{
+			_sceneEventsProvider = sceneEventsProvider;
 			Container = parentContainer.GetNestedContainer(scene.FindComponents<IModule>());
 
-			InjectGameObjects(Scene.Current.AllObjects);
-			Scene.ComponentAdded += Scene_ComponentAdded;
-			Scene.GameObjectsAdded += Scene_GameObjectsAdded;
+			InjectGameObjects(scene.AllObjects);
+			_sceneEventsProvider.ComponentAdded += Scene_ComponentAdded;
+			_sceneEventsProvider.GameObjectsAdded += Scene_GameObjectsAdded;
 		}
 
 		public void Dispose()
 		{
-			Scene.GameObjectsAdded -= Scene_GameObjectsAdded;
-			Scene.ComponentAdded -= Scene_ComponentAdded;
+			_sceneEventsProvider.ComponentAdded -= Scene_ComponentAdded;
+			_sceneEventsProvider.GameObjectsAdded -= Scene_GameObjectsAdded;
 			Container.Dispose();
 			IsDisposed = true;
 		}
