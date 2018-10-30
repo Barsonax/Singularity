@@ -13,7 +13,17 @@ namespace Singularity.Test
 		{
 			public class Exceptions
 			{
+				[Fact]
+				public void GetInstanceFactory_GetDependencyByConcreteType_WithMixedConcreteDependency_2Deep_ReturnsCorrectDependency()
+				{
+					var config = new BindingConfig();
 
+					var container = new Container(config);
+					Assert.Throws<DependencyNotFoundException>(() =>
+					{
+						var value = container.GetInstanceFactory<TestService12WithMixedConcreteDependency>().Invoke();
+					});				
+				}
 			}
 
 			public class Decorators
@@ -748,6 +758,35 @@ namespace Singularity.Test
 
 					Assert.Equal(typeof(TestService11WithConcreteDependency), value.GetType());
 					Assert.NotNull(value.TestService10);
+				}
+
+				[Fact]
+				public void GetInstanceFactory_GetDependencyByConcreteType_WithConcreteDependency_2Deep_ReturnsCorrectDependency()
+				{
+					var config = new BindingConfig();
+
+					var container = new Container(config);
+
+					var value = container.GetInstanceFactory<TestService12WithConcreteDependency>().Invoke();
+
+					Assert.Equal(typeof(TestService12WithConcreteDependency), value.GetType());
+					Assert.NotNull(value.TestService11);
+				}
+
+				[Fact]
+				public void GetInstanceFactory_GetDependencyByConcreteType_WithMixedConcreteDependency_2Deep_ReturnsCorrectDependency()
+				{
+					var config = new BindingConfig();
+					config.For<ITestService10>().Inject<TestService10>();
+					config.For<ITestService11>().Inject<TestService11>();
+
+					var container = new Container(config);
+
+					var value = container.GetInstanceFactory<TestService12WithMixedConcreteDependency>().Invoke();
+
+					Assert.Equal(typeof(TestService12WithMixedConcreteDependency), value.GetType());
+					var testService11 = Assert.IsType<TestService11>(value.TestService11);
+					Assert.IsType<TestService10>(testService11.TestService10);
 				}
 			}
 
