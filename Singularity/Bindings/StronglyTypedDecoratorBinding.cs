@@ -33,7 +33,7 @@ namespace Singularity.Bindings
 			var typeInfo = type.GetTypeInfo();
 			if (!DependencyType.GetTypeInfo().IsAssignableFrom(typeInfo)) throw new InterfaceNotImplementedException($"{DependencyType} is not implemented by {type}");
 
-			Expression = type.AutoResolveConstructor();
+			Expression = type.AutoResolveConstructorExpression();
 			var parameters = Expression.GetParameterExpressions();
 			if (parameters.All(x => x.Type != DependencyType)) throw new InvalidExpressionArgumentsException($"Cannot decorate {DependencyType} since the expression to create {type} does not have a parameter for {DependencyType}");
 

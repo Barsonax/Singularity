@@ -723,12 +723,38 @@ namespace Singularity.Test
 					Assert.NotNull(value2.TestService11.TestService10);
 					Assert.Equal(value1.TestService11.TestService10, value2.TestService11.TestService10);
 				}
+
+				[Fact]
+				public void GetInstanceFactory_GetDependencyByConcreteType_ReturnsCorrectDependency()
+				{
+					var config = new BindingConfig();
+					config.For<ITestService10>().Inject<TestService10>();
+
+					var container = new Container(config);
+
+					var value = container.GetInstanceFactory<TestService11>().Invoke();
+
+					Assert.Equal(typeof(TestService11), value.GetType());
+				}
+
+				[Fact]
+				public void GetInstanceFactory_GetDependencyByConcreteType_WithConcreteDependency_ReturnsCorrectDependency()
+				{
+					var config = new BindingConfig();
+
+					var container = new Container(config);
+
+					var value = container.GetInstanceFactory<TestService11WithConcreteDependency>().Invoke();
+
+					Assert.Equal(typeof(TestService11WithConcreteDependency), value.GetType());
+					Assert.NotNull(value.TestService10);
+				}
 			}
 
 			public class NoDependencies
 			{
 				[Fact]
-				public void GetInstanceFactory_ReturnsCorrectDependency()
+				public void GetInstanceFactory_GetDependencyByInterface_ReturnsCorrectDependency()
 				{
 					var config = new BindingConfig();
 					config.For<ITestService10>().Inject<TestService10>();
@@ -736,6 +762,18 @@ namespace Singularity.Test
 					var container = new Container(config);
 
 					var value = container.GetInstanceFactory<ITestService10>().Invoke();
+
+					Assert.Equal(typeof(TestService10), value.GetType());
+				}
+
+				[Fact]
+				public void GetInstanceFactory_GetDependencyByConcreteType_ReturnsCorrectDependency()
+				{
+					var config = new BindingConfig();
+
+					var container = new Container(config);
+
+					var value = container.GetInstanceFactory<TestService10>().Invoke();
 
 					Assert.Equal(typeof(TestService10), value.GetType());
 				}
