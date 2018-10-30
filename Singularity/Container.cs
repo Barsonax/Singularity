@@ -124,18 +124,39 @@ namespace Singularity
 
 		private Func<object> GenerateInstanceFactory(Type type)
 		{
-			var expression = GetDependencyExpression(type);
+			Expression expression = GetDependencyExpression(type);
+
 			return (Func<object>)Expression.Lambda(expression).Compile();
 		}
 
 		private Expression GetDependencyExpression(Type type)
 		{
-			if (_dependencyGraph.Dependencies.TryGetValue(type, out var dependencyNode))
+			if (type.GetTypeInfo().IsInterface)
 			{
-				return dependencyNode.ResolvedDependency.Expression;
+				if (_dependencyGraph.Dependencies.TryGetValue(type, out var dependencyNode))
+				{
+					return dependencyNode.ResolvedDependency.Expression;
+				}
+
+				throw new DependencyNotFoundException(type);
 			}
 
-			throw new DependencyNotFoundException(type);
+			return GenerateConstructorInjector(type);
+		}
+
+		private Expression GenerateConstructorInjector(Type type)
+		{
+			var constructor = type.AutoResolveConstructor();
+			var parameters = constructor.GetParameters();
+			
+			var arguments = new Expression[parameters.Length];
+			for (var i = 0; i < parameters.Length; i++)
+			{
+				var dependencyExpression = GetDependencyExpression(parameters[i].ParameterType);
+				arguments[i] = dependencyExpression;
+			}
+
+			return Expression.New(constructor, arguments);
 		}
 
 		private Action<object> GenerateMethodInjector(Type type)

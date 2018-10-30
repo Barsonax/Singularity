@@ -11,7 +11,7 @@ namespace Singularity.Test
             var type = typeof(NoPublicConstructorClass);
             Assert.Throws<NoConstructorException>(() =>
             {
-                var constructorExpression = type.AutoResolveConstructor();
+                var constructorExpression = type.AutoResolveConstructorExpression();
             });           
         }
 
@@ -21,7 +21,7 @@ namespace Singularity.Test
             var type = typeof(MultipleConstructorsClass);
             Assert.Throws<CannotAutoResolveConstructorException>(() =>
             {
-                var constructorExpression = type.AutoResolveConstructor();
+                var constructorExpression = type.AutoResolveConstructorExpression();
             });
         }
     }

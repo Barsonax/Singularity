@@ -23,7 +23,7 @@ namespace Singularity.Bindings
 		public StronglyTypedConfiguredBinding<TDependency, TInstance> Inject<TInstance>()
 			where TInstance : class, TDependency
 		{
-			return SetExpression<TInstance>(typeof(TInstance).AutoResolveConstructor());
+			return SetExpression<TInstance>(typeof(TInstance).AutoResolveConstructorExpression());
 		}
 
 		public StronglyTypedConfiguredBinding<TDependency, TInstance> Inject<TInstance>(Expression<Func<TInstance>> expression)
