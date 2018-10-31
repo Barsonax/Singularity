@@ -19,4 +19,4 @@ $project = (Get-ChildItem -Path $buildOutput -Filter '*Test.dll*').FullName
 $filter = '+[Singularity*]* -[Singularity*.Test]*'
 
 $targetArgs = ' vstest ' + $project
-&$opencover_console -register:user -target:$target -targetargs:$targetArgs -filter:$filter -output:$output -oldStyle -returntargetcode
+&$opencover_console -register:user -target:$target -targetargs:$targetArgs -filter:$filter -output:$output -oldStyle -returntargetcode -hideskipped:Filter
