@@ -2,7 +2,6 @@
 
   <PropertyGroup>
     <TargetFramework>netstandard1.1</TargetFramework>
-    <Version>0.0.1</Version>
     <Authors>Barsonax</Authors>
     <Description>The core library for the singularity ioc container</Description>
     <PackageProjectUrl>https://github.com/Barsonax/Singularity</PackageProjectUrl>
@@ -12,28 +11,19 @@
     <NeutralLanguage>en</NeutralLanguage>
     <Copyright>https://github.com/Barsonax/Singularity/blob/master/LICENSE</Copyright>
     <PackageIconUrl>https://raw.githubusercontent.com/Barsonax/Singularity/master/Icon.png</PackageIconUrl>
+    <Configurations>Debug;Release;z_CI_config</Configurations>
   </PropertyGroup>
 
-  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='z_CI_config|AnyCPU'">
+    <NoWarn>1701;1702;1705;1591;NU1701;CS1591;CS1574;CS1711</NoWarn>
     <DebugType>pdbonly</DebugType>
     <DebugSymbols>true</DebugSymbols>
+    <OutputPath>$(SolutionDir)BuildOutput\</OutputPath>
+    <DocumentationFile>$(SolutionDir)BuildOutput\Singularity.xml</DocumentationFile>
+    <AppendTargetFrameworkToOutputPath>false</AppendTargetFrameworkToOutputPath>
   </PropertyGroup>
 
   <Target Name="PostBuild" AfterTargets="PostBuildEvent">
     <Exec Command="if $(ConfigurationName) == Debug (&#xD;&#xA;mkdir &quot;$(SolutionDir)Duality/Plugins&quot;&#xD;&#xA;copy &quot;$(TargetPath)&quot; &quot;$(SolutionDir)Duality/Plugins&quot;&#xD;&#xA;copy &quot;$(TargetDir)$(TargetName).pdb&quot; &quot;$(SolutionDir)Duality/Plugins&quot;&#xD;&#xA;xcopy /Y &quot;$(TargetDir)*.core.xml&quot; &quot;$(SolutionDir)Duality/Plugins&quot;&#xD;&#xA;)" />
   </Target>
-
-  <ItemGroup>
-    <Compile Remove="General\**" />
-    <EmbeddedResource Remove="General\**" />
-    <None Remove="General\**" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <PackageReference Include="GitVersionTask" Version="4.0.0">
-      <PrivateAssets>all</PrivateAssets>
-      <IncludeAssets>runtime; build; native; contentfiles; analyzers</IncludeAssets>
-    </PackageReference>
-  </ItemGroup>
-
 </Project>

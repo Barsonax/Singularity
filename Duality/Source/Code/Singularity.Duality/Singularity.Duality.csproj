@@ -8,27 +8,27 @@
     <PackageProjectUrl>https://github.com/Barsonax/Singularity</PackageProjectUrl>
     <PackageIconUrl>https://raw.githubusercontent.com/Barsonax/Singularity/master/Icon.png</PackageIconUrl>
     <RepositoryUrl>https://github.com/Barsonax/Singularity</RepositoryUrl>
-    <NoWarn>1701;1702;1705;1591;NU1701</NoWarn>
+
     <Authors>Barsonax</Authors>
     <PackageTags>Duality Plugin ioc di inversion control dependency injection container</PackageTags>
-    <Version>0.0.1</Version>
     <Description>Plugin that adds a ioc container to duality</Description>
     <Copyright>https://github.com/Barsonax/Singularity/blob/master/LICENSE</Copyright>
+    <Configurations>Debug;Release;z_CI_config</Configurations>
   </PropertyGroup>
 
-  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='z_CI_config|AnyCPU'">
+    <NoWarn>1701;1702;1705;1591;NU1701;CS1591;CS1574;CS1711</NoWarn>
     <DebugType>pdbonly</DebugType>
     <DebugSymbols>true</DebugSymbols>
+    <DocumentationFile>$(SolutionDir)BuildOutput\Singularity.Duality.core.xml</DocumentationFile>
+    <OutputPath>$(SolutionDir)BuildOutput\</OutputPath>
+    <AppendTargetFrameworkToOutputPath>false</AppendTargetFrameworkToOutputPath>
   </PropertyGroup>
   <Target Name="PostBuild" AfterTargets="PostBuildEvent">
     <Exec Command="if $(ConfigurationName) == Debug (&#xD;&#xA;mkdir &quot;$(SolutionDir)Duality/Plugins&quot;&#xD;&#xA;copy &quot;$(TargetPath)&quot; &quot;$(SolutionDir)Duality/Plugins&quot;&#xD;&#xA;copy &quot;$(TargetDir)$(TargetName).pdb&quot; &quot;$(SolutionDir)Duality/Plugins&quot;&#xD;&#xA;xcopy /Y &quot;$(TargetDir)*.core.xml&quot; &quot;$(SolutionDir)Duality/Plugins&quot;&#xD;&#xA;)" />
   </Target>
   <ItemGroup>
     <PackageReference Include="AdamsLair.Duality" Version="2.14.9" />
-    <PackageReference Include="GitVersionTask" Version="4.0.0">
-      <PrivateAssets>all</PrivateAssets>
-      <IncludeAssets>runtime; build; native; contentfiles; analyzers</IncludeAssets>
-    </PackageReference>
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\..\..\..\Singularity\Singularity.csproj" />

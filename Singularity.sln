@@ -25,8 +25,6 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "CI", "CI", "{89675F4E-9165-
 		appveyor.yml = appveyor.yml
 		codecov.yml = codecov.yml
 		GitVersion.yml = GitVersion.yml
-		PublishCoverage.ps1 = PublishCoverage.ps1
-		RunOpenCover.ps1 = RunOpenCover.ps1
 	EndProjectSection
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Git", "Git", "{15197F05-E231-4B17-AD9C-402818E97CC8}"
@@ -39,6 +37,15 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Singularity.Duality.Test", 
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Tests", "Tests", "{2C762633-E965-4223-94D4-B66EB384AF27}"
 EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Scripts", "Scripts", "{DED403CC-1121-4F8C-83BA-9A434714380C}"
+	ProjectSection(SolutionItems) = preProject
+		Build.ps1 = Build.ps1
+		CI_script.ps1 = CI_script.ps1
+		InstallChocolateyPackages.ps1 = InstallChocolateyPackages.ps1
+		PublishCoverage.ps1 = PublishCoverage.ps1
+		RunOpenCover.ps1 = RunOpenCover.ps1
+	EndProjectSection
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -50,14 +57,14 @@ Global
 		{83CB49EE-53FD-43F6-A136-E688BAFA2148}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{83CB49EE-53FD-43F6-A136-E688BAFA2148}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{83CB49EE-53FD-43F6-A136-E688BAFA2148}.Release|Any CPU.Build.0 = Release|Any CPU
-		{83CB49EE-53FD-43F6-A136-E688BAFA2148}.z_CI_config|Any CPU.ActiveCfg = Release|Any CPU
-		{83CB49EE-53FD-43F6-A136-E688BAFA2148}.z_CI_config|Any CPU.Build.0 = Release|Any CPU
+		{83CB49EE-53FD-43F6-A136-E688BAFA2148}.z_CI_config|Any CPU.ActiveCfg = z_CI_config|Any CPU
+		{83CB49EE-53FD-43F6-A136-E688BAFA2148}.z_CI_config|Any CPU.Build.0 = z_CI_config|Any CPU
 		{4FE77B0A-DA6B-4F00-A5E8-E66EB9EC1775}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{4FE77B0A-DA6B-4F00-A5E8-E66EB9EC1775}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{4FE77B0A-DA6B-4F00-A5E8-E66EB9EC1775}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{4FE77B0A-DA6B-4F00-A5E8-E66EB9EC1775}.Release|Any CPU.Build.0 = Release|Any CPU
-		{4FE77B0A-DA6B-4F00-A5E8-E66EB9EC1775}.z_CI_config|Any CPU.ActiveCfg = Release|Any CPU
-		{4FE77B0A-DA6B-4F00-A5E8-E66EB9EC1775}.z_CI_config|Any CPU.Build.0 = Release|Any CPU
+		{4FE77B0A-DA6B-4F00-A5E8-E66EB9EC1775}.z_CI_config|Any CPU.ActiveCfg = z_CI_config|Any CPU
+		{4FE77B0A-DA6B-4F00-A5E8-E66EB9EC1775}.z_CI_config|Any CPU.Build.0 = z_CI_config|Any CPU
 		{A6CEF3E9-C75E-48CB-90F4-21C99007C406}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{A6CEF3E9-C75E-48CB-90F4-21C99007C406}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{A6CEF3E9-C75E-48CB-90F4-21C99007C406}.Release|Any CPU.ActiveCfg = Release|Any CPU
@@ -67,8 +74,8 @@ Global
 		{AFE883F3-72B4-4C7C-A1D1-44EDC09C8F6E}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{AFE883F3-72B4-4C7C-A1D1-44EDC09C8F6E}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{AFE883F3-72B4-4C7C-A1D1-44EDC09C8F6E}.Release|Any CPU.Build.0 = Release|Any CPU
-		{AFE883F3-72B4-4C7C-A1D1-44EDC09C8F6E}.z_CI_config|Any CPU.ActiveCfg = Release|Any CPU
-		{AFE883F3-72B4-4C7C-A1D1-44EDC09C8F6E}.z_CI_config|Any CPU.Build.0 = Release|Any CPU
+		{AFE883F3-72B4-4C7C-A1D1-44EDC09C8F6E}.z_CI_config|Any CPU.ActiveCfg = z_CI_config|Any CPU
+		{AFE883F3-72B4-4C7C-A1D1-44EDC09C8F6E}.z_CI_config|Any CPU.Build.0 = z_CI_config|Any CPU
 		{DC6835B4-63D5-465A-9590-08544ABB2DDB}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{DC6835B4-63D5-465A-9590-08544ABB2DDB}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{DC6835B4-63D5-465A-9590-08544ABB2DDB}.Release|Any CPU.ActiveCfg = Release|Any CPU
@@ -78,7 +85,8 @@ Global
 		{403EA696-4514-4B11-80DE-216A4FA1A7E1}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{403EA696-4514-4B11-80DE-216A4FA1A7E1}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{403EA696-4514-4B11-80DE-216A4FA1A7E1}.Release|Any CPU.Build.0 = Release|Any CPU
-		{403EA696-4514-4B11-80DE-216A4FA1A7E1}.z_CI_config|Any CPU.ActiveCfg = Release|Any CPU
+		{403EA696-4514-4B11-80DE-216A4FA1A7E1}.z_CI_config|Any CPU.ActiveCfg = z_CI_config|Any CPU
+		{403EA696-4514-4B11-80DE-216A4FA1A7E1}.z_CI_config|Any CPU.Build.0 = z_CI_config|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -89,6 +97,7 @@ Global
 		{89675F4E-9165-406B-8CF0-F68A615B7EA8} = {F07B1110-A580-458C-92DB-09A67CEF6CBA}
 		{15197F05-E231-4B17-AD9C-402818E97CC8} = {F07B1110-A580-458C-92DB-09A67CEF6CBA}
 		{403EA696-4514-4B11-80DE-216A4FA1A7E1} = {2C762633-E965-4223-94D4-B66EB384AF27}
+		{DED403CC-1121-4F8C-83BA-9A434714380C} = {89675F4E-9165-406B-8CF0-F68A615B7EA8}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {BD420494-AD08-423A-8393-09273048EF76}
