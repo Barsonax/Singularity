@@ -1,11 +1,14 @@
-<Project Sdk="Microsoft.NET.Sdk">
+﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
     <TargetFramework>netcoreapp2.0</TargetFramework>
+    <Configurations>Debug;Release;z_CI_config</Configurations>
+  </PropertyGroup>
 
-    <IsPackable>false</IsPackable>
-
-    <Configurations>Debug;Release;Tests</Configurations>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='z_CI_config|AnyCPU'">
+    <NoWarn>1701;1702;1705;1591;NU1701;CS1591;CS1574;CS1711</NoWarn>
+    <OutputPath>$(SolutionDir)BuildOutput\</OutputPath>
+    <AppendTargetFrameworkToOutputPath>false</AppendTargetFrameworkToOutputPath>
   </PropertyGroup>
 
   <ItemGroup>
