@@ -3,9 +3,10 @@ param (
 	[string]$artifactFolder = $PSScriptRoot + '/Artifacts'
 )
 
-dotnet build -m -c $configuration 
-
 $gitversion = GitVersion.exe|ConvertFrom-Json
-$version = $gitversion.NuGetVersion
 
-dotnet pack -m -c $configuration -o $artifactFolder --include-symbols --no-build /p:Version=$version
+$version = $gitversion.MajorMinorPatch
+$nugetversion = $gitversion.NuGetVersion
+
+dotnet build -m -c $configuration /p:Version=$version
+dotnet pack -m -c $configuration -o $artifactFolder --include-symbols --no-build /p:Version=$nugetversion
