@@ -3,7 +3,8 @@ param (
 	[string]$artifactFolder = $PSScriptRoot + '/Artifacts'
 )
 
-$gitversion = GitVersion.exe|ConvertFrom-Json
+
+$gitversion = &'C:\ProgramData\chocolatey\bin\GitVersion.exe'|ConvertFrom-Json
 
 $version = $gitversion.MajorMinorPatch
 $nugetversion = $gitversion.NuGetVersion

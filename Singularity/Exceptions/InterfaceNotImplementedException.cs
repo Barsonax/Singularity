@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace Singularity
+namespace Singularity.Exceptions
 {
     public class InterfaceNotImplementedException : Exception
     {

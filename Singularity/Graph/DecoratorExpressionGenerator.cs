@@ -1,7 +1,10 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
 using System.Linq.Expressions;
+
 using Singularity.Bindings;
+using Singularity.Expressions;
+using Singularity.Graph.Interfaces;
 
 namespace Singularity.Graph
 {
@@ -12,10 +15,10 @@ namespace Singularity.Graph
             if (binding.Decorators.Count > 0)
             {
                 Expression previousDecorator = instanceParameter;
-                foreach (var decorator in binding.Decorators)
+                foreach (IDecoratorBinding decorator in binding.Decorators)
                 {
                     var visitor = new ReplaceExpressionVisitor(decorator.Expression.GetParameterExpressions().First(x => x.Type == instanceParameter.Type), previousDecorator);
-                    var decoratorExpression = visitor.Visit(decorator.Expression);
+                    Expression decoratorExpression = visitor.Visit(decorator.Expression);
                     parameters.AddRange(decoratorExpression.GetParameterExpressions().Where(parameterExpression => parameterExpression.Type != instanceParameter.Type));
                     previousDecorator = decoratorExpression;
                 }

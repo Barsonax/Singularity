@@ -1,8 +1,9 @@
 ﻿using System.Collections.Generic;
 using System.Linq.Expressions;
 using System.Reflection;
-using Singularity.Bindings;
+
 using Singularity.Collections;
+using Singularity.Graph.Interfaces;
 
 namespace Singularity.Graph
 {

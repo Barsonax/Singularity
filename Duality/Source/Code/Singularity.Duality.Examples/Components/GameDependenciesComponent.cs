@@ -1,5 +1,6 @@
 ﻿using Duality;
 using Singularity.Bindings;
+using Singularity.Enums;
 
 namespace Singularity.Duality.Examples.Components
 {

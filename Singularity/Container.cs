@@ -5,9 +5,12 @@ using System.Linq;
 using System.Linq.Expressions;
 using System.Reflection;
 using System.Runtime.CompilerServices;
+
+using Singularity.Attributes;
 using Singularity.Bindings;
 using Singularity.Collections;
 using Singularity.Graph;
+using Singularity.Graph.Interfaces;
 
 namespace Singularity
 {
@@ -49,10 +52,10 @@ namespace Singularity
 		/// </summary>
 		/// <typeparam name="T"></typeparam>
 		/// <param name="instances"></param>
-		/// <exception cref="DependencyNotFoundException">If the method had parameters that couldnt be resolved</exception>
+		/// <exception cref="DependencyNotFoundException">If the method had parameters that couldn't be resolved</exception>
 		public void MethodInjectAll<T>(IEnumerable<T> instances)
 		{
-			foreach (var instance in instances)
+			foreach (T instance in instances)
 			{
 				MethodInject(instance);
 			}
@@ -61,16 +64,15 @@ namespace Singularity
 		/// <summary>
 		/// Injects dependencies by calling all methods marked with <see cref="InjectAttribute"/> on the <paramref name="instance"/>.
 		/// </summary>
-		/// <typeparam name="T"></typeparam>
 		/// <param name="instance"></param>
-		/// <exception cref="DependencyNotFoundException">If the method had parameters that couldnt be resolved</exception>
+		/// <exception cref="DependencyNotFoundException">If the method had parameters that couldn't be resolved</exception>
 		[MethodImpl(MethodImplOptions.AggressiveInlining)]
 		public void MethodInject(object instance) => GetMethodInjector(instance.GetType()).Invoke(instance);
 
 		[MethodImpl(MethodImplOptions.AggressiveInlining)]
 		public Action<object> GetMethodInjector(Type type)
 		{
-			if (!_injectionCache.TryGetValue(type, out var action))
+			if (!_injectionCache.TryGetValue(type, out Action<object> action))
 			{
 				action = GenerateMethodInjector(type);
 				_injectionCache.Add(type, action);
@@ -96,7 +98,7 @@ namespace Singularity
 		[MethodImpl(MethodImplOptions.AggressiveInlining)]
 		public Func<object> GetInstanceFactory(Type type)
 		{
-			if (!_getInstanceCache.TryGetValue(type, out var action))
+			if (!_getInstanceCache.TryGetValue(type, out Func<object> action))
 			{
 				action = GenerateInstanceFactory(type);
 				_getInstanceCache.Add(type, action);
@@ -133,7 +135,7 @@ namespace Singularity
 		{
 			if (type.GetTypeInfo().IsInterface)
 			{
-				if (_dependencyGraph.Dependencies.TryGetValue(type, out var dependencyNode))
+				if (_dependencyGraph.Dependencies.TryGetValue(type, out Dependency dependencyNode))
 				{
 					return dependencyNode.ResolvedDependency.Expression;
 				}
@@ -146,13 +148,13 @@ namespace Singularity
 
 		private Expression GenerateConstructorInjector(Type type)
 		{
-			var constructor = type.AutoResolveConstructor();
-			var parameters = constructor.GetParameters();
+			ConstructorInfo constructor = type.AutoResolveConstructor();
+			ParameterInfo[] parameters = constructor.GetParameters();
 			
 			var arguments = new Expression[parameters.Length];
 			for (var i = 0; i < parameters.Length; i++)
 			{
-				var dependencyExpression = GetDependencyExpression(parameters[i].ParameterType);
+				Expression dependencyExpression = GetDependencyExpression(parameters[i].ParameterType);
 				arguments[i] = dependencyExpression;
 			}
 
@@ -161,27 +163,27 @@ namespace Singularity
 
 		private Action<object> GenerateMethodInjector(Type type)
 		{
-			var instanceParameter = Expression.Parameter(typeof(object));
+			ParameterExpression instanceParameter = Expression.Parameter(typeof(object));
 
 			var body = new List<Expression>();
-			var instanceCasted = Expression.Variable(type, "instanceCasted");
+			ParameterExpression instanceCasted = Expression.Variable(type, "instanceCasted");
 			body.Add(Expression.Assign(instanceCasted, Expression.Convert(instanceParameter, type)));
-			foreach (var methodInfo in type.GetRuntimeMethods())
+			foreach (MethodInfo methodInfo in type.GetRuntimeMethods())
 			{
 				if (methodInfo.CustomAttributes.All(x => x.AttributeType != typeof(InjectAttribute))) continue;
-				var parameterTypes = methodInfo.GetParameters();
+				ParameterInfo[] parameterTypes = methodInfo.GetParameters();
 				var parameterExpressions = new Expression[parameterTypes.Length];
 				for (var i = 0; i < parameterTypes.Length; i++)
 				{
-					var parameterType = parameterTypes[i].ParameterType;
+					Type parameterType = parameterTypes[i].ParameterType;
 					parameterExpressions[i] = GetDependencyExpression(parameterType);
 				}
 				body.Add(Expression.Call(instanceCasted, methodInfo, parameterExpressions));
 			}
-			var block = Expression.Block(new[] { instanceCasted }, body);
-			var expressionTree = Expression.Lambda<Action<object>>(block, instanceParameter);
+			BlockExpression block = Expression.Block(new[] { instanceCasted }, body);
+			Expression<Action<object>> expressionTree = Expression.Lambda<Action<object>>(block, instanceParameter);
 
-			var action = expressionTree.Compile();
+			Action<object> action = expressionTree.Compile();
 			return action;
 		}
 

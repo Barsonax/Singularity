@@ -8,7 +8,7 @@ namespace Singularity
 		public static IEnumerable<IBinding> ToBindings(this IEnumerable<IModule> modules)
 		{
 			var config = new BindingConfig();
-			foreach (var module in modules)
+			foreach (IModule module in modules)
 			{
 				module.Register(config);
 			}

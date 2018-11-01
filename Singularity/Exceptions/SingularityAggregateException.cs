@@ -1,9 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Text;
 
-namespace Singularity
+namespace Singularity.Exceptions
 {
 	public class SingularityAggregateException : AggregateException
 	{
@@ -18,7 +17,7 @@ namespace Singularity
 				builder.AppendLine(singularityAggregateException.HeaderMessage);
 			}
 			indentLevel++;
-			foreach (var innerException in exception.InnerExceptions)
+			foreach (Exception innerException in exception.InnerExceptions)
 			{
 
 
@@ -28,7 +27,7 @@ namespace Singularity
 				}
 				else
 				{					
-					foreach (var line in innerException.Message.Split(new[] { Environment.NewLine }, StringSplitOptions.RemoveEmptyEntries))
+					foreach (string line in innerException.Message.Split(new[] { Environment.NewLine }, StringSplitOptions.RemoveEmptyEntries))
 					{
 						builder.Append(new string('	', indentLevel));
 						builder.AppendLine(line);

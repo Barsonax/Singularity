@@ -14,7 +14,7 @@ namespace Singularity.Duality.Test.Setup
 
 	public class DualityTestFixture : IDisposable
 	{
-		private string _oldEnvDir;
+		private readonly string _oldEnvDir;
 		private INativeWindow _dummyWindow;
 		private TextWriterLogOutput _consoleLogOutput;
 
@@ -24,8 +24,8 @@ namespace Singularity.Duality.Test.Setup
 
 			// Set environment directory to Duality binary directory
 			_oldEnvDir = Environment.CurrentDirectory;
-			var codeBaseUri = typeof(DualityApp).Assembly.CodeBase;
-			var codeBasePath = codeBaseUri.StartsWith("file:") ? codeBaseUri.Remove(0, "file:".Length) : codeBaseUri;
+			string codeBaseUri = typeof(DualityApp).Assembly.CodeBase;
+			string codeBasePath = codeBaseUri.StartsWith("file:") ? codeBaseUri.Remove(0, "file:".Length) : codeBaseUri;
 			codeBasePath = codeBasePath.TrimStart('/');
 			Console.WriteLine("Testing Core Assembly: {0}", codeBasePath);
 			Environment.CurrentDirectory = Path.GetDirectoryName(codeBasePath);
@@ -107,8 +107,8 @@ namespace Singularity.Duality.Test.Setup
 		{
 			get
 			{
-				var appDataDir = Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData);
-				var testingDir = Path.Combine(appDataDir, "Duality", "UnitTesting");
+				string appDataDir = Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData);
+				string testingDir = Path.Combine(appDataDir, "Duality", "UnitTesting");
 				var testingFile = "DualityTests";
 #if DEBUG
 				testingFile += "Debug";
@@ -133,8 +133,7 @@ namespace Singularity.Duality.Test.Setup
 		{
 			if (!string.IsNullOrEmpty(unit)) unit = " " + unit;
 
-			List<long> lastValueList;
-			if (!LocalTestMemory.GetValue(testFixture, testName, out lastValueList))
+		    if (!LocalTestMemory.GetValue(testFixture, testName, out List<long> lastValueList))
 			{
 				lastValueList = new List<long>();
 			}
@@ -144,19 +143,18 @@ namespace Singularity.Duality.Test.Setup
 
 			var localAverage = (long)lastValueList.Average();
 
-			var nameStr = testFixture.GetType().Name + "." + testName;
-			var newValueStr = $"{resultValue}{unit}";
-			var lastValueStr = $"{localAverage}{unit}";
+			string nameStr = testFixture.GetType().Name + "." + testName;
+			string newValueStr = $"{resultValue}{unit}";
+			string lastValueStr = $"{localAverage}{unit}";
 
-			var relativeChange = (resultValue - (double)localAverage) / localAverage;
+			double relativeChange = (resultValue - (double)localAverage) / localAverage;
 			LogNumericTestResult(nameStr, newValueStr, lastValueStr, relativeChange);
 		}
 		public static void LogNumericTestResult(object testFixture, string testName, double resultValue, string unit)
 		{
 			if (!string.IsNullOrEmpty(unit)) unit = " " + unit;
 
-			List<double> lastValueList;
-			if (!LocalTestMemory.GetValue(testFixture, testName, out lastValueList))
+		    if (!LocalTestMemory.GetValue(testFixture, testName, out List<double> lastValueList))
 			{
 				lastValueList = new List<double>();
 			}
@@ -164,13 +162,13 @@ namespace Singularity.Duality.Test.Setup
 			if (lastValueList.Count > 10) lastValueList.RemoveAt(0);
 			LocalTestMemory.SetValue(testFixture, testName, lastValueList);
 
-			var localAverage = lastValueList.Average();
+			double localAverage = lastValueList.Average();
 
-			var nameStr = testFixture.GetType().Name + "." + testName;
-			var newValueStr = $"{resultValue:F}{unit}";
-			var lastValueStr = $"{localAverage:F}{unit}";
+			string nameStr = testFixture.GetType().Name + "." + testName;
+			string newValueStr = $"{resultValue:F}{unit}";
+			string lastValueStr = $"{localAverage:F}{unit}";
 
-			var relativeChange = (resultValue - localAverage) / localAverage;
+			double relativeChange = (resultValue - localAverage) / localAverage;
 			LogNumericTestResult(nameStr, newValueStr, lastValueStr, relativeChange);
 		}
 		private static void LogNumericTestResult(string nameStr, string newValueStr, string lastValueStr, double relativeChange)
@@ -192,7 +190,7 @@ namespace Singularity.Duality.Test.Setup
 
 		public bool SwitchValue<T>(object testFixture, string key, out T oldValue, T newValue)
 		{
-			var result = GetValue(testFixture, key, out oldValue);
+			bool result = GetValue(testFixture, key, out oldValue);
 			SetValue(testFixture, key, newValue);
 			return result;
 		}
@@ -210,10 +208,10 @@ namespace Singularity.Duality.Test.Setup
 			{
 				key = testFixture.GetType().Name + "_" + key;
 			}
-			object valueObj;
-			if (_data.TryGetValue(key, out valueObj) && valueObj is T)
+
+		    if (_data.TryGetValue(key, out object valueObj) && valueObj is T variable)
 			{
-				value = (T)valueObj;
+				value = variable;
 				return true;
 			}
 			else

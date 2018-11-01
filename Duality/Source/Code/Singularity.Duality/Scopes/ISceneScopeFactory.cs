@@ -1,5 +1,4 @@
-﻿using System;
-using Duality.Resources;
+﻿using Duality.Resources;
 
 namespace Singularity.Duality.Scopes
 {

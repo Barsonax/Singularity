@@ -1,6 +1,6 @@
 ﻿using System.Linq.Expressions;
 
-namespace Singularity
+namespace Singularity.Expressions
 {
 	public class ReplaceExpressionVisitor : ExpressionVisitor
 	{
