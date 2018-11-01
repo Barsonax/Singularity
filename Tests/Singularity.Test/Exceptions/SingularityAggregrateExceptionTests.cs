@@ -1,5 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
+
+using Singularity.Exceptions;
+
 using Xunit;
 
 namespace Singularity.Test.Exceptions
@@ -11,7 +14,7 @@ namespace Singularity.Test.Exceptions
 	    {
 			var exception = new SingularityAggregateException("1", new List<Exception>());
 
-		    var lines = exception.Message.Split(new[] {Environment.NewLine}, StringSplitOptions.None);
+		    string[] lines = exception.Message.Split(new[] {Environment.NewLine}, StringSplitOptions.None);
 			Assert.Equal("1",lines[0]);
 		}
 
@@ -35,7 +38,7 @@ namespace Singularity.Test.Exceptions
 			    })
 		    });
 
-		    var lines = exception.Message.Split(new[] { Environment.NewLine }, StringSplitOptions.None);
+		    string[] lines = exception.Message.Split(new[] { Environment.NewLine }, StringSplitOptions.None);
 		    Assert.Equal("1", lines[0]);
 
 		    Assert.Equal("	21", lines[1]);
@@ -69,7 +72,7 @@ namespace Singularity.Test.Exceptions
 			    })
 		    });
 
-		    var lines = exception.Message.Split(new[] { Environment.NewLine }, StringSplitOptions.None);
+		    string[] lines = exception.Message.Split(new[] { Environment.NewLine }, StringSplitOptions.None);
 		    Assert.Equal("1", lines[0]);
 
 		    Assert.Equal("	21", lines[1]);
@@ -106,7 +109,7 @@ namespace Singularity.Test.Exceptions
 			    new Exception("25")
 			});
 
-		    var lines = exception.Message.Split(new[] { Environment.NewLine }, StringSplitOptions.None);
+		    string[] lines = exception.Message.Split(new[] { Environment.NewLine }, StringSplitOptions.None);
 		    Assert.Equal("1", lines[0]);
 
 		    Assert.Equal("	21", lines[1]);

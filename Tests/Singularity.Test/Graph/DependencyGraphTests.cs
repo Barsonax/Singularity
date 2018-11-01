@@ -1,7 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
 using Singularity.Bindings;
+using Singularity.Enums;
 using Singularity.Graph;
+using Singularity.Graph.Interfaces;
 using Singularity.Test.TestClasses;
 using Xunit;
 

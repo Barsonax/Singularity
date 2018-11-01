@@ -2,6 +2,8 @@
 using System.Collections;
 using System.Collections.Generic;
 
+using Singularity.Exceptions;
+
 namespace Singularity.Bindings
 {
 	public class BindingConfig : IBindingConfig
@@ -29,7 +31,7 @@ namespace Singularity.Bindings
         public StronglyTypedDecoratorBinding<TDependency> Decorate<TDependency>()
         {
             var decorator = new StronglyTypedDecoratorBinding<TDependency>();
-            var binding = GetOrCreateBinding<TDependency>();
+            StronglyTypedBinding<TDependency> binding = GetOrCreateBinding<TDependency>();
             binding.Decorators.Add(decorator);
             return decorator;
         }
@@ -51,7 +53,7 @@ namespace Singularity.Bindings
 
 		private StronglyTypedBinding<TDependency> GetOrCreateBinding<TDependency>()
 		{
-			if (Bindings.TryGetValue(typeof(TDependency), out var weaklyTypedBinding))
+			if (Bindings.TryGetValue(typeof(TDependency), out IBinding weaklyTypedBinding))
 			{
 				return (StronglyTypedBinding<TDependency>)weaklyTypedBinding;
 			}

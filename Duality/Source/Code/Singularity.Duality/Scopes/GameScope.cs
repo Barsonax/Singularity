@@ -1,6 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
-using Duality;
+
 using Duality.Resources;
 using Singularity.Bindings;
 using Singularity.Duality.Resources;
@@ -22,15 +22,15 @@ namespace Singularity.Duality.Scopes
 			_sceneScopeFactory = sceneScopeFactory;
 			_logger = logger;
 			var modules = new List<IModule>();
-			foreach (var dependencyResource in moduleResources)
+			foreach (SingularityModules dependencyResource in moduleResources)
 			{
-				foreach (var moduleRef in dependencyResource.Modules)
+				foreach (ModuleRef moduleRef in dependencyResource.Modules)
 				{
 					if (moduleRef == null)
 					{
 						_logger.WriteWarning($"{nameof(Singularity)}: {dependencyResource.FullName} contains a null module");
 					}
-					else if (TryCreateModule(moduleRef, out var module))
+					else if (TryCreateModule(moduleRef, out IModule module))
 					{
 						modules.Add(module);
 					}
@@ -45,7 +45,7 @@ namespace Singularity.Duality.Scopes
 
 		private bool TryCreateModule(ModuleRef moduleRef, out IModule module)
 		{
-			var type = moduleRef.Type;
+			Type type = moduleRef.Type;
 			if (type == null)
 			{
 				_logger.WriteWarning($"{nameof(Singularity)}: Could not resolve the type {moduleRef}");
@@ -54,7 +54,7 @@ namespace Singularity.Duality.Scopes
 			{
 				try
 				{
-					var instance = Activator.CreateInstance(type);
+					object instance = Activator.CreateInstance(type);
 
 					if (!(instance is IModule castedInstance))
 					{

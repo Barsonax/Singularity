@@ -42,7 +42,7 @@ namespace Singularity.Duality.Scopes
 
 		public void InjectGameObjects(IEnumerable<GameObject> gameObjects)
 		{
-			foreach (var gameObject in gameObjects)
+			foreach (GameObject gameObject in gameObjects)
 			{
 				Container.MethodInjectAll(gameObject.GetComponents<Component>());
 			}

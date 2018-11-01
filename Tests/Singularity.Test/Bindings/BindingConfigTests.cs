@@ -2,6 +2,7 @@
 using System.Collections;
 using System.Linq;
 using Singularity.Bindings;
+using Singularity.Exceptions;
 using Singularity.Test.TestClasses;
 using Xunit;
 
@@ -29,8 +30,8 @@ namespace Singularity.Test.Bindings
 
 		    IEnumerable enumerable = config;
 
-		    var bindings = enumerable.OfType<IBinding>();
-			Assert.Equal(3, bindings.Count());
+		    IBinding[] bindings = enumerable.OfType<IBinding>().ToArray();
+			Assert.Equal(3, bindings.Length);
 		    Assert.Contains(bindings, x => x.DependencyType == typeof(ITestService10));
 		    Assert.Contains(bindings, x => x.DependencyType == typeof(ITestService11));
 		    Assert.Contains(bindings, x => x.DependencyType == typeof(ITestService12));
@@ -62,7 +63,7 @@ namespace Singularity.Test.Bindings
             var config = new BindingConfig();
             config.For<object>().Inject<object>();
 
-            var binding = config.Bindings.Values.First();
+            IBinding binding = config.Bindings.Values.First();
             Assert.Equal(typeof(object), binding.DependencyType);
             Assert.Equal(typeof(object), binding.Expression.Type);
         }
@@ -73,7 +74,7 @@ namespace Singularity.Test.Bindings
             var config = new BindingConfig();
             config.For<object>().Inject<object, object>((obj0) => new object());
 
-            var binding = config.Bindings.Values.First();
+            IBinding binding = config.Bindings.Values.First();
             Assert.Equal(typeof(object), binding.DependencyType);
             Assert.Equal(typeof(Func<object, object>), binding.Expression.Type);
         }
@@ -84,7 +85,7 @@ namespace Singularity.Test.Bindings
             var config = new BindingConfig();
             config.For<object>().Inject<object, object, object>((obj0, obj1) => new object());
 
-            var binding = config.Bindings.Values.First();
+            IBinding binding = config.Bindings.Values.First();
             Assert.Equal(typeof(object), binding.DependencyType);
             Assert.Equal(typeof(Func<object, object, object>), binding.Expression.Type);
         }
@@ -95,7 +96,7 @@ namespace Singularity.Test.Bindings
             var config = new BindingConfig();
             config.For<object>().Inject<object, object, object, object>((obj0, obj1, obj2) => new object());
 
-            var binding = config.Bindings.Values.First();
+            IBinding binding = config.Bindings.Values.First();
             Assert.Equal(typeof(object), binding.DependencyType);
             Assert.Equal(typeof(Func<object, object, object, object>), binding.Expression.Type);
         }
@@ -106,7 +107,7 @@ namespace Singularity.Test.Bindings
             var config = new BindingConfig();
             config.For<object>().Inject<object, object, object, object, object>((obj0, obj1, obj2, obj3) => new object());
 
-            var binding = config.Bindings.Values.First();
+            IBinding binding = config.Bindings.Values.First();
             Assert.Equal(typeof(object), binding.DependencyType);
             Assert.Equal(typeof(Func<object, object, object, object, object>), binding.Expression.Type);
         }
@@ -117,7 +118,7 @@ namespace Singularity.Test.Bindings
             var config = new BindingConfig();
             config.For<object>().Inject<object, object, object, object, object, object>((obj0, obj1, obj2, obj3, obj4) => new object());
 
-            var binding = config.Bindings.Values.First();
+            IBinding binding = config.Bindings.Values.First();
             Assert.Equal(typeof(object), binding.DependencyType);
             Assert.Equal(typeof(Func<object, object, object, object, object, object>), binding.Expression.Type);
         }
@@ -128,7 +129,7 @@ namespace Singularity.Test.Bindings
             var config = new BindingConfig();
             config.For<object>().Inject<object, object, object, object, object, object, object>((obj0, obj1, obj2, obj3, obj4, obj5) => new object());
 
-            var binding = config.Bindings.Values.First();
+            IBinding binding = config.Bindings.Values.First();
             Assert.Equal(typeof(object), binding.DependencyType);
             Assert.Equal(typeof(Func<object, object, object, object, object, object, object>), binding.Expression.Type);
         }
@@ -139,7 +140,7 @@ namespace Singularity.Test.Bindings
             var config = new BindingConfig();
             config.For<object>().Inject<object, object, object, object, object, object, object, object>((obj0, obj1, obj2, obj3, obj4, obj5, obj6) => new object());
 
-            var binding = config.Bindings.Values.First();
+            IBinding binding = config.Bindings.Values.First();
             Assert.Equal(typeof(object), binding.DependencyType);
             Assert.Equal(typeof(Func<object, object, object, object, object, object, object, object>), binding.Expression.Type);
         }
@@ -150,7 +151,7 @@ namespace Singularity.Test.Bindings
             var config = new BindingConfig();
             config.For<object>().Inject<object, object, object, object, object, object, object, object, object>((obj0, obj1, obj2, obj3, obj4, obj5, obj6, obj7) => new object());
 
-            var binding = config.Bindings.Values.First();
+            IBinding binding = config.Bindings.Values.First();
             Assert.Equal(typeof(object), binding.DependencyType);
             Assert.Equal(typeof(Func<object, object, object, object, object, object, object, object, object>), binding.Expression.Type);
         }

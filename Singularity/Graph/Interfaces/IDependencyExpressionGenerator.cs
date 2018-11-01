@@ -1,7 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.Linq.Expressions;
 
-namespace Singularity.Graph
+namespace Singularity.Graph.Interfaces
 {
     public interface IDependencyExpressionGenerator
     {

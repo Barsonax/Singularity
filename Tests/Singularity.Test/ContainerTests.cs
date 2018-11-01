@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using Singularity.Bindings;
+using Singularity.Enums;
 using Singularity.Exceptions;
 using Singularity.Test.TestClasses;
 using Xunit;
@@ -21,7 +22,7 @@ namespace Singularity.Test
 					var container = new Container(config);
 					Assert.Throws<DependencyNotFoundException>(() =>
 					{
-						var value = container.GetInstanceFactory<TestService12WithMixedConcreteDependency>().Invoke();
+						TestService12WithMixedConcreteDependency value = container.GetInstanceFactory<TestService12WithMixedConcreteDependency>().Invoke();
 					});				
 				}
 			}
@@ -45,7 +46,7 @@ namespace Singularity.Test
 
 						var nestedConfig = new BindingConfig();
 						nestedConfig.Decorate<IComponent>().With<Decorator2>();
-						using (var nestedContainer = container.GetNestedContainer(nestedConfig))
+						using (Container nestedContainer = container.GetNestedContainer(nestedConfig))
 						{
 							var nestedValue = nestedContainer.GetInstance<IComponent>();
 							Assert.NotNull(nestedValue);
@@ -86,7 +87,7 @@ namespace Singularity.Test
 
 					var nestedConfig = new BindingConfig();
 					nestedConfig.Decorate<ITestService11>().With<TestService11_Decorator2>();
-					var nestedContainer = container.GetNestedContainer(nestedConfig);
+					Container nestedContainer = container.GetNestedContainer(nestedConfig);
 
 					var nestedInstance = nestedContainer.GetInstance<ITestService11>();
 
@@ -111,7 +112,7 @@ namespace Singularity.Test
 
 						var nestedConfig = new BindingConfig();
 						nestedConfig.Decorate<IComponent>().With<Decorator1>();
-						using (var nestedContainer = container.GetNestedContainer(nestedConfig))
+						using (Container nestedContainer = container.GetNestedContainer(nestedConfig))
 						{
 							var nestedValue = nestedContainer.GetInstance<IComponent>();
 							Assert.NotNull(nestedValue);
@@ -139,7 +140,7 @@ namespace Singularity.Test
 					{
 						var nestedConfig = new BindingConfig();
 						nestedConfig.For<IDisposable>().Inject<Disposable>().With(Lifetime.PerContainer).OnDeath(x => x.Dispose());
-						var nestedContainer = container.GetNestedContainer(nestedConfig);
+						Container nestedContainer = container.GetNestedContainer(nestedConfig);
 						var nestedInstance = nestedContainer.GetInstance<IDisposable>();
 
 						Assert.NotNull(nestedInstance);
@@ -172,7 +173,7 @@ namespace Singularity.Test
 					{
 						var nestedConfig = new BindingConfig();
 
-						var nestedContainer = container.GetNestedContainer(nestedConfig);
+						Container nestedContainer = container.GetNestedContainer(nestedConfig);
 						var nestedInstance = nestedContainer.GetInstance<IDisposable>();
 
 						Assert.NotNull(nestedInstance);
@@ -205,7 +206,7 @@ namespace Singularity.Test
 					{
 						var nestedConfig = new BindingConfig();
 
-						var nestedContainer = container.GetNestedContainer(nestedConfig);
+						Container nestedContainer = container.GetNestedContainer(nestedConfig);
 						var nestedInstance = nestedContainer.GetInstance<IDisposable>();
 
 						Assert.NotNull(nestedInstance);
@@ -238,7 +239,7 @@ namespace Singularity.Test
 					{
 						var nestedConfig = new BindingConfig();
 						nestedConfig.Decorate<IDisposable>().With<DisposableDecorator>();
-						var nestedContainer = container.GetNestedContainer(nestedConfig);
+						Container nestedContainer = container.GetNestedContainer(nestedConfig);
 						var nestedInstance = nestedContainer.GetInstance<IDisposable>();
 
 						Assert.NotNull(nestedInstance);
@@ -268,7 +269,7 @@ namespace Singularity.Test
 						var nestedConfig = new BindingConfig();
 
 						nestedConfig.For<ITestService11>().Inject<TestService11>();
-						using (var nestedContainer = container.GetNestedContainer(nestedConfig))
+						using (Container nestedContainer = container.GetNestedContainer(nestedConfig))
 						{
 							var nestedValue = nestedContainer.GetInstance<ITestService11>();
 							Assert.Equal(typeof(TestService11), nestedValue.GetType());
@@ -290,7 +291,7 @@ namespace Singularity.Test
 						var nestedConfig = new BindingConfig();
 
 						nestedConfig.For<ITestService11>().Inject<TestService11>();
-						using (var nestedContainer = container.GetNestedContainer(nestedConfig))
+						using (Container nestedContainer = container.GetNestedContainer(nestedConfig))
 						{
 							var nestedValue = nestedContainer.GetInstance<ITestService11>();
 							Assert.Equal(typeof(TestService11), nestedValue.GetType());
@@ -299,7 +300,7 @@ namespace Singularity.Test
 							var nestedConfig2 = new BindingConfig();
 							nestedConfig2.For<ITestService12>().Inject<TestService12>();
 
-							using (var nestedContainer2 = nestedContainer.GetNestedContainer(nestedConfig2))
+							using (Container nestedContainer2 = nestedContainer.GetNestedContainer(nestedConfig2))
 							{
 								var nestedValue2 = nestedContainer2.GetInstance<ITestService12>();
 								Assert.Equal(typeof(TestService12), nestedValue2.GetType());
@@ -326,7 +327,7 @@ namespace Singularity.Test
 					{
 						var nestedConfig = new BindingConfig();
 
-						using (var nestedContainer = container.GetNestedContainer(nestedConfig))
+						using (Container nestedContainer = container.GetNestedContainer(nestedConfig))
 						{
 							var nestedValue = nestedContainer.GetInstance<ITestService10>();
 							Assert.Equal(typeof(TestService10), nestedValue.GetType());
@@ -348,7 +349,7 @@ namespace Singularity.Test
 					{
 						var module = new TestModule1();
 
-						using (var nestedContainer = container.GetNestedContainer(new[] { module }))
+						using (Container nestedContainer = container.GetNestedContainer(new[] { module }))
 						{
 							var nestedValue = nestedContainer.GetInstance<ITestService10>();
 							Assert.Equal(typeof(TestService10), nestedValue.GetType());
@@ -370,7 +371,7 @@ namespace Singularity.Test
 						var nestedConfig = new BindingConfig();
 
 						nestedConfig.For<ITestService10>().Inject<TestService10Variant>();
-						using (var nestedContainer = container.GetNestedContainer(nestedConfig))
+						using (Container nestedContainer = container.GetNestedContainer(nestedConfig))
 						{
 							var nestedValue = nestedContainer.GetInstance<ITestService10>();
 							Assert.Equal(typeof(TestService10Variant), nestedValue.GetType());
@@ -400,7 +401,7 @@ namespace Singularity.Test
 					catch (AggregateException e)
 					{
 						Assert.Equal(typeof(SingularityAggregateException), e.GetType());
-						var aggregateException = e.Flatten();
+						AggregateException aggregateException = e.Flatten();
 
 						Assert.Equal(1, aggregateException.InnerExceptions.Count);
 						Assert.Equal(typeof(DependencyNotFoundException), aggregateException.InnerExceptions[0].GetType());
@@ -432,7 +433,7 @@ namespace Singularity.Test
 					catch (AggregateException e)
 					{
 						Assert.Equal(typeof(SingularityAggregateException), e.GetType());
-						var aggregateException = e.Flatten();
+						AggregateException aggregateException = e.Flatten();
 
 						Assert.Equal(1, aggregateException.InnerExceptions.Count);
 						Assert.Equal(typeof(DependencyNotFoundException), aggregateException.InnerExceptions[0].GetType());
@@ -742,7 +743,7 @@ namespace Singularity.Test
 
 					var container = new Container(config);
 
-					var value = container.GetInstanceFactory<TestService11>().Invoke();
+					TestService11 value = container.GetInstanceFactory<TestService11>().Invoke();
 
 					Assert.Equal(typeof(TestService11), value.GetType());
 				}
@@ -754,7 +755,7 @@ namespace Singularity.Test
 
 					var container = new Container(config);
 
-					var value = container.GetInstanceFactory<TestService11WithConcreteDependency>().Invoke();
+					TestService11WithConcreteDependency value = container.GetInstanceFactory<TestService11WithConcreteDependency>().Invoke();
 
 					Assert.Equal(typeof(TestService11WithConcreteDependency), value.GetType());
 					Assert.NotNull(value.TestService10);
@@ -767,7 +768,7 @@ namespace Singularity.Test
 
 					var container = new Container(config);
 
-					var value = container.GetInstanceFactory<TestService12WithConcreteDependency>().Invoke();
+					TestService12WithConcreteDependency value = container.GetInstanceFactory<TestService12WithConcreteDependency>().Invoke();
 
 					Assert.Equal(typeof(TestService12WithConcreteDependency), value.GetType());
 					Assert.NotNull(value.TestService11);
@@ -782,7 +783,7 @@ namespace Singularity.Test
 
 					var container = new Container(config);
 
-					var value = container.GetInstanceFactory<TestService12WithMixedConcreteDependency>().Invoke();
+					TestService12WithMixedConcreteDependency value = container.GetInstanceFactory<TestService12WithMixedConcreteDependency>().Invoke();
 
 					Assert.Equal(typeof(TestService12WithMixedConcreteDependency), value.GetType());
 					var testService11 = Assert.IsType<TestService11>(value.TestService11);
@@ -800,7 +801,7 @@ namespace Singularity.Test
 
 					var container = new Container(config);
 
-					var value = container.GetInstanceFactory<ITestService10>().Invoke();
+					ITestService10 value = container.GetInstanceFactory<ITestService10>().Invoke();
 
 					Assert.Equal(typeof(TestService10), value.GetType());
 				}
@@ -812,7 +813,7 @@ namespace Singularity.Test
 
 					var container = new Container(config);
 
-					var value = container.GetInstanceFactory<TestService10>().Invoke();
+					TestService10 value = container.GetInstanceFactory<TestService10>().Invoke();
 
 					Assert.Equal(typeof(TestService10), value.GetType());
 				}
@@ -900,7 +901,7 @@ namespace Singularity.Test
 					}
 					container.MethodInjectAll(instances);
 
-					foreach (var instance in instances)
+					foreach (MethodInjectionClass instance in instances)
 					{
 						Assert.Equal(typeof(TestService10), instance.TestService10.GetType());
 					}

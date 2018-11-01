@@ -2,6 +2,8 @@
 using System.Collections.Generic;
 using System.Linq.Expressions;
 
+using Singularity.Enums;
+
 namespace Singularity.Bindings
 {
 	public interface IBinding

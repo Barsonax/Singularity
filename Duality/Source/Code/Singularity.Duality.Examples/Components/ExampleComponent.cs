@@ -1,5 +1,7 @@
 ﻿using Duality;
 
+using Singularity.Attributes;
+
 namespace Singularity.Duality.Examples.Components
 {
     public class ExampleComponent : Component

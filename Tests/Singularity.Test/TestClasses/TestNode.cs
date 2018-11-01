@@ -1,7 +1,7 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 
-namespace Singularity.Test
+namespace Singularity.Test.TestClasses
 {
 	public class TestNode
 	{
@@ -22,7 +22,7 @@ namespace Singularity.Test
 
 	public class TestNodeCollection : IEnumerable<TestNode>
 	{
-		private List<TestNode> _nodes = new List<TestNode>();
+		private readonly List<TestNode> _nodes = new List<TestNode>();
 
 		public TestNode Add(string name)
 		{

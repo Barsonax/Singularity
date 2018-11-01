@@ -3,6 +3,8 @@ using System.Linq;
 using System.Linq.Expressions;
 using System.Reflection;
 
+using Singularity.Exceptions;
+
 namespace Singularity
 {
     public static class TypeExtensions
@@ -16,10 +18,10 @@ namespace Singularity
         /// <returns></returns>
         public static NewExpression AutoResolveConstructorExpression(this Type type)
         {
-	        var constructor = AutoResolveConstructor(type);
-            var parameters = constructor.GetParameters();
+	        ConstructorInfo constructor = AutoResolveConstructor(type);
+            ParameterInfo[] parameters = constructor.GetParameters();
             var parameterExpressions = new Expression[parameters.Length];
-            for (int i = 0; i < parameters.Length; i++)
+            for (var i = 0; i < parameters.Length; i++)
             {
                 parameterExpressions[i] = Expression.Parameter(parameters[i].ParameterType);
             }
@@ -35,7 +37,7 @@ namespace Singularity
 	    /// <returns></returns>
 	    public static ConstructorInfo AutoResolveConstructor(this Type type)
 	    {
-		    var constructors = type.GetTypeInfo().DeclaredConstructors.Where(x => x.IsPublic).ToArray();
+		    ConstructorInfo[] constructors = type.GetTypeInfo().DeclaredConstructors.Where(x => x.IsPublic).ToArray();
 		    if (constructors.Length == 0) throw new NoConstructorException($"Type {type} did not contain any public constructor.");
 		    if (constructors.Length > 1) throw new CannotAutoResolveConstructorException($"Found {constructors.Length} suitable constructors for type {type}. Please specify the constructor explicitly.");
 		    return constructors.First();

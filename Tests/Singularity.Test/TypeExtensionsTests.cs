@@ -1,4 +1,8 @@
-﻿using Singularity.Test.TestClasses;
+﻿using System;
+using System.Linq.Expressions;
+
+using Singularity.Exceptions;
+using Singularity.Test.TestClasses;
 using Xunit;
 
 namespace Singularity.Test
@@ -8,20 +12,20 @@ namespace Singularity.Test
         [Fact]
         public void AutoResolveConstructor_NoConstructors_Throws()
         {
-            var type = typeof(NoPublicConstructorClass);
+            Type type = typeof(NoPublicConstructorClass);
             Assert.Throws<NoConstructorException>(() =>
             {
-                var constructorExpression = type.AutoResolveConstructorExpression();
+                NewExpression constructorExpression = type.AutoResolveConstructorExpression();
             });           
         }
 
         [Fact]
         public void AutoResolveConstructor_MultipleConstructors_Throws()
         {
-            var type = typeof(MultipleConstructorsClass);
+            Type type = typeof(MultipleConstructorsClass);
             Assert.Throws<CannotAutoResolveConstructorException>(() =>
             {
-                var constructorExpression = type.AutoResolveConstructorExpression();
+                NewExpression constructorExpression = type.AutoResolveConstructorExpression();
             });
         }
     }

@@ -1,8 +1,12 @@
 ﻿using System;
+
+using Singularity.Exceptions;
 using Singularity.Graph;
+using Singularity.Test.TestClasses;
+
 using Xunit;
 
-namespace Singularity.Test
+namespace Singularity.Test.Graph
 {
 	public class GraphTests
 	{
@@ -11,15 +15,15 @@ namespace Singularity.Test
 		{
 			var nodeCollection = new TestNodeCollection();
 
-			var node1 = nodeCollection.Add("node1");
-			var node2 = nodeCollection.Add("node2");
-			var node3 = nodeCollection.Add("node3");
+			TestNode node1 = nodeCollection.Add("node1");
+			TestNode node2 = nodeCollection.Add("node2");
+			TestNode node3 = nodeCollection.Add("node3");
 
 			node3.Parents.Add(node2);
 			node2.Parents.Add(node1);
 
 			var graph = new Graph<TestNode>(nodeCollection);
-			var updateOrder = graph.GetUpdateOrder(node => node.Parents);
+			TestNode[][] updateOrder = graph.GetUpdateOrder(node => node.Parents);
 
 			Assert.Equal(3, updateOrder.Length);
 
@@ -38,10 +42,10 @@ namespace Singularity.Test
 		{
 			var nodeCollection = new TestNodeCollection();
 
-			var node1 = nodeCollection.Add("node1");
-			var node2 = nodeCollection.Add("node2");
-			var node3 = nodeCollection.Add("node3");
-			var node4 = nodeCollection.Add("node4");
+			TestNode node1 = nodeCollection.Add("node1");
+			TestNode node2 = nodeCollection.Add("node2");
+			TestNode node3 = nodeCollection.Add("node3");
+			TestNode node4 = nodeCollection.Add("node4");
 
 			node2.Parents.Add(node1);
 			node3.Parents.Add(node2);
@@ -50,7 +54,7 @@ namespace Singularity.Test
 			node4.Parents.Add(node3);
 
 			var graph = new Graph<TestNode>(nodeCollection);
-			var updateOrder = graph.GetUpdateOrder(node => node.Parents);
+			TestNode[][] updateOrder = graph.GetUpdateOrder(node => node.Parents);
 
 			Assert.Equal(4, updateOrder.Length);
 
@@ -72,8 +76,8 @@ namespace Singularity.Test
 		{
 			var nodeCollection = new TestNodeCollection();
 
-			var node1 = nodeCollection.Add("node1");
-			var node2 = nodeCollection.Add("node2");
+			TestNode node1 = nodeCollection.Add("node1");
+			TestNode node2 = nodeCollection.Add("node2");
 
 			node1.Parents.Add(node2);
 			node2.Parents.Add(node1);
@@ -81,7 +85,7 @@ namespace Singularity.Test
 			try
 			{
 				var graph = new Graph<TestNode>(nodeCollection);
-				var updateOrder = graph.GetUpdateOrder(node => node.Parents);
+				TestNode[][] updateOrder = graph.GetUpdateOrder(node => node.Parents);
 			}
 			catch (Exception e)
 			{
@@ -108,9 +112,9 @@ namespace Singularity.Test
 		{
 			var nodeCollection = new TestNodeCollection();
 
-			var node1 = nodeCollection.Add("node1");
-			var node2 = nodeCollection.Add("node2");
-			var node3 = nodeCollection.Add("node3");
+			TestNode node1 = nodeCollection.Add("node1");
+			TestNode node2 = nodeCollection.Add("node2");
+			TestNode node3 = nodeCollection.Add("node3");
 
 			node1.Parents.Add(node3);
 			node2.Parents.Add(node1);
@@ -119,7 +123,7 @@ namespace Singularity.Test
 			try
 			{
 				var graph = new Graph<TestNode>(nodeCollection);
-				var updateOrder = graph.GetUpdateOrder(node => node.Parents);
+				TestNode[][] updateOrder = graph.GetUpdateOrder(node => node.Parents);
 			}
 			catch (Exception e)
 			{

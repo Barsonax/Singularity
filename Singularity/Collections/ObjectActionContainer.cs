@@ -14,16 +14,16 @@ namespace Singularity.Collections
 
 		public void Add(object obj)
 		{
-			var type = obj.GetType();
-			var objectActionList = ObjectActionLists[type];
+			Type type = obj.GetType();
+			ObjectActionList objectActionList = ObjectActionLists[type];
 			objectActionList.Objects.Add(obj);
 		}
 
 		public void Invoke()
 		{
-			foreach (var objectActionList in ObjectActionLists.Values)
+			foreach (ObjectActionList objectActionList in ObjectActionLists.Values)
 			{
-				foreach (var obj in objectActionList.Objects)
+				foreach (object obj in objectActionList.Objects)
 				{
 					objectActionList.Action.Invoke(obj);
 				}
