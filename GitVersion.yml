@@ -1,5 +1,8 @@
 mode: ContinuousDeployment
-assembly-versioning-scheme: MajorMinorPatch
 branches:
-  master:
-    tag: beta
+  develop:
+    increment: Patch
+  feature:
+    increment: Minor
+  hotfix:
+    tag: alpha
