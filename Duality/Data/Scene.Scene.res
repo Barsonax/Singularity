@@ -107,7 +107,7 @@
       <children />
       <compList dataType="Struct" type="System.Collections.Generic.List`1[[Duality.Component]]" id="1552680996">
         <_items dataType="Array" type="Duality.Component[]" id="461617860" length="4">
-          <item dataType="Struct" type="Singularity.Duality.Examples.GameManagerComponent" id="1014567778">
+          <item dataType="Struct" type="Singularity.Duality.Examples.Components.GameManagerComponent" id="1223978886">
             <_x003C_Score_x003E_k__BackingField dataType="Int">0</_x003C_Score_x003E_k__BackingField>
             <active dataType="Bool">true</active>
             <gameobj dataType="ObjectRef">2086827962</gameobj>
@@ -119,10 +119,10 @@
         <header />
         <body>
           <keys dataType="Array" type="System.Object[]" id="1691418478">
-            <item dataType="Type" id="3854632016" value="Singularity.Duality.Examples.GameManagerComponent" />
+            <item dataType="Type" id="3854632016" value="Singularity.Duality.Examples.Components.GameManagerComponent" />
           </keys>
           <values dataType="Array" type="System.Object[]" id="2524557770">
-            <item dataType="ObjectRef">1014567778</item>
+            <item dataType="ObjectRef">1223978886</item>
           </values>
         </body>
       </compMap>
