@@ -7,5 +7,5 @@ coverage:
         target: 90% 
         paths: "Singularity/" 
       Singularity.Duality:
-        target: 70%
+        target: 60%
         paths: "Duality/Source/Code/Singularity.Duality/" 

@@ -13,7 +13,7 @@ namespace Singularity.Exceptions
 		{
 			if (exception is SingularityAggregateException singularityAggregateException)
 			{
-				builder.Append(new string('	', indentLevel));
+				builder.Append(new string(' ', indentLevel * 2));
 				builder.AppendLine(singularityAggregateException.HeaderMessage);
 			}
 			indentLevel++;
@@ -29,7 +29,7 @@ namespace Singularity.Exceptions
 				{					
 					foreach (string line in innerException.Message.Split(new[] { Environment.NewLine }, StringSplitOptions.RemoveEmptyEntries))
 					{
-						builder.Append(new string('	', indentLevel));
+						builder.Append(new string(' ', indentLevel * 2));
 						builder.AppendLine(line);
 					}					
 				}

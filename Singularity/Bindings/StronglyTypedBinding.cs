@@ -3,11 +3,14 @@ using System.Collections.Generic;
 using System.Linq.Expressions;
 
 using Singularity.Enums;
+using Singularity.Exceptions;
+using Singularity.Graph;
 
 namespace Singularity.Bindings
 {
 	public class StronglyTypedBinding<TDependency> : IBinding
 	{
+		public BindingMetadata BindingMetadata { get; }
 		public IConfiguredBinding ConfiguredBinding { get; set; }		
 		public List<IDecoratorBinding> Decorators { get; } = new List<IDecoratorBinding>();
 	    IReadOnlyList<IDecoratorBinding> IBinding.Decorators => Decorators;
@@ -17,10 +20,18 @@ namespace Singularity.Bindings
 		public Lifetime Lifetime => ConfiguredBinding?.Lifetime ?? Lifetime.PerCall;
 		public Action<object> OnDeath => ConfiguredBinding?.OnDeath;
 
+		public StronglyTypedBinding(string callerFilePath, int callerLineNumber, IModule module)
+		{
+			BindingMetadata = new BindingMetadata(callerFilePath, callerLineNumber, module);
+		}
+
 		/// <summary>
-		/// Sets the actual type that will be used for the dependency and auto generates a <see cref="System.Linq.Expressions.Expression"/> to call the constructor
+		/// Sets the actual type that will be used for the dependency and auto generates a <see cref="System.Linq.Expressions.Expression"/> to call the constructor.
+		/// This generated expression will never return null.
 		/// </summary>
 		/// <typeparam name="TInstance"></typeparam>
+		/// <exception cref="NoConstructorException">If there is no public constructor</exception>
+		/// <exception cref="CannotAutoResolveConstructorException">If there is more than 1 public constructors</exception>
 		/// <returns></returns>
 		public StronglyTypedConfiguredBinding<TDependency, TInstance> Inject<TInstance>()
 			where TInstance : class, TDependency
@@ -28,6 +39,12 @@ namespace Singularity.Bindings
 			return SetExpression<TInstance>(typeof(TInstance).AutoResolveConstructorExpression());
 		}
 
+		/// <summary>
+		/// Lets you provide a expression <see cref="System.Linq.Expressions.Expression"/> to create the instance constructor.
+		/// Be careful as there will be no exception if this expression returns a null instance.
+		/// </summary>
+		/// <typeparam name="TInstance"></typeparam>
+		/// <returns></returns>
 		public StronglyTypedConfiguredBinding<TDependency, TInstance> Inject<TInstance>(Expression<Func<TInstance>> expression)
 			where TInstance : class, TDependency
 		{

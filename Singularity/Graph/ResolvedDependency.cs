@@ -1,4 +1,5 @@
-﻿using System.Linq.Expressions;
+﻿using System;
+using System.Linq.Expressions;
 
 namespace Singularity.Graph
 {
@@ -8,7 +9,7 @@ namespace Singularity.Graph
 
         public ResolvedDependency(Expression expression)
         {
-            Expression = expression;
+	        Expression = expression ?? throw new ArgumentNullException(nameof(expression));
         }
     }
 }

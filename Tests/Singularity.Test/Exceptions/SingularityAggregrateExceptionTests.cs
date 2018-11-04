@@ -41,15 +41,15 @@ namespace Singularity.Test.Exceptions
 		    string[] lines = exception.Message.Split(new[] { Environment.NewLine }, StringSplitOptions.None);
 		    Assert.Equal("1", lines[0]);
 
-		    Assert.Equal("	21", lines[1]);
-		    Assert.Equal("		211", lines[2]);
-		    Assert.Equal("		212", lines[3]);
-		    Assert.Equal("		213", lines[4]);
+		    Assert.Equal("  21", lines[1]);
+		    Assert.Equal("    211", lines[2]);
+		    Assert.Equal("    212", lines[3]);
+		    Assert.Equal("    213", lines[4]);
 
-		    Assert.Equal("	22", lines[5]);
-		    Assert.Equal("		221", lines[6]);
-		    Assert.Equal("		222", lines[7]);
-		    Assert.Equal("		223", lines[8]);
+		    Assert.Equal("  22", lines[5]);
+		    Assert.Equal("    221", lines[6]);
+		    Assert.Equal("    222", lines[7]);
+		    Assert.Equal("    223", lines[8]);
 	    }
 
 	    [Fact]
@@ -75,15 +75,15 @@ namespace Singularity.Test.Exceptions
 		    string[] lines = exception.Message.Split(new[] { Environment.NewLine }, StringSplitOptions.None);
 		    Assert.Equal("1", lines[0]);
 
-		    Assert.Equal("	21", lines[1]);
-		    Assert.Equal("		211", lines[2]);
-		    Assert.Equal("		212", lines[3]);
-		    Assert.Equal("		213", lines[4]);
+		    Assert.Equal("  21", lines[1]);
+		    Assert.Equal("    211", lines[2]);
+		    Assert.Equal("    212", lines[3]);
+		    Assert.Equal("    213", lines[4]);
 
-		    Assert.Equal("	22", lines[5]);
-		    Assert.Equal("		221", lines[6]);
-		    Assert.Equal("		222", lines[7]);
-		    Assert.Equal("		223", lines[8]);
+		    Assert.Equal("  22", lines[5]);
+		    Assert.Equal("    221", lines[6]);
+		    Assert.Equal("    222", lines[7]);
+		    Assert.Equal("    223", lines[8]);
 	    }
 
 	    [Fact]
@@ -112,19 +112,19 @@ namespace Singularity.Test.Exceptions
 		    string[] lines = exception.Message.Split(new[] { Environment.NewLine }, StringSplitOptions.None);
 		    Assert.Equal("1", lines[0]);
 
-		    Assert.Equal("	21", lines[1]);
-		    Assert.Equal("		211", lines[2]);
-		    Assert.Equal("		212", lines[3]);
-		    Assert.Equal("		213", lines[4]);
+		    Assert.Equal("  21", lines[1]);
+		    Assert.Equal("    211", lines[2]);
+		    Assert.Equal("    212", lines[3]);
+		    Assert.Equal("    213", lines[4]);
 
-		    Assert.Equal("	22", lines[5]);
-		    Assert.Equal("		221", lines[6]);
-		    Assert.Equal("		222", lines[7]);
-		    Assert.Equal("		223", lines[8]);
+		    Assert.Equal("  22", lines[5]);
+		    Assert.Equal("    221", lines[6]);
+		    Assert.Equal("    222", lines[7]);
+		    Assert.Equal("    223", lines[8]);
 
-		    Assert.Equal("	23", lines[9]);
-		    Assert.Equal("	24", lines[10]);
-		    Assert.Equal("	25", lines[11]);
+		    Assert.Equal("  23", lines[9]);
+		    Assert.Equal("  24", lines[10]);
+		    Assert.Equal("  25", lines[11]);
 		}
 	}
 }
