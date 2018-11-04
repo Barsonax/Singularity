@@ -126,7 +126,7 @@ namespace Singularity.Graph
 				case Lifetime.PerContainer:
 					Delegate action = Expression.Lambda(expression).Compile();
 					object value = action.DynamicInvoke();
-					expression = Expression.Constant(value);
+					expression = Expression.Constant(value, dependencyType);
 					break;
 				default:
 					throw new ArgumentOutOfRangeException(nameof(unresolvedDependency.Lifetime));
