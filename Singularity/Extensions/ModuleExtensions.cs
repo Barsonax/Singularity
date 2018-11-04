@@ -10,8 +10,11 @@ namespace Singularity
 			var config = new BindingConfig();
 			foreach (IModule module in modules)
 			{
+				config.CurrentModule = module;
 				module.Register(config);
 			}
+
+			config.CurrentModule = null;
 			return config;
 		}
 	}

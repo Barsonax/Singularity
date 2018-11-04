@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using Singularity.Bindings;
 using Singularity.Enums;
+using Singularity.Exceptions;
 using Singularity.Graph;
 using Singularity.Graph.Interfaces;
 using Singularity.Test.TestClasses;
@@ -17,10 +18,13 @@ namespace Singularity.Test.Graph
 			var config = new BindingConfig();
 			config.For<ITestService10>().Inject<TestService10>().With((Lifetime)(-234324524));
 
-			Assert.Throws<ArgumentOutOfRangeException>(() =>
+			var aggregateException = Assert.Throws<SingularityAggregateException>(() =>
 			{
 				var dependencyGraph = new DependencyGraph(config, new List<IDependencyExpressionGenerator>());
-			});		
+			});
+			var innerExceptions = aggregateException.Flatten().InnerExceptions;
+			var exception = Assert.Single(innerExceptions);
+			Assert.IsType<InvalidLifetimeException>(exception);
 		}
     }
 }

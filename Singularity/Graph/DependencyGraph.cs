@@ -22,14 +22,20 @@ namespace Singularity.Graph
 			UnresolvedDependency[][] updateOrder = graph.GetUpdateOrder(x => GetDependencies(x, unresolvedDependencies));
 
 			var dependencies = new Dictionary<Type, Dependency>();
-			foreach (UnresolvedDependency[] group in updateOrder)
+
+			for (var i = 0; i < updateOrder.Length; i++)
 			{
-				foreach (UnresolvedDependency unresolvedDependency in group)
+				UnresolvedDependency[] group = updateOrder[i];
+				if (@group.TryExecute(unresolvedDependency =>
 				{
 					ResolvedDependency resolvedDependency = ResolveDependency(unresolvedDependency.DependencyType, unresolvedDependency, dependencyExpressionGenerators, dependencies);
 					dependencies.Add(unresolvedDependency.DependencyType, new Dependency(unresolvedDependency, resolvedDependency));
+				}, out var exceptions))
+				{
+					throw new SingularityAggregateException($"Exceptions occured while resolving dependencies at {i} deep", exceptions);
 				}
-			} 
+			}
+
 			Dependencies = new ReadOnlyDictionary<Type, Dependency>(dependencies);
 		}
 
@@ -38,7 +44,7 @@ namespace Singularity.Graph
 			var unresolvedChildDependencies = new Dictionary<Type, UnresolvedDependency>();
 			foreach (IBinding binding in childBindingConfig)
 			{
-				unresolvedChildDependencies.Add(binding.DependencyType, new UnresolvedDependency(binding.DependencyType, binding.Expression, binding.Lifetime, binding.Decorators, binding.OnDeath));
+				unresolvedChildDependencies.Add(binding.DependencyType, new UnresolvedDependency(binding.BindingMetadata, binding.DependencyType, binding.Expression, binding.Lifetime, binding.Decorators, binding.OnDeath));
 			}
 
 			if (parentDependencyGraph != null)
@@ -52,30 +58,37 @@ namespace Singularity.Graph
 						List<IDecoratorBinding> decorators;
 						Expression expression;
 						Action<object> onDeathAction;
+						BindingMetadata bindingMetadata;
 						if (parentDependency.UnresolvedDependency.Lifetime == Lifetime.PerContainer)
 						{
-							expression = parentDependencyGraph[unresolvedChildDependency.DependencyType].ResolvedDependency.Expression;
+							var dependency = parentDependencyGraph[unresolvedChildDependency.DependencyType];
+							bindingMetadata = dependency.UnresolvedDependency.BindingMetadata;
+							expression = dependency.ResolvedDependency.Expression;
 							decorators = unresolvedChildDependency.Decorators.ToList();
 							onDeathAction = null;
 						}
 						else
 						{
+							bindingMetadata = parentDependency.UnresolvedDependency.BindingMetadata;
 							expression = parentDependency.UnresolvedDependency.Expression;
 							decorators = parentDependency.UnresolvedDependency.Decorators.Concat(unresolvedChildDependency.Decorators).ToList();
 							onDeathAction = parentDependency.UnresolvedDependency.OnDeath;
 						}
 
-						var readonlyBinding = new UnresolvedDependency(unresolvedChildDependency.DependencyType, expression, parentDependency.UnresolvedDependency.Lifetime, decorators, onDeathAction);
+						var readonlyBinding = new UnresolvedDependency(bindingMetadata, unresolvedChildDependency.DependencyType, expression, parentDependency.UnresolvedDependency.Lifetime, decorators, onDeathAction);
 						unresolvedChildDependencies[unresolvedChildDependency.DependencyType] = readonlyBinding;
 					}
 					else
 					{
 						if (parentDependency.UnresolvedDependency.Lifetime == Lifetime.PerContainer)
 						{
-
-							var readonlyBinding = new UnresolvedDependency(parentDependency.UnresolvedDependency.DependencyType,
-								parentDependency.UnresolvedDependency.Expression, parentDependency.UnresolvedDependency.Lifetime,
-								parentDependency.UnresolvedDependency.Decorators, null);
+							var readonlyBinding = new UnresolvedDependency(
+								parentDependency.UnresolvedDependency.BindingMetadata,
+								parentDependency.UnresolvedDependency.DependencyType,
+								parentDependency.UnresolvedDependency.Expression,
+								parentDependency.UnresolvedDependency.Lifetime,
+								parentDependency.UnresolvedDependency.Decorators,
+								null);
 							unresolvedChildDependencies.Add(parentDependency.UnresolvedDependency.DependencyType, readonlyBinding);
 						}
 						else
@@ -95,7 +108,7 @@ namespace Singularity.Graph
 			if (unresolvedDependency.Expression.GetParameterExpressions()
 				.TryExecute(dependencyType => { resolvedDependencies.Add(GetDependency(dependencyType.Type, unresolvedDependencies)); }, out IList<Exception> dependencyExceptions))
 			{
-				throw new SingularityAggregateException($"Could not find all dependencies for {unresolvedDependency.Expression.Type}", dependencyExceptions);
+				throw new SingularityAggregateException($"Could not find all dependencies for registered binding in {unresolvedDependency.BindingMetadata.GetPosition()}", dependencyExceptions);
 			}
 
 			if (unresolvedDependency.Decorators
@@ -103,7 +116,7 @@ namespace Singularity.Graph
 				.Where(x => x.Type != unresolvedDependency.DependencyType)
 				.TryExecute(parameterExpression => { resolvedDependencies.Add(GetDependency(parameterExpression.Type, unresolvedDependencies)); }, out IList<Exception> decoratorExceptions))
 			{
-				throw new SingularityAggregateException($"Could not find all decorator dependencies for {unresolvedDependency.Expression.Type}", decoratorExceptions);
+				throw new SingularityAggregateException($"Could not find all decorator dependencies for registered binding in {unresolvedDependency.BindingMetadata.GetPosition()}", decoratorExceptions);
 			}
 
 			return resolvedDependencies;
@@ -129,7 +142,7 @@ namespace Singularity.Graph
 					expression = Expression.Constant(value, dependencyType);
 					break;
 				default:
-					throw new ArgumentOutOfRangeException(nameof(unresolvedDependency.Lifetime));
+					throw new InvalidLifetimeException(unresolvedDependency);
 			}
 			return new ResolvedDependency(expression);
 		}

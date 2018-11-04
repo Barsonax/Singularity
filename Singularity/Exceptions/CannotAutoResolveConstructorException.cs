@@ -1,9 +1,7 @@
-﻿using System;
-
-namespace Singularity.Exceptions
+﻿namespace Singularity.Exceptions
 {
-    public class CannotAutoResolveConstructorException : Exception
-    {
+	public class CannotAutoResolveConstructorException : SingularityException
+	{
         public CannotAutoResolveConstructorException(string message) : base(message)
         {
         }
