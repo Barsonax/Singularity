@@ -13,6 +13,3 @@ deploy:
     secure: csIJIcTOAQ930rX3eOmufGO46xPDHZxrRpjCyU5xEQz3EwWx7+1Ed4pUE0prQyqY
   on:
     branch: /^(develop)$/
-cache:
-  - C:\ProgramData\chocolatey\lib -> InstallChocolateyPackages.ps1
-  - C:\ProgramData\chocolatey\bin -> InstallChocolateyPackages.ps1
