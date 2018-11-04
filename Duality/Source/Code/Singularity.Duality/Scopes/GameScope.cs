@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using Duality.Resources;
 using Singularity.Bindings;
 using Singularity.Duality.Resources;
+using Singularity.Exceptions;
 
 namespace Singularity.Duality.Scopes
 {
@@ -37,10 +38,17 @@ namespace Singularity.Duality.Scopes
 				}
 			}
 
-			Container = new Container(modules);
-
-			_sceneEventsProvider.Entered += Scene_Entered;
-			_sceneEventsProvider.Leaving += Scene_Leaving;
+			try
+			{
+				Container = new Container(modules);
+				_sceneEventsProvider.Entered += Scene_Entered;
+				_sceneEventsProvider.Leaving += Scene_Leaving;
+			}
+			catch (Exception e)
+			{
+				_logger.WriteError("Errors occured while initializing the game scoped container");
+				_logger.WriteError(e.Message);
+			}		
 		}
 
 		private bool TryCreateModule(ModuleRef moduleRef, out IModule module)
@@ -78,14 +86,14 @@ namespace Singularity.Duality.Scopes
 		public void Dispose()
 		{
 			_sceneEventsProvider.Dispose();
-			Container.Dispose();
+			Container?.Dispose();
 			_sceneEventsProvider.Entered -= Scene_Entered;
 			_sceneEventsProvider.Leaving -= Scene_Leaving;
 		}
 
 		private void Scene_Entered(object sender, EventArgs e)
 		{
-			_sceneScope = _sceneScopeFactory.Create(this, Scene.Current, _sceneEventsProvider);
+			_sceneScope = _sceneScopeFactory.Create(this, Scene.Current, _sceneEventsProvider, _logger);
 		}
 
 		private void Scene_Leaving(object sender, EventArgs e)
