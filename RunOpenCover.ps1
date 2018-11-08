@@ -1,22 +1,29 @@
 param (
-    [string]$configuration = 'z_CI_config',
-    [string]$outputFolder = '.\coverage\'
+    [Parameter(Mandatory=$true)]
+	[string]$coverageFolder,
+	[Parameter(Mandatory=$true)]
+	[string]$coverageFilename,
+	[Parameter(Mandatory=$true)]
+	[string]$buildOutputFolder
 )
 
-$ErrorActionPreference = 'Stop'
-$opencover_console = 'C:\ProgramData\chocolatey\bin\OpenCover.Console.exe'
-$target = 'C:\Program Files\dotnet\dotnet.exe'
-$output = $outputFolder + 'test.coverage.xml'
+# This will make sure the CI will fail if the something in this script fails (such as the unit tests).
+$ErrorActionPreference = 'Stop' 
 
-Remove-Item $outputFolder -Recurse -ErrorAction Ignore
-If (!(test-path $outputFolder )) {
-    New-Item -ItemType Directory -Force -Path $outputFolder | Out-Null
+# Using the full path since appveyor already has a different version installed.
+$opencover_console = 'C:\ProgramData\chocolatey\bin\OpenCover.Console.exe' 
+
+# Clears the coverage output folder if it already exist
+Remove-Item $coverageFolder -Recurse -ErrorAction Ignore
+If (!(test-path $coverageFolder )) {
+    New-Item -ItemType Directory -Force -Path $coverageFolder | Out-Null
 }
 
-$buildOutput = $PSScriptRoot + '\BuildOutput\'
+$testdlls = (Get-ChildItem -Path $buildOutputFolder -Filter '*Test.dll*').FullName # Grab all test dll's in the buildoutput folder
+$filter = '+[Singularity*]* -[Singularity*.Test]*' # This will determine what will be included in the results
+$dotnetexe = 'C:\Program Files\dotnet\dotnet.exe'
+$targetArgs = ' vstest ' + $testdlls
 
-$project = (Get-ChildItem -Path $buildOutput -Filter '*Test.dll*').FullName
-$filter = '+[Singularity*]* -[Singularity*.Test]*'
-
-$targetArgs = ' vstest ' + $project
-&$opencover_console -register:user -target:$target -targetargs:$targetArgs -filter:$filter -output:$output -oldStyle -returntargetcode -hideskipped:Filter
+# the coverage xml file be put in here.
+$output = $coverageFolder + $coverageFilename
+&$opencover_console -register:user -target:$dotnetexe -targetargs:$targetArgs -filter:$filter -output:$output -oldStyle -returntargetcode -hideskipped:Filter

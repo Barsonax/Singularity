@@ -1,7 +1,8 @@
  param (
-    [Parameter(Mandatory=$true)][string]$codegovtoken,
-	[string]$coverageFolder = '.\coverage\'
+    [Parameter(Mandatory=$true)]
+	[string]$codegovtoken,
+	[Parameter(Mandatory=$true)]
+	[string]$coverageFile
  )
 
-$coverageXml = $coverageFolder + "test.coverage.xml"
-codecov -f $coverageXml -t $codegovtoken
+codecov -f $coverageFile -t $codegovtoken
