@@ -10,11 +10,10 @@ using Singularity.Attributes;
 using Singularity.Bindings;
 using Singularity.Collections;
 using Singularity.Graph;
-using Singularity.Graph.Interfaces;
 
 namespace Singularity
 {
-	public class Container : IDisposable
+	public sealed class Container : IDisposable
 	{
 		public bool IsDisposed { get; private set; }
 		private readonly DependencyGraph _dependencyGraph;
@@ -150,7 +149,7 @@ namespace Singularity
 		{
 			ConstructorInfo constructor = type.AutoResolveConstructor();
 			ParameterInfo[] parameters = constructor.GetParameters();
-			
+
 			var arguments = new Expression[parameters.Length];
 			for (var i = 0; i < parameters.Length; i++)
 			{

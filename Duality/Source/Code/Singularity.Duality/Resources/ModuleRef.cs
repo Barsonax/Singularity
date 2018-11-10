@@ -27,7 +27,7 @@ namespace Singularity.Duality.Resources
 		public Type Type => Type.GetType(ToString());
 
 		public static ModuleRef FromType(Type type)
-		{			
+		{
 			return new ModuleRef
 			{
 				Assembly = type.GetTypeInfo().Assembly.ManifestModule.Name.Replace(".dll", ""),

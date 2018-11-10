@@ -5,15 +5,15 @@ using Singularity.Enums;
 
 namespace Singularity.Bindings
 {
-	public class StronglyTypedConfiguredBinding<TDependency, TInstance> : IConfiguredBinding
+	public sealed class StronglyTypedConfiguredBinding<TDependency, TInstance> : IConfiguredBinding
 		where TInstance : class
 	{
-		public Expression Expression { get; set; }
+		public Expression Expression { get; }
 		public Lifetime Lifetime { get; private set; }
 		public Action<TInstance> OnDeathAction { get; private set; }
 		Action<object> IConfiguredBinding.OnDeath => OnDeathAction != null ? (Action<object>)(obj => OnDeathAction((TInstance)obj)) : null;
 
-		public StronglyTypedConfiguredBinding(Expression expression)
+		internal StronglyTypedConfiguredBinding(Expression expression)
 		{
 			Expression = expression;
 		}

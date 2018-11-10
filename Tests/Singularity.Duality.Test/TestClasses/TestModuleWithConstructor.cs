@@ -6,7 +6,7 @@ namespace Singularity.Duality.Test
 	{
 		public void Register(BindingConfig bindingConfig)
 		{
-			
+
 		}
 
 		public TestModuleWithConstructor(int value)

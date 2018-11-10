@@ -6,7 +6,7 @@ using Singularity.Exceptions;
 
 namespace Singularity.Graph
 {
-	public class Graph<T>
+	internal sealed class Graph<T>
 		where T : class
 	{
 		private readonly Dictionary<T, Node<T>> _nodes = new Dictionary<T, Node<T>>();
@@ -50,7 +50,7 @@ namespace Singularity.Graph
 			return _nodes.Values.GroupBy(x => x.Depth).OrderBy(x => x.Key).Select(x => x.Select(y => y.Value).ToArray()).ToArray();
 		}
 
-		private int ResolveDepth(Node<T> dependencyNode, List<Node<T>> visitedNodes = null)
+		private static int ResolveDepth(Node<T> dependencyNode, List<Node<T>> visitedNodes = null)
 		{
 			if (visitedNodes == null)
 			{
@@ -77,7 +77,7 @@ namespace Singularity.Graph
 		}
 	}
 
-	public class Node<T>
+	internal class Node<T>
 		where T : class
 	{
 		public int? Depth { get; set; }

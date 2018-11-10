@@ -5,10 +5,10 @@ namespace Singularity.Exceptions
 	public abstract class SingularityException : Exception
 	{
 
-		public SingularityException(){}
+		internal SingularityException(){}
 
-		public SingularityException(string message) : base(message){}
+		internal SingularityException(string message) : base(message){}
 
-		public SingularityException(string message, Exception innerException) : base(message, innerException) { }
+		internal SingularityException(string message, Exception innerException) : base(message, innerException) { }
 	}
 }

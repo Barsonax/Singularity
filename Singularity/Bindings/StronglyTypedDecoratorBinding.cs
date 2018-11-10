@@ -7,16 +7,17 @@ using Singularity.Exceptions;
 
 namespace Singularity.Bindings
 {
-	public class StronglyTypedDecoratorBinding<TDependency> : IDecoratorBinding
+	public sealed class StronglyTypedDecoratorBinding<TDependency> : IDecoratorBinding
+		where TDependency : class
 	{
 		public Type DependencyType { get; }
 		public Expression Expression { get; private set; }
 
-		public StronglyTypedDecoratorBinding()
+		internal StronglyTypedDecoratorBinding()
 		{
 			Type type = typeof(TDependency);
 			if (!type.GetTypeInfo().IsInterface) throw new InterfaceExpectedException($"{type} is not a interface.");
-			DependencyType = type;			
+			DependencyType = type;
 		}
 
 		/// <summary>

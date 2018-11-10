@@ -3,13 +3,13 @@ using Singularity.Bindings;
 
 namespace Singularity.Graph
 {
-	public class BindingMetadata
+	public sealed class BindingMetadata
 	{
 		public string CreatorFilePath { get; }
 		public int CreatorLineNumber { get; }
 		public Type ModuleType { get; }
 
-		public BindingMetadata(string creatorFilePath, int creatorLineNumber, IModule module)
+		internal BindingMetadata(string creatorFilePath, int creatorLineNumber, IModule module)
 		{
 			ModuleType = module?.GetType();
 			CreatorFilePath = creatorFilePath;
@@ -18,11 +18,9 @@ namespace Singularity.Graph
 
 		public string GetPosition()
 		{
-			if (ModuleType == null)
-			{
-				return $"{CreatorFilePath} at line {CreatorLineNumber}";
-			}
-			return $"module {ModuleType.FullName} at line {CreatorLineNumber}";
+			return ModuleType == null ?
+				$"{CreatorFilePath} at line {CreatorLineNumber}" :
+				$"module {ModuleType.FullName} at line {CreatorLineNumber}";
 		}
 	}
 }

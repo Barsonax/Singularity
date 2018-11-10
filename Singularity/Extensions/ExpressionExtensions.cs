@@ -4,7 +4,7 @@ using System.Linq.Expressions;
 
 namespace Singularity
 {
-	public static class ExpressionExtensions
+	internal static class ExpressionExtensions
 	{
 		public static ParameterExpression[] GetParameterExpressions(this Expression expression)
 		{

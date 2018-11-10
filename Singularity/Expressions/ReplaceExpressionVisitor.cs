@@ -2,7 +2,7 @@
 
 namespace Singularity.Expressions
 {
-	public class ReplaceExpressionVisitor : ExpressionVisitor
+	internal sealed class ReplaceExpressionVisitor : ExpressionVisitor
 	{
 		private readonly Expression _oldValue;
 		private readonly Expression _newValue;
@@ -15,9 +15,7 @@ namespace Singularity.Expressions
 
 		public override Expression Visit(Expression node)
 		{
-			if (node == _oldValue)
-				return _newValue;
-			return base.Visit(node);
+			return node == _oldValue ? _newValue : base.Visit(node);
 		}
 	}
 }

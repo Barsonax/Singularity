@@ -2,9 +2,9 @@
 
 namespace Singularity.Exceptions
 {
-    public class NoConstructorException : Exception
+    public sealed class NoConstructorException : SingularityException
     {
-        public NoConstructorException(string message) : base(message)
+        internal NoConstructorException(string message) : base(message)
         {
         }
     }

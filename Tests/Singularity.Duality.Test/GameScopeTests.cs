@@ -132,7 +132,7 @@ namespace Singularity.Duality.Test
 
 				SceneScope createdSceneScope = sceneScopeFactory.CreatedSceneScopes[0];
 				Assert.False(createdSceneScope.IsDisposed);
-				
+
 				sceneEventsProvider.TriggerLeaving();
 				Assert.True(createdSceneScope.IsDisposed);
 			}

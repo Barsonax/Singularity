@@ -2,9 +2,9 @@
 
 namespace Singularity.Exceptions
 {
-	public class InvalidExpressionArgumentsException : Exception
-	{
-		public InvalidExpressionArgumentsException(string message) : base(message)
+	public sealed class InvalidExpressionArgumentsException : SingularityException
+    {
+		internal InvalidExpressionArgumentsException(string message) : base(message)
 		{
 		}
 	}

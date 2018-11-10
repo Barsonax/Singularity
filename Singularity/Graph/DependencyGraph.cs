@@ -6,11 +6,10 @@ using System.Linq.Expressions;
 using Singularity.Bindings;
 using Singularity.Enums;
 using Singularity.Exceptions;
-using Singularity.Graph.Interfaces;
 
 namespace Singularity.Graph
 {
-	public class DependencyGraph
+	internal sealed class DependencyGraph
 	{
 		public ReadOnlyDictionary<Type, Dependency> Dependencies { get; }
 
@@ -26,11 +25,11 @@ namespace Singularity.Graph
 			for (var i = 0; i < updateOrder.Length; i++)
 			{
 				UnresolvedDependency[] group = updateOrder[i];
-				if (@group.TryExecute(unresolvedDependency =>
+				if (group.TryExecute(unresolvedDependency =>
 				{
 					ResolvedDependency resolvedDependency = ResolveDependency(unresolvedDependency.DependencyType, unresolvedDependency, dependencyExpressionGenerators, dependencies);
 					dependencies.Add(unresolvedDependency.DependencyType, new Dependency(unresolvedDependency, resolvedDependency));
-				}, out var exceptions))
+				}, out IList<Exception> exceptions))
 				{
 					throw new SingularityAggregateException($"Exceptions occured while resolving dependencies at {i} deep", exceptions);
 				}
@@ -61,7 +60,7 @@ namespace Singularity.Graph
 						BindingMetadata bindingMetadata;
 						if (parentDependency.UnresolvedDependency.Lifetime == Lifetime.PerContainer)
 						{
-							var dependency = parentDependencyGraph[unresolvedChildDependency.DependencyType];
+							Dependency dependency = parentDependencyGraph[unresolvedChildDependency.DependencyType];
 							bindingMetadata = dependency.UnresolvedDependency.BindingMetadata;
 							expression = dependency.ResolvedDependency.Expression;
 							decorators = unresolvedChildDependency.Decorators.ToList();
@@ -102,7 +101,7 @@ namespace Singularity.Graph
 			return unresolvedChildDependencies;
 		}
 
-		private IEnumerable<UnresolvedDependency> GetDependencies(UnresolvedDependency unresolvedDependency, Dictionary<Type, UnresolvedDependency> unresolvedDependencies)
+		private static IEnumerable<UnresolvedDependency> GetDependencies(UnresolvedDependency unresolvedDependency, Dictionary<Type, UnresolvedDependency> unresolvedDependencies)
 		{
 			var resolvedDependencies = new List<UnresolvedDependency>();
 			if (unresolvedDependency.Expression.GetParameterExpressions()
@@ -122,7 +121,7 @@ namespace Singularity.Graph
 			return resolvedDependencies;
 		}
 
-		private TValue GetDependency<TValue>(Type type, Dictionary<Type, TValue> unresolvedDependencies)
+		private static TValue GetDependency<TValue>(Type type, IReadOnlyDictionary<Type, TValue> unresolvedDependencies)
 		{
 			if (unresolvedDependencies.TryGetValue(type, out TValue parent)) return parent;
 			throw new DependencyNotFoundException(type);
@@ -147,7 +146,7 @@ namespace Singularity.Graph
 			return new ResolvedDependency(expression);
 		}
 
-		private Expression GenerateDependencyExpression(Type dependencyType, UnresolvedDependency binding, IEnumerable<IDependencyExpressionGenerator> dependencyExpressionGenerators, Dictionary<Type, Dependency> resolvedDependencies)
+		private static Expression GenerateDependencyExpression(Type dependencyType, UnresolvedDependency binding, IEnumerable<IDependencyExpressionGenerator> dependencyExpressionGenerators, Dictionary<Type, Dependency> resolvedDependencies)
 		{
 			Expression expression = binding.Expression is LambdaExpression lambdaExpression ? lambdaExpression.Body : binding.Expression;
 			var body = new List<Expression>();
