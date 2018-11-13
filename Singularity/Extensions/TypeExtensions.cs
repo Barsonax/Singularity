@@ -7,7 +7,7 @@ using Singularity.Exceptions;
 
 namespace Singularity
 {
-    public static class TypeExtensions
+    internal static class TypeExtensions
     {
         /// <summary>
         /// Tries to create a <see cref="NewExpression"/> representing the call to the constructor.

@@ -2,9 +2,9 @@
 
 namespace Singularity.Exceptions
 {
-    public class InterfaceExpectedException : Exception
+    public sealed class InterfaceExpectedException : SingularityException
     {
-        public InterfaceExpectedException(string message) : base(message)
+	    internal InterfaceExpectedException(string message) : base(message)
         {
         }
     }

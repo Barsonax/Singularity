@@ -2,7 +2,7 @@
 
 namespace Singularity.Graph
 {
-    public class Dependency
+    public sealed class Dependency
     {
         public UnresolvedDependency UnresolvedDependency { get; }
         public ResolvedDependency ResolvedDependency { get; }

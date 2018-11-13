@@ -4,7 +4,7 @@ using System.Diagnostics;
 
 namespace Singularity
 {
-	public static class EnumerableExtensions
+	internal static class EnumerableExtensions
 	{
 		[DebuggerStepThrough]
 		public static bool TryExecute<TObject>(this IEnumerable<TObject> objects, Action<TObject> action, out IList<Exception> exceptions)

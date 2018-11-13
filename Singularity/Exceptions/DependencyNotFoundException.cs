@@ -2,11 +2,11 @@
 
 namespace Singularity.Exceptions
 {
-	public class DependencyNotFoundException : Exception
-	{
+	public sealed class DependencyNotFoundException : SingularityException
+    {
 		public Type Type { get; }
 
-		public DependencyNotFoundException(Type type) : base($"Could not find dependency {type}")
+		internal DependencyNotFoundException(Type type) : base($"Could not find dependency {type}")
 		{
 			Type = type;
 		}

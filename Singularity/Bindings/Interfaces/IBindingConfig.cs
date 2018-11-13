@@ -4,6 +4,6 @@ namespace Singularity.Bindings
 {
 	public interface IBindingConfig : IEnumerable<IBinding>
 	{
-		
+
 	}
 }

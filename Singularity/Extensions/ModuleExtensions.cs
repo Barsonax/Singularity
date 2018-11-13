@@ -3,7 +3,7 @@ using Singularity.Bindings;
 
 namespace Singularity
 {
-	public static class ModuleExtensions
+	internal static class ModuleExtensions
 	{
 		public static IEnumerable<IBinding> ToBindings(this IEnumerable<IModule> modules)
 		{

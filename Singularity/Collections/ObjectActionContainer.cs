@@ -3,7 +3,7 @@ using System.Collections.Generic;
 
 namespace Singularity.Collections
 {
-	public class ObjectActionContainer
+	internal sealed class ObjectActionContainer
 	{
 		private Dictionary<Type, ObjectActionList> ObjectActionLists { get; } = new Dictionary<Type, ObjectActionList>();
 
@@ -30,7 +30,7 @@ namespace Singularity.Collections
 			}
 		}
 
-		private struct ObjectActionList
+		private readonly struct ObjectActionList
 		{
 			public Action<object> Action { get; }
 			public List<object> Objects { get; }

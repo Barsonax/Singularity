@@ -3,11 +3,10 @@ using System.Linq.Expressions;
 using System.Reflection;
 
 using Singularity.Collections;
-using Singularity.Graph.Interfaces;
 
 namespace Singularity.Graph
 {
-    public class OnDeathExpressionGenerator : IDependencyExpressionGenerator
+    internal sealed class OnDeathExpressionGenerator : IDependencyExpressionGenerator
     {
         private readonly ObjectActionContainer _objectActionContainer;
         private readonly MethodInfo _addMethod;

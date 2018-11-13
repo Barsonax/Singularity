@@ -6,9 +6,9 @@ using Singularity.Exceptions;
 
 namespace Singularity.Bindings
 {
-	public class BindingConfig : IBindingConfig
-	{		
-		public IReadOnlyDictionary<Type, IBinding> Bindings => _bindings;
+	public sealed class BindingConfig : IBindingConfig
+	{
+		internal IReadOnlyDictionary<Type, IBinding> Bindings => _bindings;
 		internal IModule CurrentModule;
 		private readonly Dictionary<Type, IBinding> _bindings = new Dictionary<Type, IBinding>();
 
@@ -29,16 +29,12 @@ namespace Singularity.Bindings
 		/// <exception cref="InterfaceExpectedException">If <typeparamref name="TDependency"/> is not a interface</exception>
 		/// <returns></returns>
 		public StronglyTypedDecoratorBinding<TDependency> Decorate<TDependency>([CallerFilePath]string callerFilePath = "", [CallerLineNumber] int callerLineNumber = -1)
+			where TDependency : class
 		{
 			var decorator = new StronglyTypedDecoratorBinding<TDependency>();
 			StronglyTypedBinding<TDependency> binding = GetOrCreateBinding<TDependency>(callerFilePath, callerLineNumber);
 			binding.Decorators.Add(decorator);
 			return decorator;
-		}
-
-		public void AddBinding(IBinding binding)
-		{
-			_bindings.Add(binding.DependencyType, binding);
 		}
 
 		public IEnumerator<IBinding> GetEnumerator()
@@ -60,6 +56,11 @@ namespace Singularity.Bindings
 			var binding = new StronglyTypedBinding<TDependency>(callerFilePath, callerLineNumber, CurrentModule);
 			AddBinding(binding);
 			return binding;
+		}
+
+		private void AddBinding(IBinding binding)
+		{
+			_bindings.Add(binding.DependencyType, binding);
 		}
 	}
 }

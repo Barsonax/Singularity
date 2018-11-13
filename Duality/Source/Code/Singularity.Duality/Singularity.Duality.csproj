@@ -14,6 +14,7 @@
     <Description>Plugin that adds a ioc container to duality</Description>
     <Copyright>https://github.com/Barsonax/Singularity/blob/master/LICENSE</Copyright>
     <Configurations>Debug;Release;z_CI_config</Configurations>
+    <LangVersion>7.3</LangVersion>
   </PropertyGroup>
 
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='z_CI_config|AnyCPU'">

@@ -8,32 +8,33 @@ using Singularity.Graph;
 
 namespace Singularity.Bindings
 {
-	public class StronglyTypedBinding<TDependency> : IBinding
+	public sealed class StronglyTypedBinding<TDependency> : IBinding
 	{
-		public BindingMetadata BindingMetadata { get; }
-		public IConfiguredBinding ConfiguredBinding { get; set; }		
+		public BindingMetadata BindingMetadata { get; }	
 		public List<IDecoratorBinding> Decorators { get; } = new List<IDecoratorBinding>();
 	    IReadOnlyList<IDecoratorBinding> IBinding.Decorators => Decorators;
 		public Type DependencyType { get; } = typeof(TDependency);
 
 		public Expression Expression => ConfiguredBinding?.Expression;
 		public Lifetime Lifetime => ConfiguredBinding?.Lifetime ?? Lifetime.PerCall;
-		public Action<object> OnDeath => ConfiguredBinding?.OnDeath;
+        public Action<object> OnDeath => ConfiguredBinding?.OnDeath;
+	    private IConfiguredBinding ConfiguredBinding { get; set; }
 
-		public StronglyTypedBinding(string callerFilePath, int callerLineNumber, IModule module)
+        internal StronglyTypedBinding(string callerFilePath, int callerLineNumber, IModule module)
 		{
 			BindingMetadata = new BindingMetadata(callerFilePath, callerLineNumber, module);
 		}
 
-		/// <summary>
-		/// Sets the actual type that will be used for the dependency and auto generates a <see cref="System.Linq.Expressions.Expression"/> to call the constructor.
-		/// This generated expression will never return null.
-		/// </summary>
-		/// <typeparam name="TInstance"></typeparam>
-		/// <exception cref="NoConstructorException">If there is no public constructor</exception>
-		/// <exception cref="CannotAutoResolveConstructorException">If there is more than 1 public constructors</exception>
-		/// <returns></returns>
-		public StronglyTypedConfiguredBinding<TDependency, TInstance> Inject<TInstance>()
+        /// <summary>
+        /// Sets the actual type that will be used for the dependency and auto generates a <see cref="System.Linq.Expressions.Expression"/> to call the constructor.
+        /// This generated expression will never return null.
+        /// </summary>
+        /// <typeparam name="TInstance"></typeparam>
+        /// <exception cref="NoConstructorException">If there is no public constructor</exception>
+        /// <exception cref="CannotAutoResolveConstructorException">If there is more than 1 public constructors</exception>
+        /// <returns></returns>
+        /// <overloads></overloads>
+        public StronglyTypedConfiguredBinding<TDependency, TInstance> Inject<TInstance>()
 			where TInstance : class, TDependency
 		{
 			return SetExpression<TInstance>(typeof(TInstance).AutoResolveConstructorExpression());

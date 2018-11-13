@@ -16,7 +16,7 @@ namespace Singularity.Test
             Assert.Throws<NoConstructorException>(() =>
             {
                 NewExpression constructorExpression = type.AutoResolveConstructorExpression();
-            });           
+            });
         }
 
         [Fact]

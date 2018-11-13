@@ -23,7 +23,7 @@ namespace Singularity.Test
 					Assert.Throws<DependencyNotFoundException>(() =>
 					{
 						TestService12WithMixedConcreteDependency value = container.GetInstanceFactory<TestService12WithMixedConcreteDependency>().Invoke();
-					});				
+					});
 				}
 			}
 

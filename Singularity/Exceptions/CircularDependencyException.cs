@@ -4,11 +4,11 @@ using System.Linq;
 
 namespace Singularity.Exceptions
 {
-	public class CircularDependencyException : Exception
-	{		
+	public sealed class CircularDependencyException : SingularityException
+    {
 		public IReadOnlyCollection<object> VisitedNodes { get; }
 
-		public CircularDependencyException(IReadOnlyCollection<object> visitedNodes) : base($"{visitedNodes.First()} has circular dependencies! ({string.Join("->", visitedNodes)})")
+		internal CircularDependencyException(IReadOnlyCollection<object> visitedNodes) : base($"{visitedNodes.First()} has circular dependencies! ({string.Join("->", visitedNodes)})")
 		{
 			VisitedNodes = visitedNodes;
 		}

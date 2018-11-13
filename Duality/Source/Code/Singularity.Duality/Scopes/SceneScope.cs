@@ -47,7 +47,7 @@ namespace Singularity.Duality.Scopes
 		}
 
 		private void Scene_ComponentAdded(object sender, ComponentEventArgs args)
-		{			
+		{
 			try
 			{
 				Container.MethodInject(args.Component);

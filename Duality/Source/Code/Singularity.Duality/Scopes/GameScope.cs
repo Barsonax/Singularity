@@ -48,7 +48,7 @@ namespace Singularity.Duality.Scopes
 			{
 				_logger.WriteError("Errors occured while initializing the game scoped container");
 				_logger.WriteError(e.Message);
-			}		
+			}
 		}
 
 		private bool TryCreateModule(ModuleRef moduleRef, out IModule module)
