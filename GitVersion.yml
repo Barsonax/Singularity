@@ -1,8 +1,4 @@
 mode: ContinuousDeployment
 branches:
-  develop:
-    increment: Patch
-  feature:
-    increment: Minor
   hotfix:
     tag: alpha
