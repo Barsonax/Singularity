@@ -2,5 +2,9 @@
 
 namespace Singularity.Attributes
 {
-	public sealed class InjectAttribute : Attribute { }
+    /// <summary>
+    /// Marks a method so that it can be used for method injection.
+    /// </summary>
+    [AttributeUsage(AttributeTargets.Method)]
+    public sealed class InjectAttribute : Attribute { }
 }
