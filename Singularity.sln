@@ -40,11 +40,11 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Tests", "Tests", "{2C762633
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Scripts", "Scripts", "{DED403CC-1121-4F8C-83BA-9A434714380C}"
 	ProjectSection(SolutionItems) = preProject
-		Build.ps1 = Build.ps1
+		Scripts\Build.psm1 = Scripts\Build.psm1
 		CI_script.ps1 = CI_script.ps1
-		InstallChocolateyPackages.ps1 = InstallChocolateyPackages.ps1
-		PublishCoverage.ps1 = PublishCoverage.ps1
-		RunOpenCover.ps1 = RunOpenCover.ps1
+		Scripts\InstallChocolateyPackages.psm1 = Scripts\InstallChocolateyPackages.psm1
+		Scripts\PublishCoverage.psm1 = Scripts\PublishCoverage.psm1
+		Scripts\RunOpenCover.psm1 = Scripts\RunOpenCover.psm1
 	EndProjectSection
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Benchmarks", "Benchmarks", "{3B36A153-A0C6-4B5E-A8FD-D9B8F5471834}"

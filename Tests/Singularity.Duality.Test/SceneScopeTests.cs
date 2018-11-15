@@ -2,7 +2,6 @@
 using System.Linq;
 using Duality;
 using Duality.Resources;
-using NSubstitute;
 using Singularity.Bindings;
 using Singularity.Duality.Scopes;
 
@@ -15,7 +14,7 @@ namespace Singularity.Duality.Test
 		[Fact]
 		public void SceneIsDisposed_ContainerIsDiposed()
 		{
-			using (var sceneScope = new SceneScope(new Container(Enumerable.Empty<IModule>()), new Scene(), Substitute.For<ISceneEventsProvider>(), Substitute.For<ILogger>()))
+			using (var sceneScope = new SceneScope(new Container(Enumerable.Empty<IModule>()), new Scene(), new SceneEventsProviderMockup(), new LoggerMockup()))
 			{
 				Assert.False(sceneScope.Container.IsDisposed);
 				sceneScope.Dispose();
@@ -34,7 +33,7 @@ namespace Singularity.Duality.Test
 
 			var bindings = new BindingConfig();
 			bindings.For<IModule>().Inject<TestModule>();
-			using (var sceneScope = new SceneScope(new Container(bindings), scene, Substitute.For<ISceneEventsProvider>(), Substitute.For<ILogger>()))
+			using (var sceneScope = new SceneScope(new Container(bindings), scene, new SceneEventsProviderMockup(), new LoggerMockup()))
 			{
 				Assert.IsType<TestModule>(testComponent.Module);
 				Assert.Single(testComponent.InitCalls);
@@ -47,7 +46,7 @@ namespace Singularity.Duality.Test
 			var bindings = new BindingConfig();
 			bindings.For<IModule>().Inject<TestModule>();
 			var sceneEventsProvider = new SceneEventsProviderMockup();
-			using (var sceneScope = new SceneScope(new Container(bindings), new Scene(), sceneEventsProvider, Substitute.For<ILogger>()))
+			using (var sceneScope = new SceneScope(new Container(bindings), new Scene(), sceneEventsProvider, new LoggerMockup()))
 			{
 				var gameObject = new GameObject("Test");
 				var testComponent = gameObject.AddComponent<TestComponentWithDependency>();
@@ -65,7 +64,7 @@ namespace Singularity.Duality.Test
 			var bindings = new BindingConfig();
 			bindings.For<IModule>().Inject<TestModule>();
 			var sceneEventsProvider = new SceneEventsProviderMockup();
-			using (var sceneScope = new SceneScope(new Container(bindings), new Scene(), sceneEventsProvider, Substitute.For<ILogger>()))
+			using (var sceneScope = new SceneScope(new Container(bindings), new Scene(), sceneEventsProvider, new LoggerMockup()))
 			{
 				var component = new TestComponentWithDependency();
 				sceneEventsProvider.TriggerComponentAdded(component);
