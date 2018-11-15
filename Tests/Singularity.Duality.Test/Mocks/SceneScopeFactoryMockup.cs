@@ -1,11 +1,10 @@
 ﻿using System.Collections.Generic;
 using Duality.Resources;
 using Singularity.Duality.Scopes;
-using Singularity.Exceptions;
 
 namespace Singularity.Duality.Test
 {
-	public class SceneScopeFactoryMockup : ISceneScopeFactory
+	internal class SceneScopeFactoryMockup : ISceneScopeFactory
 	{
 		public readonly List<(GameScope gameScope, Scene scene)> CreateCalls = new List<(GameScope gameScope, Scene scene)>();
 		public readonly List<SceneScope> CreatedSceneScopes = new List<SceneScope>();

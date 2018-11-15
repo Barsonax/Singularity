@@ -3,18 +3,17 @@ using System.Collections.Generic;
 using Duality;
 using Duality.Resources;
 using Singularity.Bindings;
-using Singularity.Exceptions;
 
 namespace Singularity.Duality.Scopes
 {
-	public class SceneScope : IDisposable
+    internal sealed class SceneScope : IDisposable
 	{
 		public bool IsDisposed { get; private set; }
 		public Container Container { get; }
 		private readonly ISceneEventsProvider _sceneEventsProvider;
 		private readonly ILogger _logger;
 
-		public SceneScope(Container parentContainer, Scene scene, ISceneEventsProvider sceneEventsProvider, ILogger logger)
+	    public SceneScope(Container parentContainer, Scene scene, ISceneEventsProvider sceneEventsProvider, ILogger logger)
 		{
 			_logger = logger;
 			_sceneEventsProvider = sceneEventsProvider;

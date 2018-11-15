@@ -4,11 +4,10 @@ using System.Collections.Generic;
 using Duality.Resources;
 using Singularity.Bindings;
 using Singularity.Duality.Resources;
-using Singularity.Exceptions;
 
 namespace Singularity.Duality.Scopes
 {
-	public class GameScope : IDisposable
+    internal sealed class GameScope : IDisposable
 	{
 		public Container Container { get; }
 		private SceneScope _sceneScope;
@@ -16,8 +15,7 @@ namespace Singularity.Duality.Scopes
 		private readonly ISceneScopeFactory _sceneScopeFactory;
 		private readonly ISceneEventsProvider _sceneEventsProvider;
 
-
-		public GameScope(ILogger logger, ISceneScopeFactory sceneScopeFactory, ISceneEventsProvider sceneEventsProvider, IEnumerable<SingularityModules> moduleResources)
+		internal GameScope(ILogger logger, ISceneScopeFactory sceneScopeFactory, ISceneEventsProvider sceneEventsProvider, IEnumerable<SingularityModules> moduleResources)
 		{
 			_sceneEventsProvider = sceneEventsProvider;
 			_sceneScopeFactory = sceneScopeFactory;

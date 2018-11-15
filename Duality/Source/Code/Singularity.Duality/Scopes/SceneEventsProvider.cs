@@ -4,7 +4,7 @@ using Duality.Resources;
 
 namespace Singularity.Duality.Scopes
 {
-	public class SceneEventsProvider : ISceneEventsProvider
+    internal sealed class SceneEventsProvider : ISceneEventsProvider
 	{
 		public event EventHandler<ComponentEventArgs> ComponentAdded;
 		public event EventHandler<GameObjectGroupEventArgs> GameObjectsAdded;

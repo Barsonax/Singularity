@@ -1,6 +1,4 @@
-﻿using System;
-
-namespace Singularity.Exceptions
+﻿namespace Singularity.Exceptions
 {
 	public sealed class InvalidExpressionArgumentsException : SingularityException
     {

@@ -4,7 +4,10 @@ using Duality.Editor;
 
 namespace Singularity.Duality.Resources
 {
-	public class ModuleRef
+    /// <summary>
+    /// Represents a weakly typed reference to a <see cref="Type"/>
+    /// </summary>
+	public sealed class ModuleRef
 	{
 		/// <summary>
 		/// The assembly name. This is the filename of the dll without .dll.

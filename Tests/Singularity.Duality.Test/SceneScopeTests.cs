@@ -5,7 +5,7 @@ using Duality.Resources;
 using NSubstitute;
 using Singularity.Bindings;
 using Singularity.Duality.Scopes;
-using Singularity.Exceptions;
+
 using Xunit;
 
 namespace Singularity.Duality.Test

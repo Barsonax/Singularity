@@ -1,6 +1,5 @@
 ﻿using System.Collections.Generic;
 using Singularity.Duality.Scopes;
-using Singularity.Exceptions;
 
 namespace Singularity.Duality.Test
 {
