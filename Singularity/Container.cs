@@ -28,23 +28,23 @@ namespace Singularity
 
 		}
 
-		public Container(IEnumerable<IBinding> bindings) : this(bindings, null)
+		public Container(IEnumerable<Binding> bindings) : this(bindings, null)
 		{
 
 		}
 
-		private Container(IEnumerable<IBinding> bindings, IReadOnlyDictionary<Type, Dependency> parentDependencies)
+		private Container(IEnumerable<Binding> bindings, DependencyGraph parentDependencyGraph)
 		{
 			var generators = new List<IDependencyExpressionGenerator>();
 			_objectActionContainer = new ObjectActionContainer();
 
 			generators.Add(new OnDeathExpressionGenerator(_objectActionContainer));
 			generators.Add(new DecoratorExpressionGenerator());
-			_dependencyGraph = new DependencyGraph(bindings, generators, parentDependencies);
+			_dependencyGraph = new DependencyGraph(bindings, generators, parentDependencyGraph);
 		}
 
 		public Container GetNestedContainer(IEnumerable<IModule> modules) => GetNestedContainer(modules.ToBindings());
-		public Container GetNestedContainer(IEnumerable<IBinding> bindings) => new Container(bindings, _dependencyGraph.Dependencies);
+		public Container GetNestedContainer(IEnumerable<Binding> bindings) => new Container(bindings, _dependencyGraph);
 
 		/// <summary>
 		/// Injects dependencies by calling all methods marked with <see cref="InjectAttribute"/> on the <paramref name="instances"/>.

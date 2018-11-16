@@ -3,7 +3,7 @@ using System.Linq.Expressions;
 
 namespace Singularity.Graph
 {
-    public sealed class ResolvedDependency
+    internal sealed class ResolvedDependency
     {
         public Expression Expression { get; }
 

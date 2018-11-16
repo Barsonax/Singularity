@@ -1,8 +1,10 @@
 ﻿using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using System.Runtime.CompilerServices;
 using Singularity.Exceptions;
+using Singularity.Graph;
 
 namespace Singularity.Bindings
 {
@@ -37,9 +39,9 @@ namespace Singularity.Bindings
 			return decorator;
 		}
 
-		public IEnumerator<IBinding> GetEnumerator()
+		public IEnumerator<Binding> GetEnumerator()
 		{
-			return Bindings.Values.GetEnumerator();
+			return Bindings.Values.Select(x => new Binding(x.BindingMetadata, x.DependencyType, x.Expression, x.Lifetime, x.Decorators, x.OnDeath)).GetEnumerator();
 		}
 
 		IEnumerator IEnumerable.GetEnumerator()
