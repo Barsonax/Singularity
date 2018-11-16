@@ -3,6 +3,7 @@ using System.Collections;
 using System.Linq;
 using Singularity.Bindings;
 using Singularity.Exceptions;
+using Singularity.Graph;
 using Singularity.Test.TestClasses;
 using Xunit;
 
@@ -30,7 +31,7 @@ namespace Singularity.Test.Bindings
 
 		    IEnumerable enumerable = config;
 
-		    IBinding[] bindings = enumerable.OfType<IBinding>().ToArray();
+		    Binding[] bindings = enumerable.OfType<Binding>().ToArray();
 			Assert.Equal(3, bindings.Length);
 		    Assert.Contains(bindings, x => x.DependencyType == typeof(ITestService10));
 		    Assert.Contains(bindings, x => x.DependencyType == typeof(ITestService11));
