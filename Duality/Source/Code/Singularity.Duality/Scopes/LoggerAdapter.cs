@@ -1,9 +1,8 @@
 ﻿using Duality;
-using Singularity.Exceptions;
 
 namespace Singularity.Duality.Scopes
 {
-	public class LoggerAdapter : ILogger
+	internal sealed class LoggerAdapter : ILogger
 	{
 		private readonly Log _log;
 

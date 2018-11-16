@@ -3,7 +3,7 @@ using Duality;
 
 namespace Singularity.Duality.Scopes
 {
-	public interface ISceneEventsProvider : IDisposable
+    internal interface ISceneEventsProvider : IDisposable
 	{
 		event EventHandler<ComponentEventArgs> ComponentAdded;
 		event EventHandler<GameObjectGroupEventArgs> GameObjectsAdded;

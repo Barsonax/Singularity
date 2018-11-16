@@ -1,9 +1,23 @@
-$coverageFolder = '.\coverage\'
+# This will make sure the CI will fail if the something in this script fails (such as the unit tests).
+$ErrorActionPreference = 'Stop' 
+Set-StrictMode -Version Latest
+
+$modulesFolder = $PSScriptRoot + '\Scripts\'
+
+foreach ($module in Get-Childitem $modulesFolder -Name -Filter "*.psm1")
+{
+    Import-Module $modulesFolder\$module
+}
+
+$coverageFolder = $PSScriptRoot + '\coverage\'
+$buildOutputFolder = $PSScriptRoot + '\BuildOutput\' 
+$artifactFolder = $PSScriptRoot + '\Artifacts\'
 $coverageFilename = 'test.coverage.xml'
 $coverageFileFullname = $coverageFolder + $coverageFilename
-$buildOutputFolder = $PSScriptRoot + '\BuildOutput\' 
+$configuration = 'z_CI_config'
 
-.\InstallChocolateyPackages.ps1 
-.\Build.ps1
-.\RunOpenCover.ps1 -coverageFolder:$coverageFolder -coverageFilename:$coverageFilename -buildOutputFolder:$buildOutputFolder
-.\PublishCoverage.ps1 -codegovtoken:$env:codegov_token -coverageFile:$coverageFileFullname
+
+InstallChocolateyPackages
+Build $configuration $artifactFolder
+RunOpenCover $coverageFolder $coverageFilename $buildOutputFolder
+PublishCoverage -codegovtoken:$env:codegov_token -coverageFile:$coverageFileFullname

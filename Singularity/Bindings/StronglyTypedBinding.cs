@@ -10,7 +10,7 @@ namespace Singularity.Bindings
 {
 	public sealed class StronglyTypedBinding<TDependency> : IBinding
 	{
-		public BindingMetadata BindingMetadata { get; }	
+		public BindingMetadata BindingMetadata { get; }
 		public List<IDecoratorBinding> Decorators { get; } = new List<IDecoratorBinding>();
 	    IReadOnlyList<IDecoratorBinding> IBinding.Decorators => Decorators;
 		public Type DependencyType { get; } = typeof(TDependency);
