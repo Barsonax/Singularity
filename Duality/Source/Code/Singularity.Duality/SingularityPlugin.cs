@@ -12,7 +12,7 @@ namespace Singularity.Duality
 
 		protected override void OnGameStarting()
 		{
-			var logger = new LoggerAdapter(Log.Game);
+			var logger = new LoggerAdapter(Logs.Game);
 			IEnumerable<SingularityModules> moduleResources = ContentProvider.GetAvailableContent<SingularityModules>().Select(x => x.Res);
 			_gameScope = new GameScope(logger, new SceneScopeFactory(), new SceneEventsProvider(), moduleResources);
 		}

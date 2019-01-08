@@ -1,0 +1,268 @@
+<?xml version="1.0"?>
+<doc>
+    <assembly>
+        <name>PackageManagerFrontend.editor</name>
+    </assembly>
+    <members>
+        <member name="T:Duality.Editor.Plugins.PackageManagerFrontend.EditorActions.FirstSession.BrowseSamplePackages">
+            <summary>
+            Download example projects to see Duality in action.
+            </summary>
+        </member>
+        <member name="T:Duality.Editor.Plugins.PackageManagerFrontend.Properties.PackageManagerFrontendRes">
+            <summary>
+              A strongly-typed resource class, for looking up localized strings, etc.
+            </summary>
+        </member>
+        <member name="P:Duality.Editor.Plugins.PackageManagerFrontend.Properties.PackageManagerFrontendRes.ResourceManager">
+            <summary>
+              Returns the cached ResourceManager instance used by this class.
+            </summary>
+        </member>
+        <member name="P:Duality.Editor.Plugins.PackageManagerFrontend.Properties.PackageManagerFrontendRes.Culture">
+            <summary>
+              Overrides the current thread's CurrentUICulture property for all
+              resource lookups using this strongly typed resource class.
+            </summary>
+        </member>
+        <member name="P:Duality.Editor.Plugins.PackageManagerFrontend.Properties.PackageManagerFrontendRes.ActionDesc_BrowseSamplePackages">
+            <summary>
+              Looks up a localized string similar to Download example projects to see Duality in action..
+            </summary>
+        </member>
+        <member name="P:Duality.Editor.Plugins.PackageManagerFrontend.Properties.PackageManagerFrontendRes.ActionName_BrowseSamplePackages">
+            <summary>
+              Looks up a localized string similar to Browse Sample Packages.
+            </summary>
+        </member>
+        <member name="P:Duality.Editor.Plugins.PackageManagerFrontend.Properties.PackageManagerFrontendRes.IconCore">
+            <summary>
+              Looks up a localized resource of type System.Drawing.Bitmap.
+            </summary>
+        </member>
+        <member name="P:Duality.Editor.Plugins.PackageManagerFrontend.Properties.PackageManagerFrontendRes.IconEditor">
+            <summary>
+              Looks up a localized resource of type System.Drawing.Bitmap.
+            </summary>
+        </member>
+        <member name="P:Duality.Editor.Plugins.PackageManagerFrontend.Properties.PackageManagerFrontendRes.IconIncompatibleInstall">
+            <summary>
+              Looks up a localized resource of type System.Drawing.Bitmap.
+            </summary>
+        </member>
+        <member name="P:Duality.Editor.Plugins.PackageManagerFrontend.Properties.PackageManagerFrontendRes.IconIncompatibleUpdate">
+            <summary>
+              Looks up a localized resource of type System.Drawing.Bitmap.
+            </summary>
+        </member>
+        <member name="P:Duality.Editor.Plugins.PackageManagerFrontend.Properties.PackageManagerFrontendRes.IconLikelySafeUpdate">
+            <summary>
+              Looks up a localized resource of type System.Drawing.Bitmap.
+            </summary>
+        </member>
+        <member name="P:Duality.Editor.Plugins.PackageManagerFrontend.Properties.PackageManagerFrontendRes.IconLikelyUnsafeInstall">
+            <summary>
+              Looks up a localized resource of type System.Drawing.Bitmap.
+            </summary>
+        </member>
+        <member name="P:Duality.Editor.Plugins.PackageManagerFrontend.Properties.PackageManagerFrontendRes.IconLikelyUnsafeUpdate">
+            <summary>
+              Looks up a localized resource of type System.Drawing.Bitmap.
+            </summary>
+        </member>
+        <member name="P:Duality.Editor.Plugins.PackageManagerFrontend.Properties.PackageManagerFrontendRes.IconPackage">
+            <summary>
+              Looks up a localized resource of type System.Drawing.Icon similar to (Icon).
+            </summary>
+        </member>
+        <member name="P:Duality.Editor.Plugins.PackageManagerFrontend.Properties.PackageManagerFrontendRes.IconPackageMedium">
+            <summary>
+              Looks up a localized resource of type System.Drawing.Bitmap.
+            </summary>
+        </member>
+        <member name="P:Duality.Editor.Plugins.PackageManagerFrontend.Properties.PackageManagerFrontendRes.IconSafeUpdate">
+            <summary>
+              Looks up a localized resource of type System.Drawing.Bitmap.
+            </summary>
+        </member>
+        <member name="P:Duality.Editor.Plugins.PackageManagerFrontend.Properties.PackageManagerFrontendRes.IconSample">
+            <summary>
+              Looks up a localized resource of type System.Drawing.Bitmap.
+            </summary>
+        </member>
+        <member name="P:Duality.Editor.Plugins.PackageManagerFrontend.Properties.PackageManagerFrontendRes.IconSampleBig">
+            <summary>
+              Looks up a localized resource of type System.Drawing.Bitmap.
+            </summary>
+        </member>
+        <member name="P:Duality.Editor.Plugins.PackageManagerFrontend.Properties.PackageManagerFrontendRes.IconUpToDate">
+            <summary>
+              Looks up a localized resource of type System.Drawing.Bitmap.
+            </summary>
+        </member>
+        <member name="P:Duality.Editor.Plugins.PackageManagerFrontend.Properties.PackageManagerFrontendRes.ItemName_InstalledPackages">
+            <summary>
+              Looks up a localized string similar to Installed Packages.
+            </summary>
+        </member>
+        <member name="P:Duality.Editor.Plugins.PackageManagerFrontend.Properties.PackageManagerFrontendRes.ItemName_OnlineRepository">
+            <summary>
+              Looks up a localized string similar to Online Repository.
+            </summary>
+        </member>
+        <member name="P:Duality.Editor.Plugins.PackageManagerFrontend.Properties.PackageManagerFrontendRes.ItemName_VisitLinkUrl">
+            <summary>
+              Looks up a localized string similar to View on {0}.
+            </summary>
+        </member>
+        <member name="P:Duality.Editor.Plugins.PackageManagerFrontend.Properties.PackageManagerFrontendRes.MenuItemName_BrowseSamples">
+            <summary>
+              Looks up a localized string similar to Browse Samples....
+            </summary>
+        </member>
+        <member name="P:Duality.Editor.Plugins.PackageManagerFrontend.Properties.PackageManagerFrontendRes.MenuItemName_PackageView">
+            <summary>
+              Looks up a localized string similar to Manage Packages....
+            </summary>
+        </member>
+        <member name="P:Duality.Editor.Plugins.PackageManagerFrontend.Properties.PackageManagerFrontendRes.MsgConfirmIncompatibleOperation_Caption">
+            <summary>
+              Looks up a localized string similar to Package Compatibility.
+            </summary>
+        </member>
+        <member name="P:Duality.Editor.Plugins.PackageManagerFrontend.Properties.PackageManagerFrontendRes.MsgConfirmIncompatibleOperation_Desc">
+            <summary>
+              Looks up a localized string similar to There is a major version difference between some of the new target packages and local package versions. Compatibility cannot be guaranteed. Continue anyway?.
+            </summary>
+        </member>
+        <member name="P:Duality.Editor.Plugins.PackageManagerFrontend.Properties.PackageManagerFrontendRes.NoDescAvailable">
+            <summary>
+              Looks up a localized string similar to No description available.
+            </summary>
+        </member>
+        <member name="P:Duality.Editor.Plugins.PackageManagerFrontend.Properties.PackageManagerFrontendRes.NoPackageSelected">
+            <summary>
+              Looks up a localized string similar to No Package selected.
+            </summary>
+        </member>
+        <member name="P:Duality.Editor.Plugins.PackageManagerFrontend.Properties.PackageManagerFrontendRes.TaskInstallPackages_Caption">
+            <summary>
+              Looks up a localized string similar to Installing Packages....
+            </summary>
+        </member>
+        <member name="P:Duality.Editor.Plugins.PackageManagerFrontend.Properties.PackageManagerFrontendRes.TaskInstallPackages_Desc">
+            <summary>
+              Looks up a localized string similar to Duality is installing packages. This may include downloading them from the central package repository..
+            </summary>
+        </member>
+        <member name="P:Duality.Editor.Plugins.PackageManagerFrontend.Properties.PackageManagerFrontendRes.TaskUninstallPackages_Caption">
+            <summary>
+              Looks up a localized string similar to Uninstalling Packages....
+            </summary>
+        </member>
+        <member name="P:Duality.Editor.Plugins.PackageManagerFrontend.Properties.PackageManagerFrontendRes.TaskUninstallPackages_Desc">
+            <summary>
+              Looks up a localized string similar to Duality is uninstalling packages..
+            </summary>
+        </member>
+        <member name="P:Duality.Editor.Plugins.PackageManagerFrontend.Properties.PackageManagerFrontendRes.TaskUpdatePackages_Caption">
+            <summary>
+              Looks up a localized string similar to Updating Packages....
+            </summary>
+        </member>
+        <member name="P:Duality.Editor.Plugins.PackageManagerFrontend.Properties.PackageManagerFrontendRes.TaskUpdatePackages_Desc">
+            <summary>
+              Looks up a localized string similar to Duality is updating packages. This may include downloading new versions from the central package repository..
+            </summary>
+        </member>
+        <member name="P:Duality.Editor.Plugins.PackageManagerFrontend.Properties.PackageManagerFrontendRes.TooltipInstallNoCompatibility">
+            <summary>
+              Looks up a localized string similar to This package is not supported by your Duality installation..
+            </summary>
+        </member>
+        <member name="P:Duality.Editor.Plugins.PackageManagerFrontend.Properties.PackageManagerFrontendRes.TooltipInstallUnlikelyCompatibility">
+            <summary>
+              Looks up a localized string similar to This package is likely incompatible with other packages in your project..
+            </summary>
+        </member>
+        <member name="P:Duality.Editor.Plugins.PackageManagerFrontend.Properties.PackageManagerFrontendRes.TooltipUpdateDefiniteCompatibility">
+            <summary>
+              Looks up a localized string similar to Updating this package shouldn&apos;t cause any compatibility issues..
+            </summary>
+        </member>
+        <member name="P:Duality.Editor.Plugins.PackageManagerFrontend.Properties.PackageManagerFrontendRes.TooltipUpdateLikelyCompatibility">
+            <summary>
+              Looks up a localized string similar to Updating this package is usually fine, but certain older plugins may not be compatible with the new version..
+            </summary>
+        </member>
+        <member name="P:Duality.Editor.Plugins.PackageManagerFrontend.Properties.PackageManagerFrontendRes.TooltipUpdateNoCompatibility">
+            <summary>
+              Looks up a localized string similar to Updating this package will likely break older plugins depending on it..
+            </summary>
+        </member>
+        <member name="P:Duality.Editor.Plugins.PackageManagerFrontend.Properties.PackageManagerFrontendRes.TooltipUpdateUnlikelyCompatibility">
+            <summary>
+              Looks up a localized string similar to Updating this package can cause compatibility problems with older plugins..
+            </summary>
+        </member>
+        <member name="P:Duality.Editor.Plugins.PackageManagerFrontend.Properties.PackageManagerFrontendRes.TooltipUpdateUpToDate">
+            <summary>
+              Looks up a localized string similar to This package is up-to-date..
+            </summary>
+        </member>
+        <member name="T:Duality.Editor.Plugins.PackageManagerFrontend.Properties.Resources">
+            <summary>
+              Eine stark typisierte Ressourcenklasse zum Suchen von lokalisierten Zeichenfolgen usw.
+            </summary>
+        </member>
+        <member name="P:Duality.Editor.Plugins.PackageManagerFrontend.Properties.Resources.ResourceManager">
+            <summary>
+              Gibt die zwischengespeicherte ResourceManager-Instanz zurück, die von dieser Klasse verwendet wird.
+            </summary>
+        </member>
+        <member name="P:Duality.Editor.Plugins.PackageManagerFrontend.Properties.Resources.Culture">
+            <summary>
+              Überschreibt die CurrentUICulture-Eigenschaft des aktuellen Threads für alle
+              Ressourcenzuordnungen, die diese stark typisierte Ressourcenklasse verwenden.
+            </summary>
+        </member>
+        <member name="P:Duality.Editor.Plugins.PackageManagerFrontend.Properties.Resources.packagebig">
+            <summary>
+              Sucht eine lokalisierte Ressource vom Typ System.Drawing.Bitmap.
+            </summary>
+        </member>
+        <member name="F:Duality.Editor.Plugins.PackageManagerFrontend.PackageViewDialog.components">
+            <summary>
+            Required designer variable.
+            </summary>
+        </member>
+        <member name="M:Duality.Editor.Plugins.PackageManagerFrontend.PackageViewDialog.Dispose(System.Boolean)">
+            <summary>
+            Clean up any resources being used.
+            </summary>
+            <param name="disposing">true if managed resources should be disposed; otherwise, false.</param>
+        </member>
+        <member name="M:Duality.Editor.Plugins.PackageManagerFrontend.PackageViewDialog.InitializeComponent">
+            <summary>
+            Required method for Designer support - do not modify
+            the contents of this method with the code editor.
+            </summary>
+        </member>
+        <member name="M:Duality.Editor.Plugins.PackageManagerFrontend.TreeModels.PackageRepositoryTreeModel.Refresh">
+            <summary>
+            Rebuilds the entire model.
+            </summary>
+        </member>
+        <member name="M:Duality.Editor.Plugins.PackageManagerFrontend.TreeModels.PackageRepositoryTreeModel.ApplyChanges">
+            <summary>
+            Performs a main-thread update on the item model to process
+            update operations that were scheduled from worker threads.
+            </summary>
+        </member>
+        <member name="M:Duality.Editor.Plugins.PackageManagerFrontend.TreeModels.PackageRepositoryTreeModel.RunLoadInfoWorkers">
+            <summary>
+            Wakes info and icon loaders to read online item data.
+            </summary>
+        </member>
+    </members>
+</doc>
