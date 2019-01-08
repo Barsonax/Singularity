@@ -49,6 +49,11 @@
             <param name="minor">The minor version for the OpenGL GraphicsContext.</param>
             <param name="flags">The GraphicsContextFlags for the OpenGL GraphicsContext.</param>
         </member>
+        <member name="P:OpenTK.GLControl.CreateParams">
+            <summary>
+            Gets the <c>CreateParams</c> instance for this <c>GLControl</c>
+            </summary>
+        </member>
         <member name="M:OpenTK.GLControl.OnHandleCreated(System.EventArgs)">
             <summary>Raises the HandleCreated event.</summary>
             <param name="e">Not used.</param>
@@ -70,6 +75,11 @@
             Check that IsHandleCreated is true before using any OpenGL methods.
             </summary>
             <param name="e">A System.EventArgs that contains the event data.</param>
+        </member>
+        <member name="T:OpenTK.GLControl.DelayUpdate">
+            <summary>
+            Needed to delay the invoke on OS X. Also needed because OpenTK is .NET 2, otherwise I'd use an inline Action.
+            </summary>
         </member>
         <member name="M:OpenTK.GLControl.PerformContextUpdate">
             <summary>
@@ -103,24 +113,6 @@
             A <c>GLControl</c> can only be current in one thread at a time.
             To make a control non-current, call <c>GLControl.Context.MakeCurrent(null)</c>.
             </para>
-            </summary>
-        </member>
-        <member name="M:OpenTK.GLControl.GrabScreenshot">
-            <summary>
-            Grabs a screenshot of the frontbuffer contents.
-            When using multiple <c>GLControl</c>s, ensure that  <see cref="P:OpenTK.GLControl.Context"/>
-            is current before accessing this property.
-            <seealso cref="P:OpenTK.GLControl.Context"/>
-            <seealso cref="M:OpenTK.GLControl.MakeCurrent"/>
-            </summary>
-            <returns>A System.Drawing.Bitmap, containing the contents of the frontbuffer.</returns>
-            <exception cref="T:OpenTK.Graphics.GraphicsContextException">
-            Occurs when no OpenTK.Graphics.GraphicsContext is current in the calling thread.
-            </exception>
-        </member>
-        <member name="P:OpenTK.GLControl.CreateParams">
-            <summary>
-            Gets the <c>CreateParams</c> instance for this <c>GLControl</c>
             </summary>
         </member>
         <member name="P:OpenTK.GLControl.IsIdle">
@@ -164,10 +156,18 @@
             Gets the <see cref="T:OpenTK.Platform.IWindowInfo"/> for this instance.
             </summary>
         </member>
-        <member name="T:OpenTK.GLControl.DelayUpdate">
+        <member name="M:OpenTK.GLControl.GrabScreenshot">
             <summary>
-            Needed to delay the invoke on OS X. Also needed because OpenTK is .NET 2, otherwise I'd use an inline Action.
+            Grabs a screenshot of the frontbuffer contents.
+            When using multiple <c>GLControl</c>s, ensure that  <see cref="P:OpenTK.GLControl.Context"/>
+            is current before accessing this property.
+            <seealso cref="P:OpenTK.GLControl.Context"/>
+            <seealso cref="M:OpenTK.GLControl.MakeCurrent"/>
             </summary>
+            <returns>A System.Drawing.Bitmap, containing the contents of the frontbuffer.</returns>
+            <exception cref="T:OpenTK.Graphics.GraphicsContextException">
+            Occurs when no OpenTK.Graphics.GraphicsContext is current in the calling thread.
+            </exception>
         </member>
         <member name="M:OpenTK.Platform.MacOS.Agl.aglChoosePixelFormat(System.IntPtr,System.Int32,System.Int32[])">
             <summary>

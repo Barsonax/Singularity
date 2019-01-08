@@ -24,6 +24,82 @@
             [GET] The list of output source files that were exported.
             </summary>
         </member>
+        <member name="T:Duality.Editor.AssetManagement.AssetImporter`1">
+            <summary>
+            A helper class that implements <see cref="T:Duality.Editor.AssetManagement.IAssetImporter"/> and simplifies
+            the implementation of new importers that can only generate a single resource type.
+            </summary>
+            <typeparam name="T">The type of resource that this importer works with.</typeparam>
+        </member>
+        <member name="P:Duality.Editor.AssetManagement.AssetImporter`1.SourceFileExtPrimary">
+            <summary>
+            [GET] The main file extension that this importer handles.
+            Used when determining the file extension of exported resources.
+            </summary>
+        </member>
+        <member name="P:Duality.Editor.AssetManagement.AssetImporter`1.SourceFileExts">
+            <summary>
+            [GET] All file extensions that this importer handles.
+            Used when determining whether or not this importer
+            can handle a given input file.
+            </summary>
+        </member>
+        <member name="P:Duality.Editor.AssetManagement.AssetImporter`1.Id">
+            <summary>
+            [GET] A fixed system ID that represents this importer.
+            </summary>
+        </member>
+        <member name="P:Duality.Editor.AssetManagement.AssetImporter`1.Name">
+            <summary>
+            [GET] The user-friendly name of this importer.
+            </summary>
+        </member>
+        <member name="P:Duality.Editor.AssetManagement.AssetImporter`1.Priority">
+            <summary>
+            [GET] The relative priority of this importer over others.
+            </summary>
+        </member>
+        <member name="M:Duality.Editor.AssetManagement.AssetImporter`1.GetResourceNameFromInput(Duality.Editor.AssetManagement.AssetImportInput)">
+            <summary>
+            Returns the name of the resource that this importer
+            would generate for the given input. Defaults to the name
+            of the input file, without extension.
+            </summary>
+        </member>
+        <member name="M:Duality.Editor.AssetManagement.AssetImporter`1.GetOutputNameFromResource(`0)">
+            <summary>
+            Returns the name of the file that would be exported for the given resource.
+            Defaults to the name of the resource with the extension <see cref="P:Duality.Editor.AssetManagement.AssetImporter`1.SourceFileExtPrimary"/>
+            </summary>
+        </member>
+        <member name="M:Duality.Editor.AssetManagement.AssetImporter`1.AcceptsInput(Duality.Editor.AssetManagement.AssetImportInput)">
+            <summary>
+            Returns whether or not this importer accepts the given input.
+            By default, compares the input files extension to <see cref="P:Duality.Editor.AssetManagement.AssetImporter`1.SourceFileExts"/>.
+            </summary>
+        </member>
+        <member name="M:Duality.Editor.AssetManagement.AssetImporter`1.CanExport(`0)">
+            <summary>
+            Returns whether or not the given resource can be exported.
+            By default, returns true for all non-null resources.
+            </summary>
+        </member>
+        <member name="M:Duality.Editor.AssetManagement.AssetImporter`1.ImportResource(Duality.ContentRef{`0},Duality.Editor.AssetManagement.AssetImportInput,Duality.Editor.AssetManagement.IAssetImportEnvironment)">
+            <summary>
+            Performs the import operation for a resource.
+            </summary>
+            <param name="resourceRef">A <see cref="T:Duality.ContentRef`1"/> pointing to the resource being imported.</param>
+            <param name="input">The input information for the import operation.</param>
+            <param name="env">The input environment in which the import is taking place.</param>
+        </member>
+        <member name="M:Duality.Editor.AssetManagement.AssetImporter`1.ExportResource(Duality.ContentRef{`0},System.String,Duality.Editor.AssetManagement.IAssetExportEnvironment)">
+            <summary>
+            Performs the export operation for a resource.
+            </summary>
+            <param name="resourceRef">A <see cref="T:Duality.ContentRef`1"/> pointing to the resource being imported.</param>
+            <param name="path">The export path for the resource</param>
+            <param name="env">The input environment in which the import is taking place.</param>
+        </member>
         <member name="T:Duality.Editor.AssetManagement.AssetInternalHelper">
             <summary>
             Provides some internal helper functions for asset-related tasks.
@@ -824,18 +900,170 @@
             <param name="matchFunc"></param>
             <returns></returns>
         </member>
-        <member name="F:Duality.Editor.Forms.ObjectRefSelectionDialog.components">
+        <member name="T:Duality.Editor.EditorSingleAction`1">
+            <summary>
+            Base class for editor actions that can be performed on a a single object, or iteratively on a set of objects.
+            It can be regarded as a less verbose implementation shortcut for an <see cref="T:Duality.Editor.IEditorAction"/>.
+            </summary>
+            <typeparam name="T"></typeparam>
+        </member>
+        <member name="M:Duality.Editor.EditorSingleAction`1.Perform(`0)">
+            <summary>
+            Performs the action on the specified object.
+            </summary>
+            <param name="obj"></param>
+        </member>
+        <member name="M:Duality.Editor.EditorSingleAction`1.CanPerformOn(`0)">
+            <summary>
+            Returns whether the action can be performed on the specified object.
+            </summary>
+            <param name="obj"></param>
+            <returns></returns>
+        </member>
+        <member name="M:Duality.Editor.EditorSingleAction`1.Perform(System.Collections.Generic.IEnumerable{`0})">
+            <summary>
+            Performs the action on the specified set of objects.
+            </summary>
+            <param name="objEnum"></param>
+        </member>
+        <member name="M:Duality.Editor.EditorSingleAction`1.CanPerformOn(System.Collections.Generic.IEnumerable{`0})">
+            <summary>
+            Returns whether the action can be performed on the specified set of objects.
+            </summary>
+            <param name="objEnum"></param>
+        </member>
+        <member name="T:Duality.Editor.IEditorAction">
+            <summary>
+            The public interface for editor actions. If a public type implements this
+            interface, it will be available as an action throughout the editor.
+            </summary>
+            <seealso cref="T:Duality.Editor.EditorAction`1"/>
+            <seealso cref="T:Duality.Editor.EditorSingleAction`1"/>
+        </member>
+        <member name="P:Duality.Editor.IEditorAction.Name">
+            <summary>
+            [GET] The user-friendly name of this action that will be displayed in the user interface.
+            </summary>
+        </member>
+        <member name="P:Duality.Editor.IEditorAction.Icon">
+            <summary>
+            [GET] The icon of this action when displayed to the user.
+            </summary>
+        </member>
+        <member name="P:Duality.Editor.IEditorAction.HelpInfo">
+            <summary>
+            [GET] An optional hint about this action that is displayed in the user interface.
+            </summary>
+        </member>
+        <member name="P:Duality.Editor.IEditorAction.SubjectType">
+            <summary>
+            [GET] The type of object that this editor action deals with, i.e. the kind of
+            object that the action is able to operate on.
+            </summary>
+        </member>
+        <member name="P:Duality.Editor.IEditorAction.Priority">
+            <summary>
+            [GET] The priority of this action. Controls display order
+            when multiple relevant actions are displayed together.
+            </summary>
+        </member>
+        <member name="M:Duality.Editor.IEditorAction.Perform(System.Collections.Generic.IEnumerable{System.Object})">
+            <summary>
+            Performs this action on the given sequence of objects.
+            </summary>
+        </member>
+        <member name="M:Duality.Editor.IEditorAction.CanPerformOn(System.Collections.Generic.IEnumerable{System.Object})">
+            <summary>
+            Returns whether the action can be performed on the specified set of objects.
+            </summary>
+            <param name="objEnum"></param>
+        </member>
+        <member name="M:Duality.Editor.IEditorAction.MatchesContext(System.String)">
+            <summary>
+            Returns whether or not this action matches the 
+            given action context. Actions returning false
+            from this method will not be presented to the user.
+            </summary>
+            <param name="context">
+            A custom string coming from a plugin 
+            or one of the constant Action strings defined 
+            in <see cref="T:Duality.Editor.DualityEditorApp"/>
+            </param>
+        </member>
+        <member name="T:Duality.Editor.IPreviewGenerator">
+            <summary>
+            Describes an object that can generate previews of an object
+            </summary>
+            <seealso cref="T:Duality.Editor.PreviewGenerator`1"/>
+        </member>
+        <member name="P:Duality.Editor.IPreviewGenerator.Priority">
+            <summary>
+            The priority to assign to this generator. Generators
+            with higher priorty will be checked first and the first
+            preview successfully created will be used.
+            </summary>
+        </member>
+        <member name="P:Duality.Editor.IPreviewGenerator.ObjectType">
+            <summary>
+            The type of object that this generator can provide previews for.
+            </summary>
+        </member>
+        <member name="M:Duality.Editor.IPreviewGenerator.Perform(Duality.Editor.IPreviewQuery)">
+            <summary>
+            Generates a preview according to the given query
+            </summary>
+            <param name="settings">The query to perform</param>
+        </member>
+        <member name="T:Duality.Editor.PreviewGenerator`1">
+            <summary>
+            A <see cref="T:Duality.Editor.IPreviewGenerator"/> that provides previews
+            for objects of type T
+            </summary>
+            <typeparam name="T">
+            The type of object that this <see cref="T:Duality.Editor.IPreviewGenerator"/>
+            can generate previews for
+            </typeparam>
+        </member>
+        <member name="P:Duality.Editor.PreviewGenerator`1.Priority">
+            <summary>
+            The priority to assign to this generator. Generators
+            with higher priorty will be checked first and the first
+            preview successfully created will be used.
+            Defaults to <see cref="F:Duality.Editor.PreviewGenerator`1.PriorityGeneral"/>
+            </summary>
+        </member>
+        <member name="P:Duality.Editor.PreviewGenerator`1.ObjectType">
+            <summary>
+            The type of object that this generator can provide previews for.
+            </summary>
+        </member>
+        <member name="F:Duality.Editor.PreviewSizeMode.FixedWidth">
+            <summary>
+            The preview can be stretched along its Y-axis to fit the desired dimensions
+            </summary>
+        </member>
+        <member name="F:Duality.Editor.PreviewSizeMode.FixedHeight">
+            <summary>
+            The preview can be stretched along its X-axis to fit the desired dimensions
+            </summary>
+        </member>
+        <member name="F:Duality.Editor.PreviewSizeMode.FixedBoth">
+            <summary>
+            The preview will be scaled equally in both directions to fit the desired dimensions
+            </summary>
+        </member>
+        <member name="F:Duality.Editor.Forms.ListSelectionDialog.components">
             <summary>
             Required designer variable.
             </summary>
         </member>
-        <member name="M:Duality.Editor.Forms.ObjectRefSelectionDialog.Dispose(System.Boolean)">
+        <member name="M:Duality.Editor.Forms.ListSelectionDialog.Dispose(System.Boolean)">
             <summary>
             Clean up any resources being used.
             </summary>
             <param name="disposing">true if managed resources should be disposed; otherwise, false.</param>
         </member>
-        <member name="M:Duality.Editor.Forms.ObjectRefSelectionDialog.InitializeComponent">
+        <member name="M:Duality.Editor.Forms.ListSelectionDialog.InitializeComponent">
             <summary>
             Required method for Designer support - do not modify
             the contents of this method with the code editor.
@@ -1070,6 +1298,81 @@
             <param name="propertyType"></param>
             <param name="context"></param>
             <returns></returns>
+        </member>
+        <member name="T:Duality.Editor.EditorAction`1">
+            <summary>
+            A helper class that provides reasonable default 
+            implementations of the <see cref="T:Duality.Editor.IEditorAction"/> 
+            interface and eases implementation of new <see cref="T:Duality.Editor.IEditorAction"/>s
+            </summary>
+            <typeparam name="T">The type that this action operates on</typeparam>
+        </member>
+        <member name="P:Duality.Editor.EditorAction`1.Name">
+            <summary>
+            [GET] The user-friendly name of this action that will be displayed in the user interface.
+            </summary>
+        </member>
+        <member name="P:Duality.Editor.EditorAction`1.Icon">
+            <summary>
+            [GET] The icon of this action when displayed to the user.
+            </summary>
+        </member>
+        <member name="P:Duality.Editor.EditorAction`1.HelpInfo">
+            <summary>
+            [GET] An optional hint about this action that is displayed in the user interface.
+            </summary>
+        </member>
+        <member name="P:Duality.Editor.EditorAction`1.SubjectType">
+            <summary>
+            [GET] The type of object that this editor action deals with, i.e. the kind of
+            object that the action is able to operate on.
+            </summary>
+        </member>
+        <member name="P:Duality.Editor.EditorAction`1.Priority">
+            <summary>
+            [GET] When multiple actions are available for the same object or set of objects,
+            the one with the highest priority will be used.
+            </summary>
+        </member>
+        <member name="M:Duality.Editor.EditorAction`1.Perform(System.Collections.Generic.IEnumerable{`0})">
+            <summary>
+            Performs the action on the specified set of objects.
+            </summary>
+            <param name="objEnum"></param>
+        </member>
+        <member name="M:Duality.Editor.EditorAction`1.CanPerformOn(System.Collections.Generic.IEnumerable{`0})">
+            <summary>
+            Returns whether the action can be performed on the specified set of objects.
+            </summary>
+            <param name="objEnum"></param>
+        </member>
+        <member name="M:Duality.Editor.EditorAction`1.MatchesContext(System.String)">
+            <summary>
+            Returns whether the action matches the specified context.
+            </summary>
+            <param name="context"></param>
+            <returns></returns>
+        </member>
+        <member name="T:Duality.Editor.IHelpProvider">
+            <summary>
+            Provides an interface for GUI elements that provide help
+            information according to the current location of the mouse.
+            </summary>
+        </member>
+        <member name="M:Duality.Editor.IHelpProvider.ProvideHoverHelp(System.Drawing.Point,System.Boolean@)">
+            <summary>
+            Determines the <see cref="T:Duality.Editor.HelpInfo"/> to provide for
+            the given location withing the control.
+            </summary>
+            <param name="localPos">The location in the controls local coordinates of the mouse</param>
+            <param name="captured">
+            Should be set to true if this <see cref="T:Duality.Editor.IHelpProvider"/> has
+            captured the input and ancestor <see cref="T:Duality.Editor.IHelpProvider"/>s should not be checked
+            </param>
+            <returns>
+            The <see cref="T:Duality.Editor.HelpInfo"/> object describing the help information
+            or null if no help information is available
+            </returns>
         </member>
         <member name="T:Duality.Editor.PackageManagement.PackageDependencyWalker">
             <summary>
@@ -1567,6 +1870,75 @@
             to prevent conflicts from having different versions of the same packages.
             </summary>
         </member>
+        <member name="M:Duality.Editor.PackageManagement.PackageManager.RentDependencyWalker">
+            <summary>
+            Rents a pooled <see cref="T:Duality.Editor.PackageManagement.PackageDependencyWalker"/> instance, or allocates a new one when required.
+            Not returning a rented instance will harm efficiency, but not cause a leak.
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:Duality.Editor.PackageManagement.PackageManager.ReturnDependencyWalker(Duality.Editor.PackageManagement.PackageDependencyWalker@)">
+            <summary>
+            Returns a previously rented <see cref="T:Duality.Editor.PackageManagement.PackageDependencyWalker"/> instance, and nullifies the
+            provided reference to it afterwards to avoid further use.
+            </summary>
+            <param name="walker"></param>
+        </member>
+        <member name="M:Duality.Editor.PackageManagement.PackageManager.SelectBestFrameworkMatch(System.Collections.Generic.List{System.Runtime.Versioning.FrameworkName})">
+            <summary>
+            From the given list of target frameworks, this methods selects the one that best matches
+            the one we want for installed packages.
+            </summary>
+            <param name="frameworks"></param>
+            <returns></returns>
+        </member>
+        <member name="M:Duality.Editor.PackageManagement.PackageManager.GetFrameworkMatchScore(System.Runtime.Versioning.FrameworkName)">
+            <summary>
+            Determines a score value for the given target framework representing how well it
+            matches the one we want for installed packages.
+            </summary>
+            <param name="framework"></param>
+            <returns></returns>
+        </member>
+        <member name="T:Duality.Editor.PreviewProvider">
+            <summary>
+            Provides preview images and sounds for a given object.
+            See <seealso cref="T:Duality.Editor.PreviewGenerator`1"/>.
+            </summary>
+        </member>
+        <member name="M:Duality.Editor.PreviewProvider.GetPreviewImage(System.Object,System.Int32,System.Int32,Duality.Editor.PreviewSizeMode)">
+            <summary>
+            Provides a suitable preview image for the given object or null if none is available.
+            </summary>
+            <param name="obj">The object being previewed</param>
+            <param name="desiredWidth">The desired width of the image</param>
+            <param name="desiredHeight">The desired height of the image</param>
+            <param name="mode">Determines how the image will be scaled or resized to match the given dimensions</param>
+            <returns></returns>
+        </member>
+        <member name="M:Duality.Editor.PreviewProvider.GetPreviewSound(System.Object)">
+            <summary>
+            Provides a suitable preview sound for the given object or null if none is available.
+            </summary>
+            <param name="obj">The object being previewed</param>
+            <returns></returns>
+        </member>
+        <member name="M:Duality.Editor.PreviewProvider.GetPreview(Duality.Editor.IPreviewQuery)">
+            <summary>
+            Performs the given <see cref="T:Duality.Editor.IPreviewQuery"/>
+            </summary>
+            <param name="query">The query to perform</param>
+        </member>
+        <member name="E:Duality.Editor.DualityEditorApp.ObjectPropertyChanged">
+            <summary>
+            Fired whenever an objects property changes within the editor.
+            Generally used as a means of synchronizing with changes to an
+            objects data from other elements of the GUI. To fire this event
+            from a custom plugin
+            see <seealso cref="M:Duality.Editor.DualityEditorApp.NotifyObjPropChanged(System.Object,Duality.Editor.ObjectSelection,System.Reflection.PropertyInfo[])"/>
+            and <seealso cref="M:Duality.Editor.DualityEditorApp.NotifyObjPrefabApplied(System.Object,Duality.Editor.ObjectSelection)"/>.
+            </summary>
+        </member>
         <member name="M:Duality.Editor.DualityEditorApp.GetEditorActions(System.Type,System.Collections.Generic.IEnumerable{System.Object},System.String)">
             <summary>
             Enumerates editor user actions that can be applied to objects of the specified type.
@@ -1590,6 +1962,26 @@
             <param name="sender"></param>
             <param name="obj"></param>
             <param name="mode"></param>
+        </member>
+        <member name="M:Duality.Editor.DualityEditorApp.NotifyObjPropChanged(System.Object,Duality.Editor.ObjectSelection,System.Reflection.PropertyInfo[])">
+            <summary>
+            Notify other elements of the editor that one or more objects have had properties changed.
+            If the specified objects can be saved, they will be marked as unsaved.
+            See <seealso cref="E:Duality.Editor.DualityEditorApp.ObjectPropertyChanged"/>.
+            </summary>
+            <param name="sender"></param>
+            <param name="obj">The selection of obejcts that have been modified</param>
+            <param name="info">The optional set of <see cref="T:System.Reflection.PropertyInfo"/>s specifying which properties have changed on the objects</param>
+        </member>
+        <member name="M:Duality.Editor.DualityEditorApp.NotifyObjPropChanged(System.Object,Duality.Editor.ObjectSelection,System.Boolean,System.Reflection.PropertyInfo[])">
+            <summary>
+            Notify other elements of the editor that one or more objects have had properties changed.
+            See <seealso cref="E:Duality.Editor.DualityEditorApp.ObjectPropertyChanged"/>.
+            </summary>
+            <param name="sender"></param>
+            <param name="obj">The selection of obejcts that have been modified</param>
+            <param name="persistenceCritical">Determines whether or not the objects should be marked as unsaved</param>
+            <param name="info">The optional set of <see cref="T:System.Reflection.PropertyInfo"/>s specifying which properties have changed on the objects</param>
         </member>
         <member name="T:Duality.Editor.Properties.GeneralResNames">
             <summary>
@@ -2397,6 +2789,16 @@
               Looks up a localized string similar to Macro: {0} Actions.
             </summary>
         </member>
+        <member name="P:Duality.Editor.Properties.GeneralRes.UndoRedo_PasteGameObject">
+            <summary>
+              Looks up a localized string similar to Paste {0}.
+            </summary>
+        </member>
+        <member name="P:Duality.Editor.Properties.GeneralRes.UndoRedo_PasteGameObjectMulti">
+            <summary>
+              Looks up a localized string similar to Paste {0} GameObjects.
+            </summary>
+        </member>
         <member name="P:Duality.Editor.Properties.GeneralRes.UndoRedo_RemoveFromDictionary">
             <summary>
               Looks up a localized string similar to Remove {0} from IDictionaries.
@@ -2579,6 +2981,189 @@
               Sucht eine lokalisierte Ressource vom Typ System.Drawing.Bitmap.
             </summary>
         </member>
+        <member name="M:Duality.Editor.UndoRedoActions.CreateComponentAction.GetRequiredConcreteType(System.Type,System.Type)">
+            <summary>
+            Gets a concrete type from the user that extends from the given type.
+            </summary>
+            <param name="type">The abstract type to get a concrete type for</param>
+            <param name="typeWithRequirement">The type that needs this requirement satisfied</param>
+        </member>
+        <member name="T:Duality.Editor.EditorLogEntry">
+            <summary>
+            Represents a log entry that was received by an <see cref="T:Duality.Editor.EditorLogOutput"/> and
+            enriched with additional diagnostic information.
+            </summary>
+        </member>
+        <member name="P:Duality.Editor.EditorLogEntry.Content">
+            <summary>
+            [GET] The core log entry that contains message, timestamps and other basic information.
+            </summary>
+        </member>
+        <member name="P:Duality.Editor.EditorLogEntry.Source">
+            <summary>
+            [GET] The <see cref="T:Duality.Log"/> instance that issued the log entry.
+            </summary>
+        </member>
+        <member name="P:Duality.Editor.EditorLogEntry.Context">
+            <summary>
+            [GET] A reference to the context object of this log entry, if one was provided.
+            </summary>
+        </member>
+        <member name="P:Duality.Editor.EditorLogEntry.Indent">
+            <summary>
+            [GET] The indentation level of the receiving editor log output at the time of
+            this log entry being added.
+            </summary>
+        </member>
+        <member name="T:Duality.Editor.EditorLogOutput">
+            <summary>
+            A <see cref="T:Duality.ILogOutput">Log output</see> that captures all log entries, as well
+            as their context, sources and additional information for in-editor usage.
+            </summary>
+        </member>
+        <member name="P:Duality.Editor.EditorLogOutput.EntryCount">
+            <summary>
+            [GET] The total number of log entries that have been received.
+            </summary>
+        </member>
+        <member name="P:Duality.Editor.EditorLogOutput.MessageCount">
+            <summary>
+            [GET] The number of received log messages. This will not account for
+            warnings or errors. For the total number of entries, see <see cref="P:Duality.Editor.EditorLogOutput.EntryCount"/>.
+            </summary>
+        </member>
+        <member name="P:Duality.Editor.EditorLogOutput.WarningCount">
+            <summary>
+            [GET] The number of received log warnings.
+            </summary>
+        </member>
+        <member name="P:Duality.Editor.EditorLogOutput.ErrorCount">
+            <summary>
+            [GET] The number of received log errors.
+            </summary>
+        </member>
+        <member name="M:Duality.Editor.EditorLogOutput.ReadEntries(Duality.Editor.EditorLogEntry[],System.Int32,System.Int32,System.Int32)">
+            <summary>
+            Retrieves the specified subset of log entries.
+            </summary>
+            <param name="target">An array that will store the retrieved log entries.</param>
+            <param name="targetIndex">The starting index within the target array that entries will be written to.</param>
+            <param name="index">The first log index that will be retrieved.</param>
+            <param name="count">The number of log entries to be retrieved.</param>
+        </member>
+        <member name="T:Duality.Editor.ResourceFilesChangedEventArgs">
+            <summary>
+            <see cref="T:System.EventArgs"/> providing information about a series of file system changes
+            regarding <see cref="T:Duality.Resource"/> files, or directories containing them.
+            </summary>
+        </member>
+        <member name="M:Duality.Editor.ResourceFilesChangedEventArgs.Contains(Duality.IO.FileEventType,Duality.Resource)">
+            <summary>
+            Returns whether a change was made on the specified <see cref="T:Duality.Resource"/>.
+            </summary>
+            <param name="type"></param>
+            <param name="content"></param>
+            <returns></returns>
+            <seealso cref="M:Duality.Editor.FileSystemChangedEventArgs.Contains(Duality.IO.FileEventType,System.String)"/>
+        </member>
+        <member name="M:Duality.Editor.ResourceFilesChangedEventArgs.Contains(Duality.IO.FileEventType,Duality.ContentRef{Duality.Resource})">
+            <summary>
+            Returns whether a change was made on the specified <see cref="T:Duality.Resource"/>.
+            </summary>
+            <param name="type"></param>
+            <param name="content"></param>
+            <returns></returns>
+            <seealso cref="M:Duality.Editor.FileSystemChangedEventArgs.Contains(Duality.IO.FileEventType,System.String)"/>
+        </member>
+        <member name="M:Duality.Editor.ResourceFilesChangedEventArgs.Contains(Duality.IO.FileEventType,System.Collections.Generic.IEnumerable{Duality.Resource})">
+            <summary>
+            Returns whether a change was made on any of the specified <see cref="T:Duality.Resource"/> instances.
+            </summary>
+            <param name="type"></param>
+            <param name="content"></param>
+            <returns></returns>
+            <seealso cref="M:Duality.Editor.FileSystemChangedEventArgs.Contains(Duality.IO.FileEventType,System.Collections.Generic.IEnumerable{System.String})"/>
+        </member>
+        <member name="M:Duality.Editor.ResourceFilesChangedEventArgs.Contains(Duality.IO.FileEventType,System.Collections.Generic.IEnumerable{Duality.ContentRef{Duality.Resource}})">
+            <summary>
+            Returns whether a change was made on any of the specified <see cref="T:Duality.Resource"/> instances.
+            </summary>
+            <param name="type"></param>
+            <param name="content"></param>
+            <returns></returns>
+            <seealso cref="M:Duality.Editor.FileSystemChangedEventArgs.Contains(Duality.IO.FileEventType,System.Collections.Generic.IEnumerable{System.String})"/>
+        </member>
+        <member name="M:Duality.Editor.ResourceFilesChangedEventArgs.Contains(Duality.IO.FileEventType,System.Type)">
+            <summary>
+            Returns whether a change was made on a <see cref="T:Duality.Resource"/> of the specified type.
+            </summary>
+            <param name="type"></param>
+            <param name="content"></param>
+            <returns></returns>
+            <seealso cref="M:Duality.Editor.FileSystemChangedEventArgs.Contains(Duality.IO.FileEventType,System.String)"/>
+        </member>
+        <member name="T:Duality.Editor.FileSystemChangedEventArgs">
+            <summary>
+            <see cref="T:System.EventArgs"/> providing information about a series of file system changes.
+            </summary>
+        </member>
+        <member name="P:Duality.Editor.FileSystemChangedEventArgs.FileEvents">
+            <summary>
+            A read-only list of file system events that took place.
+            </summary>
+        </member>
+        <member name="M:Duality.Editor.FileSystemChangedEventArgs.Any(Duality.IO.FileEventType)">
+            <summary>
+            Returns whether any changes of the specified type were made.
+            
+            Note that <paramref name="type"/> can be used as a bitmask including
+            multiple types, in which case any detected match will yield a "true" result.
+            </summary>
+            <param name="type"></param>
+            <returns></returns>
+        </member>
+        <member name="M:Duality.Editor.FileSystemChangedEventArgs.AnyFiles(Duality.IO.FileEventType)">
+            <summary>
+            Returns whether any file changes of the specified type were made.
+            
+            Note that <paramref name="type"/> can be used as a bitmask including
+            multiple types, in which case any detected match will yield a "true" result.
+            </summary>
+            <param name="type"></param>
+            <returns></returns>
+        </member>
+        <member name="M:Duality.Editor.FileSystemChangedEventArgs.AnyDirectories(Duality.IO.FileEventType)">
+            <summary>
+            Returns whether any directory changes of the specified type were made.
+            
+            Note that <paramref name="type"/> can be used as a bitmask including
+            multiple types, in which case any detected match will yield a "true" result.
+            </summary>
+            <param name="type"></param>
+            <returns></returns>
+        </member>
+        <member name="M:Duality.Editor.FileSystemChangedEventArgs.Contains(Duality.IO.FileEventType,System.String)">
+            <summary>
+            Returns whether a change was made on the specified path.
+            
+            Note that <paramref name="type"/> can be used as a bitmask including
+            multiple types, in which case any detected match will yield a "true" result.
+            </summary>
+            <param name="type"></param>
+            <param name="path"></param>
+            <returns></returns>
+        </member>
+        <member name="M:Duality.Editor.FileSystemChangedEventArgs.Contains(Duality.IO.FileEventType,System.Collections.Generic.IEnumerable{System.String})">
+            <summary>
+            Returns whether a change was made on any of the specified paths.
+            
+            Note that <paramref name="type"/> can be used as a bitmask including
+            multiple types, in which case any detected match will yield a "true" result.
+            </summary>
+            <param name="type"></param>
+            <param name="paths"></param>
+            <returns></returns>
+        </member>
         <member name="T:Duality.Editor.ObjectPropertyChangedEventArgs">
             <summary>
             Event arguments that provide information about the properties of a set of objects being modified.
@@ -2635,6 +3220,33 @@
             </summary>
             <param name="info"></param>
             <returns></returns>
+        </member>
+        <member name="T:Duality.Editor.DataObjectStorage">
+            <summary>
+            Indicates whether an object is stored inside a <see cref="T:System.Windows.Forms.DataObject"/> as 
+            a reference or serialized value.
+            </summary>
+        </member>
+        <member name="F:Duality.Editor.DataObjectStorage.Reference">
+            <summary>
+            Indicates that an object is stored by reference inside a <see cref="T:System.Windows.Forms.DataObject"/>,
+            so it will not be cloned or copied when moved to the <see cref="T:System.Windows.Forms.Clipboard"/>.
+            
+            Note that storing a value type (ex. <see cref="T:Duality.Vector3"/>) by reference
+            will still lead to a "copy" of the data due to boxing and unboxing operations.
+            
+            Objects stored with this storage type can still be retrieved as <see cref="F:Duality.Editor.DataObjectStorage.Value"/>
+            items, as a deep clone operation is done internally when inserting references into
+            a <see cref="T:System.Windows.Forms.DataObject"/>. The cloning is done so the <see cref="F:Duality.Editor.DataObjectStorage.Value"/> result
+            will be an otherwise unused instance.
+            </summary>
+        </member>
+        <member name="F:Duality.Editor.DataObjectStorage.Value">
+            <summary>
+            Indicates that an object is stored by value inside a <see cref="T:System.Windows.Forms.DataObject"/>,
+            so any retrieved instance will essentially be a clone of the original, but
+            not the original itself.
+            </summary>
         </member>
         <member name="T:Duality.Editor.GlobalColorPickOperation">
             <summary>
@@ -2850,44 +3462,26 @@
             <param name="isOnActiveDropDown"></param>
             <returns></returns>
         </member>
-        <member name="M:Duality.Editor.ExtMethodsDataObject.SetWrappedData(System.Windows.Forms.IDataObject,System.Object)">
+        <member name="M:Duality.Editor.ExtMethodsDataObject.SetWrappedData(System.Windows.Forms.IDataObject,System.Collections.Generic.IEnumerable{System.Object},System.String,Duality.Editor.DataObjectStorage)">
             <summary>
             Stores the specified non-<see cref="T:System.SerializableAttribute"/> data inside the specified data object using a serializable wrapper.
             </summary>
-            <param name="data"></param>
-            <param name="value"></param>
+            <param name="dataFormat">The format of the data being stored</param>
+            <param name="storage">The type of data being stored</param>
         </member>
-        <member name="M:Duality.Editor.ExtMethodsDataObject.GetWrappedDataPresent(System.Windows.Forms.IDataObject,System.Type)">
+        <member name="M:Duality.Editor.ExtMethodsDataObject.GetWrappedDataPresent(System.Windows.Forms.IDataObject,System.String,Duality.Editor.DataObjectStorage)">
             <summary>
-            Determines whether the specified type of wrapped non-<see cref="T:System.SerializableAttribute"/> data is available in the data object.
+            Determines whether the specified format of wrapped non-<see cref="T:System.SerializableAttribute"/> data is available in the data object.
             </summary>
-            <param name="data"></param>
-            <param name="format"></param>
-            <returns></returns>
+            <param name="dataFormat">The format of data to look for</param>
+            <param name="storage">Whether to look for stored references or values</param>
         </member>
-        <member name="M:Duality.Editor.ExtMethodsDataObject.GetWrappedDataPresent(System.Windows.Forms.IDataObject,System.String)">
-            <summary>
-            Determines whether the specified type of wrapped non-<see cref="T:System.SerializableAttribute"/> data is available in the data object.
-            </summary>
-            <param name="data"></param>
-            <param name="format"></param>
-            <returns></returns>
-        </member>
-        <member name="M:Duality.Editor.ExtMethodsDataObject.GetWrappedData(System.Windows.Forms.IDataObject,System.Type)">
+        <member name="M:Duality.Editor.ExtMethodsDataObject.GetWrappedData(System.Windows.Forms.IDataObject,System.String,Duality.Editor.DataObjectStorage)">
             <summary>
             Retrieves the specified non-<see cref="T:System.SerializableAttribute"/> data from the specified data object using a serializable wrapper.
             </summary>
-            <param name="data"></param>
-            <param name="format"></param>
-            <returns></returns>
-        </member>
-        <member name="M:Duality.Editor.ExtMethodsDataObject.GetWrappedData(System.Windows.Forms.IDataObject,System.String)">
-            <summary>
-            Retrieves the specified non-<see cref="T:System.SerializableAttribute"/> data from the specified data object using a serializable wrapper.
-            </summary>
-            <param name="data"></param>
-            <param name="format"></param>
-            <returns></returns>
+            <param name="dataFormat">The format of the data being retrieved</param>
+            <param name="storage">Whether to look for stored references or values</param>
         </member>
         <member name="P:Duality.Editor.EditorPlugin.Id">
             <summary>
@@ -2920,6 +3514,61 @@
             </summary>
             <param name="dockContentType"></param>
             <returns></returns>
+        </member>
+        <member name="T:Duality.Editor.HelpInfo">
+            <summary>
+            Descibes help information for a specific topic that can then be displayed to the user.
+            </summary>
+        </member>
+        <member name="P:Duality.Editor.HelpInfo.Id">
+            <summary>
+            [GET/SET] The ID to use when looking up XmlDoc comments for this <see cref="T:Duality.Editor.HelpInfo"/> object.
+            Typically describes the <see cref="T:System.Reflection.MemberInfo"/> to look for the in XmlDoc comments.
+            </summary>
+        </member>
+        <member name="P:Duality.Editor.HelpInfo.Topic">
+            <summary>
+            [GET/SET] The topic of this <see cref="T:Duality.Editor.HelpInfo"/>. Typically used as the
+            header of the help information when displayed to the user.
+            </summary>
+        </member>
+        <member name="P:Duality.Editor.HelpInfo.Description">
+            <summary>
+            [GET/SET] The information meant to help the user understand the <see cref="P:Duality.Editor.HelpInfo.Topic"/>
+            </summary>
+        </member>
+        <member name="M:Duality.Editor.HelpInfo.AppendText(System.String)">
+            <summary>
+            Appends the given text to <see cref="P:Duality.Editor.HelpInfo.Description"/>
+            </summary>
+        </member>
+        <member name="M:Duality.Editor.HelpInfo.FromText(System.String,System.String,System.String)">
+            <summary>
+            Creates a <see cref="T:Duality.Editor.HelpInfo"/> object with the specified information
+            </summary>
+        </member>
+        <member name="M:Duality.Editor.HelpInfo.FromMember(System.Reflection.MemberInfo)">
+            <summary>
+            Creates a <see cref="T:Duality.Editor.HelpInfo"/> object by looking up the XmlDoc
+            information associated with the given <see cref="T:System.Reflection.MemberInfo"/>
+            </summary>
+        </member>
+        <member name="M:Duality.Editor.HelpInfo.FromGameObject(Duality.GameObject)">
+            <summary>
+            Creates a <see cref="T:Duality.Editor.HelpInfo"/> object describing the given <see cref="T:Duality.GameObject"/>
+            </summary>
+        </member>
+        <member name="M:Duality.Editor.HelpInfo.FromComponent(Duality.Component)">
+            <summary>
+            Creates a <see cref="T:Duality.Editor.HelpInfo"/> object describing the given <see cref="T:Duality.Component"/>
+            by looking up the XmlDoc associated with the <see cref="T:Duality.Component"/>s type
+            </summary>
+        </member>
+        <member name="M:Duality.Editor.HelpInfo.FromObject(System.Object)">
+            <summary>
+            Creates a <see cref="T:Duality.Editor.HelpInfo"/> object for the given object by analyzing
+            its type and determining the best fit information
+            </summary>
         </member>
         <member name="T:Duality.Editor.ExtMethodsForm">
             <summary>
@@ -3072,6 +3721,39 @@
             Rename the object(s)
             </summary>
         </member>
+        <member name="P:Duality.Editor.FileEventManager.HasPendingReImports">
+            <summary>
+            Whether any asset re-imports are pending and will be processed on the 
+            next <see cref="M:Duality.Editor.FileEventManager.ProcessPendingReImports"/> call.
+            </summary>
+        </member>
+        <member name="M:Duality.Editor.FileEventManager.ProcessEvents">
+            <summary>
+            Immediately processes any pending file system events and triggers their public events.
+            This is usually done automatically by the editor and doesn't need to be called explicitly.
+            </summary>
+        </member>
+        <member name="M:Duality.Editor.FileEventManager.ProcessPendingReImports">
+            <summary>
+            Processes any pending asset re-import operations that were scheduled due to source file changes.
+            Will do nothing when <see cref="P:Duality.Editor.FileEventManager.HasPendingReImports"/> is false.
+            </summary>
+        </member>
+        <member name="M:Duality.Editor.FileEventManager.FlagPathEditorModified(System.String)">
+            <summary>
+            Flags the specified path as recently modified by an editor operation and 
+            thus to be ignored when detecing file system changes.
+            </summary>
+            <param name="path"></param>
+        </member>
+        <member name="M:Duality.Editor.FileEventManager.IsPathEditorModified(System.String)">
+            <summary>
+            Returns whether the specified path is currently flagged as modified by the editor and 
+            thus to be ignored when detecing file system changes.
+            </summary>
+            <param name="path"></param>
+            <returns></returns>
+        </member>
         <member name="T:Duality.Editor.PathHelper">
             <summary>
             Provides helper methods for handling <see cref="T:System.IO.Path">Paths</see>.
@@ -3203,6 +3885,11 @@
             Send a list of files silently to the recycle bin. Suppress dialog, suppress errors, delete if too large.
             </summary>
             <param name="paths">Location of directories or files to recycle</param>
+        </member>
+        <member name="T:Duality.Editor.SerializableReferenceWrapper">
+            <summary>
+            A wrapper object that stores a reference to a non-<see cref="T:System.SerializableAttribute"/> object.
+            </summary>
         </member>
         <member name="T:Duality.Editor.SerializableWrapper">
             <summary>

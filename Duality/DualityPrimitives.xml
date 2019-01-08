@@ -9,35 +9,6 @@
             Represents a 16-byte Hsva color value.
             </summary>
         </member>
-        <member name="T:Duality.Drawing.IColorData">
-            <summary>
-            A general interface for different types of color data.
-            </summary>
-        </member>
-        <member name="M:Duality.Drawing.IColorData.ToIntRgba">
-            <summary>
-            Converts the color to a <see cref="T:System.UInt32"/>-Rgba value.
-            </summary>
-            <returns></returns>
-        </member>
-        <member name="M:Duality.Drawing.IColorData.SetIntRgba(System.Int32)">
-            <summary>
-            Sets the color base ond a <see cref="T:System.UInt32"/>-Rgba value.
-            </summary>
-            <param name="rgba"></param>
-        </member>
-        <member name="M:Duality.Drawing.IColorData.ToIntArgb">
-            <summary>
-            Converts the color to a <see cref="T:System.UInt32"/>-Argb value.
-            </summary>
-            <returns></returns>
-        </member>
-        <member name="M:Duality.Drawing.IColorData.SetIntArgb(System.Int32)">
-            <summary>
-            Sets the color base ond a <see cref="T:System.UInt32"/>-Argb value.
-            </summary>
-            <param name="argb"></param>
-        </member>
         <member name="F:Duality.Drawing.ColorHsva.White">
             <summary>
             White.
@@ -597,6 +568,35 @@
             <param name="right">The scaling factor.</param>
             <param name="result"></param>
         </member>
+        <member name="T:Duality.Drawing.IColorData">
+            <summary>
+            A general interface for different types of color data.
+            </summary>
+        </member>
+        <member name="M:Duality.Drawing.IColorData.ToIntRgba">
+            <summary>
+            Converts the color to a <see cref="T:System.UInt32"/>-Rgba value.
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:Duality.Drawing.IColorData.SetIntRgba(System.Int32)">
+            <summary>
+            Sets the color base ond a <see cref="T:System.UInt32"/>-Rgba value.
+            </summary>
+            <param name="rgba"></param>
+        </member>
+        <member name="M:Duality.Drawing.IColorData.ToIntArgb">
+            <summary>
+            Converts the color to a <see cref="T:System.UInt32"/>-Argb value.
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:Duality.Drawing.IColorData.SetIntArgb(System.Int32)">
+            <summary>
+            Sets the color base ond a <see cref="T:System.UInt32"/>-Argb value.
+            </summary>
+            <param name="argb"></param>
+        </member>
         <member name="T:Duality.Alignment">
             <summary>
             Represents a 2D spatial alignment.
@@ -767,6 +767,11 @@
         <member name="F:Duality.MathF.RadAngle360">
             <summary>
             A 360 degree angle in radians. Equals <see cref="F:Duality.MathF.TwoPi"/>.
+            </summary>
+        </member>
+        <member name="P:Duality.MathF.Rnd">
+            <summary>
+            [GET / SET] Global random number generator. Is never null.
             </summary>
         </member>
         <member name="M:Duality.MathF.SafeToDecimal(System.Single)">
@@ -1028,6 +1033,13 @@
             <param name="max">The maximum value that can't be exceeded.</param>
             <returns>The clamped value.</returns>
         </member>
+        <member name="M:Duality.MathF.Clamp01(System.Single)">
+            <summary>
+            Clamps a value between 0 and 1 inclusive.
+            </summary>
+            <param name="v">The value to clamp.</param>
+            <returns>The clamped value.</returns>
+        </member>
         <member name="M:Duality.MathF.Clamp(System.Int32,System.Int32,System.Int32)">
             <summary>
             Clamps a value between minimum and maximum.
@@ -1046,13 +1058,38 @@
             <param name="ratio">Ratio between first and second anchor. Zero will result in anchor a, one will result in anchor b.</param>
             <returns></returns>
         </member>
-        <member name="M:Duality.MathF.Lerp(System.Int32,System.Int32,System.Single)">
+        <member name="M:Duality.MathF.InvLerp(System.Single,System.Single,System.Single)">
             <summary>
-            Performs linear interpolation between two values.
+            Performs inverse linear interpolation between two anchor values.
             </summary>
-            <param name="a">The first anchor value.</param>
-            <param name="b">The second anchor value.</param>
-            <param name="ratio">Ratio between first and second anchor. Zero will result in anchor a, one will result in anchor b.</param>
+            <param name="min">The first anchor value.</param>
+            <param name="max">The second anchor value.</param>
+            <param name="value">The value between both anchor values.</param>
+            <returns></returns>
+        </member>
+        <member name="M:Duality.MathF.InvLerp(System.Int32,System.Int32,System.Int32)">
+            <summary>
+            Performs inverse linear interpolation between two anchor values.
+            </summary>
+            <param name="min">The first anchor value.</param>
+            <param name="max">The second anchor value.</param>
+            <param name="value">The value between both anchor values.</param>
+            <returns></returns>
+        </member>
+        <member name="M:Duality.MathF.SmoothStep(System.Single)">
+            <summary>
+            Performs a SmoothStep interpolation between 0 and 1.
+            </summary>
+            <param name="value">The input value.</param>
+            <returns></returns>
+        </member>
+        <member name="M:Duality.MathF.SmoothStep(System.Single,System.Single,System.Single)">
+            <summary>
+            Performs a SmoothStep interpolation between two anchor values.
+            </summary>
+            <param name="min">The lower bound anchor value</param>
+            <param name="max">The upper bound anchor value</param>
+            <param name="value">The input value.</param>
             <returns></returns>
         </member>
         <member name="M:Duality.MathF.Exp(System.Single)">
@@ -1522,11 +1559,6 @@
             </summary>
             <param name="value"></param>
         </member>
-        <member name="P:Duality.MathF.Rnd">
-            <summary>
-            [GET / SET] Global random number generator. Is never null.
-            </summary>
-        </member>
         <member name="T:Duality.Matrix3">
             <summary>
             Represents a 3x3 matrix containing 3D rotation and scale.
@@ -1555,6 +1587,86 @@
         <member name="F:Duality.Matrix3.Row2">
             <summary>
             Third row of the matrix.
+            </summary>
+        </member>
+        <member name="P:Duality.Matrix3.Column0">
+            <summary>
+            Gets the first column of this matrix.
+            </summary>
+        </member>
+        <member name="P:Duality.Matrix3.Column1">
+            <summary>
+            Gets the second column of this matrix.
+            </summary>
+        </member>
+        <member name="P:Duality.Matrix3.Column2">
+            <summary>
+            Gets the third column of this matrix.
+            </summary>
+        </member>
+        <member name="P:Duality.Matrix3.M11">
+            <summary>
+            Gets or sets the value at row 1, column 1 of this instance.
+            </summary>
+        </member>
+        <member name="P:Duality.Matrix3.M12">
+            <summary>
+            Gets or sets the value at row 1, column 2 of this instance.
+            </summary>
+        </member>
+        <member name="P:Duality.Matrix3.M13">
+            <summary>
+            Gets or sets the value at row 1, column 3 of this instance.
+            </summary>
+        </member>
+        <member name="P:Duality.Matrix3.M21">
+            <summary>
+            Gets or sets the value at row 2, column 1 of this instance.
+            </summary>
+        </member>
+        <member name="P:Duality.Matrix3.M22">
+            <summary>
+            Gets or sets the value at row 2, column 2 of this instance.
+            </summary>
+        </member>
+        <member name="P:Duality.Matrix3.M23">
+            <summary>
+            Gets or sets the value at row 2, column 3 of this instance.
+            </summary>
+        </member>
+        <member name="P:Duality.Matrix3.M31">
+            <summary>
+            Gets or sets the value at row 3, column 1 of this instance.
+            </summary>
+        </member>
+        <member name="P:Duality.Matrix3.M32">
+            <summary>
+            Gets or sets the value at row 3, column 2 of this instance.
+            </summary>
+        </member>
+        <member name="P:Duality.Matrix3.M33">
+            <summary>
+            Gets or sets the value at row 3, column 3 of this instance.
+            </summary>
+        </member>
+        <member name="P:Duality.Matrix3.Item(System.Int32,System.Int32)">
+            <summary>
+            Gets or sets the value at a specified row and column.
+            </summary>
+        </member>
+        <member name="P:Duality.Matrix3.Determinant">
+            <summary>
+            Gets the determinant of this matrix.
+            </summary>
+        </member>
+        <member name="P:Duality.Matrix3.Diagonal">
+            <summary>
+            Gets or sets the values along the main diagonal of the matrix.
+            </summary>
+        </member>
+        <member name="P:Duality.Matrix3.Trace">
+            <summary>
+            Gets the trace of the matrix, the sum of the values along the diagonal.
             </summary>
         </member>
         <member name="M:Duality.Matrix3.#ctor(Duality.Vector3,Duality.Vector3,Duality.Vector3)">
@@ -1845,86 +1957,6 @@
             <param name="other">A matrix to compare with this matrix.</param>
             <returns>true if the current matrix is equal to the matrix parameter; otherwise, false.</returns>
         </member>
-        <member name="P:Duality.Matrix3.Column0">
-            <summary>
-            Gets the first column of this matrix.
-            </summary>
-        </member>
-        <member name="P:Duality.Matrix3.Column1">
-            <summary>
-            Gets the second column of this matrix.
-            </summary>
-        </member>
-        <member name="P:Duality.Matrix3.Column2">
-            <summary>
-            Gets the third column of this matrix.
-            </summary>
-        </member>
-        <member name="P:Duality.Matrix3.M11">
-            <summary>
-            Gets or sets the value at row 1, column 1 of this instance.
-            </summary>
-        </member>
-        <member name="P:Duality.Matrix3.M12">
-            <summary>
-            Gets or sets the value at row 1, column 2 of this instance.
-            </summary>
-        </member>
-        <member name="P:Duality.Matrix3.M13">
-            <summary>
-            Gets or sets the value at row 1, column 3 of this instance.
-            </summary>
-        </member>
-        <member name="P:Duality.Matrix3.M21">
-            <summary>
-            Gets or sets the value at row 2, column 1 of this instance.
-            </summary>
-        </member>
-        <member name="P:Duality.Matrix3.M22">
-            <summary>
-            Gets or sets the value at row 2, column 2 of this instance.
-            </summary>
-        </member>
-        <member name="P:Duality.Matrix3.M23">
-            <summary>
-            Gets or sets the value at row 2, column 3 of this instance.
-            </summary>
-        </member>
-        <member name="P:Duality.Matrix3.M31">
-            <summary>
-            Gets or sets the value at row 3, column 1 of this instance.
-            </summary>
-        </member>
-        <member name="P:Duality.Matrix3.M32">
-            <summary>
-            Gets or sets the value at row 3, column 2 of this instance.
-            </summary>
-        </member>
-        <member name="P:Duality.Matrix3.M33">
-            <summary>
-            Gets or sets the value at row 3, column 3 of this instance.
-            </summary>
-        </member>
-        <member name="P:Duality.Matrix3.Item(System.Int32,System.Int32)">
-            <summary>
-            Gets or sets the value at a specified row and column.
-            </summary>
-        </member>
-        <member name="P:Duality.Matrix3.Determinant">
-            <summary>
-            Gets the determinant of this matrix.
-            </summary>
-        </member>
-        <member name="P:Duality.Matrix3.Diagonal">
-            <summary>
-            Gets or sets the values along the main diagonal of the matrix.
-            </summary>
-        </member>
-        <member name="P:Duality.Matrix3.Trace">
-            <summary>
-            Gets the trace of the matrix, the sum of the values along the diagonal.
-            </summary>
-        </member>
         <member name="T:Duality.Quaternion">
             <summary>
             Represents a Quaternion.
@@ -1933,6 +1965,42 @@
         <member name="F:Duality.Quaternion.Identity">
             <summary>
             Defines the identity quaternion.
+            </summary>
+        </member>
+        <member name="P:Duality.Quaternion.Xyz">
+            <summary>
+            Gets or sets an OpenTK.Vector3 with the X, Y and Z components of this instance.
+            </summary>
+        </member>
+        <member name="P:Duality.Quaternion.X">
+            <summary>
+            Gets or sets the X component of this instance.
+            </summary>
+        </member>
+        <member name="P:Duality.Quaternion.Y">
+            <summary>
+            Gets or sets the Y component of this instance.
+            </summary>
+        </member>
+        <member name="P:Duality.Quaternion.Z">
+            <summary>
+            Gets or sets the Z component of this instance.
+            </summary>
+        </member>
+        <member name="P:Duality.Quaternion.W">
+            <summary>
+            Gets or sets the W component of this instance.
+            </summary>
+        </member>
+        <member name="P:Duality.Quaternion.Length">
+            <summary>
+            Gets the length (magnitude) of the quaternion.
+            </summary>
+            <seealso cref="P:Duality.Quaternion.LengthSquared"/>
+        </member>
+        <member name="P:Duality.Quaternion.LengthSquared">
+            <summary>
+            Gets the square of the quaternion length (magnitude).
             </summary>
         </member>
         <member name="M:Duality.Quaternion.#ctor(Duality.Vector3,System.Single)">
@@ -2020,22 +2088,6 @@
             <param name="left">The left instance.</param>
             <param name="right">The right instance.</param>
             <param name="result">The result of the operation.</param>
-        </member>
-        <member name="M:Duality.Quaternion.Mult(Duality.Quaternion,Duality.Quaternion)">
-            <summary>
-            Multiplies two instances.
-            </summary>
-            <param name="left">The first instance.</param>
-            <param name="right">The second instance.</param>
-            <returns>A new instance containing the result of the calculation.</returns>
-        </member>
-        <member name="M:Duality.Quaternion.Mult(Duality.Quaternion@,Duality.Quaternion@,Duality.Quaternion@)">
-            <summary>
-            Multiplies two instances.
-            </summary>
-            <param name="left">The first instance.</param>
-            <param name="right">The second instance.</param>
-            <param name="result">A new instance containing the result of the calculation.</param>
         </member>
         <member name="M:Duality.Quaternion.Multiply(Duality.Quaternion,Duality.Quaternion)">
             <summary>
@@ -2224,42 +2276,6 @@
             <param name="other">The other Quaternion to be used in the comparison.</param>
             <returns>True if both instances are equal; false otherwise.</returns>
         </member>
-        <member name="P:Duality.Quaternion.Xyz">
-            <summary>
-            Gets or sets an OpenTK.Vector3 with the X, Y and Z components of this instance.
-            </summary>
-        </member>
-        <member name="P:Duality.Quaternion.X">
-            <summary>
-            Gets or sets the X component of this instance.
-            </summary>
-        </member>
-        <member name="P:Duality.Quaternion.Y">
-            <summary>
-            Gets or sets the Y component of this instance.
-            </summary>
-        </member>
-        <member name="P:Duality.Quaternion.Z">
-            <summary>
-            Gets or sets the Z component of this instance.
-            </summary>
-        </member>
-        <member name="P:Duality.Quaternion.W">
-            <summary>
-            Gets or sets the W component of this instance.
-            </summary>
-        </member>
-        <member name="P:Duality.Quaternion.Length">
-            <summary>
-            Gets the length (magnitude) of the quaternion.
-            </summary>
-            <seealso cref="P:Duality.Quaternion.LengthSquared"/>
-        </member>
-        <member name="P:Duality.Quaternion.LengthSquared">
-            <summary>
-            Gets the square of the quaternion length (magnitude).
-            </summary>
-        </member>
         <member name="T:Duality.Matrix4">
             <summary>
             Represents a 4x4 matrix containing 3D rotation, scale, transform, and projection.
@@ -2294,6 +2310,126 @@
         <member name="F:Duality.Matrix4.Row3">
             <summary>
             Bottom row of the matrix.
+            </summary>
+        </member>
+        <member name="P:Duality.Matrix4.Column0">
+            <summary>
+            Gets the first column of this matrix.
+            </summary>
+        </member>
+        <member name="P:Duality.Matrix4.Column1">
+            <summary>
+            Gets the second column of this matrix.
+            </summary>
+        </member>
+        <member name="P:Duality.Matrix4.Column2">
+            <summary>
+            Gets the third column of this matrix.
+            </summary>
+        </member>
+        <member name="P:Duality.Matrix4.Column3">
+            <summary>
+            Gets the fourth column of this matrix.
+            </summary>
+        </member>
+        <member name="P:Duality.Matrix4.M11">
+            <summary>
+            Gets or sets the value at row 1, column 1 of this instance.
+            </summary>
+        </member>
+        <member name="P:Duality.Matrix4.M12">
+            <summary>
+            Gets or sets the value at row 1, column 2 of this instance.
+            </summary>
+        </member>
+        <member name="P:Duality.Matrix4.M13">
+            <summary>
+            Gets or sets the value at row 1, column 3 of this instance.
+            </summary>
+        </member>
+        <member name="P:Duality.Matrix4.M14">
+            <summary>
+            Gets or sets the value at row 1, column 4 of this instance.
+            </summary>
+        </member>
+        <member name="P:Duality.Matrix4.M21">
+            <summary>
+            Gets or sets the value at row 2, column 1 of this instance.
+            </summary>
+        </member>
+        <member name="P:Duality.Matrix4.M22">
+            <summary>
+            Gets or sets the value at row 2, column 2 of this instance.
+            </summary>
+        </member>
+        <member name="P:Duality.Matrix4.M23">
+            <summary>
+            Gets or sets the value at row 2, column 3 of this instance.
+            </summary>
+        </member>
+        <member name="P:Duality.Matrix4.M24">
+            <summary>
+            Gets or sets the value at row 2, column 4 of this instance.
+            </summary>
+        </member>
+        <member name="P:Duality.Matrix4.M31">
+            <summary>
+            Gets or sets the value at row 3, column 1 of this instance.
+            </summary>
+        </member>
+        <member name="P:Duality.Matrix4.M32">
+            <summary>
+            Gets or sets the value at row 3, column 2 of this instance.
+            </summary>
+        </member>
+        <member name="P:Duality.Matrix4.M33">
+            <summary>
+            Gets or sets the value at row 3, column 3 of this instance.
+            </summary>
+        </member>
+        <member name="P:Duality.Matrix4.M34">
+            <summary>
+            Gets or sets the value at row 3, column 4 of this instance.
+            </summary>
+        </member>
+        <member name="P:Duality.Matrix4.M41">
+            <summary>
+            Gets or sets the value at row 4, column 1 of this instance.
+            </summary>
+        </member>
+        <member name="P:Duality.Matrix4.M42">
+            <summary>
+            Gets or sets the value at row 4, column 2 of this instance.
+            </summary>
+        </member>
+        <member name="P:Duality.Matrix4.M43">
+            <summary>
+            Gets or sets the value at row 4, column 3 of this instance.
+            </summary>
+        </member>
+        <member name="P:Duality.Matrix4.M44">
+            <summary>
+            Gets or sets the value at row 4, column 4 of this instance.
+            </summary>
+        </member>
+        <member name="P:Duality.Matrix4.Item(System.Int32,System.Int32)">
+            <summary>
+            Gets or sets the value at a specified row and column.
+            </summary>
+        </member>
+        <member name="P:Duality.Matrix4.Determinant">
+            <summary>
+            Gets the determinant of this matrix.
+            </summary>
+        </member>
+        <member name="P:Duality.Matrix4.Diagonal">
+            <summary>
+            Gets or sets the values along the main diagonal of the matrix.
+            </summary>
+        </member>
+        <member name="P:Duality.Matrix4.Trace">
+            <summary>
+            Gets the trace of the matrix, the sum of the values along the diagonal.
             </summary>
         </member>
         <member name="M:Duality.Matrix4.#ctor(Duality.Vector4,Duality.Vector4,Duality.Vector4,Duality.Vector4)">
@@ -2666,103 +2802,6 @@
             </list>
             </exception>
         </member>
-        <member name="M:Duality.Matrix4.Translation(Duality.Vector3)">
-            <summary>
-            Builds a translation matrix.
-            </summary>
-            <param name="trans">The translation vector.</param>
-            <returns>A new Matrix4 instance.</returns>
-        </member>
-        <member name="M:Duality.Matrix4.Translation(System.Single,System.Single,System.Single)">
-            <summary>
-            Build a translation matrix with the given translation
-            </summary>
-            <param name="x">X translation</param>
-            <param name="y">Y translation</param>
-            <param name="z">Z translation</param>
-            <returns>A Translation matrix</returns>
-        </member>
-        <member name="M:Duality.Matrix4.RotateX(System.Single)">
-            <summary>
-            Build a rotation matrix that rotates about the x-axis
-            </summary>
-            <param name="angle">angle in radians to rotate counter-clockwise around the x-axis</param>
-            <returns>A rotation matrix</returns>
-        </member>
-        <member name="M:Duality.Matrix4.RotateY(System.Single)">
-            <summary>
-            Build a rotation matrix that rotates about the y-axis
-            </summary>
-            <param name="angle">angle in radians to rotate counter-clockwise around the y-axis</param>
-            <returns>A rotation matrix</returns>
-        </member>
-        <member name="M:Duality.Matrix4.RotateZ(System.Single)">
-            <summary>
-            Build a rotation matrix that rotates about the z-axis
-            </summary>
-            <param name="angle">angle in radians to rotate counter-clockwise around the z-axis</param>
-            <returns>A rotation matrix</returns>
-        </member>
-        <member name="M:Duality.Matrix4.Rotate(Duality.Vector3,System.Single)">
-            <summary>
-            Build a rotation matrix to rotate about the given axis
-            </summary>
-            <param name="axis">the axis to rotate about</param>
-            <param name="angle">angle in radians to rotate counter-clockwise (looking in the direction of the given axis)</param>
-            <returns>A rotation matrix</returns>
-        </member>
-        <member name="M:Duality.Matrix4.Rotate(Duality.Quaternion)">
-            <summary>
-            Build a rotation matrix from a quaternion
-            </summary>
-            <param name="q">the quaternion</param>
-            <returns>A rotation matrix</returns>
-        </member>
-        <member name="M:Duality.Matrix4.Scale(System.Single)">
-            <summary>
-            Build a scaling matrix
-            </summary>
-            <param name="scale">Single scale factor for x,y and z axes</param>
-            <returns>A scaling matrix</returns>
-        </member>
-        <member name="M:Duality.Matrix4.Scale(Duality.Vector3)">
-            <summary>
-            Build a scaling matrix
-            </summary>
-            <param name="scale">Scale factors for x,y and z axes</param>
-            <returns>A scaling matrix</returns>
-        </member>
-        <member name="M:Duality.Matrix4.Scale(System.Single,System.Single,System.Single)">
-            <summary>
-            Build a scaling matrix
-            </summary>
-            <param name="x">Scale factor for x-axis</param>
-            <param name="y">Scale factor for y-axis</param>
-            <param name="z">Scale factor for z-axis</param>
-            <returns>A scaling matrix</returns>
-        </member>
-        <member name="M:Duality.Matrix4.Frustum(System.Single,System.Single,System.Single,System.Single,System.Single,System.Single)">
-            <summary>
-            Build a projection matrix
-            </summary>
-            <param name="left">Left edge of the view frustum</param>
-            <param name="right">Right edge of the view frustum</param>
-            <param name="bottom">Bottom edge of the view frustum</param>
-            <param name="top">Top edge of the view frustum</param>
-            <param name="near">Distance to the near clip plane</param>
-            <param name="far">Distance to the far clip plane</param>
-            <returns>A projection matrix that transforms camera space to raster space</returns>
-        </member>
-        <member name="M:Duality.Matrix4.Perspective(System.Single,System.Single,System.Single,System.Single)">
-            <summary>
-            Build a projection matrix
-            </summary>
-            <param name="fovy">Angle of the field of view in the y direction (in radians)</param>
-            <param name="aspect">Aspect ratio of the view (width / height)</param>
-            <param name="near">Distance to the near clip plane</param>
-            <param name="far">Distance to the far clip plane</param>
-            <returns>A projection matrix that transforms camera space to raster space</returns>
-        </member>
         <member name="M:Duality.Matrix4.LookAt(Duality.Vector3,Duality.Vector3,Duality.Vector3)">
             <summary>
             Build a world space to camera space matrix
@@ -2955,126 +2994,6 @@
             <param name="other">An matrix to compare with this matrix.</param>
             <returns>true if the current matrix is equal to the matrix parameter; otherwise, false.</returns>
         </member>
-        <member name="P:Duality.Matrix4.Column0">
-            <summary>
-            Gets the first column of this matrix.
-            </summary>
-        </member>
-        <member name="P:Duality.Matrix4.Column1">
-            <summary>
-            Gets the second column of this matrix.
-            </summary>
-        </member>
-        <member name="P:Duality.Matrix4.Column2">
-            <summary>
-            Gets the third column of this matrix.
-            </summary>
-        </member>
-        <member name="P:Duality.Matrix4.Column3">
-            <summary>
-            Gets the fourth column of this matrix.
-            </summary>
-        </member>
-        <member name="P:Duality.Matrix4.M11">
-            <summary>
-            Gets or sets the value at row 1, column 1 of this instance.
-            </summary>
-        </member>
-        <member name="P:Duality.Matrix4.M12">
-            <summary>
-            Gets or sets the value at row 1, column 2 of this instance.
-            </summary>
-        </member>
-        <member name="P:Duality.Matrix4.M13">
-            <summary>
-            Gets or sets the value at row 1, column 3 of this instance.
-            </summary>
-        </member>
-        <member name="P:Duality.Matrix4.M14">
-            <summary>
-            Gets or sets the value at row 1, column 4 of this instance.
-            </summary>
-        </member>
-        <member name="P:Duality.Matrix4.M21">
-            <summary>
-            Gets or sets the value at row 2, column 1 of this instance.
-            </summary>
-        </member>
-        <member name="P:Duality.Matrix4.M22">
-            <summary>
-            Gets or sets the value at row 2, column 2 of this instance.
-            </summary>
-        </member>
-        <member name="P:Duality.Matrix4.M23">
-            <summary>
-            Gets or sets the value at row 2, column 3 of this instance.
-            </summary>
-        </member>
-        <member name="P:Duality.Matrix4.M24">
-            <summary>
-            Gets or sets the value at row 2, column 4 of this instance.
-            </summary>
-        </member>
-        <member name="P:Duality.Matrix4.M31">
-            <summary>
-            Gets or sets the value at row 3, column 1 of this instance.
-            </summary>
-        </member>
-        <member name="P:Duality.Matrix4.M32">
-            <summary>
-            Gets or sets the value at row 3, column 2 of this instance.
-            </summary>
-        </member>
-        <member name="P:Duality.Matrix4.M33">
-            <summary>
-            Gets or sets the value at row 3, column 3 of this instance.
-            </summary>
-        </member>
-        <member name="P:Duality.Matrix4.M34">
-            <summary>
-            Gets or sets the value at row 3, column 4 of this instance.
-            </summary>
-        </member>
-        <member name="P:Duality.Matrix4.M41">
-            <summary>
-            Gets or sets the value at row 4, column 1 of this instance.
-            </summary>
-        </member>
-        <member name="P:Duality.Matrix4.M42">
-            <summary>
-            Gets or sets the value at row 4, column 2 of this instance.
-            </summary>
-        </member>
-        <member name="P:Duality.Matrix4.M43">
-            <summary>
-            Gets or sets the value at row 4, column 3 of this instance.
-            </summary>
-        </member>
-        <member name="P:Duality.Matrix4.M44">
-            <summary>
-            Gets or sets the value at row 4, column 4 of this instance.
-            </summary>
-        </member>
-        <member name="P:Duality.Matrix4.Item(System.Int32,System.Int32)">
-            <summary>
-            Gets or sets the value at a specified row and column.
-            </summary>
-        </member>
-        <member name="P:Duality.Matrix4.Determinant">
-            <summary>
-            Gets the determinant of this matrix.
-            </summary>
-        </member>
-        <member name="P:Duality.Matrix4.Diagonal">
-            <summary>
-            Gets or sets the values along the main diagonal of the matrix.
-            </summary>
-        </member>
-        <member name="P:Duality.Matrix4.Trace">
-            <summary>
-            Gets the trace of the matrix, the sum of the values along the diagonal.
-            </summary>
-        </member>
         <member name="T:Duality.Rect">
             <summary>
             Describes a rectangular area.
@@ -3103,6 +3022,97 @@
         <member name="F:Duality.Rect.H">
             <summary>
             The Rects height.
+            </summary>
+        </member>
+        <member name="P:Duality.Rect.Pos">
+            <summary>
+            [GET / SET] The Rects position
+            </summary>
+        </member>
+        <member name="P:Duality.Rect.Size">
+            <summary>
+            [GET / SET] The Rects size.
+            </summary>
+        </member>
+        <member name="P:Duality.Rect.LeftX">
+            <summary>
+            [GET] The minimum x-Coordinate occupied by the Rect. Accounts for negative sizes.
+            </summary>
+        </member>
+        <member name="P:Duality.Rect.TopY">
+            <summary>
+            [GET] The minimum y-Coordinate occupied by the Rect. Accounts for negative sizes.
+            </summary>
+        </member>
+        <member name="P:Duality.Rect.BottomY">
+            <summary>
+            [GET] The maximum y-Coordinate occupied by the Rect. Accounts for negative sizes.
+            </summary>
+        </member>
+        <member name="P:Duality.Rect.RightX">
+            <summary>
+            [GET] The maximum x-Coordinate occupied by the Rect. Accounts for negative sizes.
+            </summary>
+        </member>
+        <member name="P:Duality.Rect.CenterX">
+            <summary>
+            [GET] The center x-Coordinate occupied by the Rect.
+            </summary>
+        </member>
+        <member name="P:Duality.Rect.CenterY">
+            <summary>
+            [GET] The center y-Coordinate occupied by the Rect.
+            </summary>
+        </member>
+        <member name="P:Duality.Rect.TopLeft">
+            <summary>
+            [GET] The Rects top left coordinates
+            </summary>
+        </member>
+        <member name="P:Duality.Rect.TopRight">
+            <summary>
+            [GET] The Rects top right coordinates
+            </summary>
+        </member>
+        <member name="P:Duality.Rect.BottomLeft">
+            <summary>
+            [GET] The Rects bottom left coordinates
+            </summary>
+        </member>
+        <member name="P:Duality.Rect.BottomRight">
+            <summary>
+            [GET] The Rects bottom right coordinates
+            </summary>
+        </member>
+        <member name="P:Duality.Rect.Center">
+            <summary>
+            [GET] The Rects center coordinates
+            </summary>
+        </member>
+        <member name="P:Duality.Rect.Top">
+            <summary>
+            [GET] The middle of the top edge of the Rect.
+            </summary>
+        </member>
+        <member name="P:Duality.Rect.Bottom">
+            <summary>
+            [GET] The middle of the bottom edge of the Rect.
+            </summary>
+        </member>
+        <member name="P:Duality.Rect.Left">
+            <summary>
+            [GET] The middle of the left edge of the Rect.
+            </summary>
+        </member>
+        <member name="P:Duality.Rect.Right">
+            <summary>
+            [GET] The middle of the right edge of the Rect.
+            </summary>
+        </member>
+        <member name="P:Duality.Rect.BoundingRadius">
+            <summary>
+            [GET] If this Rect was to fit inside a bounding circle originating from [0,0],
+            this would be its radius.
             </summary>
         </member>
         <member name="M:Duality.Rect.#ctor(Duality.Vector2)">
@@ -3318,77 +3328,6 @@
             <param name="right">The second Rect.</param>
             <returns></returns>
         </member>
-        <member name="P:Duality.Rect.Pos">
-            <summary>
-            [GET / SET] The Rects position
-            </summary>
-        </member>
-        <member name="P:Duality.Rect.Size">
-            <summary>
-            [GET / SET] The Rects size.
-            </summary>
-        </member>
-        <member name="P:Duality.Rect.LeftX">
-            <summary>
-            [GET] The minimum x-Coordinate occupied by the Rect. Accounts for negative sizes.
-            </summary>
-        </member>
-        <member name="P:Duality.Rect.TopY">
-            <summary>
-            [GET] The minimum y-Coordinate occupied by the Rect. Accounts for negative sizes.
-            </summary>
-        </member>
-        <member name="P:Duality.Rect.BottomY">
-            <summary>
-            [GET] The maximum y-Coordinate occupied by the Rect. Accounts for negative sizes.
-            </summary>
-        </member>
-        <member name="P:Duality.Rect.RightX">
-            <summary>
-            [GET] The maximum x-Coordinate occupied by the Rect. Accounts for negative sizes.
-            </summary>
-        </member>
-        <member name="P:Duality.Rect.CenterX">
-            <summary>
-            [GET] The center x-Coordinate occupied by the Rect.
-            </summary>
-        </member>
-        <member name="P:Duality.Rect.CenterY">
-            <summary>
-            [GET] The center y-Coordinate occupied by the Rect.
-            </summary>
-        </member>
-        <member name="P:Duality.Rect.TopLeft">
-            <summary>
-            [GET] The Rects top left coordinates
-            </summary>
-        </member>
-        <member name="P:Duality.Rect.TopRight">
-            <summary>
-            [GET] The Rects top right coordinates
-            </summary>
-        </member>
-        <member name="P:Duality.Rect.BottomLeft">
-            <summary>
-            [GET] The Rects bottom left coordinates
-            </summary>
-        </member>
-        <member name="P:Duality.Rect.BottomRight">
-            <summary>
-            [GET] The Rects bottom right coordinates
-            </summary>
-        </member>
-        <member name="P:Duality.Rect.Center">
-            <summary>
-            [GET] The Rects center coordinates
-            </summary>
-        </member>
-        <member name="P:Duality.Rect.BoundingRadius">
-            <summary>
-            [GET] If this Rect was to fit inside a bounding circle originating from [0,0],
-            this would be its radius.
-            </summary>
-        </member>
         <member name="T:Duality.Point2">
             <summary>
             Represents a 2D point using two integer values. For vector math, see <see cref="T:Duality.Vector2"/>.
@@ -3407,6 +3346,11 @@
         <member name="F:Duality.Point2.Y">
             <summary>
             The Y component of the Point.
+            </summary>
+        </member>
+        <member name="P:Duality.Point2.Item(System.Int32)">
+            <summary>
+            Gets or sets the value at the index of the Point.
             </summary>
         </member>
         <member name="M:Duality.Point2.#ctor(System.Int32,System.Int32)">
@@ -3537,11 +3481,6 @@
             <param name="other">A point to compare with this point.</param>
             <returns>true if the current point is equal to the point parameter; otherwise, false.</returns>
         </member>
-        <member name="P:Duality.Point2.Item(System.Int32)">
-            <summary>
-            Gets or sets the value at the index of the Point.
-            </summary>
-        </member>
         <member name="T:Duality.DontSerializeAttribute">
             <summary>
             Flags a class, struct or field as inappropriate for serialization.
@@ -3602,6 +3541,47 @@
             <param name="angle"></param>
             <param name="length"></param>
             <returns></returns>
+        </member>
+        <member name="P:Duality.Vector2.Length">
+            <summary>
+            Gets the length (magnitude) of the vector.
+            </summary>
+            <seealso cref="P:Duality.Vector2.LengthSquared"/>
+        </member>
+        <member name="P:Duality.Vector2.LengthSquared">
+            <summary>
+            Gets the square of the vector length (magnitude).
+            </summary>
+            <remarks>
+            This property avoids the costly square root operation required by the Length property. This makes it more suitable
+            for comparisons.
+            </remarks>
+            <see cref="P:Duality.Vector2.Length"/>
+        </member>
+        <member name="P:Duality.Vector2.Angle">
+            <summary>
+            Returns the vectors angle
+            </summary>
+        </member>
+        <member name="P:Duality.Vector2.PerpendicularRight">
+            <summary>
+            Gets the perpendicular vector on the right side of this vector.
+            </summary>
+        </member>
+        <member name="P:Duality.Vector2.PerpendicularLeft">
+            <summary>
+            Gets the perpendicular vector on the left side of this vector.
+            </summary>
+        </member>
+        <member name="P:Duality.Vector2.Normalized">
+            <summary>
+            Returns a normalized version of this vector.
+            </summary>
+        </member>
+        <member name="P:Duality.Vector2.Item(System.Int32)">
+            <summary>
+            Gets or sets the value at the index of the Vector.
+            </summary>
         </member>
         <member name="M:Duality.Vector2.Normalize">
             <summary>
@@ -3878,47 +3858,6 @@
             <param name="other">A vector to compare with this vector.</param>
             <returns>true if the current vector is equal to the vector parameter; otherwise, false.</returns>
         </member>
-        <member name="P:Duality.Vector2.Length">
-            <summary>
-            Gets the length (magnitude) of the vector.
-            </summary>
-            <seealso cref="P:Duality.Vector2.LengthSquared"/>
-        </member>
-        <member name="P:Duality.Vector2.LengthSquared">
-            <summary>
-            Gets the square of the vector length (magnitude).
-            </summary>
-            <remarks>
-            This property avoids the costly square root operation required by the Length property. This makes it more suitable
-            for comparisons.
-            </remarks>
-            <see cref="P:Duality.Vector2.Length"/>
-        </member>
-        <member name="P:Duality.Vector2.Angle">
-            <summary>
-            Returns the vectors angle
-            </summary>
-        </member>
-        <member name="P:Duality.Vector2.PerpendicularRight">
-            <summary>
-            Gets the perpendicular vector on the right side of this vector.
-            </summary>
-        </member>
-        <member name="P:Duality.Vector2.PerpendicularLeft">
-            <summary>
-            Gets the perpendicular vector on the left side of this vector.
-            </summary>
-        </member>
-        <member name="P:Duality.Vector2.Normalized">
-            <summary>
-            Returns a normalized version of this vector.
-            </summary>
-        </member>
-        <member name="P:Duality.Vector2.Item(System.Int32)">
-            <summary>
-            Gets or sets the value at the index of the Vector.
-            </summary>
-        </member>
         <member name="T:Duality.Vector3">
             <summary>
             Represents a 3D vector using three single-precision floating-point numbers.
@@ -3964,6 +3903,11 @@
             The Z component of the Vector3.
             </summary>
         </member>
+        <member name="P:Duality.Vector3.Xy">
+            <summary>
+            Gets or sets an OpenTK.Vector2 with the X and Y components of this instance.
+            </summary>
+        </member>
         <member name="M:Duality.Vector3.#ctor(System.Single)">
             <summary>
             Constructs a new instance.
@@ -3990,6 +3934,34 @@
             </summary>
             <param name="v">The Vector2 to copy components from.</param>
             <param name="z"></param>
+        </member>
+        <member name="P:Duality.Vector3.Length">
+            <summary>
+            Gets the length (magnitude) of the vector.
+            </summary>
+            <see cref="!:LengthFast"/>
+            <seealso cref="P:Duality.Vector3.LengthSquared"/>
+        </member>
+        <member name="P:Duality.Vector3.LengthSquared">
+            <summary>
+            Gets the square of the vector length (magnitude).
+            </summary>
+            <remarks>
+            This property avoids the costly square root operation required by the Length property. This makes it more suitable
+            for comparisons.
+            </remarks>
+            <see cref="P:Duality.Vector3.Length"/>
+            <seealso cref="!:LengthFast"/>
+        </member>
+        <member name="P:Duality.Vector3.Normalized">
+            <summary>
+            Returns a normalized version of this vector.
+            </summary>
+        </member>
+        <member name="P:Duality.Vector3.Item(System.Int32)">
+            <summary>
+            Gets or sets the value at the index of the Vector.
+            </summary>
         </member>
         <member name="M:Duality.Vector3.Normalize">
             <summary>
@@ -4288,39 +4260,6 @@
             <param name="other">A vector to compare with this vector.</param>
             <returns>true if the current vector is equal to the vector parameter; otherwise, false.</returns>
         </member>
-        <member name="P:Duality.Vector3.Xy">
-            <summary>
-            Gets or sets an OpenTK.Vector2 with the X and Y components of this instance.
-            </summary>
-        </member>
-        <member name="P:Duality.Vector3.Length">
-            <summary>
-            Gets the length (magnitude) of the vector.
-            </summary>
-            <see cref="!:LengthFast"/>
-            <seealso cref="P:Duality.Vector3.LengthSquared"/>
-        </member>
-        <member name="P:Duality.Vector3.LengthSquared">
-            <summary>
-            Gets the square of the vector length (magnitude).
-            </summary>
-            <remarks>
-            This property avoids the costly square root operation required by the Length property. This makes it more suitable
-            for comparisons.
-            </remarks>
-            <see cref="P:Duality.Vector3.Length"/>
-            <seealso cref="!:LengthFast"/>
-        </member>
-        <member name="P:Duality.Vector3.Normalized">
-            <summary>
-            Returns a normalized version of this vector.
-            </summary>
-        </member>
-        <member name="P:Duality.Vector3.Item(System.Int32)">
-            <summary>
-            Gets or sets the value at the index of the Vector.
-            </summary>
-        </member>
         <member name="T:Duality.Vector4">
             <summary>
             Represents a 4D vector using four single-precision floating-point numbers.
@@ -4374,6 +4313,42 @@
         <member name="F:Duality.Vector4.W">
             <summary>
             The W component of the Vector4.
+            </summary>
+        </member>
+        <member name="P:Duality.Vector4.Xy">
+            <summary>
+            Gets or sets an OpenTK.Vector2 with the X and Y components of this instance.
+            </summary>
+        </member>
+        <member name="P:Duality.Vector4.Xyz">
+            <summary>
+            Gets or sets an OpenTK.Vector3 with the X, Y and Z components of this instance.
+            </summary>
+        </member>
+        <member name="P:Duality.Vector4.Length">
+            <summary>
+            Gets the length (magnitude) of the vector.
+            </summary>
+            <seealso cref="P:Duality.Vector4.LengthSquared"/>
+        </member>
+        <member name="P:Duality.Vector4.LengthSquared">
+            <summary>
+            Gets the square of the vector length (magnitude).
+            </summary>
+            <remarks>
+            This property avoids the costly square root operation required by the Length property. This makes it more suitable
+            for comparisons.
+            </remarks>
+            <see cref="P:Duality.Vector4.Length"/>
+        </member>
+        <member name="P:Duality.Vector4.Normalized">
+            <summary>
+            Returns a normalized version of this vector.
+            </summary>
+        </member>
+        <member name="P:Duality.Vector4.Item(System.Int32)">
+            <summary>
+            Gets or sets the value at the index of the Vector.
             </summary>
         </member>
         <member name="M:Duality.Vector4.Normalize">
@@ -4679,42 +4654,6 @@
             Indicates whether the current vector is equal to another vector.</summary>
             <param name="other">A vector to compare with this vector.</param>
             <returns>true if the current vector is equal to the vector parameter; otherwise, false.</returns>
-        </member>
-        <member name="P:Duality.Vector4.Xy">
-            <summary>
-            Gets or sets an OpenTK.Vector2 with the X and Y components of this instance.
-            </summary>
-        </member>
-        <member name="P:Duality.Vector4.Xyz">
-            <summary>
-            Gets or sets an OpenTK.Vector3 with the X, Y and Z components of this instance.
-            </summary>
-        </member>
-        <member name="P:Duality.Vector4.Length">
-            <summary>
-            Gets the length (magnitude) of the vector.
-            </summary>
-            <seealso cref="P:Duality.Vector4.LengthSquared"/>
-        </member>
-        <member name="P:Duality.Vector4.LengthSquared">
-            <summary>
-            Gets the square of the vector length (magnitude).
-            </summary>
-            <remarks>
-            This property avoids the costly square root operation required by the Length property. This makes it more suitable
-            for comparisons.
-            </remarks>
-            <see cref="P:Duality.Vector4.Length"/>
-        </member>
-        <member name="P:Duality.Vector4.Normalized">
-            <summary>
-            Returns a normalized version of this vector.
-            </summary>
-        </member>
-        <member name="P:Duality.Vector4.Item(System.Int32)">
-            <summary>
-            Gets or sets the value at the index of the Vector.
-            </summary>
         </member>
     </members>
 </doc>

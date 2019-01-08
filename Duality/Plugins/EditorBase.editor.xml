@@ -1,0 +1,861 @@
+<?xml version="1.0"?>
+<doc>
+    <assembly>
+        <name>EditorBase.editor</name>
+    </assembly>
+    <members>
+        <member name="T:Duality.Editor.Plugins.Base.EditorActions.AudioDataToSound">
+            <summary>
+            Creates a new Sound Resource based on the AudioData.
+            </summary>
+        </member>
+        <member name="M:Duality.Editor.Plugins.Base.EditorActions.AudioDataToSound.CreateFromAudioData(System.Collections.Generic.IEnumerable{Duality.ContentRef{Duality.Resources.AudioData}},System.String)">
+            <summary>
+            Creates a new Sound Resource based on the specified AudioData, saves it and returns a reference to it.
+            </summary>
+            <param name="baseRes"></param>
+            <param name="name"></param>
+            <returns></returns>
+        </member>
+        <member name="M:Duality.Editor.Plugins.Base.EditorActions.AudioDataToSound.CreateMultipleFromAudioData(System.Collections.Generic.IEnumerable{Duality.ContentRef{Duality.Resources.AudioData}})">
+            <summary>
+            Creates a set of new Sound Resources based on the specified AudioData, saves it and returns references to it.
+            The incoming AudioData is automatically grouped to the least number of Sounds, according to naming and path conventions.
+            </summary>
+            <param name="baseRes"></param>
+            <returns></returns>
+        </member>
+        <member name="T:Duality.Editor.Plugins.Base.EditorActions.FirstSession.VisitCommunityForum">
+            <summary>
+            Need help? Ask a fellow forum user!
+            </summary>
+        </member>
+        <member name="T:Duality.Editor.Plugins.Base.EditorActions.FirstSession.ViewGettingStartedTutorial">
+            <summary>
+            This tutorial will guide you through your first steps with Duality.
+            </summary>
+        </member>
+        <member name="T:Duality.Editor.Plugins.Base.EditorActions.FirstSession.DownloadVisualStudio">
+            <summary>
+            Visual Studio 2013 (Update 3) or newer is required.
+            </summary>
+        </member>
+        <member name="T:Duality.Editor.Plugins.Base.EditorActions.FocusGameObject">
+            <summary>
+            Focus Camera on GameObject.
+            </summary>
+        </member>
+        <member name="T:Duality.Editor.Plugins.Base.EditorActions.SlicePixmap">
+            <summary>
+            Opens a window for slicing a pixmap into atlas regions.
+            </summary>
+        </member>
+        <member name="T:Duality.Editor.Plugins.Base.EditorActions.OpenScene">
+            <summary>
+            Open the Scene.
+            </summary>
+        </member>
+        <member name="T:Duality.Editor.Plugins.Base.EditorActions.InstantiatePrefab">
+            <summary>
+            Create a GameObject by instantiating the Prefab.
+            </summary>
+        </member>
+        <member name="T:Duality.Editor.Plugins.Base.EditorActions.OpenResource">
+            <summary>
+            Open Resource in external editor.
+            </summary>
+        </member>
+        <member name="T:Duality.Editor.Plugins.Base.EditorActions.ShaderToDrawTechnique">
+            <summary>
+            Creates a new DrawTechnique Resource based on Vertex- and Fragmentshaders.
+            </summary>
+        </member>
+        <member name="T:Duality.Editor.Plugins.Base.EditorActions.TextureToMaterial">
+            <summary>
+            Creates a new Material Resource based on the Texture.
+            </summary>
+        </member>
+        <member name="T:Duality.Editor.Plugins.Base.EditorActions.PixmapToTexture">
+            <summary>
+            Creates a new Texture Resource based on the Pixmap.
+            </summary>
+        </member>
+        <member name="T:Duality.Editor.Plugins.Base.EditorActions.FocusComponent">
+            <summary>
+            Focus Camera on GameObject.
+            </summary>
+        </member>
+        <member name="P:Duality.Editor.Plugins.Base.Forms.PixmapSlicerForm.TargetPixmap">
+            <summary>
+            The <see cref="T:Duality.Resources.Pixmap"/> currently being sliced
+            </summary>
+        </member>
+        <member name="F:Duality.Editor.Plugins.Base.Forms.PixmapSlicerForm.components">
+            <summary>
+            Required designer variable.
+            </summary>
+        </member>
+        <member name="M:Duality.Editor.Plugins.Base.Forms.PixmapSlicerForm.Dispose(System.Boolean)">
+            <summary>
+            Clean up any resources being used.
+            </summary>
+            <param name="disposing">true if managed resources should be disposed; otherwise, false.</param>
+        </member>
+        <member name="M:Duality.Editor.Plugins.Base.Forms.PixmapSlicerForm.InitializeComponent">
+            <summary>
+            Required method for Designer support - do not modify
+            the contents of this method with the code editor.
+            </summary>
+        </member>
+        <member name="P:Duality.Editor.Plugins.Base.Forms.PixmapSlicer.PixmapSlicingView.TargetPixmap">
+            <summary>
+            The <see cref="T:Duality.Resources.Pixmap"/> currently being sliced
+            </summary>
+        </member>
+        <member name="M:Duality.Editor.Plugins.Base.Forms.PixmapSlicer.PixmapSlicingView.GetDisplayRect(Duality.Rect)">
+            <summary>
+            Transforms the given atlas rect to display coordinates
+            </summary>
+            <param name="atlasRect">
+            A <see cref="T:Duality.Rect"/> relative to 
+            the <see cref="T:Duality.Resources.Pixmap"/> being edited
+            </param>
+        </member>
+        <member name="M:Duality.Editor.Plugins.Base.Forms.PixmapSlicer.PixmapSlicingView.GetAtlasRect(System.Drawing.Rectangle)">
+            <summary>
+            Transforms the given rectangle in display coordinates
+            to atlas coordinates
+            </summary>
+        </member>
+        <member name="M:Duality.Editor.Plugins.Base.Forms.PixmapSlicer.PixmapSlicingView.GetAtlasPos(System.Drawing.Point,System.Boolean)">
+            <summary>
+            Converts the given local / client coordinates into <see cref="T:Duality.Resources.Pixmap"/> atlas space.
+            </summary>
+            <param name="point">The point to transform</param>
+        </member>
+        <member name="M:Duality.Editor.Plugins.Base.Forms.PixmapSlicer.PixmapSlicingView.GenerateDisplayImage">
+            <summary>
+            Returns a <see cref="T:System.Drawing.Bitmap"/> of <see cref="P:Duality.Editor.Plugins.Base.Forms.PixmapSlicer.PixmapSlicingView.TargetPixmap"/>
+            of the appropriate size for display
+            </summary>
+        </member>
+        <member name="M:Duality.Editor.Plugins.Base.Forms.PixmapSlicer.PixmapSlicingView.DrawRectIndex(System.Drawing.Graphics,System.Drawing.Rectangle,System.Int32)">
+            <summary>
+            Draws an index value in the middle of the given Rect
+            </summary>
+        </member>
+        <member name="M:Duality.Editor.Plugins.Base.Forms.PixmapSlicer.PixmapSlicingView.IsRectHovered(System.Drawing.Rectangle,System.Int32,System.Int32,System.Int32,Duality.Editor.Plugins.Base.PixmapSlicingRectSide@)">
+            <summary>
+            Returns whether or not the specified rect is hovered. Outputs
+            the specific side of the rect that was hovered, if any.
+            </summary>
+        </member>
+        <member name="T:Duality.Editor.Plugins.Base.Forms.PixmapSlicer.States.GridSlicePixmapSlicerState">
+            <summary>
+            A <see cref="T:Duality.Editor.Plugins.Base.Forms.PixmapSlicer.States.IPixmapSlicerState"/> that provides controls for
+            defining atlas rects with a variable size grid place over 
+            the <see cref="T:Duality.Resources.Pixmap"/>
+            </summary>
+        </member>
+        <member name="T:Duality.Editor.Plugins.Base.Forms.PixmapSlicer.States.IPixmapSlicerState">
+            <summary>
+            An operation state for the <see cref="T:Duality.Editor.Plugins.Base.Forms.PixmapSlicerForm"/>
+            </summary>
+        </member>
+        <member name="T:Duality.Editor.Plugins.Base.Forms.PixmapSlicer.States.PixmapSlicerStateEventArgs">
+            <summary>
+            <see cref="T:System.EventArgs"/> for general pixmap slicer
+            state events/changes
+            </summary>
+        </member>
+        <member name="M:Duality.Editor.Plugins.Base.Forms.PixmapSlicer.States.PixmapSlicerState.OnPaint(System.Windows.Forms.PaintEventArgs)">
+            <summary>
+            Called during the paint event of the parent control.
+            Displays all atlas rects and highlights the selected atlas rect.
+            </summary>
+        </member>
+        <member name="M:Duality.Editor.Plugins.Base.Forms.PixmapSlicer.States.PixmapSlicerState.CreateNumericUpDown(System.String,System.Int32,System.Int32)">
+            <summary>
+            Creates a <see cref="T:Duality.Editor.Controls.ToolStrip.ToolStripNumericUpDown"/> with default styling.
+            The range of the control is set to [0,maximum].
+            </summary>
+        </member>
+        <member name="T:Duality.Editor.Plugins.Base.Forms.PixmapSlicer.States.AtlasOrderingPixmapSlicerState">
+            <summary>
+            A <see cref="T:Duality.Editor.Plugins.Base.Forms.PixmapSlicer.States.IPixmapSlicerState"/> that allows the user to specify the ordering
+            of atlas rectangles by clicking on each rectangle in the desired order
+            </summary>
+        </member>
+        <member name="T:Duality.Editor.Plugins.Base.Forms.PixmapSlicer.States.DefaultPixmapSlicerState">
+            <summary>
+            A <see cref="T:Duality.Editor.Plugins.Base.Forms.PixmapSlicer.States.IPixmapSlicerState"/> that provides the ability to
+            resize selected atlas rectangles and provides controls for accessing
+            many other <see cref="T:Duality.Editor.Plugins.Base.Forms.PixmapSlicer.States.IPixmapSlicerState"/>
+            </summary>
+        </member>
+        <member name="T:Duality.Editor.Plugins.Base.Forms.PixmapSlicer.States.NewRectPixmapSlicerState">
+            <summary>
+            A <see cref="T:Duality.Editor.Plugins.Base.Forms.PixmapSlicer.States.IPixmapSlicerState"/> that allows the user
+            to define new atlas rectangles for the <see cref="P:Duality.Editor.Plugins.Base.Forms.PixmapSlicer.PixmapSlicingView.TargetPixmap"/>
+            </summary>
+        </member>
+        <member name="M:Duality.Editor.Plugins.Base.FontAssetImporter.RenderGlyphs(System.Byte[],System.Single,Duality.Drawing.FontStyle,Duality.Resources.FontCharSet,System.Boolean,System.Boolean)">
+            <summary>
+            Renders the <see cref="T:Duality.Resources.Font"/> based on its embedded TrueType representation.
+            <param name="extendedSet">Extended set of characters for renderning.</param>
+            </summary>
+        </member>
+        <member name="M:Duality.Editor.Plugins.Base.FontAssetImporter.RenderGlyphs(System.Drawing.FontFamily,System.Single,Duality.Drawing.FontStyle,Duality.Resources.FontCharSet,System.Boolean,System.Boolean)">
+            <summary>
+            Renders the <see cref="T:Duality.Resources.Font"/> using the specified system font family.
+            </summary>
+        </member>
+        <member name="M:Duality.Editor.Plugins.Base.FontAssetImporter.RenderGlyphs(System.Drawing.Font,Duality.Resources.FontCharSet,System.Boolean,System.Boolean)">
+            <summary>
+            Renders the <see cref="T:Duality.Resources.Font"/> using the specified system font.
+            This method assumes that the system font's size and style match the one specified in
+            the specified Duality font.
+            </summary>
+        </member>
+        <member name="T:Duality.Editor.Plugins.Base.Properties.EditorBaseRes">
+            <summary>
+              A strongly-typed resource class, for looking up localized strings, etc.
+            </summary>
+        </member>
+        <member name="P:Duality.Editor.Plugins.Base.Properties.EditorBaseRes.ResourceManager">
+            <summary>
+              Returns the cached ResourceManager instance used by this class.
+            </summary>
+        </member>
+        <member name="P:Duality.Editor.Plugins.Base.Properties.EditorBaseRes.Culture">
+            <summary>
+              Overrides the current thread's CurrentUICulture property for all
+              resource lookups using this strongly typed resource class.
+            </summary>
+        </member>
+        <member name="P:Duality.Editor.Plugins.Base.Properties.EditorBaseRes.ActionDesc_ExportResource">
+            <summary>
+              Looks up a localized string similar to Exports the Resource..
+            </summary>
+        </member>
+        <member name="P:Duality.Editor.Plugins.Base.Properties.EditorBaseRes.ActionDesc_ReImportResource">
+            <summary>
+              Looks up a localized string similar to Imports the Resource using the previously used source files..
+            </summary>
+        </member>
+        <member name="P:Duality.Editor.Plugins.Base.Properties.EditorBaseRes.ActionDesc_ShowResourceSources">
+            <summary>
+              Looks up a localized string similar to Shows the Resource&apos;s source files in your file system..
+            </summary>
+        </member>
+        <member name="P:Duality.Editor.Plugins.Base.Properties.EditorBaseRes.ActionName_CreateMaterial">
+            <summary>
+              Looks up a localized string similar to Create Material.
+            </summary>
+        </member>
+        <member name="P:Duality.Editor.Plugins.Base.Properties.EditorBaseRes.ActionName_CreateShaderProgram">
+            <summary>
+              Looks up a localized string similar to Create ShaderProgram.
+            </summary>
+        </member>
+        <member name="P:Duality.Editor.Plugins.Base.Properties.EditorBaseRes.ActionName_CreateSound">
+            <summary>
+              Looks up a localized string similar to Create Sound.
+            </summary>
+        </member>
+        <member name="P:Duality.Editor.Plugins.Base.Properties.EditorBaseRes.ActionName_CreateTexture">
+            <summary>
+              Looks up a localized string similar to Create Texture.
+            </summary>
+        </member>
+        <member name="P:Duality.Editor.Plugins.Base.Properties.EditorBaseRes.ActionName_DownloadVisualStudio">
+            <summary>
+              Looks up a localized string similar to Download Visual Studio.
+            </summary>
+        </member>
+        <member name="P:Duality.Editor.Plugins.Base.Properties.EditorBaseRes.ActionName_ExportResource">
+            <summary>
+              Looks up a localized string similar to Export Resource.
+            </summary>
+        </member>
+        <member name="P:Duality.Editor.Plugins.Base.Properties.EditorBaseRes.ActionName_ReImportResource">
+            <summary>
+              Looks up a localized string similar to Import Resource.
+            </summary>
+        </member>
+        <member name="P:Duality.Editor.Plugins.Base.Properties.EditorBaseRes.ActionName_ShowResourceSources">
+            <summary>
+              Looks up a localized string similar to Show Source Files.
+            </summary>
+        </member>
+        <member name="P:Duality.Editor.Plugins.Base.Properties.EditorBaseRes.ActionName_SlicePixmap">
+            <summary>
+              Looks up a localized string similar to Slice Pixmap.
+            </summary>
+        </member>
+        <member name="P:Duality.Editor.Plugins.Base.Properties.EditorBaseRes.ActionName_ViewGettingStartedTutorial">
+            <summary>
+              Looks up a localized string similar to Getting Started Tutorial.
+            </summary>
+        </member>
+        <member name="P:Duality.Editor.Plugins.Base.Properties.EditorBaseRes.ActionName_VisitCommunityForum">
+            <summary>
+              Looks up a localized string similar to Join the Community.
+            </summary>
+        </member>
+        <member name="P:Duality.Editor.Plugins.Base.Properties.EditorBaseRes.Button_AutoSlice">
+            <summary>
+              Looks up a localized string similar to Auto-Slice.
+            </summary>
+        </member>
+        <member name="P:Duality.Editor.Plugins.Base.Properties.EditorBaseRes.Button_GridSlice">
+            <summary>
+              Looks up a localized string similar to Grid-Slice.
+            </summary>
+        </member>
+        <member name="P:Duality.Editor.Plugins.Base.Properties.EditorBaseRes.DropdownSettingsBlack">
+            <summary>
+              Looks up a localized resource of type System.Drawing.Bitmap.
+            </summary>
+        </member>
+        <member name="P:Duality.Editor.Plugins.Base.Properties.EditorBaseRes.Help_PixmapSlicer_Desc">
+            <summary>
+              Looks up a localized string similar to The Pixmap Slicer provides tools for automatically or manually specifying atlas rectangles..
+            </summary>
+        </member>
+        <member name="P:Duality.Editor.Plugins.Base.Properties.EditorBaseRes.Help_PixmapSlicer_Topic">
+            <summary>
+              Looks up a localized string similar to Pixmap Slicer.
+            </summary>
+        </member>
+        <member name="P:Duality.Editor.Plugins.Base.Properties.EditorBaseRes.Help_PixmapSlicerDefaultState_Desc">
+            <summary>
+              Looks up a localized string similar to Click on rects to select them. Selected rects can be resized with the mouse..
+            </summary>
+        </member>
+        <member name="P:Duality.Editor.Plugins.Base.Properties.EditorBaseRes.Help_PixmapSlicerDefaultState_Topic">
+            <summary>
+              Looks up a localized string similar to Pixmap Slicer.
+            </summary>
+        </member>
+        <member name="P:Duality.Editor.Plugins.Base.Properties.EditorBaseRes.Help_PixmapSlicerGridSlice_Desc">
+            <summary>
+              Looks up a localized string similar to Use the toolstrip controsl to specify the grid parameters..
+            </summary>
+        </member>
+        <member name="P:Duality.Editor.Plugins.Base.Properties.EditorBaseRes.Help_PixmapSlicerGridSlice_Topic">
+            <summary>
+              Looks up a localized string similar to Grid Slicing.
+            </summary>
+        </member>
+        <member name="P:Duality.Editor.Plugins.Base.Properties.EditorBaseRes.Help_PixmapSlicerNewRect_Desc">
+            <summary>
+              Looks up a localized string similar to Click and drag to define a new atlas rect. New rects are added to the end of the atlas..
+            </summary>
+        </member>
+        <member name="P:Duality.Editor.Plugins.Base.Properties.EditorBaseRes.Help_PixmapSlicerNewRect_Topic">
+            <summary>
+              Looks up a localized string similar to New Rect.
+            </summary>
+        </member>
+        <member name="P:Duality.Editor.Plugins.Base.Properties.EditorBaseRes.Help_PixmapSlicerRectOrdering_Desc">
+            <summary>
+              Looks up a localized string similar to Click on the atlas rects in the desired order. Remaining rects will be be placed last in the rect order..
+            </summary>
+        </member>
+        <member name="P:Duality.Editor.Plugins.Base.Properties.EditorBaseRes.Help_PixmapSlicerRectOrdering_Topic">
+            <summary>
+              Looks up a localized string similar to Rect Ordering.
+            </summary>
+        </member>
+        <member name="P:Duality.Editor.Plugins.Base.Properties.EditorBaseRes.IconAbortCross">
+            <summary>
+              Looks up a localized resource of type System.Drawing.Bitmap.
+            </summary>
+        </member>
+        <member name="P:Duality.Editor.Plugins.Base.Properties.EditorBaseRes.IconAcceptCheck">
+            <summary>
+              Looks up a localized resource of type System.Drawing.Bitmap.
+            </summary>
+        </member>
+        <member name="P:Duality.Editor.Plugins.Base.Properties.EditorBaseRes.IconCancel">
+            <summary>
+              Looks up a localized resource of type System.Drawing.Bitmap.
+            </summary>
+        </member>
+        <member name="P:Duality.Editor.Plugins.Base.Properties.EditorBaseRes.IconCommunity">
+            <summary>
+              Looks up a localized resource of type System.Drawing.Bitmap.
+            </summary>
+        </member>
+        <member name="P:Duality.Editor.Plugins.Base.Properties.EditorBaseRes.IconDownloadCodeIDE">
+            <summary>
+              Looks up a localized resource of type System.Drawing.Bitmap.
+            </summary>
+        </member>
+        <member name="P:Duality.Editor.Plugins.Base.Properties.EditorBaseRes.IconEye">
+            <summary>
+              Looks up a localized resource of type System.Drawing.Icon similar to (Icon).
+            </summary>
+        </member>
+        <member name="P:Duality.Editor.Plugins.Base.Properties.EditorBaseRes.IconHideIndices">
+            <summary>
+              Looks up a localized resource of type System.Drawing.Bitmap.
+            </summary>
+        </member>
+        <member name="P:Duality.Editor.Plugins.Base.Properties.EditorBaseRes.IconPixmapSlicer">
+            <summary>
+              Looks up a localized resource of type System.Drawing.Bitmap.
+            </summary>
+        </member>
+        <member name="P:Duality.Editor.Plugins.Base.Properties.EditorBaseRes.IconRevealIndices">
+            <summary>
+              Looks up a localized resource of type System.Drawing.Bitmap.
+            </summary>
+        </member>
+        <member name="P:Duality.Editor.Plugins.Base.Properties.EditorBaseRes.IconShowIndices">
+            <summary>
+              Looks up a localized resource of type System.Drawing.Bitmap.
+            </summary>
+        </member>
+        <member name="P:Duality.Editor.Plugins.Base.Properties.EditorBaseRes.IconSpeakerBlack">
+            <summary>
+              Looks up a localized resource of type System.Drawing.Bitmap.
+            </summary>
+        </member>
+        <member name="P:Duality.Editor.Plugins.Base.Properties.EditorBaseRes.IconSpeakerWhite">
+            <summary>
+              Looks up a localized resource of type System.Drawing.Bitmap.
+            </summary>
+        </member>
+        <member name="P:Duality.Editor.Plugins.Base.Properties.EditorBaseRes.IconSquareAdd">
+            <summary>
+              Looks up a localized resource of type System.Drawing.Bitmap.
+            </summary>
+        </member>
+        <member name="P:Duality.Editor.Plugins.Base.Properties.EditorBaseRes.IconSquareDelete">
+            <summary>
+              Looks up a localized resource of type System.Drawing.Bitmap.
+            </summary>
+        </member>
+        <member name="P:Duality.Editor.Plugins.Base.Properties.EditorBaseRes.IconSquareDeleteMany">
+            <summary>
+              Looks up a localized resource of type System.Drawing.Bitmap.
+            </summary>
+        </member>
+        <member name="P:Duality.Editor.Plugins.Base.Properties.EditorBaseRes.IconSquareNumbers">
+            <summary>
+              Looks up a localized resource of type System.Drawing.Bitmap.
+            </summary>
+        </member>
+        <member name="P:Duality.Editor.Plugins.Base.Properties.EditorBaseRes.IconTutorial">
+            <summary>
+              Looks up a localized resource of type System.Drawing.Bitmap.
+            </summary>
+        </member>
+        <member name="P:Duality.Editor.Plugins.Base.Properties.EditorBaseRes.IconViewBrightness">
+            <summary>
+              Looks up a localized resource of type System.Drawing.Bitmap.
+            </summary>
+        </member>
+        <member name="P:Duality.Editor.Plugins.Base.Properties.EditorBaseRes.IconZoomDefault">
+            <summary>
+              Looks up a localized resource of type System.Drawing.Bitmap.
+            </summary>
+        </member>
+        <member name="P:Duality.Editor.Plugins.Base.Properties.EditorBaseRes.IconZoomIn">
+            <summary>
+              Looks up a localized resource of type System.Drawing.Bitmap.
+            </summary>
+        </member>
+        <member name="P:Duality.Editor.Plugins.Base.Properties.EditorBaseRes.IconZoomOut">
+            <summary>
+              Looks up a localized resource of type System.Drawing.Bitmap.
+            </summary>
+        </member>
+        <member name="P:Duality.Editor.Plugins.Base.Properties.EditorBaseRes.MenuItemDesc_CantRemoveComponent">
+            <summary>
+              Looks up a localized string similar to Can&apos;t remove {0} because it is required by the &apos;{1}&apos; Component..
+            </summary>
+        </member>
+        <member name="P:Duality.Editor.Plugins.Base.Properties.EditorBaseRes.MenuItemName_AppData">
+            <summary>
+              Looks up a localized string similar to Application Data.
+            </summary>
+        </member>
+        <member name="P:Duality.Editor.Plugins.Base.Properties.EditorBaseRes.MenuItemName_RemoveComponent">
+            <summary>
+              Looks up a localized string similar to Remove.
+            </summary>
+        </member>
+        <member name="P:Duality.Editor.Plugins.Base.Properties.EditorBaseRes.MenuItemName_ResetComponent">
+            <summary>
+              Looks up a localized string similar to Reset.
+            </summary>
+        </member>
+        <member name="P:Duality.Editor.Plugins.Base.Properties.EditorBaseRes.MenuItemName_UserData">
+            <summary>
+              Looks up a localized string similar to Default User Data.
+            </summary>
+        </member>
+        <member name="P:Duality.Editor.Plugins.Base.Properties.EditorBaseRes.PropertyDesc_AddJoint">
+            <summary>
+              Looks up a localized string similar to Select a joint type and click the add button to add a new joint to the Collider.
+            </summary>
+        </member>
+        <member name="P:Duality.Editor.Plugins.Base.Properties.EditorBaseRes.PropertyDesc_OtherCollider">
+            <summary>
+              Looks up a localized string similar to The joints second Collider, i.e. the one that is connected to this one using the joint..
+            </summary>
+        </member>
+        <member name="P:Duality.Editor.Plugins.Base.Properties.EditorBaseRes.PropertyName_AddJoint">
+            <summary>
+              Looks up a localized string similar to Add Joint....
+            </summary>
+        </member>
+        <member name="P:Duality.Editor.Plugins.Base.Properties.EditorBaseRes.PropertyName_OtherCollider">
+            <summary>
+              Looks up a localized string similar to Other Collider.
+            </summary>
+        </member>
+        <member name="P:Duality.Editor.Plugins.Base.Properties.EditorBaseRes.ReferenceInput">
+            <summary>
+              Looks up a localized resource of type System.Drawing.Bitmap.
+            </summary>
+        </member>
+        <member name="P:Duality.Editor.Plugins.Base.Properties.EditorBaseRes.RigidBodyCamViewState_SelBodyName">
+            <summary>
+              Looks up a localized string similar to RigidBody.
+            </summary>
+        </member>
+        <member name="P:Duality.Editor.Plugins.Base.Properties.EditorBaseRes.RigidBodyCamViewState_SelCircleShapeName">
+            <summary>
+              Looks up a localized string similar to Circle Shape.
+            </summary>
+        </member>
+        <member name="P:Duality.Editor.Plugins.Base.Properties.EditorBaseRes.RigidBodyCamViewState_SelLoopShapeName">
+            <summary>
+              Looks up a localized string similar to Loop Shape.
+            </summary>
+        </member>
+        <member name="P:Duality.Editor.Plugins.Base.Properties.EditorBaseRes.RigidBodyCamViewState_SelPolyShapeName">
+            <summary>
+              Looks up a localized string similar to Polygon Shape.
+            </summary>
+        </member>
+        <member name="P:Duality.Editor.Plugins.Base.Properties.EditorBaseRes.RigidBodyCamViewState_SelShapeName">
+            <summary>
+              Looks up a localized string similar to Shape.
+            </summary>
+        </member>
+        <member name="P:Duality.Editor.Plugins.Base.Properties.EditorBaseRes.ToolTip_PixmapSlicerAddRect">
+            <summary>
+              Looks up a localized string similar to Add a new atlas rect.
+            </summary>
+        </member>
+        <member name="P:Duality.Editor.Plugins.Base.Properties.EditorBaseRes.ToolTip_PixmapSlicerAutoSlice">
+            <summary>
+              Looks up a localized string similar to Automatically calculate atlas rects.
+            </summary>
+        </member>
+        <member name="P:Duality.Editor.Plugins.Base.Properties.EditorBaseRes.ToolTip_PixmapSlicerCancel">
+            <summary>
+              Looks up a localized string similar to Cancel.
+            </summary>
+        </member>
+        <member name="P:Duality.Editor.Plugins.Base.Properties.EditorBaseRes.ToolTip_PixmapSlicerClear">
+            <summary>
+              Looks up a localized string similar to Delete all atlas rects.
+            </summary>
+        </member>
+        <member name="P:Duality.Editor.Plugins.Base.Properties.EditorBaseRes.ToolTip_PixmapSlicerDelete">
+            <summary>
+              Looks up a localized string similar to Delete the selected atlas rect (Delete).
+            </summary>
+        </member>
+        <member name="P:Duality.Editor.Plugins.Base.Properties.EditorBaseRes.ToolTip_PixmapSlicerDone">
+            <summary>
+              Looks up a localized string similar to Accept Changes.
+            </summary>
+        </member>
+        <member name="P:Duality.Editor.Plugins.Base.Properties.EditorBaseRes.ToolTip_PixmapSlicerGridSlice">
+            <summary>
+              Looks up a localized string similar to Slice the pixmap with a grid.
+            </summary>
+        </member>
+        <member name="P:Duality.Editor.Plugins.Base.Properties.EditorBaseRes.ToolTip_PixmapSlicerOrderRects">
+            <summary>
+              Looks up a localized string similar to Specify the order of atlas rects.
+            </summary>
+        </member>
+        <member name="P:Duality.Editor.Plugins.Base.Properties.EditorBaseRes.UndoRedo_ClearAtlas">
+            <summary>
+              Looks up a localized string similar to Clear Atlas.
+            </summary>
+        </member>
+        <member name="P:Duality.Editor.Plugins.Base.Properties.EditorBaseRes.UndoRedo_CreateRigidBodyJoint">
+            <summary>
+              Looks up a localized string similar to Create {0}.
+            </summary>
+        </member>
+        <member name="P:Duality.Editor.Plugins.Base.Properties.EditorBaseRes.UndoRedo_CreateRigidBodyJointMulti">
+            <summary>
+              Looks up a localized string similar to Create {0} Joints.
+            </summary>
+        </member>
+        <member name="P:Duality.Editor.Plugins.Base.Properties.EditorBaseRes.UndoRedo_CreateSoundEmitterSource">
+            <summary>
+              Looks up a localized string similar to Create Source {0}.
+            </summary>
+        </member>
+        <member name="P:Duality.Editor.Plugins.Base.Properties.EditorBaseRes.UndoRedo_CreateSoundEmitterSourceMulti">
+            <summary>
+              Looks up a localized string similar to Create {0} Sources.
+            </summary>
+        </member>
+        <member name="P:Duality.Editor.Plugins.Base.Properties.EditorBaseRes.UndoRedo_DeleteAtlasRect">
+            <summary>
+              Looks up a localized string similar to Delete Atlas Rect.
+            </summary>
+        </member>
+        <member name="P:Duality.Editor.Plugins.Base.Properties.EditorBaseRes.UndoRedo_DeleteObjects">
+            <summary>
+              Looks up a localized string similar to Delete {0} Objects.
+            </summary>
+        </member>
+        <member name="P:Duality.Editor.Plugins.Base.Properties.EditorBaseRes.UndoRedo_DeleteRigidBodyJoint">
+            <summary>
+              Looks up a localized string similar to Delete {0}.
+            </summary>
+        </member>
+        <member name="P:Duality.Editor.Plugins.Base.Properties.EditorBaseRes.UndoRedo_DeleteRigidBodyJointMulti">
+            <summary>
+              Looks up a localized string similar to Delete {0} Joints.
+            </summary>
+        </member>
+        <member name="P:Duality.Editor.Plugins.Base.Properties.EditorBaseRes.UndoRedo_DeleteSoundEmitterSource">
+            <summary>
+              Looks up a localized string similar to Delete Source {0}.
+            </summary>
+        </member>
+        <member name="P:Duality.Editor.Plugins.Base.Properties.EditorBaseRes.UndoRedo_DeleteSoundEmitterSourceMulti">
+            <summary>
+              Looks up a localized string similar to Delete {0} Sources.
+            </summary>
+        </member>
+        <member name="P:Duality.Editor.Plugins.Base.Properties.EditorBaseRes.UndoRedo_ReparentRigidBodyJoint">
+            <summary>
+              Looks up a localized string similar to Reparent {0}.
+            </summary>
+        </member>
+        <member name="P:Duality.Editor.Plugins.Base.Properties.EditorBaseRes.UndoRedo_ReparentRigidBodyJointMulti">
+            <summary>
+              Looks up a localized string similar to Reparent {0} Joints.
+            </summary>
+        </member>
+        <member name="P:Duality.Editor.Plugins.Base.Properties.EditorBaseRes.UndoRedo_SetAtlas">
+            <summary>
+              Looks up a localized string similar to Set Atlas.
+            </summary>
+        </member>
+        <member name="P:Duality.Editor.Plugins.Base.Properties.EditorBaseRes.UndoRedo_SetAtlasRect">
+            <summary>
+              Looks up a localized string similar to Set Atlas Rect.
+            </summary>
+        </member>
+        <member name="T:Duality.Editor.Plugins.Base.Properties.EditorBaseResCache">
+            <summary>
+            Since directly accessing code generated from .resx files will result in a deserialization on
+            each Resource access, this class allows cached Resource access.
+            </summary>
+        </member>
+        <member name="T:Duality.Editor.Plugins.Base.Properties.Resources">
+            <summary>
+              Eine stark typisierte Ressourcenklasse zum Suchen von lokalisierten Zeichenfolgen usw.
+            </summary>
+        </member>
+        <member name="P:Duality.Editor.Plugins.Base.Properties.Resources.ResourceManager">
+            <summary>
+              Gibt die zwischengespeicherte ResourceManager-Instanz zurück, die von dieser Klasse verwendet wird.
+            </summary>
+        </member>
+        <member name="P:Duality.Editor.Plugins.Base.Properties.Resources.Culture">
+            <summary>
+              Überschreibt die CurrentUICulture-Eigenschaft des aktuellen Threads für alle
+              Ressourcenzuordnungen, die diese stark typisierte Ressourcenklasse verwenden.
+            </summary>
+        </member>
+        <member name="T:Duality.Editor.Plugins.Base.PropertyEditors.AddComponentPropertyEditor">
+            <summary>
+            A <see cref="T:AdamsLair.WinForms.PropertyEditing.PropertyEditor"/> that provides a button
+            for adding a component to a <see cref="T:Duality.GameObject"/>
+            </summary>
+        </member>
+        <member name="P:Duality.Editor.Plugins.Base.PropertyEditors.ObjectRefPropertyEditor.ReferenceType">
+            <summary>
+            Type for this resource reference
+            </summary>
+        </member>
+        <member name="M:Duality.Editor.Plugins.Base.PropertyEditors.ObjectRefPropertyEditor.SynchronizePreview">
+            <summary>
+            Generates a new preview when required, which is determined by
+            comparing the current <see cref="M:Duality.Editor.Plugins.Base.PropertyEditors.ObjectRefPropertyEditor.GetPreviewHash"/> value and the
+            one from the last used preview.
+            </summary>
+        </member>
+        <member name="T:Duality.Editor.Plugins.Base.PropertyEditors.ResourceImportExportPropertyEditor">
+            <summary>
+            A <see cref="T:AdamsLair.WinForms.PropertyEditing.PropertyEditor"/> that provides action buttons for commonly
+            used asset operations, such as showing source files, or performing an export
+            or re-import operation.
+            </summary>
+        </member>
+        <member name="P:Duality.Editor.Plugins.Base.PropertyEditors.ResourceImportExportPropertyEditor.CanShowSourceFiles">
+            <summary>
+            [GET] Whether the current Resource value allows to show source files.
+            </summary>
+        </member>
+        <member name="P:Duality.Editor.Plugins.Base.PropertyEditors.ResourceImportExportPropertyEditor.CanExportResource">
+            <summary>
+            [GET] Whether the current Resource value allows to perform an export operation.
+            </summary>
+        </member>
+        <member name="P:Duality.Editor.Plugins.Base.PropertyEditors.ResourceImportExportPropertyEditor.CanReImportResource">
+            <summary>
+            [GET] Whether the current Resource value allows to perform a re-import operation.
+            </summary>
+        </member>
+        <member name="M:Duality.Editor.Plugins.Base.PropertyEditors.ResourceImportExportPropertyEditor.CheckAvailableActions(System.Collections.Generic.IEnumerable{Duality.Resource})">
+            <summary>
+            Determines which actions are available, given the specified enumerable of
+            <see cref="T:Duality.Resource"/> instances.
+            </summary>
+            <param name="resources"></param>
+        </member>
+        <member name="M:Duality.Editor.Plugins.Base.PropertyEditors.ResourceImportExportPropertyEditor.ShowSourceFiles">
+            <summary>
+            Shows the primary source files of each of the current <see cref="T:Duality.Resource"/> selection
+            in the operating system's default file manager.
+            </summary>
+        </member>
+        <member name="M:Duality.Editor.Plugins.Base.PropertyEditors.ResourceImportExportPropertyEditor.ExportResource">
+            <summary>
+            Performs an export operation for the current <see cref="T:Duality.Resource"/> selection.
+            </summary>
+        </member>
+        <member name="M:Duality.Editor.Plugins.Base.PropertyEditors.ResourceImportExportPropertyEditor.ReImportResource">
+            <summary>
+            Performs a re-import operation for the current <see cref="T:Duality.Resource"/> selection.
+            </summary>
+        </member>
+        <member name="M:Duality.Editor.Plugins.Base.PropertyEditors.ResourceImportExportPropertyEditor.Duality#Editor#IHelpProvider#ProvideHoverHelp(System.Drawing.Point,System.Boolean@)">
+            <summary>
+            Provides custom <see cref="T:Duality.Editor.HelpInfo"/> tooltips for the action buttons.
+            </summary>
+            <param name="localPos"></param>
+            <param name="captured"></param>
+            <returns></returns>
+        </member>
+        <member name="T:Duality.Editor.Plugins.Base.PropertyEditors.ResourceOverviewPropertyEditor">
+            <summary>
+            This is a top-level wrapper <see cref="T:AdamsLair.WinForms.PropertyEditing.PropertyEditor"/> that is used in <see cref="T:Duality.Resource"/> editing
+            for displaying both <see cref="T:Duality.Resource"/> and <see cref="T:Duality.Editor.AssetManagement.AssetInfo"/> editors on the same page.
+            </summary>
+        </member>
+        <member name="T:Duality.Editor.Plugins.Base.PropertyEditors.ResourceAssetPropertyEditor">
+            <summary>
+            Allows to edit the import / export parameters of a <see cref="T:Duality.Resource"/> and provides
+            buttons for commonly used Asset operations, such as showing source files, or performing
+            an export or re-import.
+            </summary>
+        </member>
+        <member name="M:Duality.Editor.Plugins.Base.PropertyEditors.ResourceAssetPropertyEditor.UpdateParameterEditors">
+            <summary>
+            Updates child editors to match the available custom AssetInfo data 
+            segments in the selected Resources.
+            </summary>
+        </member>
+        <member name="M:Duality.Editor.Plugins.Base.PropertyEditors.ResourceAssetPropertyEditor.GetRequiredEditors(System.Collections.Generic.IEnumerable{Duality.Resource},System.Collections.Generic.IDictionary{System.String,System.Type})">
+            <summary>
+            Determines a key-Type mapping of the required editors for the given
+            Resource selection.
+            </summary>
+            <param name="resources"></param>
+            <param name="requiredEditors"></param>
+        </member>
+        <member name="M:Duality.Editor.Plugins.Base.PropertyEditors.ResourceAssetPropertyEditor.DisposeObsoleteEditors(System.Collections.Generic.IReadOnlyDictionary{System.String,System.Type})">
+            <summary>
+            Given the specified key-Type mapping of required editors, this method
+            will dispose all currently active editors that are no longer needed.
+            </summary>
+            <param name="requiredEditors"></param>
+        </member>
+        <member name="M:Duality.Editor.Plugins.Base.PropertyEditors.ResourceAssetPropertyEditor.CreateMissingEditors(System.Collections.Generic.IReadOnlyDictionary{System.String,System.Type})">
+            <summary>
+            Given the specified key-Type mapping of required editors, this method
+            will create new editors for all keys that do not have one.
+            This method assumes that <see cref="M:Duality.Editor.Plugins.Base.PropertyEditors.ResourceAssetPropertyEditor.DisposeObsoleteEditors(System.Collections.Generic.IReadOnlyDictionary{System.String,System.Type})"/> was called
+            before and thus doesn't check whether any of the existing editors are still
+            valid.
+            </summary>
+            <param name="requiredEditors"></param>
+        </member>
+        <member name="M:Duality.Editor.Plugins.Base.PropertyEditors.ResourceAssetPropertyEditor.CreatePropertyValueGetter(System.String)">
+            <summary>
+            Returns a new lambda method that acts getter for custom AssetInfo data values 
+            from the currently selected objects and with the given key.
+            </summary>
+            <param name="key"></param>
+            <returns></returns>
+        </member>
+        <member name="M:Duality.Editor.Plugins.Base.PropertyEditors.ResourceAssetPropertyEditor.CreatePropertyValueSetter(System.String)">
+            <summary>
+            Returns a new lambda method that acts setter for custom AssetInfo data values 
+            from the currently selected objects and with the given key.
+            </summary>
+            <param name="key"></param>
+            <returns></returns>
+        </member>
+        <member name="M:Duality.Editor.Plugins.Base.PropertyEditors.ResourceAssetPropertyEditor.Duality#Editor#IHelpProvider#ProvideHoverHelp(System.Drawing.Point,System.Boolean@)">
+            <summary>
+            Provides custom <see cref="T:Duality.Editor.HelpInfo"/> regarding <see cref="T:Duality.Editor.AssetManagement.AssetInfo"/> data.
+            </summary>
+            <param name="localPos"></param>
+            <param name="captured"></param>
+            <returns></returns>
+        </member>
+        <member name="M:Duality.Editor.Plugins.Base.PixmapAssetImporter.GenerateSpriteSheetAtlas(Duality.Resources.Pixmap,System.Int32,System.Int32,System.Int32)">
+            <summary>
+            Generates a regular sprite sheet <see cref="P:Duality.Resources.Pixmap.Atlas"/> with a fixed number 
+            of columns and rows.
+            </summary>
+            <param name="cols">The number of columns in the sprite sheet.</param>
+            <param name="rows">The number of rows in the sprite sheet.</param>
+            <param name="frameBorder">Border size around each sprite sheet rect.</param>
+        </member>
+        <member name="M:Duality.Editor.Plugins.Base.PixmapSlicingUtility.SliceGrid(Duality.Resources.Pixmap,System.Int32,System.Int32,System.Int32)">
+            <summary>
+            Auto-generates an atlas for the given <see cref="T:Duality.Resources.Pixmap"/> by slicing it into a
+            uniform grid as specified by parameters.
+            </summary>
+            <param name="pixmap"></param>
+            <param name="columns"></param>
+            <param name="rows"></param>
+            <param name="frameBorder"></param>
+            <returns></returns>
+        </member>
+        <member name="M:Duality.Editor.Plugins.Base.PixmapSlicingUtility.SliceAutoFit(Duality.Resources.Pixmap,System.Byte,System.Int32)">
+            <summary>
+            Auto-generates an atlas for the given <see cref="T:Duality.Resources.Pixmap"/> by fitting rectangles to
+            all non-transparent areas.
+            </summary>
+            <param name="alpha">Pixels with an alpha value less or equal to this value will be considered transparent.</param>
+            <param name="minSize">Rectangles with width or higher smaller than this will be ignored.</param>
+        </member>
+        <member name="M:Duality.Editor.Plugins.Base.PixmapSlicingUtility.FindAutoFitRect(Duality.Resources.Pixmap,System.Int32,System.Int32,System.Byte)">
+            <summary>
+            Find an atlas rect containing the given pixel
+            </summary>
+        </member>
+    </members>
+</doc>
