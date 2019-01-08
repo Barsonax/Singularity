@@ -1,7 +1,7 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <TargetFrameworks>net452;netstandard1.1</TargetFrameworks>
+    <TargetFrameworks>net452</TargetFrameworks>
     <PackageTargetFallback>$(PackageTargetFallback);net00</PackageTargetFallback>
     <AssemblyName>Singularity.Duality.core</AssemblyName>
     <PackageLicenseUrl>https://github.com/Barsonax/Singularity/blob/master/LICENSE</PackageLicenseUrl>
