@@ -1,7 +1,7 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <TargetFramework>netstandard1.1</TargetFramework>
+    <TargetFrameworks>net452;netstandard1.1</TargetFrameworks>
     <PackageTargetFallback>$(PackageTargetFallback);net00</PackageTargetFallback>
     <AssemblyName>Singularity.Duality.core</AssemblyName>
     <PackageLicenseUrl>https://github.com/Barsonax/Singularity/blob/master/LICENSE</PackageLicenseUrl>
@@ -29,7 +29,6 @@
     <DebugSymbols>true</DebugSymbols>
     <DocumentationFile>$(SolutionDir)BuildOutput\Singularity.Duality.core.xml</DocumentationFile>
     <OutputPath>$(SolutionDir)BuildOutput\</OutputPath>
-    <AppendTargetFrameworkToOutputPath>false</AppendTargetFrameworkToOutputPath>
   </PropertyGroup>
   <Target Name="PostBuild" AfterTargets="PostBuildEvent">
     <Exec Command="if $(ConfigurationName) == Debug (&#xD;&#xA;mkdir &quot;$(SolutionDir)Duality/Plugins&quot;&#xD;&#xA;copy &quot;$(TargetPath)&quot; &quot;$(SolutionDir)Duality/Plugins&quot;&#xD;&#xA;copy &quot;$(TargetDir)$(TargetName).pdb&quot; &quot;$(SolutionDir)Duality/Plugins&quot;&#xD;&#xA;xcopy /Y &quot;$(TargetDir)*.core.xml&quot; &quot;$(SolutionDir)Duality/Plugins&quot;&#xD;&#xA;)" />
