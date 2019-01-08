@@ -18,9 +18,12 @@
   </PropertyGroup>
 
   <ItemGroup Condition="'$(Configuration)|$(Platform)'=='z_CI_config|AnyCPU'">
-    <None Include="$(SolutionDir)BuildOutput\Singularity.Duality.core.dll" Pack="true" PackagePath="lib/"/>
-    <None Include="$(SolutionDir)BuildOutput\Singularity.Duality.core.pdb" Pack="true" PackagePath="lib/"/>
-    <None Include="$(SolutionDir)BuildOutput\Singularity.Duality.core.xml" Pack="true" PackagePath="lib/"/>
+    <None Include="$(SolutionDir)BuildOutput\net452\Singularity.Duality.core.dll" Pack="true" PackagePath="lib/"/>
+    <None Include="$(SolutionDir)BuildOutput\net452\Singularity.Duality.core.pdb" Pack="true" PackagePath="lib/"/>
+    <None Include="$(SolutionDir)BuildOutput\net452\Singularity.Duality.core.xml" Pack="true" PackagePath="lib/"/>
+    <None Include="$(SolutionDir)BuildOutput\net452\Singularity.dll" Pack="true" PackagePath="lib/"/>
+    <None Include="$(SolutionDir)BuildOutput\net452\Singularity.pdb" Pack="true" PackagePath="lib/"/>
+    <None Include="$(SolutionDir)BuildOutput\net452\Singularity.xml" Pack="true" PackagePath="lib/"/>
   </ItemGroup>
 
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='z_CI_config|AnyCPU'">
