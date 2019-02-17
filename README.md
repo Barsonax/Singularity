@@ -40,3 +40,6 @@ For duality users there is also a guide on how to use `Singularity.Duality` in d
 |-------------|--------|
 | Singularity      | [![NuGet Badge](https://buildstats.info/nuget/Singularity)](https://www.nuget.org/packages/Singularity/) |
 | Singularity.Duality.core      | [![NuGet Badge](https://buildstats.info/nuget/Singularity.Duality.core)](https://www.nuget.org/packages/Singularity.Duality.core/)|
+
+### Donations
+Donations can be done through my Patreon page: https://www.patreon.com/rickthephotogrammer
