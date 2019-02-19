@@ -7,9 +7,9 @@ namespace Singularity.Graph
 	{
 		public string CreatorFilePath { get; }
 		public int CreatorLineNumber { get; }
-		public Type ModuleType { get; }
+		public Type? ModuleType { get; }
 
-		internal BindingMetadata(string creatorFilePath, int creatorLineNumber, IModule module)
+		internal BindingMetadata(string creatorFilePath, int creatorLineNumber, IModule? module)
 		{
 			ModuleType = module?.GetType();
 			CreatorFilePath = creatorFilePath;

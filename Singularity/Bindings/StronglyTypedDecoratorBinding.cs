@@ -11,7 +11,7 @@ namespace Singularity.Bindings
 		where TDependency : class
 	{
 		public Type DependencyType { get; }
-		public Expression Expression { get; private set; }
+		public Expression? Expression { get; private set; }
 
 		internal StronglyTypedDecoratorBinding()
 		{

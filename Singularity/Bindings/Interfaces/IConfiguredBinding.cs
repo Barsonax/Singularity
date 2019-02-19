@@ -21,6 +21,6 @@ namespace Singularity.Bindings
         /// <summary>
         /// A delegate that will be called when the dependency goes out of scope
         /// </summary>
-        Action<object> OnDeath { get; }
+        Action<object>? OnDeath { get; }
 	}
 }

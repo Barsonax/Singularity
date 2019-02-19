@@ -6,7 +6,7 @@ namespace Singularity.Test.TestClasses
 {
     public class MethodInjectionClass
     {
-        public ITestService10 TestService10 { get; private set; }
+        public ITestService10? TestService10 { get; private set; }
 
         public void FakeInject(ITestService10 testService10)
         {

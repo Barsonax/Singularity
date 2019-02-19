@@ -11,9 +11,9 @@ namespace Singularity.Bindings
 	{
 		BindingMetadata BindingMetadata { get; }
 		Type DependencyType { get; }
-		Expression Expression { get; }
+		Expression? Expression { get; }
 		Lifetime Lifetime { get; }
-		Action<object> OnDeath { get; }
+		Action<object>? OnDeath { get; }
 		IReadOnlyList<IDecoratorBinding> Decorators { get; }
 	}
 }

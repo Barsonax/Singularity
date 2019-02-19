@@ -1,9 +1,11 @@
-﻿using System.Linq.Expressions;
+﻿using System;
+using System.Linq.Expressions;
 
 namespace Singularity.Bindings
 {
     public interface IDecoratorBinding
     {
-        Expression Expression { get; }
+        Type DependencyType { get; }
+        Expression? Expression { get; }
     }
 }

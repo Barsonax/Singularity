@@ -11,7 +11,30 @@ namespace Singularity.Test.Bindings
 {
     public class BindingConfigTests
     {
-		[Fact]
+        [Fact]
+        public void IncorrectBinding_Throws()
+        {
+            Assert.Throws<BindingConfigException>(() =>
+            {
+                var config = new BindingConfig();
+                config.For<ITestService10>();
+                var container = new Container(config);
+            });
+        }
+
+        [Fact]
+        public void IncorrectDecoratorBinding_Throws()
+        {
+            Assert.Throws<BindingConfigException>(() =>
+            {
+                var config = new BindingConfig();
+                config.For<ITestService10>().Inject<TestService10>();
+                config.Decorate<ITestService10>();
+                var container = new Container(config);
+            });
+        }
+
+        [Fact]
 		public void Decorate_NotAInterface_Throws()
 		{
 			var config = new BindingConfig();

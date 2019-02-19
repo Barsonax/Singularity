@@ -15,12 +15,12 @@ namespace Singularity.Bindings
 	    IReadOnlyList<IDecoratorBinding> IBinding.Decorators => Decorators;
 		public Type DependencyType { get; } = typeof(TDependency);
 
-		public Expression Expression => ConfiguredBinding?.Expression;
+		public Expression? Expression => ConfiguredBinding?.Expression;
 		public Lifetime Lifetime => ConfiguredBinding?.Lifetime ?? Lifetime.PerCall;
-        public Action<object> OnDeath => ConfiguredBinding?.OnDeath;
-	    private IConfiguredBinding ConfiguredBinding { get; set; }
+        public Action<object>? OnDeath => ConfiguredBinding?.OnDeath;
+	    private IConfiguredBinding? ConfiguredBinding { get; set; }
 
-        internal StronglyTypedBinding(string callerFilePath, int callerLineNumber, IModule module)
+        internal StronglyTypedBinding(string callerFilePath, int callerLineNumber, IModule? module)
 		{
 			BindingMetadata = new BindingMetadata(callerFilePath, callerLineNumber, module);
 		}

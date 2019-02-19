@@ -33,7 +33,7 @@ namespace Singularity
 
 		}
 
-		private Container(IEnumerable<Binding> bindings, DependencyGraph parentDependencyGraph)
+		private Container(IEnumerable<Binding> bindings, DependencyGraph? parentDependencyGraph)
 		{
 			var generators = new List<IDependencyExpressionGenerator>();
 			_objectActionContainer = new ObjectActionContainer();
@@ -56,7 +56,7 @@ namespace Singularity
 		{
 			foreach (T instance in instances)
 			{
-				MethodInject(instance);
+                if (instance != null) MethodInject(instance);
 			}
 		}
 

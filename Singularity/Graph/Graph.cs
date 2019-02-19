@@ -50,7 +50,7 @@ namespace Singularity.Graph
 			return _nodes.Values.GroupBy(x => x.Depth).OrderBy(x => x.Key).Select(x => x.Select(y => y.Value).ToArray()).ToArray();
 		}
 
-		private static int ResolveDepth(Node<T> dependencyNode, List<Node<T>> visitedNodes = null)
+		private static int ResolveDepth(Node<T> dependencyNode, List<Node<T>>? visitedNodes = null)
 		{
 			if (visitedNodes == null)
 			{
@@ -81,7 +81,7 @@ namespace Singularity.Graph
 		where T : class
 	{
 		public int? Depth { get; set; }
-		public Node<T>[] Parents { get; set; }
+		public Node<T>[]? Parents { get; set; }
 		public T Value { get; }
 
 		public Node(T value)

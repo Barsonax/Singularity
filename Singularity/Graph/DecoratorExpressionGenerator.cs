@@ -14,7 +14,7 @@ namespace Singularity.Graph
             if (binding.Decorators.Count > 0)
             {
                 Expression previousDecorator = instanceParameter;
-                foreach (IDecoratorBinding decorator in binding.Decorators)
+                foreach (DecoratorBinding decorator in binding.Decorators)
                 {
                     var visitor = new ReplaceExpressionVisitor(decorator.Expression.GetParameterExpressions().First(x => x.Type == instanceParameter.Type), previousDecorator);
                     Expression decoratorExpression = visitor.Visit(decorator.Expression);

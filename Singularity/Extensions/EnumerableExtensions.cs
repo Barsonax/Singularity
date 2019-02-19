@@ -9,7 +9,7 @@ namespace Singularity
 		[DebuggerStepThrough]
 		public static bool TryExecute<TObject>(this IEnumerable<TObject> objects, Action<TObject> action, out IList<Exception> exceptions)
 		{
-			exceptions = null;
+			exceptions = null!;
 			foreach (TObject o in objects)
 			{
 				try

@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq.Expressions;
-using Singularity.Bindings;
 using Singularity.Enums;
 
 namespace Singularity.Graph
@@ -12,10 +11,10 @@ namespace Singularity.Graph
         public Type DependencyType { get; }
         public Expression Expression { get; }
         public Lifetime Lifetime { get; }
-        public Action<object> OnDeath { get; }
-        public IReadOnlyCollection<IDecoratorBinding> Decorators { get; }
+        public Action<object>? OnDeath { get; }
+        public IReadOnlyCollection<DecoratorBinding> Decorators { get; }
 
-        public UnresolvedDependency(BindingMetadata bindingMetadata, Type dependencyType, Expression expression, Lifetime lifetime, IReadOnlyCollection<IDecoratorBinding> decorators, Action<object> onDeath)
+        public UnresolvedDependency(BindingMetadata bindingMetadata, Type dependencyType, Expression expression, Lifetime lifetime, IReadOnlyCollection<DecoratorBinding> decorators, Action<object>? onDeath)
         {
             BindingMetadata = bindingMetadata ?? throw new ArgumentNullException(nameof(bindingMetadata));
             DependencyType = dependencyType ?? throw new ArgumentNullException(nameof(dependencyType));
@@ -23,12 +22,6 @@ namespace Singularity.Graph
             Expression = expression ?? throw new ArgumentNullException(nameof(expression));
             Decorators = decorators ?? throw new ArgumentNullException(nameof(decorators));
             OnDeath = onDeath;
-        }
-
-        public UnresolvedDependency(Binding binding) : this(binding.BindingMetadata, binding.DependencyType, binding.Expression,
-            binding.Lifetime, binding.Decorators, binding.OnDeath)
-        {
-
         }
     }
 }

@@ -14,12 +14,15 @@ namespace Singularity.Graph
         public ReadOnlyDictionary<Type, Binding> Bindings { get; }
         public ReadOnlyDictionary<Type, Dependency> Dependencies { get; }
 
-        public DependencyGraph(IEnumerable<Binding> bindings, IEnumerable<IDependencyExpressionGenerator> dependencyExpressionGenerators, DependencyGraph parentDependencyGraph = null)
+        public DependencyGraph(IEnumerable<Binding> bindings, IEnumerable<IDependencyExpressionGenerator> dependencyExpressionGenerators, DependencyGraph? parentDependencyGraph = null)
         {
             Bindings = MergeBindings(bindings, parentDependencyGraph);
 
             Dictionary<Type, UnresolvedDependency> unresolvedDependencies =
-                Bindings.Values.Where(x => x.Expression != null).ToDictionary(x => x.DependencyType, x => new UnresolvedDependency(x));
+                Bindings.Values.Where(x => x.Expression != null).
+                ToDictionary(
+                    x => x.DependencyType, 
+                    x => new UnresolvedDependency(x.BindingMetadata, x.DependencyType, x.Expression!, x.Lifetime, x.Decorators, x.OnDeath));
             var graph = new Graph<UnresolvedDependency>(unresolvedDependencies.Values);
             UnresolvedDependency[][] updateOrder = graph.GetUpdateOrder(x => GetDependencies(x, unresolvedDependencies));
 
@@ -41,7 +44,7 @@ namespace Singularity.Graph
             Dependencies = new ReadOnlyDictionary<Type, Dependency>(dependencies);
         }
 
-        private static ReadOnlyDictionary<Type, Binding> MergeBindings(IEnumerable<Binding> childBindingConfig, DependencyGraph parentDependencyGraph)
+        private static ReadOnlyDictionary<Type, Binding> MergeBindings(IEnumerable<Binding> childBindingConfig, DependencyGraph? parentDependencyGraph)
         {
             var bindings = new Dictionary<Type, Binding>();
             foreach (Binding binding in childBindingConfig)
@@ -63,9 +66,9 @@ namespace Singularity.Graph
             {
                 if (bindings.TryGetValue(parentBinding.DependencyType, out Binding childBinding))
                 {
-                    List<IDecoratorBinding> decorators;
-                    Expression expression;
-                    Action<object> onDeathAction;
+                    List<DecoratorBinding> decorators;
+                    Expression? expression;
+                    Action<object>? onDeathAction;
                     BindingMetadata bindingMetadata;
                     if (parentBinding.Lifetime == Lifetime.PerContainer)
                     {

@@ -11,7 +11,7 @@ namespace Singularity.Bindings
 	public sealed class BindingConfig : IBindingConfig
 	{
 		internal IReadOnlyDictionary<Type, IBinding> Bindings => _bindings;
-		internal IModule CurrentModule;
+		internal IModule? CurrentModule;
 		private readonly Dictionary<Type, IBinding> _bindings = new Dictionary<Type, IBinding>();
 
 		/// <summary>
@@ -41,8 +41,19 @@ namespace Singularity.Bindings
 
 		public IEnumerator<Binding> GetEnumerator()
 		{
-			return Bindings.Values.Select(x => new Binding(x.BindingMetadata, x.DependencyType, x.Expression, x.Lifetime, x.Decorators, x.OnDeath)).GetEnumerator();
-		}
+            foreach (var binding in Bindings.Values)
+            {
+                if (binding.Expression == null && binding.Decorators.Count == 0) throw new BindingConfigException($"The binding at {binding.BindingMetadata.GetPosition()} does not have a expression");
+                var decorators = new List<DecoratorBinding>();
+                foreach (var decorator in binding.Decorators)
+                {
+                    if (decorator.Expression == null) throw new BindingConfigException($"The decorator for {decorator.DependencyType} does not have a expression");
+                    decorators.Add(new DecoratorBinding(decorator.Expression));
+                }
+                yield return new Binding(binding.BindingMetadata, binding.DependencyType, binding.Expression, binding.Lifetime, decorators, binding.OnDeath);
+            }
+            //return Bindings.Values.Select(x => new Binding(x.BindingMetadata, x.DependencyType, x.Expression, x.Lifetime, x.Decorators, x.OnDeath)).GetEnumerator();
+        }
 
 		IEnumerator IEnumerable.GetEnumerator()
 		{
