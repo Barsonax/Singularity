@@ -7,7 +7,7 @@ namespace Singularity.Collections
 	{
 		private Dictionary<Type, ObjectActionList> ObjectActionLists { get; } = new Dictionary<Type, ObjectActionList>();
 
-		public void AddAction(Type type, Action<object> action)
+		public void RegisterAction(Type type, Action<object> action)
 		{
 			ObjectActionLists.Add(type, new ObjectActionList(action));
 		}

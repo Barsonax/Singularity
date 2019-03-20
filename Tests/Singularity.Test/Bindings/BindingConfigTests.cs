@@ -89,7 +89,7 @@ namespace Singularity.Test.Bindings
 
             IBinding binding = config.Bindings.Values.First();
             Assert.Equal(typeof(object), binding.DependencyType);
-            Assert.Equal(typeof(object), binding.Expression.Type);
+            Assert.Equal(typeof(object), binding.Expression?.Type);
         }
 
         [Fact]
@@ -100,7 +100,7 @@ namespace Singularity.Test.Bindings
 
             IBinding binding = config.Bindings.Values.First();
             Assert.Equal(typeof(object), binding.DependencyType);
-            Assert.Equal(typeof(Func<object, object>), binding.Expression.Type);
+            Assert.Equal(typeof(Func<object, object>), binding.Expression?.Type);
         }
 
         [Fact]
@@ -111,7 +111,7 @@ namespace Singularity.Test.Bindings
 
             IBinding binding = config.Bindings.Values.First();
             Assert.Equal(typeof(object), binding.DependencyType);
-            Assert.Equal(typeof(Func<object, object, object>), binding.Expression.Type);
+            Assert.Equal(typeof(Func<object, object, object>), binding.Expression?.Type);
         }
 
         [Fact]
@@ -122,7 +122,7 @@ namespace Singularity.Test.Bindings
 
             IBinding binding = config.Bindings.Values.First();
             Assert.Equal(typeof(object), binding.DependencyType);
-            Assert.Equal(typeof(Func<object, object, object, object>), binding.Expression.Type);
+            Assert.Equal(typeof(Func<object, object, object, object>), binding.Expression?.Type);
         }
 
         [Fact]
@@ -133,7 +133,7 @@ namespace Singularity.Test.Bindings
 
             IBinding binding = config.Bindings.Values.First();
             Assert.Equal(typeof(object), binding.DependencyType);
-            Assert.Equal(typeof(Func<object, object, object, object, object>), binding.Expression.Type);
+            Assert.Equal(typeof(Func<object, object, object, object, object>), binding.Expression?.Type);
         }
 
         [Fact]
@@ -144,7 +144,7 @@ namespace Singularity.Test.Bindings
 
             IBinding binding = config.Bindings.Values.First();
             Assert.Equal(typeof(object), binding.DependencyType);
-            Assert.Equal(typeof(Func<object, object, object, object, object, object>), binding.Expression.Type);
+            Assert.Equal(typeof(Func<object, object, object, object, object, object>), binding.Expression?.Type);
         }
 
         [Fact]
@@ -155,7 +155,7 @@ namespace Singularity.Test.Bindings
 
             IBinding binding = config.Bindings.Values.First();
             Assert.Equal(typeof(object), binding.DependencyType);
-            Assert.Equal(typeof(Func<object, object, object, object, object, object, object>), binding.Expression.Type);
+            Assert.Equal(typeof(Func<object, object, object, object, object, object, object>), binding.Expression?.Type);
         }
 
         [Fact]
@@ -166,7 +166,7 @@ namespace Singularity.Test.Bindings
 
             IBinding binding = config.Bindings.Values.First();
             Assert.Equal(typeof(object), binding.DependencyType);
-            Assert.Equal(typeof(Func<object, object, object, object, object, object, object, object>), binding.Expression.Type);
+            Assert.Equal(typeof(Func<object, object, object, object, object, object, object, object>), binding.Expression?.Type);
         }
 
         [Fact]
@@ -177,7 +177,7 @@ namespace Singularity.Test.Bindings
 
             IBinding binding = config.Bindings.Values.First();
             Assert.Equal(typeof(object), binding.DependencyType);
-            Assert.Equal(typeof(Func<object, object, object, object, object, object, object, object, object>), binding.Expression.Type);
+            Assert.Equal(typeof(Func<object, object, object, object, object, object, object, object, object>), binding.Expression?.Type);
         }
     }
 }

@@ -25,7 +25,7 @@ namespace Singularity.Bindings
 		}
 
 		/// <summary>
-		/// Begins configuring a decorator to for <see cref="TDependency"/>.
+		/// Begins configuring a decorator to for <typeparamref name="TDependency"/>.
 		/// </summary>
 		/// <typeparam name="TDependency">The type to decorate</typeparam>
 		/// <exception cref="InterfaceExpectedException">If <typeparamref name="TDependency"/> is not a interface</exception>

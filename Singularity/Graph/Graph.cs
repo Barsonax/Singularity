@@ -39,7 +39,7 @@ namespace Singularity.Graph
 				throw new SingularityAggregateException("The following exceptions occured while determining the parents of the nodes in the graph", parentSelectorExceptions);
 			}
 
-			if (_nodes.Values.Where(x => x.Parents.Length != 0).TryExecute(node =>
+			if (_nodes.Values.Where(x => x.Parents!.Length != 0).TryExecute(node =>
 			{
 				node.Depth = ResolveDepth(node);
 			}, out IList<Exception> depthCalculationExceptions))
@@ -66,7 +66,7 @@ namespace Singularity.Graph
 
 			var maxDepth = 0;
 
-			foreach (Node<T> parent in dependencyNode.Parents)
+			foreach (Node<T> parent in dependencyNode.Parents!)
 			{
 				if (parent.Depth == null)
 					parent.Depth = ResolveDepth(parent, visitedNodes);

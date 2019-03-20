@@ -942,7 +942,7 @@ namespace Singularity.Test
 					var instance = new MethodInjectionClass();
 					container.MethodInject(instance);
 
-					Assert.Equal(typeof(TestService10), instance.TestService10.GetType());
+					Assert.Equal(typeof(TestService10), instance.TestService10?.GetType());
 				}
 
 				[Fact]
@@ -962,7 +962,7 @@ namespace Singularity.Test
 
 					foreach (MethodInjectionClass instance in instances)
 					{
-						Assert.Equal(typeof(TestService10), instance.TestService10.GetType());
+						Assert.Equal(typeof(TestService10), instance.TestService10?.GetType());
 					}
 				}
 
