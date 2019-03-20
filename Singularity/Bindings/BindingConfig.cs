@@ -1,25 +1,31 @@
 ﻿using System;
 using System.Collections;
 using System.Collections.Generic;
-using System.Linq;
 using System.Runtime.CompilerServices;
 using Singularity.Exceptions;
 using Singularity.Graph;
 
 namespace Singularity.Bindings
 {
-	public sealed class BindingConfig : IBindingConfig
+    public sealed class BindingConfig : IBindingConfig
 	{
 		internal IReadOnlyDictionary<Type, IBinding> Bindings => _bindings;
 		internal IModule? CurrentModule;
 		private readonly Dictionary<Type, IBinding> _bindings = new Dictionary<Type, IBinding>();
 
-		/// <summary>
-		/// Begins configuring a binding for a certain dependency
-		/// </summary>
-		/// <typeparam name="TDependency"></typeparam>
-		/// <returns></returns>
-		public StronglyTypedBinding<TDependency> For<TDependency>([CallerFilePath]string callerFilePath = "", [CallerLineNumber] int callerLineNumber = -1)
+        public StronglyTypedConfiguredBinding<TDependency, TInstance> Register<TDependency, TInstance>([CallerFilePath]string callerFilePath = "", [CallerLineNumber] int callerLineNumber = -1)
+            where TInstance : class, TDependency
+        {
+            var binding = Register<TDependency>(callerFilePath, callerLineNumber);
+            return binding.SetExpression<TInstance>(typeof(TInstance).AutoResolveConstructorExpression());
+        }
+
+        /// <summary>
+        /// Begins configuring a binding for a certain dependency
+        /// </summary>
+        /// <typeparam name="TDependency"></typeparam>
+        /// <returns></returns>
+        public StronglyTypedBinding<TDependency> Register<TDependency>([CallerFilePath]string callerFilePath = "", [CallerLineNumber] int callerLineNumber = -1)
 		{
 			return GetOrCreateBinding<TDependency>(callerFilePath, callerLineNumber);
 		}

@@ -32,7 +32,7 @@ namespace Singularity.Duality.Test
 			scene.AddObject(gameObject);
 
 			var bindings = new BindingConfig();
-			bindings.For<IModule>().Inject<TestModule>();
+            bindings.Register<IModule, TestModule>();
 			using (var sceneScope = new SceneScope(new Container(bindings), scene, new SceneEventsProviderMockup(), new LoggerMockup()))
 			{
 				Assert.IsType<TestModule>(testComponent.Module);
@@ -44,7 +44,7 @@ namespace Singularity.Duality.Test
 		public void AddGameObject_DependencyIsInjected()
 		{
 			var bindings = new BindingConfig();
-			bindings.For<IModule>().Inject<TestModule>();
+			bindings.Register<IModule, TestModule>();
 			var sceneEventsProvider = new SceneEventsProviderMockup();
 			using (var sceneScope = new SceneScope(new Container(bindings), new Scene(), sceneEventsProvider, new LoggerMockup()))
 			{
@@ -62,7 +62,7 @@ namespace Singularity.Duality.Test
 		public void AddComponent_DependencyIsInjected()
 		{
 			var bindings = new BindingConfig();
-			bindings.For<IModule>().Inject<TestModule>();
+			bindings.Register<IModule, TestModule>();
 			var sceneEventsProvider = new SceneEventsProviderMockup();
 			using (var sceneScope = new SceneScope(new Container(bindings), new Scene(), sceneEventsProvider, new LoggerMockup()))
 			{

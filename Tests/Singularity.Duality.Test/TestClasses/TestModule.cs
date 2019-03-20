@@ -6,7 +6,7 @@ namespace Singularity.Duality.Test
 	{
 		public void Register(BindingConfig bindingConfig)
 		{
-			bindingConfig.For<IModule>().Inject<TestModule>();
+			bindingConfig.Register<IModule, TestModule>();
 		}
 	}
 }

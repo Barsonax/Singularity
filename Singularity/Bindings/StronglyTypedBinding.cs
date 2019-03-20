@@ -8,15 +8,41 @@ using Singularity.Graph;
 
 namespace Singularity.Bindings
 {
+    /// <summary>
+    /// Represents a strongly typed binding registration for <typeparamref name="TDependency"/>.
+    /// </summary>
+    /// <typeparam name="TDependency"></typeparam>
 	public sealed class StronglyTypedBinding<TDependency> : IBinding
 	{
+        /// <summary>
+        /// The metadata of this binding.
+        /// </summary>
 		public BindingMetadata BindingMetadata { get; }
+
+        /// <summary>
+        /// The decorators for this binding.
+        /// </summary>
 		public List<IDecoratorBinding> Decorators { get; } = new List<IDecoratorBinding>();
 	    IReadOnlyList<IDecoratorBinding> IBinding.Decorators => Decorators;
+
+        /// <summary>
+        /// The type of this binding.
+        /// </summary>
 		public Type DependencyType { get; } = typeof(TDependency);
 
+        /// <summary>
+        /// A expression that is used to generate a instance.
+        /// </summary>
 		public Expression? Expression => ConfiguredBinding?.Expression;
+
+        /// <summary>
+        /// The lifetime of the generated instance(s).
+        /// </summary>
 		public Lifetime Lifetime => ConfiguredBinding?.Lifetime ?? Lifetime.PerCall;
+
+        /// <summary>
+        /// A action that will be invoked on the generated instance(s) when the container in which this binding is used is disposed.
+        /// </summary>
         public Action<object>? OnDeath => ConfiguredBinding?.OnDeath;
 	    private IConfiguredBinding? ConfiguredBinding { get; set; }
 
@@ -34,11 +60,11 @@ namespace Singularity.Bindings
         /// <exception cref="CannotAutoResolveConstructorException">If there is more than 1 public constructors</exception>
         /// <returns></returns>
         /// <overloads></overloads>
-        public StronglyTypedConfiguredBinding<TDependency, TInstance> Inject<TInstance>()
-			where TInstance : class, TDependency
-		{
-			return SetExpression<TInstance>(typeof(TInstance).AutoResolveConstructorExpression());
-		}
+  //      public StronglyTypedConfiguredBinding<TDependency, TInstance> Inject<TInstance>()
+		//	where TInstance : class, TDependency
+		//{
+		//	return SetExpression<TInstance>(typeof(TInstance).AutoResolveConstructorExpression());
+		//}
 
 		/// <summary>
 		/// Lets you provide a expression <see cref="System.Linq.Expressions.Expression"/> to create the instance constructor.
@@ -100,7 +126,8 @@ namespace Singularity.Bindings
 			return SetExpression<TInstance>(expression);
 		}
 
-		private StronglyTypedConfiguredBinding<TDependency, TInstance> SetExpression<TInstance>(Expression expression) where TInstance : class
+		internal StronglyTypedConfiguredBinding<TDependency, TInstance> SetExpression<TInstance>(Expression expression) 
+            where TInstance : class
 		{
 			var configuredBinding = new StronglyTypedConfiguredBinding<TDependency, TInstance>(expression);
 			ConfiguredBinding = configuredBinding;

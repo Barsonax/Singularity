@@ -6,7 +6,7 @@ namespace Singularity.Duality.Examples.Components
 	{
 		public void Register(BindingConfig bindingConfig)
 		{
-			bindingConfig.For<object>().Inject<Pathfinder>();
+			bindingConfig.Register<object, Pathfinder>();
 		}
 	}
 }

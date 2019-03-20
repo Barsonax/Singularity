@@ -14,7 +14,7 @@ namespace Singularity.Test.Graph
 	    public void Constructor_CorruptLifetimeValue_Throws()
 		{
 			var config = new BindingConfig();
-			config.For<ITestService10>().Inject<TestService10>().With((Lifetime)(-234324524));
+			config.Register<ITestService10, TestService10>().With((Lifetime)(-234324524));
 
 			var aggregateException = Assert.Throws<SingularityAggregateException>(() =>
 			{

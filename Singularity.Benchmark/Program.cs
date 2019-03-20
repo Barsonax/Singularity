@@ -26,7 +26,7 @@ namespace Singularity.Benchmark
         public InjectorBenchmark()
 		{
 		    var config = new BindingConfig();
-		    config.For<IInjectorTest>().Inject<InjectorTest>().With(Lifetime.PerContainer);
+		    config.Register<IInjectorTest, InjectorTest>().With(Lifetime.PerContainer);
             _singulairtyContainer = new Container(config);
 		    _instanceFactoryGeneric = _singulairtyContainer.GetInstanceFactory<IInjectorTest>();
 		    _instanceFactory = _singulairtyContainer.GetInstanceFactory(typeof(IInjectorTest));

@@ -6,7 +6,7 @@ namespace Singularity.Test.TestClasses
 	{
 		public void Register(BindingConfig bindingConfig)
 		{
-			bindingConfig.For<ITestService10>().Inject<TestService10>();
+			bindingConfig.Register<ITestService10, TestService10>();
 		}
 	}
 }

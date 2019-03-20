@@ -7,7 +7,7 @@ using Singularity.Graph;
 
 namespace Singularity.Bindings
 {
-	public interface IBinding
+	internal interface IBinding
 	{
 		BindingMetadata BindingMetadata { get; }
 		Type DependencyType { get; }

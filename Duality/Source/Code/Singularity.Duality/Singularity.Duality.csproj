@@ -15,6 +15,7 @@
     <Copyright>https://github.com/Barsonax/Singularity/blob/master/LICENSE</Copyright>
     <Configurations>Debug;Release;z_CI_config</Configurations>
     <LangVersion>8.0</LangVersion>
+    <NullableContextOptions>enable</NullableContextOptions>
     <DocumentationFile>C:\Git\Singularity\Duality\Source\Code\Singularity.Duality\bin\$(Configuration)\$(TargetFramework)\Singularity.Duality.core.xml</DocumentationFile>
   </PropertyGroup>
 

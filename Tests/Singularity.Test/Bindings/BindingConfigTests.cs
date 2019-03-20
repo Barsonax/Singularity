@@ -17,7 +17,7 @@ namespace Singularity.Test.Bindings
             Assert.Throws<BindingConfigException>(() =>
             {
                 var config = new BindingConfig();
-                config.For<ITestService10>();
+                config.Register<ITestService10>();
                 var container = new Container(config);
             });
         }
@@ -28,7 +28,7 @@ namespace Singularity.Test.Bindings
             Assert.Throws<BindingConfigException>(() =>
             {
                 var config = new BindingConfig();
-                config.For<ITestService10>().Inject<TestService10>();
+                config.Register<ITestService10, TestService10>();
                 config.Decorate<ITestService10>();
                 var container = new Container(config);
             });
@@ -48,9 +48,9 @@ namespace Singularity.Test.Bindings
 	    public void Enumerable_Enumerate()
 	    {
 		    var config = new BindingConfig();
-		    config.For<ITestService10>().Inject<TestService10>();
-		    config.For<ITestService11>().Inject<TestService11>();
-		    config.For<ITestService12>().Inject<TestService12>();
+		    config.Register<ITestService10, TestService10>();
+		    config.Register<ITestService11, TestService11>();
+		    config.Register<ITestService12, TestService12>();
 
 		    IEnumerable enumerable = config;
 
@@ -82,21 +82,10 @@ namespace Singularity.Test.Bindings
         }
 
         [Fact]
-        public void ForInjectArity0()
-        {
-            var config = new BindingConfig();
-            config.For<object>().Inject<object>();
-
-            IBinding binding = config.Bindings.Values.First();
-            Assert.Equal(typeof(object), binding.DependencyType);
-            Assert.Equal(typeof(object), binding.Expression?.Type);
-        }
-
-        [Fact]
         public void ForInjectArity1()
         {
             var config = new BindingConfig();
-            config.For<object>().Inject<object, object>((obj0) => new object());
+            config.Register<object>().Inject<object, object>((obj0) => new object());
 
             IBinding binding = config.Bindings.Values.First();
             Assert.Equal(typeof(object), binding.DependencyType);
@@ -107,7 +96,7 @@ namespace Singularity.Test.Bindings
         public void ForInjectArity2()
         {
             var config = new BindingConfig();
-            config.For<object>().Inject<object, object, object>((obj0, obj1) => new object());
+            config.Register<object>().Inject<object, object, object>((obj0, obj1) => new object());
 
             IBinding binding = config.Bindings.Values.First();
             Assert.Equal(typeof(object), binding.DependencyType);
@@ -118,7 +107,7 @@ namespace Singularity.Test.Bindings
         public void ForInjectArity3()
         {
             var config = new BindingConfig();
-            config.For<object>().Inject<object, object, object, object>((obj0, obj1, obj2) => new object());
+            config.Register<object>().Inject<object, object, object, object>((obj0, obj1, obj2) => new object());
 
             IBinding binding = config.Bindings.Values.First();
             Assert.Equal(typeof(object), binding.DependencyType);
@@ -129,7 +118,7 @@ namespace Singularity.Test.Bindings
         public void ForInjectArity4()
         {
             var config = new BindingConfig();
-            config.For<object>().Inject<object, object, object, object, object>((obj0, obj1, obj2, obj3) => new object());
+            config.Register<object>().Inject<object, object, object, object, object>((obj0, obj1, obj2, obj3) => new object());
 
             IBinding binding = config.Bindings.Values.First();
             Assert.Equal(typeof(object), binding.DependencyType);
@@ -140,7 +129,7 @@ namespace Singularity.Test.Bindings
         public void ForInjectArity5()
         {
             var config = new BindingConfig();
-            config.For<object>().Inject<object, object, object, object, object, object>((obj0, obj1, obj2, obj3, obj4) => new object());
+            config.Register<object>().Inject<object, object, object, object, object, object>((obj0, obj1, obj2, obj3, obj4) => new object());
 
             IBinding binding = config.Bindings.Values.First();
             Assert.Equal(typeof(object), binding.DependencyType);
@@ -151,7 +140,7 @@ namespace Singularity.Test.Bindings
         public void ForInjectArity6()
         {
             var config = new BindingConfig();
-            config.For<object>().Inject<object, object, object, object, object, object, object>((obj0, obj1, obj2, obj3, obj4, obj5) => new object());
+            config.Register<object>().Inject<object, object, object, object, object, object, object>((obj0, obj1, obj2, obj3, obj4, obj5) => new object());
 
             IBinding binding = config.Bindings.Values.First();
             Assert.Equal(typeof(object), binding.DependencyType);
@@ -162,7 +151,7 @@ namespace Singularity.Test.Bindings
         public void ForInjectArity7()
         {
             var config = new BindingConfig();
-            config.For<object>().Inject<object, object, object, object, object, object, object, object>((obj0, obj1, obj2, obj3, obj4, obj5, obj6) => new object());
+            config.Register<object>().Inject<object, object, object, object, object, object, object, object>((obj0, obj1, obj2, obj3, obj4, obj5, obj6) => new object());
 
             IBinding binding = config.Bindings.Values.First();
             Assert.Equal(typeof(object), binding.DependencyType);
@@ -173,7 +162,7 @@ namespace Singularity.Test.Bindings
         public void ForInjectArity8()
         {
             var config = new BindingConfig();
-            config.For<object>().Inject<object, object, object, object, object, object, object, object, object>((obj0, obj1, obj2, obj3, obj4, obj5, obj6, obj7) => new object());
+            config.Register<object>().Inject<object, object, object, object, object, object, object, object, object>((obj0, obj1, obj2, obj3, obj4, obj5, obj6, obj7) => new object());
 
             IBinding binding = config.Bindings.Values.First();
             Assert.Equal(typeof(object), binding.DependencyType);
