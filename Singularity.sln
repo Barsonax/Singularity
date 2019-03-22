@@ -1,7 +1,7 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio 15
-VisualStudioVersion = 15.0.27428.2015
+# Visual Studio Version 16
+VisualStudioVersion = 16.0.28711.60
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Singularity", "Singularity\Singularity.csproj", "{83CB49EE-53FD-43F6-A136-E688BAFA2148}"
 EndProject
@@ -49,6 +49,8 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Scripts", "Scripts", "{DED4
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Benchmarks", "Benchmarks", "{3B36A153-A0C6-4B5E-A8FD-D9B8F5471834}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Singularity.Web.Mvc", "Singularity.AspNetCore\Singularity.Web.Mvc.csproj", "{5A1B4D85-75D8-4118-9FE0-97C94DBD2B5A}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -90,6 +92,12 @@ Global
 		{403EA696-4514-4B11-80DE-216A4FA1A7E1}.Release|Any CPU.Build.0 = Release|Any CPU
 		{403EA696-4514-4B11-80DE-216A4FA1A7E1}.z_CI_config|Any CPU.ActiveCfg = z_CI_config|Any CPU
 		{403EA696-4514-4B11-80DE-216A4FA1A7E1}.z_CI_config|Any CPU.Build.0 = z_CI_config|Any CPU
+		{5A1B4D85-75D8-4118-9FE0-97C94DBD2B5A}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{5A1B4D85-75D8-4118-9FE0-97C94DBD2B5A}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{5A1B4D85-75D8-4118-9FE0-97C94DBD2B5A}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{5A1B4D85-75D8-4118-9FE0-97C94DBD2B5A}.Release|Any CPU.Build.0 = Release|Any CPU
+		{5A1B4D85-75D8-4118-9FE0-97C94DBD2B5A}.z_CI_config|Any CPU.ActiveCfg = Debug|Any CPU
+		{5A1B4D85-75D8-4118-9FE0-97C94DBD2B5A}.z_CI_config|Any CPU.Build.0 = Debug|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

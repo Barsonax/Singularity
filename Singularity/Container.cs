@@ -5,7 +5,7 @@ using System.Linq;
 using System.Linq.Expressions;
 using System.Reflection;
 using System.Runtime.CompilerServices;
-
+using System.Threading;
 using Singularity.Attributes;
 using Singularity.Bindings;
 using Singularity.Collections;
@@ -17,11 +17,9 @@ namespace Singularity
 	{
 		public bool IsDisposed { get; private set; }
 		private readonly DependencyGraph _dependencyGraph;
-
-		private readonly Dictionary<Type, Action<object>> _injectionCache = new Dictionary<Type, Action<object>>(ReferenceEqualityComparer<Type>.Instance);
-		private readonly Dictionary<Type, Func<object>> _getInstanceCache = new Dictionary<Type, Func<object>>(ReferenceEqualityComparer<Type>.Instance);
-
-		private readonly ObjectActionContainer _objectActionContainer;
+        private readonly ThreadSafeDictionary<Type, Action<object>> _injectionCache = new ThreadSafeDictionary<Type, Action<object>>();
+        private readonly ThreadSafeDictionary<Type, Func<object>> _getInstanceCache = new ThreadSafeDictionary<Type, Func<object>>();
+        private readonly ObjectActionContainer _objectActionContainer;
 
 		public Container(IEnumerable<IModule> modules) : this(modules.ToBindings(), null)
 		{
@@ -70,12 +68,13 @@ namespace Singularity
 
 		[MethodImpl(MethodImplOptions.AggressiveInlining)]
 		public Action<object> GetMethodInjector(Type type)
-		{
-			if (!_injectionCache.TryGetValue(type, out Action<object> action))
-			{
-				action = GenerateMethodInjector(type);
-				_injectionCache.Add(type, action);
-			}
+        {
+            Action<object> action = _injectionCache[type];
+            if (action == null)
+            {
+                action = GenerateMethodInjector(type);
+                _injectionCache.Add(type, action);
+            }
 			return action;
 		}
 
@@ -96,13 +95,14 @@ namespace Singularity
 		/// <returns></returns>
 		[MethodImpl(MethodImplOptions.AggressiveInlining)]
 		public Func<object> GetInstanceFactory(Type type)
-		{
-			if (!_getInstanceCache.TryGetValue(type, out Func<object> action))
-			{
-				action = GenerateInstanceFactory(type);
-				_getInstanceCache.Add(type, action);
-			}
-			return action;
+        {
+            Func<object> func = _getInstanceCache[type];
+            if (func == null)
+            {
+                func = GenerateInstanceFactory(type);
+                _getInstanceCache.Add(type, func);
+            }
+			return func;
 		}
 
 		/// <summary>
@@ -123,7 +123,7 @@ namespace Singularity
 		[MethodImpl(MethodImplOptions.AggressiveInlining)]
 		public object GetInstance(Type type) => GetInstanceFactory(type).Invoke();
 
-		private Func<object> GenerateInstanceFactory(Type type)
+        private Func<object> GenerateInstanceFactory(Type type)
 		{
 			Expression expression = GetDependencyExpression(type);
 
