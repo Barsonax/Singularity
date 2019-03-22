@@ -7,12 +7,23 @@ using Singularity.Graph;
 
 namespace Singularity.Bindings
 {
+    /// <summary>
+    /// A class to make configuring dependencies easier
+    /// </summary>
     public sealed class BindingConfig : IBindingConfig
 	{
 		internal IReadOnlyDictionary<Type, IBinding> Bindings => _bindings;
 		internal IModule? CurrentModule;
 		private readonly Dictionary<Type, IBinding> _bindings = new Dictionary<Type, IBinding>();
 
+        /// <summary>
+        /// Registers a new dependency and auto resolves a expression to create it.
+        /// </summary>
+        /// <typeparam name="TDependency"></typeparam>
+        /// <typeparam name="TInstance"></typeparam>
+        /// <param name="callerFilePath"></param>
+        /// <param name="callerLineNumber"></param>
+        /// <returns></returns>
         public StronglyTypedConfiguredBinding<TDependency, TInstance> Register<TDependency, TInstance>([CallerFilePath]string callerFilePath = "", [CallerLineNumber] int callerLineNumber = -1)
             where TInstance : class, TDependency
         {
@@ -45,6 +56,10 @@ namespace Singularity.Bindings
 			return decorator;
 		}
 
+        /// <summary>
+        /// Implementation of <see cref="IEnumerable{Binding}.GetEnumerator"/>
+        /// </summary>
+        /// <returns></returns>
 		public IEnumerator<Binding> GetEnumerator()
 		{
             foreach (var binding in Bindings.Values)
@@ -58,7 +73,6 @@ namespace Singularity.Bindings
                 }
                 yield return new Binding(binding.BindingMetadata, binding.DependencyType, binding.Expression, binding.Lifetime, decorators, binding.OnDeath);
             }
-            //return Bindings.Values.Select(x => new Binding(x.BindingMetadata, x.DependencyType, x.Expression, x.Lifetime, x.Decorators, x.OnDeath)).GetEnumerator();
         }
 
 		IEnumerator IEnumerable.GetEnumerator()

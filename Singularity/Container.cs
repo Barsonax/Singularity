@@ -13,19 +13,33 @@ using Singularity.Graph;
 
 namespace Singularity
 {
+    /// <summary>
+    /// A thread safe and lock free dependency injection container.
+    /// </summary>
 	public sealed class Container : IDisposable
 	{
+        /// <summary>
+        /// Is the container disposed or not?
+        /// </summary>
 		public bool IsDisposed { get; private set; }
 		private readonly DependencyGraph _dependencyGraph;
         private readonly ThreadSafeDictionary<Type, Action<object>> _injectionCache = new ThreadSafeDictionary<Type, Action<object>>();
         private readonly ThreadSafeDictionary<Type, Func<object>> _getInstanceCache = new ThreadSafeDictionary<Type, Func<object>>();
         private readonly ObjectActionContainer _objectActionContainer;
 
+        /// <summary>
+        /// Creates a new container using all the bindings that are in the provided modules
+        /// </summary>
+        /// <param name="modules"></param>
 		public Container(IEnumerable<IModule> modules) : this(modules.ToBindings(), null)
 		{
 
 		}
 
+        /// <summary>
+        /// Creates a new container with the provided bindings.
+        /// </summary>
+        /// <param name="bindings"></param>
 		public Container(IEnumerable<Binding> bindings) : this(bindings, null)
 		{
 
@@ -41,8 +55,17 @@ namespace Singularity
 			_dependencyGraph = new DependencyGraph(bindings, generators, parentDependencyGraph);
 		}
 
-		public Container GetNestedContainer(IEnumerable<IModule> modules) => GetNestedContainer(modules.ToBindings());
-		public Container GetNestedContainer(IEnumerable<Binding> bindings) => new Container(bindings, _dependencyGraph);
+        /// <summary>
+        /// Creates a new nested container using all the bindings that are in the provided modules
+        /// </summary>
+        /// <param name="modules"></param>
+        public Container GetNestedContainer(IEnumerable<IModule> modules) => GetNestedContainer(modules.ToBindings());
+
+        /// <summary>
+        /// Creates a new nested container with the provided bindings.
+        /// </summary>
+        /// <param name="bindings"></param>
+        public Container GetNestedContainer(IEnumerable<Binding> bindings) => new Container(bindings, _dependencyGraph);
 
 		/// <summary>
 		/// Injects dependencies by calling all methods marked with <see cref="InjectAttribute"/> on the <paramref name="instances"/>.
@@ -66,6 +89,12 @@ namespace Singularity
 		[MethodImpl(MethodImplOptions.AggressiveInlining)]
 		public void MethodInject(object instance) => GetMethodInjector(instance.GetType()).Invoke(instance);
 
+        /// <summary>
+        /// Gets a action that can be used to inject dependencies through method injection
+        /// <seealso cref="MethodInject(object)"/>
+        /// </summary>
+        /// <param name="type"></param>
+        /// <returns></returns>
 		[MethodImpl(MethodImplOptions.AggressiveInlining)]
 		public Action<object> GetMethodInjector(Type type)
         {
@@ -186,6 +215,9 @@ namespace Singularity
 			return action;
 		}
 
+        /// <summary>
+        /// Disposes the container.
+        /// </summary>
 		public void Dispose()
 		{
 			_objectActionContainer.Invoke();

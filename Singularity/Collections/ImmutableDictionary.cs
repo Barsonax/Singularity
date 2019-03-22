@@ -7,12 +7,12 @@ namespace Singularity.Collections
     {
         public static readonly ImmutableDictionary<TKey, TValue> Empty = new ImmutableDictionary<TKey, TValue>();
         public readonly int Count;
-        internal readonly ImmutableAvlNode<TKey, TValue>[] Buckets;
-        internal readonly int Divisor;
+        public readonly ImmutableAvlNode<TKey, TValue>[] Buckets;
+        public readonly int Divisor;
 
         public ImmutableDictionary<TKey, TValue> Add(TKey key, TValue value)
         {
-            return new ImmutableDictionary<TKey, TValue>(this, key, value);
+            return new ImmutableDictionary<TKey, TValue>(this, new KeyValue<TKey, TValue>(key, value));
         }
 
         public TValue this[TKey key] => Search(key);
@@ -24,14 +24,14 @@ namespace Singularity.Collections
             var bucketIndex = hashCode & (Divisor - 1);
             ImmutableAvlNode<TKey, TValue> avlNode = Buckets[bucketIndex];
 
-            while (avlNode.Height != 0 && avlNode.HashCode != hashCode)
+            while (avlNode.Height != 0 && avlNode.KeyValue.HashCode != hashCode)
             {
-                avlNode = hashCode < avlNode.HashCode ? avlNode.Left : avlNode.Right;
+                avlNode = hashCode < avlNode.KeyValue.HashCode ? avlNode.Left! : avlNode.Right!;
             }
 
-            if (avlNode.Height != 0 && (ReferenceEquals(avlNode.Key, key) || Equals(avlNode.Key, key)))
+            if (avlNode.Height != 0 && (ReferenceEquals(avlNode.KeyValue.Key, key) || Equals(avlNode.KeyValue.Key, key)))
             {
-                return avlNode.Value;
+                return avlNode.KeyValue.Value;
             }
 
             if (avlNode.Duplicates.Items.Length > 0)
@@ -45,10 +45,10 @@ namespace Singularity.Collections
                 }
             }
 
-            return default;
+            return default!;
         }
 
-        private ImmutableDictionary(ImmutableDictionary<TKey, TValue> previous, TKey key, TValue value)
+        private ImmutableDictionary(ImmutableDictionary<TKey, TValue> previous, KeyValue<TKey, TValue> keyValue)
         {
             this.Count = previous.Count + 1;
             if (previous.Count >= previous.Divisor)
@@ -65,9 +65,8 @@ namespace Singularity.Collections
                 Array.Copy(previous.Buckets, this.Buckets, previous.Divisor);
             }
 
-            var hashCode = RuntimeHelpers.GetHashCode(key);
-            var bucketIndex = hashCode & (this.Divisor - 1);
-            this.Buckets[bucketIndex] = this.Buckets[bucketIndex].Add(key, value);
+            var bucketIndex = keyValue.HashCode & (this.Divisor - 1);
+            this.Buckets[bucketIndex] = this.Buckets[bucketIndex].Add(keyValue);
         }
 
         private ImmutableDictionary()
@@ -85,7 +84,7 @@ namespace Singularity.Collections
                 {
                     int hashCode = RuntimeHelpers.GetHashCode(keyValue.Key);
                     int bucketIndex = hashCode & (this.Divisor - 1);
-                    this.Buckets[bucketIndex] = this.Buckets[bucketIndex].Add(keyValue.Key, keyValue.Value);
+                    this.Buckets[bucketIndex] = this.Buckets[bucketIndex].Add(keyValue);
                 }
             }
         }

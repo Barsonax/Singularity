@@ -31,8 +31,7 @@ namespace Singularity.Collections
         {
             while (true)
             {
-                if (Interlocked.CompareExchange(ref _immutableDictionary, _immutableDictionary.Add(key, value),
-                        _immutableDictionary) != _immutableDictionary)
+                if (Interlocked.CompareExchange(ref _immutableDictionary, _immutableDictionary.Add(key, value), _immutableDictionary) != _immutableDictionary)
                 {
                     break;
                 }
