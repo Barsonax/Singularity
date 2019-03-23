@@ -93,14 +93,15 @@ namespace Singularity
         /// <seealso cref="MethodInject(object)"/>
         /// </summary>
         /// <param name="type"></param>
+        /// <param name="throwError"></param>
         /// <returns></returns>
-		[MethodImpl(MethodImplOptions.AggressiveInlining)]
-		public Action<object> GetMethodInjector(Type type)
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+		public Action<object> GetMethodInjector(Type type, bool throwError = true)
         {
             Action<object> action = _injectionCache.Search(type);
             if (action == null)
             {
-                action = GenerateMethodInjector(type);
+                action = GenerateMethodInjector(type, throwError);
                 _injectionCache.Add(type, action);
             }
 			return action;
@@ -115,50 +116,52 @@ namespace Singularity
 		[MethodImpl(MethodImplOptions.AggressiveInlining)]
 		public Func<T> GetInstanceFactory<T>() where T : class => (Func<T>)GetInstanceFactory(typeof(T));
 
-		/// <summary>
-		/// Resolves a instance for the given dependency type
-		/// </summary>
-		/// <param name="type">The type of the dependency</param>
-		/// <exception cref="DependencyNotFoundException">If the dependency is not configured</exception>
-		/// <returns></returns>
-		[MethodImpl(MethodImplOptions.AggressiveInlining)]
-		public Func<object> GetInstanceFactory(Type type)
+        /// <summary>
+        /// Resolves a instance for the given dependency type
+        /// </summary>
+        /// <param name="type">The type of the dependency</param>
+        /// <param name="throwError"></param>
+        /// <exception cref="DependencyNotFoundException">If the dependency is not configured</exception>
+        /// <returns></returns>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public Func<object> GetInstanceFactory(Type type, bool throwError = true)
         {
             Func<object> func = _getInstanceCache.Search(type);
             if (func == null)
             {
-                func = GenerateInstanceFactory(type);
+                func = GenerateInstanceFactory(type, throwError);
                 _getInstanceCache.Add(type, func);
             }
-			return func;
-		}
+            return func;
+        }
 
-		/// <summary>
-		/// Resolves a instance for the given dependency type
-		/// </summary>
-		/// <typeparam name="T">The type of the dependency</typeparam>
-		/// <exception cref="DependencyNotFoundException">If the dependency is not configured</exception>
-		/// <returns></returns>
-		[MethodImpl(MethodImplOptions.AggressiveInlining)]
-		public T GetInstance<T>() where T : class => (T)GetInstance(typeof(T));
+        /// <summary>
+        /// Resolves a instance for the given dependency type
+        /// </summary>
+        /// <typeparam name="T">The type of the dependency</typeparam>
+        /// <exception cref="DependencyNotFoundException">If the dependency is not configured</exception>
+        /// <returns></returns>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public T GetInstance<T>(bool throwError = true) where T : class => (T)GetInstance(typeof(T), throwError);
 
-		/// <summary>
-		/// Resolves a instance for the given dependency type
-		/// </summary>
-		/// <param name="type">The type of the dependency</param>
-		/// <exception cref="DependencyNotFoundException">If the dependency is not configured</exception>
-		/// <returns></returns>
-		[MethodImpl(MethodImplOptions.AggressiveInlining)]
-		public object GetInstance(Type type) => GetInstanceFactory(type).Invoke();
+        /// <summary>
+        /// Resolves a instance for the given dependency type
+        /// </summary>
+        /// <param name="type">The type of the dependency</param>
+        /// <param name="throwError"></param>
+        /// <exception cref="DependencyNotFoundException">If the dependency is not configured</exception>
+        /// <returns></returns>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public object GetInstance(Type type, bool throwError = true) => GetInstanceFactory(type, throwError).Invoke();
 
-        private Func<object> GenerateInstanceFactory(Type type)
+        private Func<object> GenerateInstanceFactory(Type type, bool throwError)
 		{
-			Expression expression = GetDependencyExpression(type);
+			Expression expression = GetDependencyExpression(type, throwError);
 
 			return (Func<object>)Expression.Lambda(expression).Compile();
 		}
 
-		private Expression GetDependencyExpression(Type type)
+		private Expression GetDependencyExpression(Type type, bool throwError)
 		{
 			if (type.GetTypeInfo().IsInterface)
 			{
@@ -167,13 +170,20 @@ namespace Singularity
 					return dependencyNode.ResolvedDependency.Expression;
 				}
 
-				throw new DependencyNotFoundException(type);
+                if (throwError)
+                {
+                    throw new DependencyNotFoundException(type);
+                }
+                else
+                {
+                    return Expression.Default(type);
+                }
 			}
 
-			return GenerateConstructorInjector(type);
+			return GenerateConstructorInjector(type, throwError);
 		}
 
-		private Expression GenerateConstructorInjector(Type type)
+		private Expression GenerateConstructorInjector(Type type, bool throwError)
 		{
 			ConstructorInfo constructor = type.AutoResolveConstructor();
 			ParameterInfo[] parameters = constructor.GetParameters();
@@ -181,14 +191,14 @@ namespace Singularity
 			var arguments = new Expression[parameters.Length];
 			for (var i = 0; i < parameters.Length; i++)
 			{
-				Expression dependencyExpression = GetDependencyExpression(parameters[i].ParameterType);
+				Expression dependencyExpression = GetDependencyExpression(parameters[i].ParameterType, throwError);
 				arguments[i] = dependencyExpression;
 			}
 
 			return Expression.New(constructor, arguments);
 		}
 
-		private Action<object> GenerateMethodInjector(Type type)
+		private Action<object> GenerateMethodInjector(Type type, bool throwError)
 		{
 			ParameterExpression instanceParameter = Expression.Parameter(typeof(object));
 
@@ -203,7 +213,7 @@ namespace Singularity
 				for (var i = 0; i < parameterTypes.Length; i++)
 				{
 					Type parameterType = parameterTypes[i].ParameterType;
-					parameterExpressions[i] = GetDependencyExpression(parameterType);
+					parameterExpressions[i] = GetDependencyExpression(parameterType, throwError);
 				}
 				body.Add(Expression.Call(instanceCasted, methodInfo, parameterExpressions));
 			}
