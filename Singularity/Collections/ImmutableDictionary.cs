@@ -15,12 +15,9 @@ namespace Singularity.Collections
             return new ImmutableDictionary<TKey, TValue>(this, new KeyValue<TKey, TValue>(key, value));
         }
 
-        public TValue this[TKey key] => Search(key);
-
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public TValue Search(TKey key)
+        internal TValue SearchInternal(TKey key, int hashCode)
         {
-            var hashCode = RuntimeHelpers.GetHashCode(key);
             var bucketIndex = hashCode & (Divisor - 1);
             ImmutableAvlNode<TKey, TValue> avlNode = Buckets[bucketIndex];
 
@@ -82,8 +79,7 @@ namespace Singularity.Collections
             {
                 foreach (var keyValue in bucket.InOrder())
                 {
-                    int hashCode = RuntimeHelpers.GetHashCode(keyValue.Key);
-                    int bucketIndex = hashCode & (this.Divisor - 1);
+                    int bucketIndex = keyValue.HashCode & (this.Divisor - 1);
                     this.Buckets[bucketIndex] = this.Buckets[bucketIndex].Add(keyValue);
                 }
             }
@@ -95,6 +91,28 @@ namespace Singularity.Collections
             {
                 this.Buckets[i] = ImmutableAvlNode<TKey, TValue>.Empty;
             }
+        }
+    }
+
+    internal static class ImmutableDictionaryReferenceTypes
+    {
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static TValue Search<TKey, TValue, TKey2>(this ImmutableDictionary<TKey, TValue> instance, TKey2 key)
+            where TKey2 : class, TKey
+        {
+            var hashCode = RuntimeHelpers.GetHashCode(key);
+            return instance.SearchInternal(key, hashCode);
+        }
+    }
+
+    internal static class ImmutableDictionaryValueTypes
+    {
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static TValue Search<TKey, TValue, TKey2>(this ImmutableDictionary<TKey, TValue> instance, TKey2 key)
+            where TKey2 : struct, TKey
+        {
+            var hashCode = key.GetHashCode();
+            return instance.SearchInternal(key, hashCode);
         }
     }
 }

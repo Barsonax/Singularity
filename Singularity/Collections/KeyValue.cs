@@ -12,7 +12,7 @@ namespace Singularity.Collections
         {
             Key = key;
             Value = value;
-            HashCode = RuntimeHelpers.GetHashCode(key);
+            HashCode = key.GetHashCode();
         }
     }
 }

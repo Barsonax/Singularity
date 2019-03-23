@@ -97,7 +97,7 @@ namespace Singularity
 		[MethodImpl(MethodImplOptions.AggressiveInlining)]
 		public Action<object> GetMethodInjector(Type type)
         {
-            Action<object> action = _injectionCache[type];
+            Action<object> action = _injectionCache.Search(type);
             if (action == null)
             {
                 action = GenerateMethodInjector(type);
@@ -124,7 +124,7 @@ namespace Singularity
 		[MethodImpl(MethodImplOptions.AggressiveInlining)]
 		public Func<object> GetInstanceFactory(Type type)
         {
-            Func<object> func = _getInstanceCache[type];
+            Func<object> func = _getInstanceCache.Search(type);
             if (func == null)
             {
                 func = GenerateInstanceFactory(type);

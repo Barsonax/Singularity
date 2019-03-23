@@ -1,4 +1,5 @@
-﻿using System.Threading;
+﻿using System.Runtime.CompilerServices;
+using System.Threading;
 
 namespace Singularity.Collections
 {
@@ -10,15 +11,8 @@ namespace Singularity.Collections
     /// <typeparam name="TValue"></typeparam>
     internal class ThreadSafeDictionary<TKey, TValue>
     {
-        private ImmutableDictionary<TKey, TValue> _immutableDictionary = ImmutableDictionary<TKey, TValue>.Empty;
-
-        /// <summary>
-        /// Gets a key from the dictionary.
-        /// Thread safe.
-        /// </summary>
-        /// <param name="key"></param>
-        /// <returns></returns>
-        public TValue this[TKey key] => _immutableDictionary[key];
+        public int Count => _immutableDictionary.Count;
+        internal ImmutableDictionary<TKey, TValue> _immutableDictionary = ImmutableDictionary<TKey, TValue>.Empty;
 
         /// <summary>
         /// Adds a key to the dictionary.
@@ -28,13 +22,35 @@ namespace Singularity.Collections
         /// <param name="value"></param>
         public void Add(TKey key, TValue value)
         {
-            while (true)
+            ImmutableDictionary<TKey, TValue> initialValue, computedValue;
+            do
             {
-                if (Interlocked.CompareExchange(ref _immutableDictionary, _immutableDictionary.Add(key, value), _immutableDictionary) != _immutableDictionary)
-                {
-                    break;
-                }
+                initialValue = _immutableDictionary;
+                computedValue = _immutableDictionary.Add(key, value);
             }
+            while (initialValue != Interlocked.CompareExchange(ref _immutableDictionary, computedValue, initialValue));
+        }
+    }
+
+    internal static class ThreadSafeDictionaryReferenceTypes
+    {
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static TValue Search<TKey, TValue, TKey2>(this ThreadSafeDictionary<TKey, TValue> instance, TKey2 key)
+            where TKey2 : class, TKey
+        {
+            var hashCode = RuntimeHelpers.GetHashCode(key);
+            return instance._immutableDictionary.SearchInternal(key, hashCode);
+        }
+    }
+
+    internal static class ThreadSafeDictionaryValueTypes
+    {
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static TValue Search<TKey, TValue, TKey2>(this ThreadSafeDictionary<TKey, TValue> instance, TKey2 key)
+            where TKey2 : struct, TKey
+        {
+            var hashCode = key.GetHashCode();
+            return instance._immutableDictionary.SearchInternal(key, hashCode);
         }
     }
 }
