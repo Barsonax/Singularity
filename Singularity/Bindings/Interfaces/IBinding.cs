@@ -13,7 +13,7 @@ namespace Singularity.Bindings
 		Type DependencyType { get; }
 		Expression? Expression { get; }
 		Lifetime Lifetime { get; }
-		Action<object>? OnDeath { get; }
+		Action<object>? OnDeathAction { get; }
 		IReadOnlyList<IDecoratorBinding> Decorators { get; }
 	}
 }

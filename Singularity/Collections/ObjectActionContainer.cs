@@ -5,6 +5,7 @@ namespace Singularity.Collections
 {
 	internal sealed class ObjectActionContainer
 	{
+        private readonly object _locker = new object();
 		private Dictionary<Type, ObjectActionList> ObjectActionLists { get; } = new Dictionary<Type, ObjectActionList>();
 
 		public void RegisterAction(Type type, Action<object> action)
@@ -14,9 +15,12 @@ namespace Singularity.Collections
 
 		public void Add(object obj)
 		{
-			Type type = obj.GetType();
-			ObjectActionList objectActionList = ObjectActionLists[type];
-			objectActionList.Objects.Add(obj);
+            lock (_locker)
+            {
+                Type type = obj.GetType();
+                ObjectActionList objectActionList = ObjectActionLists[type];
+                objectActionList.Objects.Add(obj);
+            }
 		}
 
 		public void Invoke()

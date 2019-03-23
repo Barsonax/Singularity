@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System.Linq.Expressions;
 
 using Singularity.Enums;
-using Singularity.Exceptions;
 using Singularity.Graph;
 
 namespace Singularity.Bindings
@@ -43,7 +42,7 @@ namespace Singularity.Bindings
         /// <summary>
         /// A action that will be invoked on the generated instance(s) when the container in which this binding is used is disposed.
         /// </summary>
-        public Action<object>? OnDeath => ConfiguredBinding?.OnDeath;
+        public Action<object>? OnDeathAction => ConfiguredBinding?.OnDeath;
 	    private IConfiguredBinding? ConfiguredBinding { get; set; }
 
         internal StronglyTypedBinding(string callerFilePath, int callerLineNumber, IModule? module)

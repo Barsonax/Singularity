@@ -9,7 +9,6 @@ namespace Singularity.Collections
     /// <typeparam name="TKey"></typeparam>
     /// <typeparam name="TValue"></typeparam>
     internal class ThreadSafeDictionary<TKey, TValue>
-        where TValue : class
     {
         private ImmutableDictionary<TKey, TValue> _immutableDictionary = ImmutableDictionary<TKey, TValue>.Empty;
 

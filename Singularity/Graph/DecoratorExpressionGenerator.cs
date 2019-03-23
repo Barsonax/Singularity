@@ -1,8 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
 using System.Linq.Expressions;
-
-using Singularity.Bindings;
 using Singularity.Expressions;
 
 namespace Singularity.Graph

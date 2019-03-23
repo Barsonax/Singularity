@@ -5,7 +5,6 @@ using System.Linq;
 using System.Linq.Expressions;
 using System.Reflection;
 using System.Runtime.CompilerServices;
-using System.Threading;
 using Singularity.Attributes;
 using Singularity.Bindings;
 using Singularity.Collections;

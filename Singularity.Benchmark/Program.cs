@@ -1,7 +1,6 @@
 ﻿using BenchmarkDotNet.Attributes;
 using BenchmarkDotNet.Running;
 using System;
-using Singularity.Bindings;
 using Singularity.Enums;
 
 namespace Singularity.Benchmark

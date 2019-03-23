@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 using Singularity.Collections;
 using Singularity.Test.TestClasses;
 using Xunit;

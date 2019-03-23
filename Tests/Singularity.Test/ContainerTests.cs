@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using Singularity.Bindings;
 using Singularity.Enums;
 using Singularity.Exceptions;
 using Singularity.Test.TestClasses;
@@ -8,7 +7,7 @@ using Xunit;
 
 namespace Singularity.Test
 {
-	public class ContainerTests
+    public class ContainerTests
 	{
 		public class Nested
 		{

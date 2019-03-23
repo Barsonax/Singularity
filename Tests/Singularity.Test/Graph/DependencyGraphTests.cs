@@ -1,5 +1,4 @@
 ﻿using System.Collections.Generic;
-using Singularity.Bindings;
 using Singularity.Enums;
 using Singularity.Exceptions;
 using Singularity.Graph;
