@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq.Expressions;
-using Singularity.Enums;
 using Singularity.Graph;
 
 namespace Singularity.Bindings
@@ -20,7 +19,7 @@ namespace Singularity.Bindings
 
         public Expression? Expression { get; }
 
-        public Lifetime Lifetime { get; private set; }
+        public ILifetime Lifetime { get; private set; }
 
         public Action<object>? OnDeathAction { get; private set; }
 
@@ -31,9 +30,10 @@ namespace Singularity.Bindings
             BindingMetadata = new BindingMetadata(callerFilePath, callerLineNumber, module);
             DependencyType = dependencyType;
             Expression = expression;
+            Lifetime = Lifetimes.Transient;
         }
 
-        public WeaklyTypedBinding With(Lifetime lifetime)
+        public WeaklyTypedBinding With(ILifetime lifetime)
         {
             Lifetime = lifetime;
             return this;

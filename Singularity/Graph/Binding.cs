@@ -1,8 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq.Expressions;
-using Singularity.Enums;
-
 namespace Singularity.Graph
 {
     public sealed class Binding
@@ -10,15 +8,15 @@ namespace Singularity.Graph
         public BindingMetadata BindingMetadata { get; }
         public Type DependencyType { get; }
         public Expression? Expression { get; }
-        public Lifetime Lifetime { get; }
+        public ILifetime Lifetime { get; }
         public Action<object>? OnDeath { get; }
         public IReadOnlyList<DecoratorBinding> Decorators { get; }
 
-        public Binding(BindingMetadata bindingMetadata, Type dependencyType, Expression? expression, Lifetime lifetime, IReadOnlyList<DecoratorBinding> decorators, Action<object>? onDeath)
+        public Binding(BindingMetadata bindingMetadata, Type dependencyType, Expression? expression, ILifetime lifetime, IReadOnlyList<DecoratorBinding> decorators, Action<object>? onDeath)
         {
             BindingMetadata = bindingMetadata ?? throw new ArgumentNullException(nameof(bindingMetadata));
             DependencyType = dependencyType ?? throw new ArgumentNullException(nameof(dependencyType));
-            Lifetime = lifetime;
+            Lifetime = lifetime ?? throw new ArgumentNullException(nameof(lifetime));
             Expression = expression;
             Decorators = decorators ?? throw new ArgumentNullException(nameof(decorators));
             OnDeath = onDeath;

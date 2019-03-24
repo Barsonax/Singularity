@@ -1,7 +1,13 @@
 ﻿using BenchmarkDotNet.Attributes;
 using BenchmarkDotNet.Running;
 using System;
-using Singularity.Enums;
+using BenchmarkDotNet.Configs;
+using BenchmarkDotNet.Environments;
+using BenchmarkDotNet.Horology;
+using BenchmarkDotNet.Jobs;
+using Singularity.Benchmark.TestClasses;
+using System.Linq;
+using Singularity.Bindings;
 
 namespace Singularity.Benchmark
 {
@@ -9,146 +15,143 @@ namespace Singularity.Benchmark
     {
         static void Main()
         {
-            //BenchmarkRunner.Run<LookupBenchmark>();
             BenchmarkRunner.Run<InjectorBenchmark>();
             Console.ReadKey();
         }
     }
 
-	public class InjectorBenchmark
-	{
-		private readonly Container _singulairtyContainer;
-	    private readonly Func<IInjectorTest1> _instanceFactoryGeneric;
-	    private readonly Func<object> _instanceFactory;
-        private readonly MethodInjectorTest _methodInjectorTest = new MethodInjectorTest();
-	    private readonly Action<object> _methodInjector;
-
-        public InjectorBenchmark()
-		{
-		    var config = new BindingConfig();
-		    config.Register<IInjectorTest1, InjectorTest1>().With(Lifetime.PerContainer);
-            _singulairtyContainer = new Container(config);
-		    _instanceFactoryGeneric = _singulairtyContainer.GetInstanceFactory<IInjectorTest1>();
-		    _instanceFactory = _singulairtyContainer.GetInstanceFactory(typeof(IInjectorTest1));
-		    _methodInjector = _singulairtyContainer.GetMethodInjector(typeof(MethodInjectorTest));
-        }
-
-	    //[Benchmark]
-	    //public void MethodInjectorInvoke()
-	    //{
-     //       _methodInjector.Invoke(_methodInjectorTest);
-	    //}
-
-     //   [Benchmark]
-	    //public void MethodInjection()
-	    //{
-	    //    _singulairtyContainer.MethodInject(_methodInjectorTest);
-	    //}
-
-        //[Benchmark]
-        //public IInjectorTest1 GetInstanceFactoryGenericInvoke()
-        //{
-        //    return _instanceFactoryGeneric.Invoke();
-        //}
-
-        //[Benchmark]
-        //public IInjectorTest1 GetInstanceFactoryInvoke()
-        //{
-        //    return (IInjectorTest1)_instanceFactory.Invoke();
-        //}
-
-        [Benchmark]
-        public IInjectorTest1 GetInstanceGeneric()
+    public class CustomJob : ManualConfig
+    {
+        public CustomJob()
         {
-            return _singulairtyContainer.GetInstance<IInjectorTest1>();
+            Add(
+                Job.RyuJitX64
+                    .With(Runtime.Core)
+                    .WithIterationTime(TimeInterval.FromMilliseconds(100)));
+
+            Add(
+                Job.LegacyJitX64
+                    .With(Runtime.Clr)
+                    .WithIterationTime(TimeInterval.FromMilliseconds(100)));
+        }
+    }
+    [Config(typeof(CustomJob))]
+    [MemoryDiagnoser]
+    public class InjectorBenchmark
+    {
+        private Container _container;
+
+        [GlobalSetup]
+        public void Setup()
+        {
+            _container = NewContainer();
         }
 
         [Benchmark]
-        public IInjectorTest1 GetInstance()
+        public ISingleton1 Singleton()
         {
-            return (IInjectorTest1)_singulairtyContainer.GetInstance(typeof(IInjectorTest1));
+            return (ISingleton1)_container.GetInstance(typeof(ISingleton1));
         }
-    }
 
-    public class MethodInjectorTest
-    {
-
-        public void Init(IInjectorTest1 iiInjectorTest)
+        [Benchmark]
+        public ITransient1 Transient()
         {
-
+            return (ITransient1)_container.GetInstance(typeof(ITransient1));
         }
-    }
 
-	public class InjectorTest1 : IInjectorTest1
-	{
+        [Benchmark]
+        public ICombined1 Combined()
+        {
+            return (ICombined1)_container.GetInstance(typeof(ICombined1));
+        }
 
-	}
+        [Benchmark]
+        public IComplex1 Complex()
+        {
+            return (IComplex1)_container.GetInstance(typeof(IComplex1));
+        }
 
-	public interface IInjectorTest1
-	{
+        [Benchmark]
+        public void Register()
+        {
+            var config = new BindingConfig();
 
-	}
+            RegisterDummies(config);
+            RegisterStandard(config);
+            RegisterComplex(config);
+        }
 
-    public class InjectorTest2 : IInjectorTest2
-    {
+        [Benchmark]
+        public Container NewContainer()
+        {
+            var config = new BindingConfig();
 
-    }
+            RegisterDummies(config);
+            RegisterStandard(config);
+            RegisterComplex(config);
 
-    public interface IInjectorTest2
-    {
+            return new Container(config);
+        }
 
-    }
+        [Benchmark]
+        public IComplex1 NewContainerAndResolve()
+        {
+            var config = new BindingConfig();
 
-    public class InjectorTest3 : IInjectorTest3
-    {
+            RegisterDummies(config);
+            RegisterStandard(config);
+            RegisterComplex(config);
 
-    }
+            var container = new Container(config);
+            return (IComplex1)container.GetInstance(typeof(IComplex1));
+        }
 
-    public interface IInjectorTest3
-    {
+        [Benchmark]
+        public Container NewNestedContainer()
+        {
+            return _container.GetNestedContainer(Enumerable.Empty<IModule>());
+        }
 
-    }
+        private static void RegisterDummies(BindingConfig config)
+        {
+            config.Register<IDummyOne, DummyOne>();
+            config.Register<IDummyTwo, DummyTwo>();
+            config.Register<IDummyThree, DummyThree>();
+            config.Register<IDummyFour, DummyFour>();
+            config.Register<IDummyFive, DummyFive>();
+            config.Register<IDummySix, DummySix>();
+            config.Register<IDummySeven, DummySeven>();
+            config.Register<IDummyEight, DummyEight>();
+            config.Register<IDummyNine, DummyNine>();
+            config.Register<IDummyTen, DummyTen>();
+        }
 
-    public interface IInjectorTest4
-    {
+        private static void RegisterStandard(BindingConfig config)
+        {
+            config.Register<ISingleton1, Singleton1>().With(Lifetimes.Singleton);
+            config.Register<ISingleton2, Singleton2>().With(Lifetimes.Singleton);
+            config.Register<ISingleton3, Singleton3>().With(Lifetimes.Singleton);
+            config.Register<ITransient1, Transient1>();
+            config.Register<ITransient2, Transient2>();
+            config.Register<ITransient3, Transient3>();
+            config.Register<ICombined1, Combined1>();
+            config.Register<ICombined2, Combined2>();
+            config.Register<ICombined3, Combined3>();
+            config.Register<ICalculator1, Calculator1>();
+            config.Register<ICalculator2, Calculator2>();
+            config.Register<ICalculator3, Calculator3>();
+        }
 
-    }
 
-    public interface IInjectorTest5
-    {
-
-    }
-    public interface IInjectorTest6
-    {
-
-    }
-    public interface IInjectorTest7
-    {
-
-    }
-
-    public interface IInjectorTest8
-    {
-
-    }
-
-    public interface IInjectorTest9
-    {
-
-    }
-
-    public interface IInjectorTest10
-    {
-
-    }
-
-    public interface IInjectorTest11
-    {
-
-    }
-
-    public interface IInjectorTest12
-    {
-
+        private static void RegisterComplex(BindingConfig config)
+        {
+            config.Register<ISubObjectOne, SubObjectOne>();
+            config.Register<ISubObjectTwo, SubObjectTwo>();
+            config.Register<ISubObjectThree, SubObjectThree>();
+            config.Register<IFirstService, FirstService>().With(Lifetimes.Singleton);
+            config.Register<ISecondService, SecondService>().With(Lifetimes.Singleton);
+            config.Register<IThirdService, ThirdService>().With(Lifetimes.Singleton);
+            config.Register<IComplex1, Complex1>();
+        }
     }
 }

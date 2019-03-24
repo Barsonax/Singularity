@@ -9,11 +9,18 @@ namespace Singularity.Graph
 	internal sealed class Graph<T>
 		where T : class
 	{
-		private readonly Dictionary<T, Node<T>> _nodes = new Dictionary<T, Node<T>>();
+		private readonly Dictionary<T, Node<T>> _nodes;
+
+        public Graph(ICollection<T> values)
+        {
+            _nodes = new Dictionary<T, Node<T>>(values.Count);
+            Add(values);
+        }
 
 		public Graph(IEnumerable<T> values)
 		{
-			Add(values);
+            _nodes = new Dictionary<T, Node<T>>();
+            Add(values);
 		}
 
 		public void Add(T value)

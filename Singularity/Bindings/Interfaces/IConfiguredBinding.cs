@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Linq.Expressions;
 
-using Singularity.Enums;
 
 namespace Singularity.Bindings
 {
@@ -16,7 +15,7 @@ namespace Singularity.Bindings
         /// The lifetime of the dependency
         /// </summary>
         /// <seealso cref="Enums.Lifetime"/>
-		Lifetime Lifetime { get; }
+		ILifetime Lifetime { get; }
 
         /// <summary>
         /// A delegate that will be called when the dependency goes out of scope

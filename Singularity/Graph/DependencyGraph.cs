@@ -3,8 +3,10 @@ using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
 using System.Linq.Expressions;
-using Singularity.Enums;
+using System.Reflection;
+using Singularity.Collections;
 using Singularity.Exceptions;
+using Singularity.Expressions;
 
 namespace Singularity.Graph
 {
@@ -13,26 +15,24 @@ namespace Singularity.Graph
         public ReadOnlyDictionary<Type, Binding> Bindings { get; }
         public ReadOnlyDictionary<Type, Dependency> Dependencies { get; }
 
-        public DependencyGraph(IEnumerable<Binding> bindings, IEnumerable<IDependencyExpressionGenerator> dependencyExpressionGenerators, DependencyGraph? parentDependencyGraph = null)
+        private static readonly MethodInfo _addMethod = typeof(Scoped).GetRuntimeMethod(nameof(Scoped.Add), new[] { typeof(object) });
+
+        public DependencyGraph(IEnumerable<Binding> bindings, Scoped scope, DependencyGraph? parentDependencyGraph = null)
         {
             Bindings = MergeBindings(bindings, parentDependencyGraph);
 
-            Dictionary<Type, UnresolvedDependency> unresolvedDependencies =
-                Bindings.Values.Where(x => x.Expression != null).
-                ToDictionary(
-                    x => x.DependencyType, 
-                    x => new UnresolvedDependency(x.BindingMetadata, x.DependencyType, x.Expression!, x.Lifetime, x.Decorators, x.OnDeath));
-            var graph = new Graph<UnresolvedDependency>(unresolvedDependencies.Values);
-            UnresolvedDependency[][] updateOrder = graph.GetUpdateOrder(x => GetDependencies(x, unresolvedDependencies));
+            var graph = new Graph<Binding>(Bindings.Values);
+            Binding[][] updateOrder = graph.GetUpdateOrder(x => GetDependencies(x, Bindings));
 
             var dependencies = new Dictionary<Type, Dependency>();
 
             for (var i = 0; i < updateOrder.Length; i++)
             {
-                UnresolvedDependency[] group = updateOrder[i];
+                Binding[] group = updateOrder[i];
                 if (group.TryExecute(unresolvedDependency =>
                 {
-                    ResolvedDependency resolvedDependency = ResolveDependency(unresolvedDependency.DependencyType, unresolvedDependency, dependencyExpressionGenerators, dependencies);
+                    if (unresolvedDependency.Expression == null) return;
+                    ResolvedDependency resolvedDependency = ResolveDependency(unresolvedDependency.DependencyType, unresolvedDependency, dependencies, scope);
                     dependencies.Add(unresolvedDependency.DependencyType, new Dependency(unresolvedDependency, resolvedDependency));
                 }, out IList<Exception> exceptions))
                 {
@@ -45,11 +45,9 @@ namespace Singularity.Graph
 
         private static ReadOnlyDictionary<Type, Binding> MergeBindings(IEnumerable<Binding> childBindingConfig, DependencyGraph? parentDependencyGraph)
         {
-            var bindings = new Dictionary<Type, Binding>();
-            foreach (Binding binding in childBindingConfig)
-            {
-                bindings.Add(binding.DependencyType, new Binding(binding.BindingMetadata, binding.DependencyType, binding.Expression, binding.Lifetime, binding.Decorators, binding.OnDeath));
-            }
+            var bindings = childBindingConfig.ToDictionary(
+                x => x.DependencyType,
+                x => x);
 
             if (parentDependencyGraph != null)
             {
@@ -69,7 +67,7 @@ namespace Singularity.Graph
                     Expression? expression;
                     Action<object>? onDeathAction;
                     BindingMetadata bindingMetadata;
-                    if (parentBinding.Lifetime == Lifetime.PerContainer)
+                    if (parentBinding.Lifetime == Lifetimes.Singleton)
                     {
                         if (childBinding.Expression == null)
                         {
@@ -100,7 +98,7 @@ namespace Singularity.Graph
                 }
                 else
                 {
-                    if (parentBinding.Lifetime == Lifetime.PerContainer)
+                    if (parentBinding.Lifetime == Lifetimes.Singleton)
                     {
                         var readonlyBinding = new Binding(
                             parentBinding.BindingMetadata,
@@ -119,9 +117,11 @@ namespace Singularity.Graph
             }
         }
 
-        private static IEnumerable<UnresolvedDependency> GetDependencies(UnresolvedDependency unresolvedDependency, Dictionary<Type, UnresolvedDependency> unresolvedDependencies)
+        private static IEnumerable<Binding> GetDependencies(Binding unresolvedDependency, ReadOnlyDictionary<Type, Binding> unresolvedDependencies)
         {
-            var resolvedDependencies = new List<UnresolvedDependency>();
+            if (unresolvedDependency.Expression == null) return Enumerable.Empty<Binding>();
+
+            var resolvedDependencies = new List<Binding>();
             if (unresolvedDependency.Expression.GetParameterExpressions()
                 .TryExecute(dependencyType => { resolvedDependencies.Add(GetDependency(dependencyType.Type, unresolvedDependencies)); }, out IList<Exception> dependencyExceptions))
             {
@@ -145,15 +145,15 @@ namespace Singularity.Graph
             throw new DependencyNotFoundException(type);
         }
 
-        private ResolvedDependency ResolveDependency(Type dependencyType, UnresolvedDependency unresolvedDependency, IEnumerable<IDependencyExpressionGenerator> dependencyExpressionGenerators, Dictionary<Type, Dependency> resolvedDependencies)
+        private ResolvedDependency ResolveDependency(Type dependencyType, Binding unresolvedDependency, Dictionary<Type, Dependency> resolvedDependencies, Scoped scope)
         {
-            Expression expression = GenerateDependencyExpression(dependencyType, unresolvedDependency, dependencyExpressionGenerators, resolvedDependencies);
+            Expression expression = GenerateDependencyExpression(dependencyType, unresolvedDependency, resolvedDependencies, scope);
 
             switch (unresolvedDependency.Lifetime)
             {
-                case Lifetime.PerCall:
+                case Transient _:
                     break;
-                case Lifetime.PerContainer:
+                case Singleton _:
                     Delegate action = Expression.Lambda(expression).Compile();
                     object value = action.DynamicInvoke();
                     expression = Expression.Constant(value, dependencyType);
@@ -161,10 +161,11 @@ namespace Singularity.Graph
                 default:
                     throw new InvalidLifetimeException(unresolvedDependency);
             }
-            return new ResolvedDependency(expression);
+
+            return new ResolvedDependency(expression, unresolvedDependency.Lifetime);
         }
 
-        private static Expression GenerateDependencyExpression(Type dependencyType, UnresolvedDependency binding, IEnumerable<IDependencyExpressionGenerator> dependencyExpressionGenerators, Dictionary<Type, Dependency> resolvedDependencies)
+        private static Expression GenerateDependencyExpression(Type dependencyType, Binding binding, Dictionary<Type, Dependency> resolvedDependencies, Scoped scope)
         {
             Expression expression = binding.Expression is LambdaExpression lambdaExpression ? lambdaExpression.Body : binding.Expression;
             var body = new List<Expression>();
@@ -173,9 +174,24 @@ namespace Singularity.Graph
 
             ParameterExpression instanceParameter = Expression.Variable(dependencyType, $"{expression.Type} instance");
             body.Add(Expression.Assign(instanceParameter, Expression.Convert(expression, dependencyType)));
-            foreach (IDependencyExpressionGenerator dependencyExpressionGenerator in dependencyExpressionGenerators)
+
+            if (binding.OnDeath != null)
             {
-                dependencyExpressionGenerator.Generate(binding, instanceParameter, parameters, body);
+                scope.RegisterAction(binding.Expression.Type, binding.OnDeath);
+                body.Add(Expression.Call(Expression.Constant(scope), _addMethod, instanceParameter));
+            }
+
+            if (binding.Decorators.Count > 0)
+            {
+                Expression previousDecorator = instanceParameter;
+                foreach (DecoratorBinding decorator in binding.Decorators)
+                {
+                    var visitor = new ReplaceExpressionVisitor(decorator.Expression.GetParameterExpressions().First(x => x.Type == instanceParameter.Type), previousDecorator);
+                    Expression decoratorExpression = visitor.Visit(decorator.Expression);
+                    parameters.AddRange(decoratorExpression.GetParameterExpressions().Where(parameterExpression => parameterExpression.Type != instanceParameter.Type));
+                    previousDecorator = decoratorExpression;
+                }
+                body.Add(previousDecorator);
             }
 
             foreach (ParameterExpression unresolvedParameter in parameters)

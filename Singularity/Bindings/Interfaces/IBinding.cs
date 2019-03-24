@@ -2,7 +2,6 @@
 using System.Collections.Generic;
 using System.Linq.Expressions;
 
-using Singularity.Enums;
 using Singularity.Graph;
 
 namespace Singularity.Bindings
@@ -12,7 +11,7 @@ namespace Singularity.Bindings
 		BindingMetadata BindingMetadata { get; }
 		Type DependencyType { get; }
 		Expression? Expression { get; }
-		Lifetime Lifetime { get; }
+		ILifetime Lifetime { get; }
 		Action<object>? OnDeathAction { get; }
 		IReadOnlyList<IDecoratorBinding> Decorators { get; }
 	}

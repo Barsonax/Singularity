@@ -2,7 +2,6 @@
 using System.Collections.Generic;
 using System.Linq.Expressions;
 
-using Singularity.Enums;
 using Singularity.Graph;
 
 namespace Singularity.Bindings
@@ -37,7 +36,7 @@ namespace Singularity.Bindings
         /// <summary>
         /// The lifetime of the generated instance(s).
         /// </summary>
-		public Lifetime Lifetime => ConfiguredBinding?.Lifetime ?? Lifetime.PerCall;
+		public ILifetime Lifetime => ConfiguredBinding?.Lifetime ?? Lifetimes.Transient;
 
         /// <summary>
         /// A action that will be invoked on the generated instance(s) when the container in which this binding is used is disposed.

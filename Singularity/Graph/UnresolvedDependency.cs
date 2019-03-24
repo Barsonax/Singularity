@@ -1,27 +1,24 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq.Expressions;
-using Singularity.Enums;
 
 namespace Singularity.Graph
 {
     public sealed class UnresolvedDependency
     {
-        public BindingMetadata BindingMetadata { get; }
-        public Type DependencyType { get; }
-        public Expression Expression { get; }
-        public Lifetime Lifetime { get; }
-        public Action<object>? OnDeath { get; }
-        public IReadOnlyCollection<DecoratorBinding> Decorators { get; }
+        public BindingMetadata BindingMetadata => _binding.BindingMetadata;
+        public Type DependencyType => _binding.DependencyType;
+        public Expression Expression => _binding.Expression!;
+        public ILifetime Lifetime => _binding.Lifetime;
+        public Action<object>? OnDeath => _binding.OnDeath;
+        public IReadOnlyCollection<DecoratorBinding> Decorators => _binding.Decorators;
 
-        public UnresolvedDependency(BindingMetadata bindingMetadata, Type dependencyType, Expression expression, Lifetime lifetime, IReadOnlyCollection<DecoratorBinding> decorators, Action<object>? onDeath)
+        private readonly Binding _binding;
+
+        public UnresolvedDependency(Binding binding)
         {
-            BindingMetadata = bindingMetadata ?? throw new ArgumentNullException(nameof(bindingMetadata));
-            DependencyType = dependencyType ?? throw new ArgumentNullException(nameof(dependencyType));
-            Lifetime = lifetime;
-            Expression = expression ?? throw new ArgumentNullException(nameof(expression));
-            Decorators = decorators ?? throw new ArgumentNullException(nameof(decorators));
-            OnDeath = onDeath;
+            if (binding.Expression == null) throw new ArgumentNullException(nameof(binding.Expression));
+            _binding = binding;
         }
     }
 }
