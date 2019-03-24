@@ -20,8 +20,8 @@ namespace Singularity.Bindings
         /// <summary>
         /// The decorators for this binding.
         /// </summary>
-		public List<IDecoratorBinding> Decorators { get; } = new List<IDecoratorBinding>();
-	    IReadOnlyList<IDecoratorBinding> IBinding.Decorators => Decorators;
+		public List<IDecoratorBinding>? Decorators { get; internal set; }
+        IReadOnlyList<IDecoratorBinding>? IBinding.Decorators => Decorators;
 
         /// <summary>
         /// The type of this binding.

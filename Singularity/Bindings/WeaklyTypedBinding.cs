@@ -23,7 +23,7 @@ namespace Singularity.Bindings
 
         public Action<object>? OnDeathAction { get; private set; }
 
-        public IReadOnlyList<IDecoratorBinding> Decorators { get; } = new List<IDecoratorBinding>();
+        public IReadOnlyList<IDecoratorBinding>? Decorators { get; }
 
         internal WeaklyTypedBinding(Type dependencyType, Expression? expression, string callerFilePath, int callerLineNumber, IModule? module)
         {

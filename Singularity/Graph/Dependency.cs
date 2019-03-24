@@ -4,13 +4,13 @@ namespace Singularity.Graph
 {
     internal sealed class Dependency
     {
-        public Binding UnresolvedDependency { get; }
-        public ResolvedDependency ResolvedDependency { get; }
+        public Binding Binding { get; }
+        public Dependency[]? Dependencies { get; set; }
+        public ResolvedDependency? ResolvedDependency { get; set; }
 
-        public Dependency(Binding unresolvedDependency, ResolvedDependency resolvedDependency)
+        public Dependency(Binding unresolvedDependency)
         {
-            UnresolvedDependency = unresolvedDependency ?? throw new ArgumentNullException(nameof(unresolvedDependency));
-            ResolvedDependency = resolvedDependency ?? throw new ArgumentNullException(nameof(resolvedDependency));
+            Binding = unresolvedDependency ?? throw new ArgumentNullException(nameof(unresolvedDependency));
         }
     }
 }

@@ -160,7 +160,7 @@ namespace Singularity
         {
             if (type.GetTypeInfo().IsInterface)
             {
-                if (_dependencyGraph.Dependencies.TryGetValue(type, out Dependency dependencyNode))
+                if (_dependencyGraph.TryGetDependency(type, out Dependency dependencyNode))
                 {
                     return dependencyNode.ResolvedDependency.Expression;
                 }

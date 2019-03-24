@@ -6,12 +6,10 @@ namespace Singularity.Graph
     internal sealed class ResolvedDependency
     {
         public Expression Expression { get; }
-        public ILifetime Lifetime { get; }
 
-        public ResolvedDependency(Expression expression, ILifetime lifetime)
+        public ResolvedDependency(Expression expression)
         {
 	        Expression = expression ?? throw new ArgumentNullException(nameof(expression));
-            Lifetime = lifetime ?? throw new ArgumentNullException(nameof(lifetime));
         }
     }
 }

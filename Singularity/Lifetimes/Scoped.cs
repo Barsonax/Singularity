@@ -10,7 +10,10 @@ namespace Singularity
 
         public void RegisterAction(Type type, Action<object> action)
         {
-            ObjectActionLists.Add(type, new ObjectActionList(action));
+            lock (_locker)
+            {
+                ObjectActionLists.Add(type, new ObjectActionList(action));
+            }
         }
 
         public void Add(object obj)
@@ -25,11 +28,14 @@ namespace Singularity
 
         public void Dispose()
         {
-            foreach (ObjectActionList objectActionList in ObjectActionLists.Values)
+            lock (_locker)
             {
-                foreach (object obj in objectActionList.Objects)
+                foreach (ObjectActionList objectActionList in ObjectActionLists.Values)
                 {
-                    objectActionList.Action.Invoke(obj);
+                    foreach (object obj in objectActionList.Objects)
+                    {
+                        objectActionList.Action.Invoke(obj);
+                    }
                 }
             }
         }

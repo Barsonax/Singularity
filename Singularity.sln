@@ -49,6 +49,8 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Scripts", "Scripts", "{DED4
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Benchmarks", "Benchmarks", "{3B36A153-A0C6-4B5E-A8FD-D9B8F5471834}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Singularity.TestClasses", "Singularity.TestClasses\Singularity.TestClasses.csproj", "{95E46EE0-5C12-4096-B6D6-5B1BC0D33806}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -90,6 +92,12 @@ Global
 		{403EA696-4514-4B11-80DE-216A4FA1A7E1}.Release|Any CPU.Build.0 = Release|Any CPU
 		{403EA696-4514-4B11-80DE-216A4FA1A7E1}.z_CI_config|Any CPU.ActiveCfg = z_CI_config|Any CPU
 		{403EA696-4514-4B11-80DE-216A4FA1A7E1}.z_CI_config|Any CPU.Build.0 = z_CI_config|Any CPU
+		{95E46EE0-5C12-4096-B6D6-5B1BC0D33806}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{95E46EE0-5C12-4096-B6D6-5B1BC0D33806}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{95E46EE0-5C12-4096-B6D6-5B1BC0D33806}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{95E46EE0-5C12-4096-B6D6-5B1BC0D33806}.Release|Any CPU.Build.0 = Release|Any CPU
+		{95E46EE0-5C12-4096-B6D6-5B1BC0D33806}.z_CI_config|Any CPU.ActiveCfg = Debug|Any CPU
+		{95E46EE0-5C12-4096-B6D6-5B1BC0D33806}.z_CI_config|Any CPU.Build.0 = Debug|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -103,6 +111,7 @@ Global
 		{403EA696-4514-4B11-80DE-216A4FA1A7E1} = {2C762633-E965-4223-94D4-B66EB384AF27}
 		{DED403CC-1121-4F8C-83BA-9A434714380C} = {89675F4E-9165-406B-8CF0-F68A615B7EA8}
 		{3B36A153-A0C6-4B5E-A8FD-D9B8F5471834} = {2C762633-E965-4223-94D4-B66EB384AF27}
+		{95E46EE0-5C12-4096-B6D6-5B1BC0D33806} = {2C762633-E965-4223-94D4-B66EB384AF27}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {BD420494-AD08-423A-8393-09273048EF76}

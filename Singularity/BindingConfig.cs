@@ -69,6 +69,7 @@ namespace Singularity
         {
             var decorator = new StronglyTypedDecoratorBinding<TDependency>();
             StronglyTypedBinding<TDependency> binding = GetOrCreateBinding<TDependency>(callerFilePath, callerLineNumber);
+            if (binding.Decorators == null) binding.Decorators = new List<IDecoratorBinding>();
             binding.Decorators.Add(decorator);
             return decorator;
         }
@@ -81,13 +82,24 @@ namespace Singularity
         {
             foreach (var binding in Bindings.Values)
             {
-                if (binding.Expression == null && binding.Decorators.Count == 0) throw new BindingConfigException($"The binding at {binding.BindingMetadata.GetPosition()} does not have a expression");
-                var decorators = new List<DecoratorBinding>();
-                foreach (var decorator in binding.Decorators)
+                if (binding.Expression == null && binding.Decorators == null) throw new BindingConfigException($"The binding at {binding.BindingMetadata.GetPosition()} does not have a expression");
+                DecoratorBinding[] decorators;
+                if (binding.Decorators != null)
                 {
-                    if (decorator.Expression == null) throw new BindingConfigException($"The decorator for {decorator.DependencyType} does not have a expression");
-                    decorators.Add(new DecoratorBinding(decorator.Expression));
+                    decorators = new DecoratorBinding[binding.Decorators.Count];
+                    for (var i = 0; i < binding.Decorators.Count; i++)
+                    {
+                        IDecoratorBinding decorator = binding.Decorators[i];
+                        if (decorator.Expression == null) throw new BindingConfigException($"The decorator for {decorator.DependencyType} does not have a expression");
+                        decorators[i] = new DecoratorBinding(decorator.Expression);
+                    }
                 }
+                else
+                {
+                    decorators = new DecoratorBinding[0];
+                }
+
+
                 yield return new Binding(binding.BindingMetadata, binding.DependencyType, binding.Expression, binding.Lifetime, decorators, binding.OnDeathAction);
             }
         }
