@@ -1,5 +1,4 @@
 ﻿using System;
-using Singularity.Bindings;
 
 namespace Singularity.Graph
 {

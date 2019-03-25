@@ -1,6 +1,4 @@
-﻿using System;
-
-namespace Singularity.Graph
+﻿namespace Singularity.Graph
 {
     internal sealed class Dependency
     {
@@ -10,7 +8,7 @@ namespace Singularity.Graph
 
         public Dependency(Binding unresolvedDependency)
         {
-            Binding = unresolvedDependency ?? throw new ArgumentNullException(nameof(unresolvedDependency));
+            Binding = unresolvedDependency;
         }
     }
 }

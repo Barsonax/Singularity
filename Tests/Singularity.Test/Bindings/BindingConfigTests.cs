@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections;
+using System.Collections.ObjectModel;
 using System.Linq;
 using Singularity.Bindings;
 using Singularity.Exceptions;
@@ -45,20 +46,19 @@ namespace Singularity.Test.Bindings
 		}
 
 	    [Fact]
-	    public void Enumerable_Enumerate()
+	    public void GetDependencies_Enumerate()
 	    {
 		    var config = new BindingConfig();
 		    config.Register<ITestService10, TestService10>();
 		    config.Register<ITestService11, TestService11>();
 		    config.Register<ITestService12, TestService12>();
 
-		    IEnumerable enumerable = config;
+		    var bindings = config.GetDependencies().Values.ToArray();
 
-		    Binding[] bindings = enumerable.OfType<Binding>().ToArray();
 			Assert.Equal(3, bindings.Length);
-		    Assert.Contains(bindings, x => x.DependencyType == typeof(ITestService10));
-		    Assert.Contains(bindings, x => x.DependencyType == typeof(ITestService11));
-		    Assert.Contains(bindings, x => x.DependencyType == typeof(ITestService12));
+		    Assert.Contains(bindings, x => x.Binding.DependencyType == typeof(ITestService10));
+		    Assert.Contains(bindings, x => x.Binding.DependencyType == typeof(ITestService11));
+		    Assert.Contains(bindings, x => x.Binding.DependencyType == typeof(ITestService12));
 		}
 
 		[Fact]

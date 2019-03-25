@@ -2,7 +2,6 @@
 using System.Linq;
 using Duality;
 using Duality.Resources;
-using Singularity.Bindings;
 using Singularity.Duality.Scopes;
 
 using Xunit;

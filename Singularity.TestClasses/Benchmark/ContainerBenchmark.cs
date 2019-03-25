@@ -1,6 +1,6 @@
 ﻿using System.Linq;
+using System.Runtime.CompilerServices;
 using Singularity.Benchmark.TestClasses;
-using Singularity.Bindings;
 
 namespace Singularity.TestClasses.Benchmark
 {
@@ -37,18 +37,23 @@ namespace Singularity.TestClasses.Benchmark
         {
             var config = new BindingConfig();
 
-            RegisterDummies(config);
-            RegisterStandard(config);
-            RegisterComplex(config);
+            Register(config);
+        }
+
+        public void RegisterAndEnumerate()
+        {
+            var config = new BindingConfig();
+
+            Register(config);
+
+            config.GetDependencies();
         }
 
         public Container NewContainer()
         {
             var config = new BindingConfig();
 
-            RegisterDummies(config);
-            RegisterStandard(config);
-            RegisterComplex(config);
+            Register(config);
 
             return new Container(config);
         }
@@ -57,9 +62,7 @@ namespace Singularity.TestClasses.Benchmark
         {
             var config = new BindingConfig();
 
-            RegisterDummies(config);
-            RegisterStandard(config);
-            RegisterComplex(config);
+            Register(config);
 
             var container = new Container(config);
             return (IComplex1)container.GetInstance(typeof(IComplex1));
@@ -70,7 +73,7 @@ namespace Singularity.TestClasses.Benchmark
             return _container.GetNestedContainer(Enumerable.Empty<IModule>());
         }
 
-        private static void RegisterDummies(BindingConfig config)
+        private static void Register(BindingConfig config)
         {
             config.Register<IDummyOne, DummyOne>();
             config.Register<IDummyTwo, DummyTwo>();
@@ -82,10 +85,7 @@ namespace Singularity.TestClasses.Benchmark
             config.Register<IDummyEight, DummyEight>();
             config.Register<IDummyNine, DummyNine>();
             config.Register<IDummyTen, DummyTen>();
-        }
 
-        private static void RegisterStandard(BindingConfig config)
-        {
             config.Register<ISingleton1, Singleton1>().With(Lifetimes.Singleton);
             config.Register<ISingleton2, Singleton2>().With(Lifetimes.Singleton);
             config.Register<ISingleton3, Singleton3>().With(Lifetimes.Singleton);
@@ -98,11 +98,7 @@ namespace Singularity.TestClasses.Benchmark
             config.Register<ICalculator1, Calculator1>();
             config.Register<ICalculator2, Calculator2>();
             config.Register<ICalculator3, Calculator3>();
-        }
 
-
-        private static void RegisterComplex(BindingConfig config)
-        {
             config.Register<ISubObjectOne, SubObjectOne>();
             config.Register<ISubObjectTwo, SubObjectTwo>();
             config.Register<ISubObjectThree, SubObjectThree>();

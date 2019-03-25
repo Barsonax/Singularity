@@ -10,14 +10,13 @@ namespace Singularity.Bindings
 	public sealed class StronglyTypedDecoratorBinding<TDependency> : IDecoratorBinding
 		where TDependency : class
 	{
-		public Type DependencyType { get; }
+		//public Type DependencyType { get; }
 		public Expression? Expression { get; private set; }
 
 		internal StronglyTypedDecoratorBinding()
 		{
 			Type type = typeof(TDependency);
 			if (!type.GetTypeInfo().IsInterface) throw new InterfaceExpectedException($"{type} is not a interface.");
-			DependencyType = type;
 		}
 
 		/// <summary>
@@ -34,11 +33,11 @@ namespace Singularity.Bindings
 		public StronglyTypedDecoratorBinding<TDependency> With(Type type)
 		{
 			TypeInfo typeInfo = type.GetTypeInfo();
-			if (!DependencyType.GetTypeInfo().IsAssignableFrom(typeInfo)) throw new InterfaceNotImplementedException($"{DependencyType} is not implemented by {type}");
+			if (!typeof(TDependency).GetTypeInfo().IsAssignableFrom(typeInfo)) throw new InterfaceNotImplementedException($"{typeof(TDependency)} is not implemented by {type}");
 
 			Expression = type.AutoResolveConstructorExpression();
 			ParameterExpression[] parameters = Expression.GetParameterExpressions();
-			if (parameters.All(x => x.Type != DependencyType)) throw new InvalidExpressionArgumentsException($"Cannot decorate {DependencyType} since the expression to create {type} does not have a parameter for {DependencyType}");
+			if (parameters.All(x => x.Type != typeof(TDependency))) throw new InvalidExpressionArgumentsException($"Cannot decorate {typeof(TDependency)} since the expression to create {type} does not have a parameter for {typeof(TDependency)}");
 
 			return this;
 		}

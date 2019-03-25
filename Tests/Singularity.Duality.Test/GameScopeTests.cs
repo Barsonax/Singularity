@@ -1,6 +1,4 @@
 ﻿using System;
-
-using Singularity.Bindings;
 using Singularity.Duality.Resources;
 using Singularity.Duality.Scopes;
 using Singularity.Duality.Test.Setup;

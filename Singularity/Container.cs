@@ -6,7 +6,6 @@ using System.Linq.Expressions;
 using System.Reflection;
 using System.Runtime.CompilerServices;
 using Singularity.Attributes;
-using Singularity.Bindings;
 using Singularity.Collections;
 using Singularity.Graph;
 
@@ -35,18 +34,14 @@ namespace Singularity
 
         }
 
-        /// <summary>
-        /// Creates a new container with the provided bindings.
-        /// </summary>
-        /// <param name="bindings"></param>
-		public Container(IEnumerable<Binding> bindings) : this(bindings, null)
+        public Container(BindingConfig bindings) : this(bindings, null)
         {
 
         }
 
-        private Container(IEnumerable<Binding> bindings, DependencyGraph? parentDependencyGraph)
+        private Container(BindingConfig bindings, DependencyGraph? parentDependencyGraph)
         {
-            _dependencyGraph = new DependencyGraph(bindings, _containerScope, parentDependencyGraph);
+            _dependencyGraph = new DependencyGraph(bindings.GetDependencies(), _containerScope, parentDependencyGraph);
         }
 
         /// <summary>
@@ -59,7 +54,7 @@ namespace Singularity
         /// Creates a new nested container with the provided bindings.
         /// </summary>
         /// <param name="bindings"></param>
-        public Container GetNestedContainer(IEnumerable<Binding> bindings) => new Container(bindings, _dependencyGraph);
+        public Container GetNestedContainer(BindingConfig bindings) => new Container(bindings, _dependencyGraph);
 
         /// <summary>
         /// Injects dependencies by calling all methods marked with <see cref="InjectAttribute"/> on the <paramref name="instances"/>.

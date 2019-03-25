@@ -1,6 +1,4 @@
-﻿using System.Runtime.CompilerServices;
-
-namespace Singularity.Collections
+﻿namespace Singularity.Collections
 {
     internal struct KeyValue<TKey, TValue>
     {

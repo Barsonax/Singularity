@@ -1,6 +1,9 @@
 ﻿using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
+using System.Linq;
+using System.Linq.Expressions;
 using System.Runtime.CompilerServices;
 using Singularity.Bindings;
 using Singularity.Exceptions;
@@ -11,7 +14,7 @@ namespace Singularity
     /// <summary>
     /// A class to make configuring dependencies easier
     /// </summary>
-    public sealed class BindingConfig : IBindingConfig
+    public sealed class BindingConfig
     {
         internal IReadOnlyDictionary<Type, IBinding> Bindings => _bindings;
         internal IModule? CurrentModule;
@@ -29,7 +32,7 @@ namespace Singularity
             where TInstance : class, TDependency
         {
             var binding = Register<TDependency>(callerFilePath, callerLineNumber);
-            return binding.SetExpression<TInstance>(typeof(TInstance).AutoResolveConstructorExpression());
+            return binding.SetExpression<TInstance>(AutoResolveConstructorExpressionCache<TInstance>.Expression);
         }
 
         /// <summary>
@@ -74,55 +77,45 @@ namespace Singularity
             return decorator;
         }
 
-        /// <summary>
-        /// Implementation of <see cref="IEnumerable{Binding}.GetEnumerator"/>
-        /// </summary>
-        /// <returns></returns>
-		public IEnumerator<Binding> GetEnumerator()
+        internal ReadOnlyDictionary<Type, Dependency> GetDependencies()
         {
-            foreach (var binding in Bindings.Values)
+            var dictionary = new Dictionary<Type, Dependency>(_bindings.Count);
+            foreach (KeyValuePair<Type, IBinding> binding in _bindings)
             {
-                if (binding.Expression == null && binding.Decorators == null) throw new BindingConfigException($"The binding at {binding.BindingMetadata.GetPosition()} does not have a expression");
-                DecoratorBinding[] decorators;
-                if (binding.Decorators != null)
+                if (binding.Value.Expression == null && binding.Value.Decorators == null) throw new BindingConfigException($"The binding at {binding.Value.BindingMetadata.GetPosition()} does not have a expression");
+                Expression[] decorators;
+                if (binding.Value.Decorators != null)
                 {
-                    decorators = new DecoratorBinding[binding.Decorators.Count];
-                    for (var i = 0; i < binding.Decorators.Count; i++)
+                    decorators = new Expression[binding.Value.Decorators.Count];
+                    for (var i = 0; i < binding.Value.Decorators.Count; i++)
                     {
-                        IDecoratorBinding decorator = binding.Decorators[i];
-                        if (decorator.Expression == null) throw new BindingConfigException($"The decorator for {decorator.DependencyType} does not have a expression");
-                        decorators[i] = new DecoratorBinding(decorator.Expression);
+                        IDecoratorBinding decorator = binding.Value.Decorators[i];
+                        if (decorator.Expression == null) throw new BindingConfigException($"The decorator for {binding.Value.DependencyType} does not have a expression");
+                        decorators[i] = decorator.Expression;
                     }
                 }
                 else
                 {
-                    decorators = new DecoratorBinding[0];
+                    decorators = new Expression[0];
                 }
+               ;
+               dictionary.Add(binding.Key,
+                   new Dependency(
+                       new Binding(binding.Value.BindingMetadata, binding.Value.DependencyType, binding.Value.Expression, binding.Value.Lifetime, decorators, binding.Value.OnDeathAction)));
 
-
-                yield return new Binding(binding.BindingMetadata, binding.DependencyType, binding.Expression, binding.Lifetime, decorators, binding.OnDeathAction);
             }
-        }
-
-        IEnumerator IEnumerable.GetEnumerator()
-        {
-            return GetEnumerator();
+            return new ReadOnlyDictionary<Type, Dependency>(dictionary);
         }
 
         private StronglyTypedBinding<TDependency> GetOrCreateBinding<TDependency>(string callerFilePath, int callerLineNumber)
         {
-            if (Bindings.TryGetValue(typeof(TDependency), out IBinding weaklyTypedBinding))
+            if (_bindings.TryGetValue(typeof(TDependency), out IBinding weaklyTypedBinding))
             {
                 return (StronglyTypedBinding<TDependency>)weaklyTypedBinding;
             }
             var binding = new StronglyTypedBinding<TDependency>(callerFilePath, callerLineNumber, CurrentModule);
-            AddBinding(binding);
-            return binding;
-        }
-
-        private void AddBinding(IBinding binding)
-        {
             _bindings.Add(binding.DependencyType, binding);
+            return binding;
         }
     }
 }

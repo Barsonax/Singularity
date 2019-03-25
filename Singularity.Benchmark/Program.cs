@@ -58,6 +58,12 @@ namespace Singularity.Benchmark
         }
 
         [Benchmark]
+        public void RegisterAndEnumerate()
+        {
+            _containerBenchmark.RegisterAndEnumerate();
+        }
+
+        [Benchmark]
         public Container NewContainer()
         {
             return _containerBenchmark.NewContainer();

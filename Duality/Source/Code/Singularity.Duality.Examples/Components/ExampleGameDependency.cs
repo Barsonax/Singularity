@@ -1,6 +1,4 @@
-﻿using Singularity.Bindings;
-
-namespace Singularity.Duality.Examples.Components
+﻿namespace Singularity.Duality.Examples.Components
 {
 	public class ExampleGameDependency : IModule
 	{

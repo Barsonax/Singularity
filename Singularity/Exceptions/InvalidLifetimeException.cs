@@ -1,6 +1,4 @@
-﻿using Singularity.Graph;
-
-namespace Singularity.Exceptions
+﻿namespace Singularity.Exceptions
 {
 	public sealed class InvalidLifetimeException : SingularityException
 	{

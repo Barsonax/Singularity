@@ -2,7 +2,6 @@
 using Duality;
 
 using Singularity.Attributes;
-using Singularity.Bindings;
 
 namespace Singularity.Duality.Test
 {
