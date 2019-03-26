@@ -13,7 +13,7 @@ namespace Singularity.Test.Collections
         [ClassData(typeof(ImmutableDictionaryTestsReferenceTypeTheoryData))]
         public void SearchReferenceType(IEnumerable<(Type type, int value)> testValues)
         {
-            var dic = ImmutableDictionary<Type, int>.Empty;
+            ImmutableDictionary<Type, int> dic = ImmutableDictionary<Type, int>.Empty;
 
             foreach ((Type type, int value) in testValues)
             {
@@ -30,7 +30,7 @@ namespace Singularity.Test.Collections
         [ClassData(typeof(ImmutableDictionaryTestsValueTypeTheoryData))]
         public void SearchValueType(IEnumerable<(int key, int value)> testValues)
         {
-            var dic = ImmutableDictionary<int, int>.Empty;
+            ImmutableDictionary<int, int> dic = ImmutableDictionary<int, int>.Empty;
 
             foreach ((int key, int value) in testValues)
             {
@@ -55,7 +55,7 @@ namespace Singularity.Test.Collections
 
             typeMappings.Add((4, 4));
 
-            var permutations = GetPermutations(typeMappings);
+            IEnumerable<IEnumerable<(int key, int value)>> permutations = GetPermutations(typeMappings);
 
             foreach (IEnumerable<(int key, int value)> permutation in permutations)
             {
@@ -88,7 +88,7 @@ namespace Singularity.Test.Collections
 
             typeMappings.Add((typeof(ITestService20), 4));
 
-            var permutations = GetPermutations(typeMappings);
+            IEnumerable<IEnumerable<(Type type, int value)>> permutations = GetPermutations(typeMappings);
 
             foreach (IEnumerable<(Type type, int value)> permutation in permutations)
             {

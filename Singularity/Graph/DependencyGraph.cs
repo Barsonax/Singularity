@@ -55,7 +55,7 @@ namespace Singularity.Graph
         {
             if (parentDependencyGraph != null)
             {
-                var childBindings = bindings.ToDictionary(
+                Dictionary<Type, Dependency> childBindings = bindings.ToDictionary(
                     x => x.Key,
                     x => new Dependency(x.Value.Binding));
                 MergeParentBindings(parentDependencyGraph, childBindings);
@@ -172,7 +172,7 @@ namespace Singularity.Graph
 
         private static Expression GenerateDependencyExpression(Dependency dependency, Scoped scope)
         {
-            Expression expression = dependency.Binding.Expression is LambdaExpression lambdaExpression ? lambdaExpression.Body : dependency.Binding.Expression;
+            Expression expression = dependency.Binding.Expression! is LambdaExpression lambdaExpression ? lambdaExpression.Body : dependency.Binding.Expression;
             var body = new List<Expression>();
             var parameters = new List<ParameterExpression>();
             parameters.AddRange(expression.GetParameterExpressions());
@@ -202,7 +202,7 @@ namespace Singularity.Graph
             foreach (ParameterExpression unresolvedParameter in parameters)
             {
                 var nestedDependency = dependency.Dependencies.First(x => x.Binding.DependencyType == unresolvedParameter.Type);
-                body.Insert(0, Expression.Assign(unresolvedParameter, nestedDependency.ResolvedDependency.Expression));
+                body.Insert(0, Expression.Assign(unresolvedParameter, nestedDependency.ResolvedDependency!.Expression));
             }
 
             if (body.Last().Type == typeof(void)) body.Add(instanceParameter);

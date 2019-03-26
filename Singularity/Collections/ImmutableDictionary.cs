@@ -18,7 +18,7 @@ namespace Singularity.Collections
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         internal TValue SearchInternal(TKey key, int hashCode)
         {
-            var bucketIndex = hashCode & (Divisor - 1);
+            int bucketIndex = hashCode & (Divisor - 1);
             ImmutableAvlNode<TKey, TValue> avlNode = Buckets[bucketIndex];
 
             while (avlNode.Height != 0 && avlNode.KeyValue.HashCode != hashCode)
@@ -33,7 +33,7 @@ namespace Singularity.Collections
 
             if (avlNode.Duplicates.Items.Length > 0)
             {
-                foreach (var keyValue in avlNode.Duplicates.Items)
+                foreach (KeyValue<TKey, TValue> keyValue in avlNode.Duplicates.Items)
                 {
                     if (ReferenceEquals(keyValue.Key, key) || Equals(keyValue.Key, key))
                     {
@@ -62,7 +62,7 @@ namespace Singularity.Collections
                 Array.Copy(previous.Buckets, this.Buckets, previous.Divisor);
             }
 
-            var bucketIndex = keyValue.HashCode & (this.Divisor - 1);
+            int bucketIndex = keyValue.HashCode & (this.Divisor - 1);
             this.Buckets[bucketIndex] = this.Buckets[bucketIndex].Add(keyValue);
         }
 
@@ -77,7 +77,7 @@ namespace Singularity.Collections
         {
             foreach (ImmutableAvlNode<TKey, TValue> bucket in previous.Buckets)
             {
-                foreach (var keyValue in bucket.InOrder())
+                foreach (KeyValue<TKey, TValue> keyValue in bucket.InOrder())
                 {
                     int bucketIndex = keyValue.HashCode & (this.Divisor - 1);
                     this.Buckets[bucketIndex] = this.Buckets[bucketIndex].Add(keyValue);
@@ -100,7 +100,7 @@ namespace Singularity.Collections
         public static TValue Search<TKey, TValue, TKey2>(this ImmutableDictionary<TKey, TValue> instance, TKey2 key)
             where TKey2 : class, TKey
         {
-            var hashCode = RuntimeHelpers.GetHashCode(key);
+            int hashCode = RuntimeHelpers.GetHashCode(key);
             return instance.SearchInternal(key, hashCode);
         }
     }
@@ -111,7 +111,7 @@ namespace Singularity.Collections
         public static TValue Search<TKey, TValue, TKey2>(this ImmutableDictionary<TKey, TValue> instance, TKey2 key)
             where TKey2 : struct, TKey
         {
-            var hashCode = key.GetHashCode();
+            int hashCode = key.GetHashCode();
             return instance.SearchInternal(key, hashCode);
         }
     }

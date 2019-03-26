@@ -38,7 +38,7 @@ namespace Singularity.Collections
         public static TValue Search<TKey, TValue, TKey2>(this ThreadSafeDictionary<TKey, TValue> instance, TKey2 key)
             where TKey2 : class, TKey
         {
-            var hashCode = RuntimeHelpers.GetHashCode(key);
+            int hashCode = RuntimeHelpers.GetHashCode(key);
             return instance._immutableDictionary.SearchInternal(key, hashCode);
         }
     }
@@ -49,7 +49,7 @@ namespace Singularity.Collections
         public static TValue Search<TKey, TValue, TKey2>(this ThreadSafeDictionary<TKey, TValue> instance, TKey2 key)
             where TKey2 : struct, TKey
         {
-            var hashCode = key.GetHashCode();
+            int hashCode = key.GetHashCode();
             return instance._immutableDictionary.SearchInternal(key, hashCode);
         }
     }

@@ -8,7 +8,7 @@ namespace Singularity.Bindings
     /// <summary>
     /// Represents a weakly typed registration
     /// </summary>
-    public class WeaklyTypedBinding : IBinding
+    public abstract class WeaklyTypedBinding
     {
         /// <summary>
         /// The metadata of this binding.
@@ -17,32 +17,25 @@ namespace Singularity.Bindings
 
         public Type DependencyType { get; }
 
-        public Expression? Expression { get; }
+        public WeaklyTypedConfiguredBinding? WeaklyTypedConfiguredBinding { get; protected set; }
 
-        public ILifetime Lifetime { get; private set; }
+        public Expression? Expression => WeaklyTypedConfiguredBinding?.Expression;
 
-        public Action<object>? OnDeathAction { get; private set; }
+        public ILifetime Lifetime => WeaklyTypedConfiguredBinding?.Lifetime ?? Lifetimes.Transient;
 
-        public IReadOnlyList<IDecoratorBinding>? Decorators { get; }
+        public Action<object>? OnDeathAction => WeaklyTypedConfiguredBinding?.OnDeathAction;
 
-        internal WeaklyTypedBinding(Type dependencyType, Expression? expression, string callerFilePath, int callerLineNumber, IModule? module)
+        /// <summary>
+        /// The decorators for this binding.
+        /// </summary>
+        public List<WeaklyTypedDecoratorBinding>? Decorators { get; internal set; }
+
+        internal WeaklyTypedBinding(Type dependencyType, string callerFilePath, int callerLineNumber, IModule? module)
         {
-            BindingMetadata = new BindingMetadata(callerFilePath, callerLineNumber, module);
             DependencyType = dependencyType;
-            Expression = expression;
-            Lifetime = Lifetimes.Transient;
+            BindingMetadata = new BindingMetadata(callerFilePath, callerLineNumber, module);
         }
 
-        public WeaklyTypedBinding With(ILifetime lifetime)
-        {
-            Lifetime = lifetime;
-            return this;
-        }
-
-        public WeaklyTypedBinding OnDeath(Action<object> onDeathAction)
-        {
-            OnDeathAction = onDeathAction;
-            return this;
-        }
+        public abstract WeaklyTypedConfiguredBinding Inject(Expression expression);
     }
 }

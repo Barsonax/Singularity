@@ -53,7 +53,7 @@ namespace Singularity.Test.ThreadSafety
         private static List<T> Shuffle<T>(List<T> list, int seed)
         {
             var rng = new Random(seed);
-            var randomizedList = list.ToList();
+            List<T> randomizedList = list.ToList();
             int n = randomizedList.Count;
             while (n > 1)
             {

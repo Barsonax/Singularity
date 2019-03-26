@@ -16,7 +16,7 @@ namespace Singularity.Test.Benchmark
         [Fact]
         public void Singleton()
         {
-            var value = _containerBenchmark.Singleton();
+            ISingleton1 value = _containerBenchmark.Singleton();
 
             Assert.IsType<Singleton1>(value);
         }
@@ -24,7 +24,7 @@ namespace Singularity.Test.Benchmark
         [Fact]
         public void Transient()
         {
-            var value = _containerBenchmark.Transient();
+            ITransient1 value = _containerBenchmark.Transient();
 
             Assert.IsType<Transient1>(value);
         }
@@ -32,7 +32,7 @@ namespace Singularity.Test.Benchmark
         [Fact]
         public void Combined()
         {
-            var value = _containerBenchmark.Combined();
+            ICombined1 value = _containerBenchmark.Combined();
 
             Assert.IsType<Combined1>(value);
         }
@@ -40,7 +40,7 @@ namespace Singularity.Test.Benchmark
         [Fact]
         public void Complex()
         {
-            var value = _containerBenchmark.Complex();
+            IComplex1 value = _containerBenchmark.Complex();
 
             Assert.IsType<Complex1>(value);
         }
@@ -60,7 +60,7 @@ namespace Singularity.Test.Benchmark
         [Fact]
         public void NewContainerAndResolve()
         {
-            var value = _containerBenchmark.NewContainerAndResolve();
+            IComplex1 value = _containerBenchmark.NewContainerAndResolve();
 
             Assert.IsType<Complex1>(value);
         }
