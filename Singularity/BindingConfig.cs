@@ -19,6 +19,7 @@ namespace Singularity
         internal IReadOnlyDictionary<Type, WeaklyTypedBinding> Bindings => _bindings;
         internal IModule? CurrentModule;
         private readonly Dictionary<Type, WeaklyTypedBinding> _bindings = new Dictionary<Type, WeaklyTypedBinding>();
+        private ReadOnlyDictionary<Type, Dependency>? _dependencies;
 
         /// <summary>
         /// Begins configuring a strongly typed binding for <typeparamref name="TDependency"/>
@@ -116,32 +117,36 @@ namespace Singularity
 
         internal ReadOnlyDictionary<Type, Dependency> GetDependencies()
         {
-            var dictionary = new Dictionary<Type, Dependency>(_bindings.Count);
-            foreach (KeyValuePair<Type, WeaklyTypedBinding> binding in _bindings)
+            if (_dependencies == null)
             {
-                if (binding.Value.Expression == null && binding.Value.Decorators == null) throw new BindingConfigException($"The binding at {binding.Value.BindingMetadata.GetPosition()} does not have a expression");
-                Expression[] decorators;
-                if (binding.Value.Decorators != null)
+                var dictionary = new Dictionary<Type, Dependency>(_bindings.Count);
+                foreach (KeyValuePair<Type, WeaklyTypedBinding> binding in _bindings)
                 {
-                    decorators = new Expression[binding.Value.Decorators.Count];
-                    for (var i = 0; i < binding.Value.Decorators.Count; i++)
+                    if (binding.Value.Expression == null && binding.Value.Decorators == null)
+                        throw new BindingConfigException($"The binding at {binding.Value.BindingMetadata.GetPosition()} does not have a expression");
+                    Expression[] decorators;
+                    if (binding.Value.Decorators != null)
                     {
-                        WeaklyTypedDecoratorBinding decorator = binding.Value.Decorators[i];
-                        if (decorator.Expression == null) throw new BindingConfigException($"The decorator for {binding.Value.DependencyType} does not have a expression");
-                        decorators[i] = decorator.Expression;
+                        decorators = new Expression[binding.Value.Decorators.Count];
+                        for (var i = 0; i < binding.Value.Decorators.Count; i++)
+                        {
+                            WeaklyTypedDecoratorBinding decorator = binding.Value.Decorators[i];
+                            if (decorator.Expression == null)
+                                throw new BindingConfigException($"The decorator for {binding.Value.DependencyType} does not have a expression");
+                            decorators[i] = decorator.Expression;
+                        }
                     }
+                    else
+                    {
+                        decorators = new Expression[0];
+                    }
+                    dictionary.Add(binding.Key,
+                        new Dependency(
+                            new Binding(binding.Value.BindingMetadata, binding.Value.DependencyType, binding.Value.Expression, binding.Value.Lifetime, decorators, binding.Value.OnDeathAction)));
                 }
-                else
-                {
-                    decorators = new Expression[0];
-                }
-               ;
-                dictionary.Add(binding.Key,
-                    new Dependency(
-                        new Binding(binding.Value.BindingMetadata, binding.Value.DependencyType, binding.Value.Expression, binding.Value.Lifetime, decorators, binding.Value.OnDeathAction)));
-
+                _dependencies = new ReadOnlyDictionary<Type, Dependency>(dictionary);
             }
-            return new ReadOnlyDictionary<Type, Dependency>(dictionary);
+            return _dependencies;
         }
 
         private StronglyTypedBinding<TDependency> GetOrCreateBinding<TDependency>(string callerFilePath, int callerLineNumber)
