@@ -23,6 +23,7 @@ namespace Singularity
         private readonly DependencyGraph _dependencyGraph;
         private readonly ThreadSafeDictionary<Type, Action<object>> _injectionCache = new ThreadSafeDictionary<Type, Action<object>>();
         private readonly ThreadSafeDictionary<Type, Func<object>> _getInstanceCache = new ThreadSafeDictionary<Type, Func<object>>();
+        private readonly Container? _parentContainer;
         private readonly Scoped? _containerScope;
 
         /// <summary>
@@ -48,9 +49,21 @@ namespace Singularity
         private Container(BindingConfig bindings, Scoped? containerScope, Container parentContainer)
         {
             if (bindings == null) throw new ArgumentNullException(nameof(bindings));
-            if (parentContainer == null) throw new ArgumentNullException(nameof(parentContainer));
+            _parentContainer = parentContainer ?? throw new ArgumentNullException(nameof(parentContainer));
             _containerScope = containerScope;
-            _dependencyGraph = new DependencyGraph(bindings.GetDependencies(), containerScope ?? parentContainer._containerScope ?? throw new ArgumentException(nameof(parentContainer._containerScope)), parentContainer._dependencyGraph);
+            _dependencyGraph = new DependencyGraph(bindings.GetDependencies(), containerScope ?? FindScope() ?? throw new ArgumentException(nameof(parentContainer._containerScope)), parentContainer._dependencyGraph);
+        }
+
+        private Scoped? FindScope()
+        {
+            var container = this;
+            do
+            {
+                if(container._parentContainer == null) break;
+                container = container._parentContainer;
+            }
+            while (container._containerScope == null);
+            return container._containerScope;
         }
 
         /// <summary>
