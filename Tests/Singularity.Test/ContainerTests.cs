@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using Singularity.Exceptions;
-using Singularity.Test.TestClasses;
+using Singularity.TestClasses.TestClasses;
 using Xunit;
 
 namespace Singularity.Test

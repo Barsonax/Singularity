@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Linq;
-using Singularity.Benchmark.TestClasses;
-using Singularity.Test.TestClasses;
+using Singularity.TestClasses.TestClasses;
 
 namespace Singularity.TestClasses.Benchmark
 {
@@ -10,7 +9,7 @@ namespace Singularity.TestClasses.Benchmark
         private Container _container;
         private BindingConfig _cachedBindingConfig;
 
-        public void Setup()
+        public ContainerBenchmark()
         {
             _container = NewContainer();
             _cachedBindingConfig = new BindingConfig();

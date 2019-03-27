@@ -83,7 +83,11 @@ namespace Singularity.Graph
                     {
                         if (childBinding.Binding.Expression == null)
                         {
-                            expression = parentBinding.ResolvedDependency.Expression;
+                            if (parentBinding.ResolvedDependency == null)
+                            {
+                                parentDependencyGraph.ResolveDependency(parentBinding);
+                            }
+                            expression = parentBinding.ResolvedDependency!.Expression;
                             bindingMetadata = parentBinding.Binding.BindingMetadata;
                             decorators = childBinding.Binding.Decorators; //The resolved expression already contains the decorators of the parent
                         }

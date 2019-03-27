@@ -1,4 +1,4 @@
-﻿namespace Singularity.Test.TestClasses
+﻿namespace Singularity.TestClasses.TestClasses
 {
     public interface ITestService22
     {

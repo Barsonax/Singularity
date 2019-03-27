@@ -10,7 +10,7 @@
         {
             Key = key;
             Value = value;
-            HashCode = key.GetHashCode();
+            HashCode = key!.GetHashCode();
         }
     }
 }

@@ -1,5 +1,5 @@
 ﻿using BenchmarkDotNet.Attributes;
-using Singularity.Benchmark.TestClasses;
+using Singularity.TestClasses.TestClasses;
 
 namespace Singularity.Benchmark
 {

@@ -1,7 +1,7 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 
-namespace Singularity.Test.TestClasses
+namespace Singularity.TestClasses.TestClasses
 {
 	public class TestNode
 	{

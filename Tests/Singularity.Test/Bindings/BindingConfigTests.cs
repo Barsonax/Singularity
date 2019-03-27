@@ -4,7 +4,7 @@ using System.Linq;
 using Singularity.Bindings;
 using Singularity.Exceptions;
 using Singularity.Graph;
-using Singularity.Test.TestClasses;
+using Singularity.TestClasses.TestClasses;
 using Xunit;
 
 namespace Singularity.Test.Bindings

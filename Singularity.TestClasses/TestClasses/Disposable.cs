@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace Singularity.Test.TestClasses
+namespace Singularity.TestClasses.TestClasses
 {
     public class Disposable : IDisposable
     {

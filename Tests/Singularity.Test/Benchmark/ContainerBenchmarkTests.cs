@@ -1,9 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq.Expressions;
-using Singularity.Benchmark.TestClasses;
-using Singularity.Test.TestClasses;
 using Singularity.TestClasses.Benchmark;
+using Singularity.TestClasses.TestClasses;
 using Xunit;
 
 namespace Singularity.Test.Benchmark
@@ -11,11 +10,6 @@ namespace Singularity.Test.Benchmark
     public class ContainerBenchmarkTests
     {
         private readonly ContainerBenchmark _containerBenchmark = new ContainerBenchmark();
-
-        public ContainerBenchmarkTests()
-        {
-            _containerBenchmark.Setup();
-        }
 
         [Fact]
         public void Singleton()

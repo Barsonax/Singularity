@@ -1,8 +1,7 @@
 ﻿using System;
-
 using Singularity.Attributes;
 
-namespace Singularity.Test.TestClasses
+namespace Singularity.TestClasses.TestClasses
 {
     public class MethodInjectionClass
     {

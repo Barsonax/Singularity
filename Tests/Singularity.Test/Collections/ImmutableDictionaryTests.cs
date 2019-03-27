@@ -2,7 +2,8 @@
 using System.Collections.Generic;
 using System.Linq;
 using Singularity.Collections;
-using Singularity.Test.TestClasses;
+using Singularity.TestClasses.Extensions;
+using Singularity.TestClasses.TestClasses;
 using Xunit;
 
 namespace Singularity.Test.Collections
@@ -55,24 +56,11 @@ namespace Singularity.Test.Collections
 
             typeMappings.Add((4, 4));
 
-            IEnumerable<IEnumerable<(int key, int value)>> permutations = GetPermutations(typeMappings);
+            IEnumerable<IEnumerable<(int key, int value)>> permutations = typeMappings.GetPermutations();
 
             foreach (IEnumerable<(int key, int value)> permutation in permutations)
             {
                 Add(permutation);
-            }
-        }
-
-        public static IEnumerable<IEnumerable<T>> GetPermutations<T>(IEnumerable<T> items)
-        {
-            if (items.Count() > 1)
-            {
-                return items.SelectMany(item => GetPermutations(items.Where(i => !i.Equals(item))),
-                    (item, permutation) => new[] { item }.Concat(permutation));
-            }
-            else
-            {
-                return new[] { items };
             }
         }
     }
@@ -88,24 +76,11 @@ namespace Singularity.Test.Collections
 
             typeMappings.Add((typeof(ITestService20), 4));
 
-            IEnumerable<IEnumerable<(Type type, int value)>> permutations = GetPermutations(typeMappings);
+            IEnumerable<IEnumerable<(Type type, int value)>> permutations = typeMappings.GetPermutations();
 
             foreach (IEnumerable<(Type type, int value)> permutation in permutations)
             {
                 Add(permutation);
-            }
-        }
-
-        public static IEnumerable<IEnumerable<T>> GetPermutations<T>(IEnumerable<T> items)
-        {
-            if (items.Count() > 1)
-            {
-                return items.SelectMany(item => GetPermutations(items.Where(i => !i.Equals(item))),
-                    (item, permutation) => new[] { item }.Concat(permutation));
-            }
-            else
-            {
-                return new[] { items };
             }
         }
     }

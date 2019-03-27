@@ -31,11 +31,9 @@ namespace Singularity.Bindings
         /// <summary>
         /// The decorators for this binding.
         /// </summary>
-        public WeaklyTypedDecoratorBinding[] Decorators { get; private set; }
+        public List<WeaklyTypedDecoratorBinding>? Decorators { get; private set; }
 
-        private List<WeaklyTypedDecoratorBinding> _decorators;
-
-        public bool Verified { get; private set; }
+        internal bool Verified { get; private set; }
 
         internal WeaklyTypedBinding(Type dependencyType, string callerFilePath, int callerLineNumber, IModule? module)
         {
@@ -56,26 +54,21 @@ namespace Singularity.Bindings
 
         internal void AddDecorator(WeaklyTypedDecoratorBinding weaklyTypedDecoratorBinding)
         {
-            if (_decorators == null) _decorators = new List<WeaklyTypedDecoratorBinding>();
-            _decorators.Add(weaklyTypedDecoratorBinding);
+            if (Decorators == null) Decorators = new List<WeaklyTypedDecoratorBinding>();
+            Decorators.Add(weaklyTypedDecoratorBinding);
         }
 
         public void Verify()
         {
-            if (Expression == null && _decorators == null)
+            if (Expression == null && Decorators == null)
                 throw new BindingConfigException($"The binding at {BindingMetadata.GetPosition()} does not have a expression");
-            if (_decorators != null)
+            if (Decorators != null)
             {
-                foreach (WeaklyTypedDecoratorBinding weaklyTypedDecoratorBinding in _decorators)
+                foreach (WeaklyTypedDecoratorBinding weaklyTypedDecoratorBinding in Decorators)
                 {
                     if (weaklyTypedDecoratorBinding.Expression == null)
                         throw new BindingConfigException($"The decorator for {DependencyType} does not have a expression");
                 }
-                Decorators = _decorators.ToArray();
-            }
-            else
-            {
-                Decorators = new WeaklyTypedDecoratorBinding[0];
             }
 
             Verified = true;

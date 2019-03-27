@@ -1,4 +1,4 @@
-﻿namespace Singularity.Benchmark.TestClasses
+﻿namespace Singularity.TestClasses.TestClasses
 {
     public interface IDummyOne
     {

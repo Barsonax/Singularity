@@ -1,7 +1,7 @@
 ﻿using System;
 using BenchmarkDotNet.Attributes;
-using Singularity.Benchmark.TestClasses;
 using Singularity.TestClasses.Benchmark;
+using Singularity.TestClasses.TestClasses;
 
 namespace Singularity.Benchmark
 {
@@ -9,12 +9,12 @@ namespace Singularity.Benchmark
     [MemoryDiagnoser]
     public class SingularityContainerBenchmark
     {
-        private readonly ContainerBenchmark _containerBenchmark = new ContainerBenchmark();
+        private ContainerBenchmark _containerBenchmark;
 
         [GlobalSetup]
         public void Setup()
         {
-            _containerBenchmark.Setup();
+            _containerBenchmark = new ContainerBenchmark();
         }
 
         [Benchmark]
