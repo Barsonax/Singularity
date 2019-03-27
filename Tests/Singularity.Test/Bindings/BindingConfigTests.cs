@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.ObjectModel;
 using System.Linq;
 using Singularity.Bindings;
 using Singularity.Exceptions;
@@ -51,12 +52,12 @@ namespace Singularity.Test.Bindings
 		    config.Register<ITestService11, TestService11>();
 		    config.Register<ITestService12, TestService12>();
 
-		    Dependency[] bindings = config.GetDependencies().Values.ToArray();
+            ReadOnlyCollection<Binding> bindings = config.GetDependencies();
 
-			Assert.Equal(3, bindings.Length);
-		    Assert.Contains(bindings, x => x.Binding.DependencyType == typeof(ITestService10));
-		    Assert.Contains(bindings, x => x.Binding.DependencyType == typeof(ITestService11));
-		    Assert.Contains(bindings, x => x.Binding.DependencyType == typeof(ITestService12));
+			Assert.Equal(3, bindings.Count);
+		    Assert.Contains(bindings, x => x.DependencyType == typeof(ITestService10));
+		    Assert.Contains(bindings, x => x.DependencyType == typeof(ITestService11));
+		    Assert.Contains(bindings, x => x.DependencyType == typeof(ITestService12));
 		}
 
 		[Fact]
@@ -85,7 +86,7 @@ namespace Singularity.Test.Bindings
             var config = new BindingConfig();
             config.Register<object>().Inject<object, object>((obj0) => new object());
 
-            WeaklyTypedBinding binding = config.Bindings.Values.First();
+            Binding binding = config.GetDependencies().First();
             Assert.Equal(typeof(object), binding.DependencyType);
             Assert.Equal(typeof(Func<object, object>), binding.Expression?.Type);
         }
@@ -96,7 +97,7 @@ namespace Singularity.Test.Bindings
             var config = new BindingConfig();
             config.Register<object>().Inject<object, object, object>((obj0, obj1) => new object());
 
-            WeaklyTypedBinding binding = config.Bindings.Values.First();
+            Binding binding = config.GetDependencies().First();
             Assert.Equal(typeof(object), binding.DependencyType);
             Assert.Equal(typeof(Func<object, object, object>), binding.Expression?.Type);
         }
@@ -107,7 +108,7 @@ namespace Singularity.Test.Bindings
             var config = new BindingConfig();
             config.Register<object>().Inject<object, object, object, object>((obj0, obj1, obj2) => new object());
 
-            WeaklyTypedBinding binding = config.Bindings.Values.First();
+            Binding binding = config.GetDependencies().First();
             Assert.Equal(typeof(object), binding.DependencyType);
             Assert.Equal(typeof(Func<object, object, object, object>), binding.Expression?.Type);
         }
@@ -118,7 +119,7 @@ namespace Singularity.Test.Bindings
             var config = new BindingConfig();
             config.Register<object>().Inject<object, object, object, object, object>((obj0, obj1, obj2, obj3) => new object());
 
-            WeaklyTypedBinding binding = config.Bindings.Values.First();
+            Binding binding = config.GetDependencies().First();
             Assert.Equal(typeof(object), binding.DependencyType);
             Assert.Equal(typeof(Func<object, object, object, object, object>), binding.Expression?.Type);
         }
@@ -129,7 +130,7 @@ namespace Singularity.Test.Bindings
             var config = new BindingConfig();
             config.Register<object>().Inject<object, object, object, object, object, object>((obj0, obj1, obj2, obj3, obj4) => new object());
 
-            WeaklyTypedBinding binding = config.Bindings.Values.First();
+            Binding binding = config.GetDependencies().First();
             Assert.Equal(typeof(object), binding.DependencyType);
             Assert.Equal(typeof(Func<object, object, object, object, object, object>), binding.Expression?.Type);
         }
@@ -140,7 +141,7 @@ namespace Singularity.Test.Bindings
             var config = new BindingConfig();
             config.Register<object>().Inject<object, object, object, object, object, object, object>((obj0, obj1, obj2, obj3, obj4, obj5) => new object());
 
-            WeaklyTypedBinding binding = config.Bindings.Values.First();
+            Binding binding = config.GetDependencies().First();
             Assert.Equal(typeof(object), binding.DependencyType);
             Assert.Equal(typeof(Func<object, object, object, object, object, object, object>), binding.Expression?.Type);
         }
@@ -151,7 +152,7 @@ namespace Singularity.Test.Bindings
             var config = new BindingConfig();
             config.Register<object>().Inject<object, object, object, object, object, object, object, object>((obj0, obj1, obj2, obj3, obj4, obj5, obj6) => new object());
 
-            WeaklyTypedBinding binding = config.Bindings.Values.First();
+            Binding binding = config.GetDependencies().First();
             Assert.Equal(typeof(object), binding.DependencyType);
             Assert.Equal(typeof(Func<object, object, object, object, object, object, object, object>), binding.Expression?.Type);
         }
@@ -162,7 +163,7 @@ namespace Singularity.Test.Bindings
             var config = new BindingConfig();
             config.Register<object>().Inject<object, object, object, object, object, object, object, object, object>((obj0, obj1, obj2, obj3, obj4, obj5, obj6, obj7) => new object());
 
-            WeaklyTypedBinding binding = config.Bindings.Values.First();
+            Binding binding = config.GetDependencies().First();
             Assert.Equal(typeof(object), binding.DependencyType);
             Assert.Equal(typeof(Func<object, object, object, object, object, object, object, object, object>), binding.Expression?.Type);
         }

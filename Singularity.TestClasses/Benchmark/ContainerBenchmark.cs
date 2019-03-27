@@ -6,10 +6,13 @@ namespace Singularity.TestClasses.Benchmark
     public class ContainerBenchmark
     {
         private Container _container;
+        private BindingConfig _cachedBindingConfig;
 
         public void Setup()
         {
             _container = NewContainer();
+            _cachedBindingConfig = new BindingConfig();
+            Register(_cachedBindingConfig);
         }
 
         public ISingleton1 Singleton()
@@ -57,6 +60,11 @@ namespace Singularity.TestClasses.Benchmark
             return new Container(config);
         }
 
+        public Container NewContainerFromCachedConfig()
+        {
+            return new Container(_cachedBindingConfig);
+        }
+
         public IComplex1 NewContainerAndResolve()
         {
             var config = new BindingConfig();
@@ -85,9 +93,9 @@ namespace Singularity.TestClasses.Benchmark
             config.Register<IDummyNine, DummyNine>();
             config.Register<IDummyTen, DummyTen>();
 
-            config.Register<ISingleton1, Singleton1>().With(Lifetimes.Singleton);
-            config.Register<ISingleton2, Singleton2>().With(Lifetimes.Singleton);
-            config.Register<ISingleton3, Singleton3>().With(Lifetimes.Singleton);
+            config.Register<ISingleton1, Singleton1>().With(CreationMode.Singleton);
+            config.Register<ISingleton2, Singleton2>().With(CreationMode.Singleton);
+            config.Register<ISingleton3, Singleton3>().With(CreationMode.Singleton);
             config.Register<ITransient1, Transient1>();
             config.Register<ITransient2, Transient2>();
             config.Register<ITransient3, Transient3>();
@@ -101,9 +109,9 @@ namespace Singularity.TestClasses.Benchmark
             config.Register<ISubObjectOne, SubObjectOne>();
             config.Register<ISubObjectTwo, SubObjectTwo>();
             config.Register<ISubObjectThree, SubObjectThree>();
-            config.Register<IFirstService, FirstService>().With(Lifetimes.Singleton);
-            config.Register<ISecondService, SecondService>().With(Lifetimes.Singleton);
-            config.Register<IThirdService, ThirdService>().With(Lifetimes.Singleton);
+            config.Register<IFirstService, FirstService>().With(CreationMode.Singleton);
+            config.Register<ISecondService, SecondService>().With(CreationMode.Singleton);
+            config.Register<IThirdService, ThirdService>().With(CreationMode.Singleton);
             config.Register<IComplex1, Complex1>();
         }
     }

@@ -103,23 +103,9 @@ namespace Singularity.Bindings
         internal StronglyTypedConfiguredBinding<TDependency, TInstance> Inject<TInstance>(Expression expression)
             where TInstance : class, TDependency
         {
-            var configuredBinding = new StronglyTypedConfiguredBinding<TDependency, TInstance>(expression);
+            var configuredBinding = new StronglyTypedConfiguredBinding<TDependency, TInstance>(this ,expression);
             WeaklyTypedConfiguredBinding = configuredBinding;
             return configuredBinding;
-        }
-
-        /// <summary>
-        /// <see cref="Inject{TInstance}(Expression{Func{TInstance}})"/>
-        /// </summary>
-        public override WeaklyTypedConfiguredBinding Inject(Expression expression)
-        {
-            MethodInfo injectMethod = (from m in typeof(StronglyTypedBinding<TDependency>).GetRuntimeMethods()
-                                       where m.Name == nameof(Inject)
-                                       where m.IsGenericMethod
-                                       where m.GetGenericArguments().Length == 1
-                                       select m).First().MakeGenericMethod(expression.Type);
-
-            return (WeaklyTypedConfiguredBinding)injectMethod.Invoke(this, new object[] { expression });
         }
     }
 }

@@ -7,7 +7,7 @@ namespace Singularity.Duality.Examples.Components
 	    public void Register(BindingConfig bindingConfig)
 	    {
             bindingConfig.Register<IPathfinder, Pathfinder>();
-			bindingConfig.Register<IGameManager>().Inject(() => GameObj.Scene.FindComponent<GameManagerComponent>(true)).With(Lifetimes.Singleton);
+			bindingConfig.Register<IGameManager>().Inject(() => GameObj.Scene.FindComponent<GameManagerComponent>(true)).With(CreationMode.Singleton);
 	    }
     }
 }

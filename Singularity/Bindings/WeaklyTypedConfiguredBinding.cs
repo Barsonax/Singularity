@@ -6,21 +6,27 @@ namespace Singularity.Bindings
     public abstract class WeaklyTypedConfiguredBinding
     {
         public Expression Expression { get; }
-        public ILifetime Lifetime { get; protected set; }
+        public CreationMode CreationMode { get; protected set; }
         public Action<object>? OnDeathAction { get; protected set; }
+        protected readonly WeaklyTypedBinding _weaklyTypedBinding;
 
-        internal WeaklyTypedConfiguredBinding(Expression expression)
+        internal WeaklyTypedConfiguredBinding(WeaklyTypedBinding weaklyTypedBinding, Expression expression)
         {
+            _weaklyTypedBinding = weaklyTypedBinding;
             Expression = expression;
-            Lifetime = Lifetimes.Transient;
+            CreationMode = CreationMode.Transient;
         }
 
-        public WeaklyTypedConfiguredBinding With(ILifetime lifetime)
+        public WeaklyTypedConfiguredBinding With(CreationMode creationMode)
         {
-            Lifetime = lifetime;
+            CreationMode = creationMode;
             return this;
         }
 
-        public abstract WeaklyTypedConfiguredBinding OnDeath(Action<object> onDeathAction);
+        public WeaklyTypedConfiguredBinding OnDeath(Action<object> onDeathAction)
+        {
+            OnDeathAction = onDeathAction;
+            return this;
+        }
     }
 }

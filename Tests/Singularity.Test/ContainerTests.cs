@@ -107,14 +107,14 @@ namespace Singularity.Test
 			    {
 			        var rootConfig = new BindingConfig();
 			        rootConfig.Decorate<IComponent>().With<Decorator1>();
-			        rootConfig.Register<IComponent, Component>().With(Lifetimes.Singleton);
+			        rootConfig.Register<IComponent, Component>().With(CreationMode.Singleton);
 
                     using (var rootContainer = new Container(rootConfig))
                     {
                         var rootValue = rootContainer.GetInstance<IComponent>();
 			            var nested1Config = new BindingConfig();
 			            nested1Config.Decorate<IComponent>().With<Decorator2>();
-                        nested1Config.Register<IComponent, Component>().With(Lifetimes.Singleton);
+                        nested1Config.Register<IComponent, Component>().With(CreationMode.Singleton);
                         using (Container nested1Container = rootContainer.GetNestedContainer(nested1Config))
 			            {
 			                var nested1Value = nested1Container.GetInstance<IComponent>();
@@ -133,7 +133,7 @@ namespace Singularity.Test
 					config.Decorate<ITestService11>().With<TestService11_Decorator1>();
 
 					config.Register<ITestService10, TestService10>();
-					config.Register<ITestService11, TestService11>().With(Lifetimes.Singleton);
+					config.Register<ITestService11, TestService11>().With(CreationMode.Singleton);
 
 				    using (var container = new Container(config))
 				    {
@@ -160,7 +160,7 @@ namespace Singularity.Test
 				public void GetInstance_Decorate_PerContainerLifetime_SameInstanceIsReturned()
 				{
 					var config = new BindingConfig();
-					config.Register<IComponent, Component>().With(Lifetimes.Singleton);
+					config.Register<IComponent, Component>().With(CreationMode.Singleton);
 
 					using (var container = new Container(config))
 					{
@@ -186,7 +186,7 @@ namespace Singularity.Test
 				public void GetInstance_PerContainerLifetimeAndOverride_IsDisposed()
 				{
 					var config = new BindingConfig();
-					config.Register<IDisposable, Disposable>().With(Lifetimes.Singleton).OnDeath(x => x.Dispose());
+					config.Register<IDisposable, Disposable>().With(CreationMode.Singleton).OnDeath(x => x.Dispose());
 
 					var container = new Container(config);
 
@@ -196,8 +196,8 @@ namespace Singularity.Test
 
 					{
 						var nestedConfig = new BindingConfig();
-						nestedConfig.Register<IDisposable, Disposable>().With(Lifetimes.Singleton).OnDeath(x => x.Dispose());
-						Container nestedContainer = container.GetNestedContainer(nestedConfig);
+						nestedConfig.Register<IDisposable, Disposable>().With(CreationMode.Singleton).OnDeath(x => x.Dispose());
+						Container nestedContainer = container.GetNestedContainer(nestedConfig, new Scoped());
 						var nestedInstance = nestedContainer.GetInstance<IDisposable>();
 
 						Assert.NotNull(nestedInstance);
@@ -219,7 +219,7 @@ namespace Singularity.Test
 				public void GetInstance_PerContainerLifetime_IsDisposedInTopLevel()
 				{
 					var config = new BindingConfig();
-					config.Register<IDisposable, Disposable>().With(Lifetimes.Singleton).OnDeath(x => x.Dispose());
+					config.Register<IDisposable, Disposable>().With(CreationMode.Singleton).OnDeath(x => x.Dispose());
 
 					var container = new Container(config);
 
@@ -263,7 +263,7 @@ namespace Singularity.Test
 					{
 						var nestedConfig = new BindingConfig();
 
-						Container nestedContainer = container.GetNestedContainer(nestedConfig);
+						Container nestedContainer = container.GetNestedContainer(nestedConfig, new Scoped());
 						var nestedInstance = nestedContainer.GetInstance<IDisposable>();
 
 						Assert.NotNull(nestedInstance);
@@ -286,7 +286,7 @@ namespace Singularity.Test
 				public void GetInstance_PerContainerLifetimeAndNestedContainerDecorator_IsDisposed()
 				{
 					var config = new BindingConfig();
-					config.Register<IDisposable, Disposable>().With(Lifetimes.Singleton).OnDeath(x => x.Dispose());
+					config.Register<IDisposable, Disposable>().With(CreationMode.Singleton).OnDeath(x => x.Dispose());
 
 					var container = new Container(config);
 					var topLevelInstance = container.GetInstance<IDisposable>();
@@ -609,7 +609,7 @@ namespace Singularity.Test
 				public void GetInstance_PerContainerLifetime_IsDisposed()
 				{
 					var config = new BindingConfig();
-					config.Register<IDisposable, Disposable>().With(Lifetimes.Singleton).OnDeath(x => x.Dispose());
+					config.Register<IDisposable, Disposable>().With(CreationMode.Singleton).OnDeath(x => x.Dispose());
 
 					var container = new Container(config);
 
@@ -723,7 +723,7 @@ namespace Singularity.Test
 				public void GetInstance_1DeepAndPerContainerLifetime_ReturnsSameInstancePerCall()
 				{
 					var config = new BindingConfig();
-					config.Register<ITestService10, TestService10>().With(Lifetimes.Singleton);
+					config.Register<ITestService10, TestService10>().With(CreationMode.Singleton);
 					config.Register<ITestService11, TestService11>();
 
 					var container = new Container(config);
@@ -770,7 +770,7 @@ namespace Singularity.Test
 				public void GetInstance_2DeepAndPerContainerLifetime_ReturnsNewInstancePerCall()
 				{
 					var config = new BindingConfig();
-					config.Register<ITestService10, TestService10>().With(Lifetimes.Singleton);
+					config.Register<ITestService10, TestService10>().With(CreationMode.Singleton);
 					config.Register<ITestService11, TestService11>();
 					config.Register<ITestService12, TestService12>();
 
@@ -968,7 +968,7 @@ namespace Singularity.Test
 				public void GetInstance_PerContainerLifetime_ReturnsSameInstancePerCall()
 				{
 					var config = new BindingConfig();
-					config.Register<ITestService10, TestService10>().With(Lifetimes.Singleton);
+					config.Register<ITestService10, TestService10>().With(CreationMode.Singleton);
 
 					var container = new Container(config);
 

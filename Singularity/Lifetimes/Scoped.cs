@@ -3,7 +3,7 @@ using System.Collections.Generic;
 
 namespace Singularity
 {
-    public sealed class Scoped : ILifetime, IDisposable
+    public sealed class Scoped : IDisposable
     {
         private readonly object _locker = new object();
         private Dictionary<Type, ObjectActionList> ObjectActionLists { get; } = new Dictionary<Type, ObjectActionList>();
@@ -12,7 +12,11 @@ namespace Singularity
         {
             lock (_locker)
             {
-                ObjectActionLists.Add(type, new ObjectActionList(action));
+                if (!ObjectActionLists.TryGetValue(type, out var list))
+                {
+                    list = new ObjectActionList(action);
+                    ObjectActionLists.Add(type, list);
+                }
             }
         }
 
@@ -20,7 +24,7 @@ namespace Singularity
         {
             lock (_locker)
             {
-                Type type = obj.GetType();
+                var type = obj.GetType();
                 ObjectActionList objectActionList = ObjectActionLists[type];
                 objectActionList.Objects.Add(obj);
             }

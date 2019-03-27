@@ -1,5 +1,8 @@
 ﻿using System;
+using System.Linq;
 using System.Linq.Expressions;
+using System.Runtime.CompilerServices;
+using Singularity.Bindings;
 using Singularity.Graph;
 
 namespace Singularity
@@ -9,18 +12,22 @@ namespace Singularity
         public BindingMetadata BindingMetadata { get; }
         public Type DependencyType { get; }
         public Expression? Expression { get; }
-        public ILifetime Lifetime { get; }
-        public Action<object>? OnDeath { get; }
+        public CreationMode CreationMode { get; }
+        public Action<object>? OnDeathAction { get; }
         public Expression[] Decorators { get; }
 
-        public Binding(BindingMetadata bindingMetadata, Type dependencyType, Expression? expression, ILifetime lifetime, Expression[] decorators, Action<object>? onDeath)
+        public Binding(BindingMetadata bindingMetadata, Type dependencyType, Expression? expression, CreationMode creationMode, Expression[] decorators, Action<object>? onDeath)
         {
             BindingMetadata = bindingMetadata ?? throw new ArgumentNullException(nameof(bindingMetadata));
             DependencyType = dependencyType ?? throw new ArgumentNullException(nameof(dependencyType));
-            Lifetime = lifetime ?? throw new ArgumentNullException(nameof(lifetime));
+            CreationMode = creationMode;
             Expression = expression;
             Decorators = decorators ?? throw new ArgumentNullException(nameof(decorators));
-            OnDeath = onDeath;
+            OnDeathAction = onDeath;
+        }
+
+        public Binding(WeaklyTypedBinding binding) : this(binding.BindingMetadata, binding.DependencyType, binding.Expression, binding.CreationMode, binding.Decorators.Select(x => x.Expression!).ToArray(), binding.OnDeathAction)
+        {
         }
     }
 }

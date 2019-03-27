@@ -1,4 +1,6 @@
-﻿namespace Singularity.Graph
+﻿using Singularity.Bindings;
+
+namespace Singularity.Graph
 {
     internal sealed class Dependency
     {

@@ -29,32 +29,43 @@ namespace Singularity
         /// Creates a new container using all the bindings that are in the provided modules
         /// </summary>
         /// <param name="modules"></param>
-		public Container(IEnumerable<IModule> modules) : this(modules.ToBindings(), null)
+		public Container(IEnumerable<IModule> modules) : this(modules.ToBindings())
         {
 
         }
 
-        public Container(BindingConfig bindings) : this(bindings, null)
+        /// <summary>
+        /// Creates a new container with the provided bindings.
+        /// </summary>
+        /// <param name="bindings"></param>
+        public Container(BindingConfig bindings)
         {
-
+            if (bindings == null) throw new ArgumentNullException(nameof(bindings));
+            _containerScope = new Scoped();
+            _dependencyGraph = new DependencyGraph(bindings.GetDependencies(), _containerScope);
         }
 
-        private Container(BindingConfig bindings, DependencyGraph? parentDependencyGraph)
+        private Container(BindingConfig bindings, Scoped? containerScope, Container parentContainer)
         {
-            _dependencyGraph = new DependencyGraph(bindings.GetDependencies(), _containerScope, parentDependencyGraph);
+            if (bindings == null) throw new ArgumentNullException(nameof(bindings));
+            if (parentContainer == null) throw new ArgumentNullException(nameof(parentContainer));
+            _containerScope = containerScope;
+            _dependencyGraph = new DependencyGraph(bindings.GetDependencies(), containerScope ?? parentContainer._containerScope, parentContainer._dependencyGraph);
         }
 
         /// <summary>
         /// Creates a new nested container using all the bindings that are in the provided modules
         /// </summary>
         /// <param name="modules"></param>
-        public Container GetNestedContainer(IEnumerable<IModule> modules) => GetNestedContainer(modules.ToBindings());
+        /// <param name="containerScope"></param>
+        public Container GetNestedContainer(IEnumerable<IModule> modules, Scoped? containerScope = null) => GetNestedContainer(modules.ToBindings(), containerScope);
 
         /// <summary>
         /// Creates a new nested container with the provided bindings.
         /// </summary>
         /// <param name="bindings"></param>
-        public Container GetNestedContainer(BindingConfig bindings) => new Container(bindings, _dependencyGraph);
+        /// <param name="containerScope"></param>
+        public Container GetNestedContainer(BindingConfig bindings, Scoped? containerScope = null) => new Container(bindings, containerScope, this);
 
         /// <summary>
         /// Injects dependencies by calling all methods marked with <see cref="InjectAttribute"/> on the <paramref name="instances"/>.
@@ -220,7 +231,7 @@ namespace Singularity
         /// </summary>
 		public void Dispose()
         {
-            _containerScope.Dispose();
+            _containerScope?.Dispose();
             IsDisposed = true;
         }
     }

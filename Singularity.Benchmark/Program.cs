@@ -70,6 +70,12 @@ namespace Singularity.Benchmark
         }
 
         [Benchmark]
+        public Container NewContainerFromCachedConfig()
+        {
+            return _containerBenchmark.NewContainerFromCachedConfig();
+        }
+
+        [Benchmark]
         public IComplex1 NewContainerAndResolve()
         {
             return _containerBenchmark.NewContainerAndResolve();
