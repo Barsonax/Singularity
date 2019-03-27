@@ -1,5 +1,7 @@
-﻿using System.Linq;
+﻿using System;
+using System.Linq;
 using Singularity.Benchmark.TestClasses;
+using Singularity.Test.TestClasses;
 
 namespace Singularity.TestClasses.Benchmark
 {
@@ -33,6 +35,11 @@ namespace Singularity.TestClasses.Benchmark
         public IComplex1 Complex()
         {
             return (IComplex1)_container.GetInstance(typeof(IComplex1));
+        }
+
+        public IDisposable Disposable()
+        {
+            return (IDisposable)_container.GetInstance(typeof(IDisposable));
         }
 
         public void Register()
@@ -113,6 +120,8 @@ namespace Singularity.TestClasses.Benchmark
             config.Register<ISecondService, SecondService>().With(CreationMode.Singleton);
             config.Register<IThirdService, ThirdService>().With(CreationMode.Singleton);
             config.Register<IComplex1, Complex1>();
+
+            config.Register<IDisposable, Disposable>().OnDeath(x => x.Dispose());
         }
     }
 }

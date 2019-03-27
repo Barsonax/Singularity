@@ -1,6 +1,8 @@
 ﻿using BenchmarkDotNet.Attributes;
 using BenchmarkDotNet.Running;
 using System;
+using System.Collections.Generic;
+using System.Linq.Expressions;
 using Singularity.Benchmark.TestClasses;
 using Singularity.TestClasses.Benchmark;
 
@@ -27,64 +29,70 @@ namespace Singularity.Benchmark
             _containerBenchmark.Setup();
         }
 
-        [Benchmark]
-        public ISingleton1 Singleton()
-        {
-            return _containerBenchmark.Singleton();
-        }
+        //[Benchmark]
+        //public ISingleton1 Singleton()
+        //{
+        //    return _containerBenchmark.Singleton();
+        //}
+
+        //[Benchmark]
+        //public ITransient1 Transient()
+        //{
+        //    return _containerBenchmark.Transient();
+        //}
+
+        //[Benchmark]
+        //public ICombined1 Combined()
+        //{
+        //    return _containerBenchmark.Combined();
+        //}
+
+        //[Benchmark]
+        //public IComplex1 Complex()
+        //{
+        //    return _containerBenchmark.Complex();
+        //}
 
         [Benchmark]
-        public ITransient1 Transient()
+        public IDisposable Disposable()
         {
-            return _containerBenchmark.Transient();
+            return _containerBenchmark.Disposable();
         }
 
-        [Benchmark]
-        public ICombined1 Combined()
-        {
-            return _containerBenchmark.Combined();
-        }
+        //[Benchmark]
+        //public void Register()
+        //{
+        //    _containerBenchmark.Register();
+        //}
 
-        [Benchmark]
-        public IComplex1 Complex()
-        {
-            return _containerBenchmark.Complex();
-        }
+        //[Benchmark]
+        //public void RegisterAndEnumerate()
+        //{
+        //    _containerBenchmark.RegisterAndEnumerate();
+        //}
 
-        [Benchmark]
-        public void Register()
-        {
-            _containerBenchmark.Register();
-        }
+        //[Benchmark]
+        //public Container NewContainer()
+        //{
+        //    return _containerBenchmark.NewContainer();
+        //}
 
-        [Benchmark]
-        public void RegisterAndEnumerate()
-        {
-            _containerBenchmark.RegisterAndEnumerate();
-        }
+        //[Benchmark]
+        //public Container NewContainerFromCachedConfig()
+        //{
+        //    return _containerBenchmark.NewContainerFromCachedConfig();
+        //}
 
-        [Benchmark]
-        public Container NewContainer()
-        {
-            return _containerBenchmark.NewContainer();
-        }
+        //[Benchmark]
+        //public IComplex1 NewContainerAndResolve()
+        //{
+        //    return _containerBenchmark.NewContainerAndResolve();
+        //}
 
-        [Benchmark]
-        public Container NewContainerFromCachedConfig()
-        {
-            return _containerBenchmark.NewContainerFromCachedConfig();
-        }
-
-        [Benchmark]
-        public IComplex1 NewContainerAndResolve()
-        {
-            return _containerBenchmark.NewContainerAndResolve();
-        }
-
-        [Benchmark]
-        public Container NewNestedContainer()
-        {
-            return _containerBenchmark.NewNestedContainer();
-        }
+        //[Benchmark]
+        //public Container NewNestedContainer()
+        //{
+        //    return _containerBenchmark.NewNestedContainer();
+        //}
     }
 }

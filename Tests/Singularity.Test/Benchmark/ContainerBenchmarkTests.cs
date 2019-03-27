@@ -1,4 +1,8 @@
-﻿using Singularity.Benchmark.TestClasses;
+﻿using System;
+using System.Collections.Generic;
+using System.Linq.Expressions;
+using Singularity.Benchmark.TestClasses;
+using Singularity.Test.TestClasses;
 using Singularity.TestClasses.Benchmark;
 using Xunit;
 
@@ -35,6 +39,30 @@ namespace Singularity.Test.Benchmark
             ICombined1 value = _containerBenchmark.Combined();
 
             Assert.IsType<Combined1>(value);
+        }
+
+        [Fact]
+        public void Disposable()
+        {
+            IDisposable value = _containerBenchmark.Disposable();
+
+            Assert.IsType<Disposable>(value);
+        }
+
+        [Fact]
+        public void CombinedManual()
+        {
+            Expression singleton1NewExpression = AutoResolveConstructorExpressionCache<Singleton1>.Expression;
+            Delegate action1 = Expression.Lambda(singleton1NewExpression).Compile();
+            var value = action1.DynamicInvoke();
+            singleton1NewExpression = Expression.Constant(value);
+
+            var transient1NewExpression = AutoResolveConstructorExpressionCache<Transient1>.Expression;
+
+            var expression = Expression.New(typeof(Combined1).AutoResolveConstructor(), singleton1NewExpression, transient1NewExpression);
+            Delegate action = Expression.Lambda(expression).Compile();
+            var func = (Func<object>)action;
+            var instance = func.Invoke();
         }
 
         [Fact]
