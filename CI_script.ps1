@@ -19,6 +19,5 @@ $configuration = 'z_CI_config'
 
 InstallChocolateyPackages
 Build $configuration $artifactFolder
-dotnet test
 #RunOpenCover $coverageFolder $coverageFilename $buildOutputFolder
 #PublishCoverage -codegovtoken:$env:codegov_token -coverageFile:$coverageFileFullname
