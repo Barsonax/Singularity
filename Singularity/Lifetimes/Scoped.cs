@@ -8,25 +8,17 @@ namespace Singularity
         private readonly object _locker = new object();
         private Dictionary<Type, ObjectActionList> ObjectActionLists { get; } = new Dictionary<Type, ObjectActionList>();
 
-        public void RegisterAction(Type type, Action<object> action)
+        internal ObjectActionList GetActionList(Type type, Action<object> action)
         {
             lock (_locker)
             {
-                if (!ObjectActionLists.TryGetValue(type, out var list))
+                if (!ObjectActionLists.TryGetValue(type, out ObjectActionList list))
                 {
-                    list = new ObjectActionList(action);
+                    list = new ObjectActionList(action, _locker);
                     ObjectActionLists.Add(type, list);
                 }
-            }
-        }
 
-        public void Add(object obj)
-        {
-            lock (_locker)
-            {
-                var type = obj.GetType();
-                ObjectActionList objectActionList = ObjectActionLists[type];
-                objectActionList.Objects.Add(obj);
+                return list;
             }
         }
 
@@ -43,16 +35,26 @@ namespace Singularity
                 }
             }
         }
+    }
 
-        private readonly struct ObjectActionList
+    internal readonly struct ObjectActionList
+    {
+        public Action<object> Action { get; }
+        public List<object> Objects { get; }
+        private readonly object _locker;
+
+        public ObjectActionList(Action<object> action, object locker)
         {
-            public Action<object> Action { get; }
-            public List<object> Objects { get; }
+            Action = action;
+            Objects = new List<object>();
+            _locker = locker;
+        }
 
-            public ObjectActionList(Action<object> action)
+        public void Add(object obj)
+        {
+            lock (_locker)
             {
-                Action = action;
-                Objects = new List<object>();
+                Objects.Add(obj);
             }
         }
     }

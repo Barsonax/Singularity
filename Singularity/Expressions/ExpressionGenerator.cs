@@ -9,7 +9,7 @@ namespace Singularity.Expressions
 {
     internal class ExpressionGenerator
     {
-        private static readonly MethodInfo _addMethod = typeof(Scoped).GetRuntimeMethod(nameof(Scoped.Add), new[] { typeof(object) });
+        private static readonly MethodInfo AddMethod = typeof(ObjectActionList).GetRuntimeMethod(nameof(ObjectActionList.Add), new[] { typeof(object) });
 
         public Expression GenerateDependencyExpression(Dependency dependency, Scoped scope)
         {
@@ -30,8 +30,8 @@ namespace Singularity.Expressions
 
                 if (dependency.Binding.OnDeathAction != null)
                 {
-                    scope.RegisterAction(dependency.Binding.Expression.Type, dependency.Binding.OnDeathAction);
-                    body.Add(Expression.Call(Expression.Constant(scope), _addMethod, instanceParameter));
+                    var actionList = scope.GetActionList(dependency.Binding.Expression.Type, dependency.Binding.OnDeathAction);
+                    body.Add(Expression.Call(Expression.Constant(actionList), AddMethod, instanceParameter));
                 }
 
                 if (dependency.Binding.Decorators.Length > 0)

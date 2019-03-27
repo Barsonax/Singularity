@@ -12,8 +12,7 @@ namespace Singularity.Graph
     {
         private ReadOnlyDictionary<Type, Dependency> Dependencies { get; }
         private readonly Scoped _defaultScope;
-        private readonly object _locker = new object();
-        private ExpressionGenerator _expressionGenerator = new ExpressionGenerator();
+        private readonly ExpressionGenerator _expressionGenerator = new ExpressionGenerator();
 
         public DependencyGraph(ReadOnlyCollection<Binding> bindings, Scoped scope, DependencyGraph? parentDependencyGraph = null)
         {
@@ -34,7 +33,7 @@ namespace Singularity.Graph
 
         private void ResolveDependency(Dependency dependency)
         {
-            lock (_locker)
+            lock (dependency)
             {
                 if (dependency.Dependencies == null)
                 {
@@ -45,7 +44,7 @@ namespace Singularity.Graph
                         ResolveDependency(nestedDependency);
                     }
 
-                    if(dependency.ResolvedDependency == null)
+                    if (dependency.ResolvedDependency == null)
                     {
                         var expression = _expressionGenerator.GenerateDependencyExpression(dependency, _defaultScope);
                         dependency.ResolvedDependency = new ResolvedDependency(expression);
