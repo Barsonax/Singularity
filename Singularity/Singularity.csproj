@@ -23,7 +23,6 @@
     <DebugType>pdbonly</DebugType>
     <DebugSymbols>true</DebugSymbols>
     <OutputPath>$(SolutionDir)BuildOutput\</OutputPath>
-    <DocumentationFile>$(SolutionDir)BuildOutput\Singularity.xml</DocumentationFile>
   </PropertyGroup>
 
   <ItemGroup>
