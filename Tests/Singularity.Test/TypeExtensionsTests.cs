@@ -2,7 +2,7 @@
 using System.Linq.Expressions;
 
 using Singularity.Exceptions;
-using Singularity.Test.TestClasses;
+using Singularity.TestClasses.TestClasses;
 using Xunit;
 
 namespace Singularity.Test

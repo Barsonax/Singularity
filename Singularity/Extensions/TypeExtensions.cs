@@ -28,14 +28,14 @@ namespace Singularity
             return Expression.New(constructor, parameterExpressions);
         }
 
-	    /// <summary>
-	    /// Tries to find a constructor.
-	    /// </summary>
-	    /// <param name="type"></param>
-	    /// <exception cref="NoConstructorException">If there is no public constructor</exception>
-	    /// <exception cref="CannotAutoResolveConstructorException">If there is more than 1 public constructors</exception>
-	    /// <returns></returns>
-	    public static ConstructorInfo AutoResolveConstructor(this Type type)
+        /// <summary>
+        /// Tries to find a constructor.
+        /// </summary>
+        /// <param name="type"></param>
+        /// <exception cref="NoConstructorException">If there is no public constructor</exception>
+        /// <exception cref="CannotAutoResolveConstructorException">If there is more than 1 public constructors</exception>
+        /// <returns></returns>
+        public static ConstructorInfo AutoResolveConstructor(this Type type)
 	    {
 		    ConstructorInfo[] constructors = type.GetTypeInfo().DeclaredConstructors.Where(x => x.IsPublic).ToArray();
 		    if (constructors.Length == 0) throw new NoConstructorException($"Type {type} did not contain any public constructor.");
@@ -43,4 +43,9 @@ namespace Singularity
 		    return constructors.First();
 	    }
 	}
+
+    public class AutoResolveConstructorExpressionCache<T>
+    {
+        public static readonly NewExpression Expression = typeof(T).AutoResolveConstructorExpression();
+    }
 }

@@ -1,33 +1,26 @@
 ﻿using System;
 using System.Linq.Expressions;
 
-using Singularity.Enums;
-
 namespace Singularity.Bindings
 {
-	public sealed class StronglyTypedConfiguredBinding<TDependency, TInstance> : IConfiguredBinding
-		where TInstance : class
-	{
-		public Expression Expression { get; }
-		public Lifetime Lifetime { get; private set; }
-		public Action<TInstance> OnDeathAction { get; private set; }
-		Action<object> IConfiguredBinding.OnDeath => OnDeathAction != null ? (Action<object>)(obj => OnDeathAction((TInstance)obj)) : null;
+    public sealed class StronglyTypedConfiguredBinding<TDependency, TInstance> : WeaklyTypedConfiguredBinding
+        where TInstance : class
+    {
+        internal StronglyTypedConfiguredBinding(WeaklyTypedBinding weaklyTypedBinding, Expression expression) : base(weaklyTypedBinding, expression)
+        {
 
-		internal StronglyTypedConfiguredBinding(Expression expression)
-		{
-			Expression = expression;
-		}
+        }
 
-		public StronglyTypedConfiguredBinding<TDependency, TInstance> With(Lifetime lifetime)
-		{
-			Lifetime = lifetime;
-			return this;
-		}
+        public new StronglyTypedConfiguredBinding<TDependency, TInstance> With(CreationMode creationMode)
+        {
+            CreationMode = creationMode;
+            return this;
+        }
 
-		public StronglyTypedConfiguredBinding<TDependency, TInstance> OnDeath(Action<TInstance> onDeathAction)
-		{
-			OnDeathAction = onDeathAction;
-			return this;
-		}
-	}
+        public StronglyTypedConfiguredBinding<TDependency, TInstance> OnDeath(Action<TInstance> onDeathAction)
+        {
+            OnDeathAction = obj => onDeathAction((TInstance)obj);
+            return this;
+        }
+    }
 }

@@ -24,8 +24,8 @@ namespace Singularity.Duality.Test.Setup
 
 			// Set environment directory to Duality binary directory
 			_oldEnvDir = Environment.CurrentDirectory;
-			var codeBaseUri = typeof(DualityApp).Assembly.CodeBase;
-			var codeBasePath = codeBaseUri.StartsWith("file:") ? codeBaseUri.Remove(0, "file:".Length) : codeBaseUri;
+			string codeBaseUri = typeof(DualityApp).Assembly.CodeBase;
+			string codeBasePath = codeBaseUri.StartsWith("file:") ? codeBaseUri.Remove(0, "file:".Length) : codeBaseUri;
 			codeBasePath = codeBasePath.TrimStart('/');
 			Console.WriteLine("Testing Core Assembly: {0}", codeBasePath);
 			Environment.CurrentDirectory = Path.GetDirectoryName(codeBasePath);

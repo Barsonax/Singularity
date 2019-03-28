@@ -8,7 +8,12 @@ namespace Singularity
 	{
 		public static ParameterExpression[] GetParameterExpressions(this Expression expression)
 		{
-			switch (expression)
+            if (expression == null)
+            {
+                throw new ArgumentNullException(nameof(expression));
+            }
+
+            switch (expression)
 			{
 				case ConstantExpression _:
 					return new ParameterExpression[0];
@@ -20,7 +25,7 @@ namespace Singularity
 					return blockExpression.Variables.ToArray();
 				case MethodCallExpression methodCallExpression:
 					return methodCallExpression.Arguments.OfType<ParameterExpression>().ToArray();
-				default:
+                default:
 					throw new NotSupportedException($"The expression of type {expression.GetType()} is not supported");
 			}
 		}

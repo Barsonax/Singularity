@@ -1,6 +1,4 @@
 ﻿using System;
-
-using Singularity.Bindings;
 using Singularity.Duality.Resources;
 using Singularity.Duality.Scopes;
 using Singularity.Duality.Test.Setup;
@@ -47,7 +45,7 @@ namespace Singularity.Duality.Test
 			var moduleResource = new SingularityModules();
 			Type type = typeof(GameScopeTests);
 
-			moduleResource.Modules[0] = ModuleRef.FromType(type);
+			moduleResource.Modules[0] = new ModuleRef(type);
 			SingularityModules[] moduleResources = { moduleResource };
 			using (var scope = new GameScope(logger, new SceneScopeFactoryMockup(), new SceneEventsProviderMockup(), moduleResources))
 			{
@@ -62,7 +60,7 @@ namespace Singularity.Duality.Test
 			var moduleResource = new SingularityModules();
 			Type type = typeof(TestModuleWithConstructor);
 
-			moduleResource.Modules[0] = ModuleRef.FromType(type);
+			moduleResource.Modules[0] = new ModuleRef(type);
 			SingularityModules[] moduleResources = { moduleResource };
 			using (var scope = new GameScope(logger, new SceneScopeFactoryMockup(), new SceneEventsProviderMockup(), moduleResources))
 			{
@@ -77,7 +75,7 @@ namespace Singularity.Duality.Test
 			var moduleResource = new SingularityModules();
 			Type type = typeof(TestModule);
 
-			moduleResource.Modules[0] = ModuleRef.FromType(type);
+			moduleResource.Modules[0] = new ModuleRef(type);
 			SingularityModules[] moduleResources = { moduleResource };
 			using (var scope = new GameScope(logger, new SceneScopeFactoryMockup(), new SceneEventsProviderMockup(), moduleResources))
 			{

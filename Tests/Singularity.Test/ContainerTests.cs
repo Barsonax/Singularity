@@ -1,14 +1,12 @@
 ﻿using System;
 using System.Collections.Generic;
-using Singularity.Bindings;
-using Singularity.Enums;
 using Singularity.Exceptions;
-using Singularity.Test.TestClasses;
+using Singularity.TestClasses.TestClasses;
 using Xunit;
 
 namespace Singularity.Test
 {
-	public class ContainerTests
+    public class ContainerTests
 	{
 		public class Nested
 		{
@@ -38,7 +36,7 @@ namespace Singularity.Test
                     using (var rootContainer = new Container(rootConfig))
                     {
                         var nested1Config = new BindingConfig();
-                        nested1Config.For<IComponent>().Inject<Component>();
+                        nested1Config.Register<IComponent, Component>();
                         using (Container nested1Container = rootContainer.GetNestedContainer(nested1Config))
                         {
                             var nested1Value = nested1Container.GetInstance<IComponent>();
@@ -61,7 +59,7 @@ namespace Singularity.Test
                         using (Container nested1Container = rootContainer.GetNestedContainer(nested1Config))
 			            {
 			                var nested2Config = new BindingConfig();
-			                nested2Config.For<IComponent>().Inject<Component>();
+			                nested2Config.Register<IComponent, Component>();
                             using (Container nested2Container = nested1Container.GetNestedContainer(nested2Config))
 			                {
 			                    var nested2Value = nested2Container.GetInstance<IComponent>();
@@ -78,7 +76,7 @@ namespace Singularity.Test
 				{
 					var config = new BindingConfig();
 					config.Decorate<IComponent>().With<Decorator1>();
-					config.For<IComponent>().Inject<Component>();
+					config.Register<IComponent, Component>();
 
 					using (var container = new Container(config))
 					{
@@ -109,14 +107,14 @@ namespace Singularity.Test
 			    {
 			        var rootConfig = new BindingConfig();
 			        rootConfig.Decorate<IComponent>().With<Decorator1>();
-			        rootConfig.For<IComponent>().Inject<Component>().With(Lifetime.PerContainer);
+			        rootConfig.Register<IComponent, Component>().With(CreationMode.Singleton);
 
                     using (var rootContainer = new Container(rootConfig))
                     {
                         var rootValue = rootContainer.GetInstance<IComponent>();
 			            var nested1Config = new BindingConfig();
 			            nested1Config.Decorate<IComponent>().With<Decorator2>();
-                        nested1Config.For<IComponent>().Inject<Component>().With(Lifetime.PerContainer);
+                        nested1Config.Register<IComponent, Component>().With(CreationMode.Singleton);
                         using (Container nested1Container = rootContainer.GetNestedContainer(nested1Config))
 			            {
 			                var nested1Value = nested1Container.GetInstance<IComponent>();
@@ -134,8 +132,8 @@ namespace Singularity.Test
 
 					config.Decorate<ITestService11>().With<TestService11_Decorator1>();
 
-					config.For<ITestService10>().Inject<TestService10>();
-					config.For<ITestService11>().Inject<TestService11>().With(Lifetime.PerContainer);
+					config.Register<ITestService10, TestService10>();
+					config.Register<ITestService11, TestService11>().With(CreationMode.Singleton);
 
 				    using (var container = new Container(config))
 				    {
@@ -162,7 +160,7 @@ namespace Singularity.Test
 				public void GetInstance_Decorate_PerContainerLifetime_SameInstanceIsReturned()
 				{
 					var config = new BindingConfig();
-					config.For<IComponent>().Inject<Component>().With(Lifetime.PerContainer);
+					config.Register<IComponent, Component>().With(CreationMode.Singleton);
 
 					using (var container = new Container(config))
 					{
@@ -188,7 +186,7 @@ namespace Singularity.Test
 				public void GetInstance_PerContainerLifetimeAndOverride_IsDisposed()
 				{
 					var config = new BindingConfig();
-					config.For<IDisposable>().Inject<Disposable>().With(Lifetime.PerContainer).OnDeath(x => x.Dispose());
+					config.Register<IDisposable, Disposable>().With(CreationMode.Singleton).OnDeath(x => x.Dispose());
 
 					var container = new Container(config);
 
@@ -198,8 +196,8 @@ namespace Singularity.Test
 
 					{
 						var nestedConfig = new BindingConfig();
-						nestedConfig.For<IDisposable>().Inject<Disposable>().With(Lifetime.PerContainer).OnDeath(x => x.Dispose());
-						Container nestedContainer = container.GetNestedContainer(nestedConfig);
+						nestedConfig.Register<IDisposable, Disposable>().With(CreationMode.Singleton).OnDeath(x => x.Dispose());
+						Container nestedContainer = container.GetNestedContainer(nestedConfig, new Scoped());
 						var nestedInstance = nestedContainer.GetInstance<IDisposable>();
 
 						Assert.NotNull(nestedInstance);
@@ -221,7 +219,7 @@ namespace Singularity.Test
 				public void GetInstance_PerContainerLifetime_IsDisposedInTopLevel()
 				{
 					var config = new BindingConfig();
-					config.For<IDisposable>().Inject<Disposable>().With(Lifetime.PerContainer).OnDeath(x => x.Dispose());
+					config.Register<IDisposable, Disposable>().With(CreationMode.Singleton).OnDeath(x => x.Dispose());
 
 					var container = new Container(config);
 
@@ -254,7 +252,7 @@ namespace Singularity.Test
 				public void GetInstance_PerCallLifetime_IsDisposedInTopLevel()
 				{
 					var config = new BindingConfig();
-					config.For<IDisposable>().Inject<Disposable>().OnDeath(x => x.Dispose());
+					config.Register<IDisposable, Disposable>().OnDeath(x => x.Dispose());
 
 					var container = new Container(config);
 
@@ -265,7 +263,7 @@ namespace Singularity.Test
 					{
 						var nestedConfig = new BindingConfig();
 
-						Container nestedContainer = container.GetNestedContainer(nestedConfig);
+						Container nestedContainer = container.GetNestedContainer(nestedConfig, new Scoped());
 						var nestedInstance = nestedContainer.GetInstance<IDisposable>();
 
 						Assert.NotNull(nestedInstance);
@@ -288,7 +286,7 @@ namespace Singularity.Test
 				public void GetInstance_PerContainerLifetimeAndNestedContainerDecorator_IsDisposed()
 				{
 					var config = new BindingConfig();
-					config.For<IDisposable>().Inject<Disposable>().With(Lifetime.PerContainer).OnDeath(x => x.Dispose());
+					config.Register<IDisposable, Disposable>().With(CreationMode.Singleton).OnDeath(x => x.Dispose());
 
 					var container = new Container(config);
 					var topLevelInstance = container.GetInstance<IDisposable>();
@@ -321,13 +319,13 @@ namespace Singularity.Test
 				public void GetInstance_1DeepAndUsingDependencyFromParentContainer_CorrectDependencyIsReturned()
 				{
 					var config = new BindingConfig();
-					config.For<ITestService10>().Inject<TestService10>();
+					config.Register<ITestService10, TestService10>();
 
 					using (var container = new Container(config))
 					{
 						var nestedConfig = new BindingConfig();
 
-						nestedConfig.For<ITestService11>().Inject<TestService11>();
+						nestedConfig.Register<ITestService11, TestService11>();
 						using (Container nestedContainer = container.GetNestedContainer(nestedConfig))
 						{
 							var nestedValue = nestedContainer.GetInstance<ITestService11>();
@@ -343,13 +341,13 @@ namespace Singularity.Test
 				public void GetInstance_2DeepAndUsingDependencyFromParentContainer_CorrectDependencyIsReturned()
 				{
 					var config = new BindingConfig();
-					config.For<ITestService10>().Inject<TestService10>();
+					config.Register<ITestService10, TestService10>();
 
 					using (var container = new Container(config))
 					{
 						var nestedConfig = new BindingConfig();
 
-						nestedConfig.For<ITestService11>().Inject<TestService11>();
+						nestedConfig.Register<ITestService11, TestService11>();
 						using (Container nestedContainer = container.GetNestedContainer(nestedConfig))
 						{
 							var nestedValue = nestedContainer.GetInstance<ITestService11>();
@@ -357,7 +355,7 @@ namespace Singularity.Test
 							Assert.Equal(typeof(TestService10), nestedValue.TestService10.GetType());
 
 							var nestedConfig2 = new BindingConfig();
-							nestedConfig2.For<ITestService12>().Inject<TestService12>();
+							nestedConfig2.Register<ITestService12, TestService12>();
 
 							using (Container nestedContainer2 = nestedContainer.GetNestedContainer(nestedConfig2))
 							{
@@ -380,7 +378,7 @@ namespace Singularity.Test
 				public void GetInstance_CorrectDependencyIsReturned()
 				{
 					var config = new BindingConfig();
-					config.For<ITestService10>().Inject<TestService10>();
+					config.Register<ITestService10, TestService10>();
 
 					using (var container = new Container(config))
 					{
@@ -402,7 +400,7 @@ namespace Singularity.Test
 				{
 
 					var config = new BindingConfig();
-					config.For<ITestService10>().Inject<TestService10>();
+					config.Register<ITestService10, TestService10>();
 
 					using (var container = new Container(config))
 					{
@@ -423,13 +421,13 @@ namespace Singularity.Test
 				public void GetInstance_Override_CorrectDependencyIsReturned()
 				{
 					var config = new BindingConfig();
-					config.For<ITestService10>().Inject<TestService10>();
+					config.Register<ITestService10, TestService10>();
 
 					using (var container = new Container(config))
 					{
 						var nestedConfig = new BindingConfig();
 
-						nestedConfig.For<ITestService10>().Inject<TestService10Variant>();
+						nestedConfig.Register<ITestService10, TestService10Variant>();
 						using (Container nestedContainer = container.GetNestedContainer(nestedConfig))
 						{
 							var nestedValue = nestedContainer.GetInstance<ITestService10>();
@@ -453,7 +451,7 @@ namespace Singularity.Test
 					try
 					{
 						var config = new BindingConfig();
-						config.For<ITestService10>().Inject<TestService10>();
+						config.Register<ITestService10, TestService10>();
 						config.Decorate<ITestService10>().With<TestService10_Decorator1>();
 						var container = new Container(config);
 					}
@@ -486,7 +484,7 @@ namespace Singularity.Test
 					try
 					{
 						var config = new BindingConfig();
-						config.For<ITestService11>().Inject<TestService11>();
+						config.Register<ITestService11, TestService11>();
 						var container = new Container(config);
 					}
 					catch (AggregateException e)
@@ -510,7 +508,7 @@ namespace Singularity.Test
 				{
 					var config = new BindingConfig();
 					config.Decorate<IComponent>().With<Decorator1>();
-					config.For<IComponent>().Inject<Component>();
+					config.Register<IComponent, Component>();
 
 					var container = new Container(config);
 
@@ -530,7 +528,7 @@ namespace Singularity.Test
 					config.Decorate<IComponent>().With<Decorator1>();
 					config.Decorate<IComponent>().With<Decorator2>();
 
-					config.For<IComponent>().Inject<Component>();
+					config.Register<IComponent, Component>();
 
 					var container = new Container(config);
 
@@ -553,8 +551,8 @@ namespace Singularity.Test
 
 					config.Decorate<ITestService11>().With<TestService11_Decorator1>();
 
-					config.For<ITestService10>().Inject<TestService10>();
-					config.For<ITestService11>().Inject<TestService11>();
+					config.Register<ITestService10, TestService10>();
+					config.Register<ITestService11, TestService11>();
 
 					var container = new Container(config);
 
@@ -580,8 +578,8 @@ namespace Singularity.Test
 					config.Decorate<ITestService11>().With<TestService11_Decorator1>();
 					config.Decorate<ITestService11>().With<TestService11_Decorator2>();
 
-					config.For<ITestService10>().Inject<TestService10>();
-					config.For<ITestService11>().Inject<TestService11>();
+					config.Register<ITestService10, TestService10>();
+					config.Register<ITestService11, TestService11>();
 
 					var container = new Container(config);
 
@@ -611,7 +609,7 @@ namespace Singularity.Test
 				public void GetInstance_PerContainerLifetime_IsDisposed()
 				{
 					var config = new BindingConfig();
-					config.For<IDisposable>().Inject<Disposable>().With(Lifetime.PerContainer).OnDeath(x => x.Dispose());
+					config.Register<IDisposable, Disposable>().With(CreationMode.Singleton).OnDeath(x => x.Dispose());
 
 					var container = new Container(config);
 
@@ -629,7 +627,7 @@ namespace Singularity.Test
 				public void GetInstance_PerCallLifetime_IsDisposed()
 				{
 					var config = new BindingConfig();
-					config.For<IDisposable>().Inject<Disposable>().OnDeath(x => x.Dispose());
+					config.Register<IDisposable, Disposable>().OnDeath(x => x.Dispose());
 
 					var container = new Container(config);
 
@@ -647,7 +645,7 @@ namespace Singularity.Test
 				public void GetInstance_Decorator_IsDisposed()
 				{
 					var config = new BindingConfig();
-					config.For<IDisposable>().Inject<Disposable>().OnDeath(x => x.Dispose());
+					config.Register<IDisposable, Disposable>().OnDeath(x => x.Dispose());
 					config.Decorate<IDisposable>().With<DisposableDecorator>();
 
 					var container = new Container(config);
@@ -671,8 +669,8 @@ namespace Singularity.Test
 				public void GetInstance_1Deep_DependenciesAreCorrectlyInjected()
 				{
 					var config = new BindingConfig();
-					config.For<ITestService10>().Inject<TestService10>();
-					config.For<ITestService11>().Inject<TestService11>();
+					config.Register<ITestService10, TestService10>();
+					config.Register<ITestService11, TestService11>();
 
 					var container = new Container(config);
 
@@ -686,9 +684,9 @@ namespace Singularity.Test
 				public void GetInstance_2Deep_DependenciesAreCorrectlyInjected()
 				{
 					var config = new BindingConfig();
-					config.For<ITestService10>().Inject<TestService10>();
-					config.For<ITestService11>().Inject<TestService11>();
-					config.For<ITestService12>().Inject<TestService12>();
+					config.Register<ITestService10, TestService10>();
+					config.Register<ITestService11, TestService11>();
+					config.Register<ITestService12, TestService12>();
 
 					var container = new Container(config);
 
@@ -704,8 +702,8 @@ namespace Singularity.Test
 				public void GetInstance_1Deep_ReturnsNewInstancePerCall()
 				{
 					var config = new BindingConfig();
-					config.For<ITestService10>().Inject<TestService10>();
-					config.For<ITestService11>().Inject<TestService11>();
+					config.Register<ITestService10, TestService10>();
+					config.Register<ITestService11, TestService11>();
 
 					var container = new Container(config);
 
@@ -725,8 +723,8 @@ namespace Singularity.Test
 				public void GetInstance_1DeepAndPerContainerLifetime_ReturnsSameInstancePerCall()
 				{
 					var config = new BindingConfig();
-					config.For<ITestService10>().Inject<TestService10>().With(Lifetime.PerContainer);
-					config.For<ITestService11>().Inject<TestService11>();
+					config.Register<ITestService10, TestService10>().With(CreationMode.Singleton);
+					config.Register<ITestService11, TestService11>();
 
 					var container = new Container(config);
 
@@ -746,9 +744,9 @@ namespace Singularity.Test
 				public void GetInstance_2Deep_ReturnsNewInstancePerCall()
 				{
 					var config = new BindingConfig();
-					config.For<ITestService10>().Inject<TestService10>();
-					config.For<ITestService11>().Inject<TestService11>();
-					config.For<ITestService12>().Inject<TestService12>();
+					config.Register<ITestService10, TestService10>();
+					config.Register<ITestService11, TestService11>();
+					config.Register<ITestService12, TestService12>();
 
 					var container = new Container(config);
 
@@ -772,9 +770,9 @@ namespace Singularity.Test
 				public void GetInstance_2DeepAndPerContainerLifetime_ReturnsNewInstancePerCall()
 				{
 					var config = new BindingConfig();
-					config.For<ITestService10>().Inject<TestService10>().With(Lifetime.PerContainer);
-					config.For<ITestService11>().Inject<TestService11>();
-					config.For<ITestService12>().Inject<TestService12>();
+					config.Register<ITestService10, TestService10>().With(CreationMode.Singleton);
+					config.Register<ITestService11, TestService11>();
+					config.Register<ITestService12, TestService12>();
 
 					var container = new Container(config);
 
@@ -798,7 +796,7 @@ namespace Singularity.Test
 				public void GetInstanceFactory_GetDependencyByConcreteType_ReturnsCorrectDependency()
 				{
 					var config = new BindingConfig();
-					config.For<ITestService10>().Inject<TestService10>();
+					config.Register<ITestService10, TestService10>();
 
 					var container = new Container(config);
 
@@ -837,8 +835,8 @@ namespace Singularity.Test
 				public void GetInstanceFactory_GetDependencyByConcreteType_WithMixedConcreteDependency_2Deep_ReturnsCorrectDependency()
 				{
 					var config = new BindingConfig();
-					config.For<ITestService10>().Inject<TestService10>();
-					config.For<ITestService11>().Inject<TestService11>();
+					config.Register<ITestService10, TestService10>();
+					config.Register<ITestService11, TestService11>();
 
 					var container = new Container(config);
 
@@ -856,7 +854,7 @@ namespace Singularity.Test
 				public void GetInstanceFactory_GetDependencyByInterface_ReturnsCorrectDependency()
 				{
 					var config = new BindingConfig();
-					config.For<ITestService10>().Inject<TestService10>();
+					config.Register<ITestService10, TestService10>();
 
 					var container = new Container(config);
 
@@ -881,7 +879,7 @@ namespace Singularity.Test
 				public void GetInstance_ReturnsCorrectDependency()
 				{
 					var config = new BindingConfig();
-					config.For<ITestService10>().Inject<TestService10>();
+					config.Register<ITestService10, TestService10>();
 
 					var container = new Container(config);
 
@@ -893,7 +891,7 @@ namespace Singularity.Test
 				public void GetInstance_FuncWithMethodCall_ReturnsCorrectDependency()
 				{
 					var config = new BindingConfig();
-					config.For<ITestService10>().Inject(() => CreateTestService());
+					config.Register<ITestService10>().Inject(() => CreateTestService());
 
 					var container = new Container(config);
 
@@ -905,7 +903,7 @@ namespace Singularity.Test
 				public void GetInstance_FuncWithConstructorCall_ReturnsCorrectDependency()
 				{
 					var config = new BindingConfig();
-					config.For<ITestService10>().Inject(() => new TestService10());
+					config.Register<ITestService10>().Inject(() => new TestService10());
 
 					var container = new Container(config);
 
@@ -918,7 +916,7 @@ namespace Singularity.Test
 				{
 					var config = new BindingConfig();
 					Func<TestService10> func = () => new TestService10();
-					config.For<ITestService10>().Inject(() => func.Invoke());
+					config.Register<ITestService10>().Inject(() => func.Invoke());
 
 					var container = new Container(config);
 
@@ -935,21 +933,21 @@ namespace Singularity.Test
 				public void MethodInject_InjectsCorrectDependencies()
 				{
 					var config = new BindingConfig();
-					config.For<ITestService10>().Inject<TestService10>();
+					config.Register<ITestService10, TestService10>();
 
 					var container = new Container(config);
 
 					var instance = new MethodInjectionClass();
 					container.MethodInject(instance);
 
-					Assert.Equal(typeof(TestService10), instance.TestService10.GetType());
+					Assert.Equal(typeof(TestService10), instance.TestService10?.GetType());
 				}
 
 				[Fact]
 				public void MethodInjectAll_InjectsCorrectDependencies()
 				{
 					var config = new BindingConfig();
-					config.For<ITestService10>().Inject<TestService10>();
+					config.Register<ITestService10, TestService10>();
 
 					var container = new Container(config);
 
@@ -962,7 +960,7 @@ namespace Singularity.Test
 
 					foreach (MethodInjectionClass instance in instances)
 					{
-						Assert.Equal(typeof(TestService10), instance.TestService10.GetType());
+						Assert.Equal(typeof(TestService10), instance.TestService10?.GetType());
 					}
 				}
 
@@ -970,7 +968,7 @@ namespace Singularity.Test
 				public void GetInstance_PerContainerLifetime_ReturnsSameInstancePerCall()
 				{
 					var config = new BindingConfig();
-					config.For<ITestService10>().Inject<TestService10>().With(Lifetime.PerContainer);
+					config.Register<ITestService10, TestService10>().With(CreationMode.Singleton);
 
 					var container = new Container(config);
 
@@ -986,7 +984,7 @@ namespace Singularity.Test
 				public void GetInstance_PerCallLifetime_ReturnsNewInstancePerCall()
 				{
 					var config = new BindingConfig();
-					config.For<ITestService10>().Inject<TestService10>();
+					config.Register<ITestService10, TestService10>();
 
 					var container = new Container(config);
 

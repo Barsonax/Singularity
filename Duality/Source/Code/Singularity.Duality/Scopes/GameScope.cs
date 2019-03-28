@@ -2,7 +2,6 @@
 using System.Collections.Generic;
 
 using Duality.Resources;
-using Singularity.Bindings;
 using Singularity.Duality.Resources;
 
 namespace Singularity.Duality.Scopes
@@ -29,9 +28,9 @@ namespace Singularity.Duality.Scopes
 					{
 						_logger.WriteWarning($"{nameof(Singularity)}: {dependencyResource.FullName} contains a null module");
 					}
-					else if (TryCreateModule(moduleRef, out IModule module))
+					else if (TryCreateModule(moduleRef, out IModule? module))
 					{
-						modules.Add(module);
+						modules.Add(module!);
 					}
 				}
 			}
@@ -49,7 +48,7 @@ namespace Singularity.Duality.Scopes
 			}
 		}
 
-		private bool TryCreateModule(ModuleRef moduleRef, out IModule module)
+		private bool TryCreateModule(ModuleRef moduleRef, out IModule? module)
 		{
 			Type type = moduleRef.Type;
 			if (type == null)

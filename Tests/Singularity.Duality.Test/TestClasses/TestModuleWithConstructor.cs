@@ -1,6 +1,4 @@
-﻿using Singularity.Bindings;
-
-namespace Singularity.Duality.Test
+﻿namespace Singularity.Duality.Test
 {
 	public class TestModuleWithConstructor : IModule
 	{

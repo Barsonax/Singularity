@@ -9,11 +9,18 @@ namespace Singularity.Graph
 	internal sealed class Graph<T>
 		where T : class
 	{
-		private readonly Dictionary<T, Node<T>> _nodes = new Dictionary<T, Node<T>>();
+		private readonly Dictionary<T, Node<T>> _nodes;
+
+        public Graph(ICollection<T> values)
+        {
+            _nodes = new Dictionary<T, Node<T>>(values.Count);
+            Add(values);
+        }
 
 		public Graph(IEnumerable<T> values)
 		{
-			Add(values);
+            _nodes = new Dictionary<T, Node<T>>();
+            Add(values);
 		}
 
 		public void Add(T value)
@@ -39,7 +46,7 @@ namespace Singularity.Graph
 				throw new SingularityAggregateException("The following exceptions occured while determining the parents of the nodes in the graph", parentSelectorExceptions);
 			}
 
-			if (_nodes.Values.Where(x => x.Parents.Length != 0).TryExecute(node =>
+			if (_nodes.Values.Where(x => x.Parents!.Length != 0).TryExecute(node =>
 			{
 				node.Depth = ResolveDepth(node);
 			}, out IList<Exception> depthCalculationExceptions))
@@ -50,7 +57,7 @@ namespace Singularity.Graph
 			return _nodes.Values.GroupBy(x => x.Depth).OrderBy(x => x.Key).Select(x => x.Select(y => y.Value).ToArray()).ToArray();
 		}
 
-		private static int ResolveDepth(Node<T> dependencyNode, List<Node<T>> visitedNodes = null)
+		private static int ResolveDepth(Node<T> dependencyNode, List<Node<T>>? visitedNodes = null)
 		{
 			if (visitedNodes == null)
 			{
@@ -66,7 +73,7 @@ namespace Singularity.Graph
 
 			var maxDepth = 0;
 
-			foreach (Node<T> parent in dependencyNode.Parents)
+			foreach (Node<T> parent in dependencyNode.Parents!)
 			{
 				if (parent.Depth == null)
 					parent.Depth = ResolveDepth(parent, visitedNodes);
@@ -81,7 +88,7 @@ namespace Singularity.Graph
 		where T : class
 	{
 		public int? Depth { get; set; }
-		public Node<T>[] Parents { get; set; }
+		public Node<T>[]? Parents { get; set; }
 		public T Value { get; }
 
 		public Node(T value)

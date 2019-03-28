@@ -14,16 +14,18 @@
     <Description>Plugin that adds a ioc container to duality</Description>
     <Copyright>https://github.com/Barsonax/Singularity/blob/master/LICENSE</Copyright>
     <Configurations>Debug;Release;z_CI_config</Configurations>
-    <LangVersion>7.3</LangVersion>
+    <LangVersion>8.0</LangVersion>
+    <NullableContextOptions>enable</NullableContextOptions>
+    <DocumentationFile>C:\Git\Singularity\Duality\Source\Code\Singularity.Duality\bin\$(Configuration)\$(TargetFramework)\Singularity.Duality.core.xml</DocumentationFile>
   </PropertyGroup>
 
   <ItemGroup Condition="'$(Configuration)|$(Platform)'=='z_CI_config|AnyCPU'">
-    <None Include="$(SolutionDir)BuildOutput\net452\Singularity.Duality.core.dll" Pack="true" PackagePath="lib/"/>
-    <None Include="$(SolutionDir)BuildOutput\net452\Singularity.Duality.core.pdb" Pack="true" PackagePath="lib/"/>
-    <None Include="$(SolutionDir)BuildOutput\net452\Singularity.Duality.core.xml" Pack="true" PackagePath="lib/"/>
-    <None Include="$(SolutionDir)BuildOutput\net452\Singularity.dll" Pack="true" PackagePath="lib/"/>
-    <None Include="$(SolutionDir)BuildOutput\net452\Singularity.pdb" Pack="true" PackagePath="lib/"/>
-    <None Include="$(SolutionDir)BuildOutput\net452\Singularity.xml" Pack="true" PackagePath="lib/"/>
+    <None Include="$(SolutionDir)BuildOutput\net452\Singularity.Duality.core.dll" Pack="true" PackagePath="lib/" />
+    <None Include="$(SolutionDir)BuildOutput\net452\Singularity.Duality.core.pdb" Pack="true" PackagePath="lib/" />
+    <None Include="$(SolutionDir)BuildOutput\net452\Singularity.Duality.core.xml" Pack="true" PackagePath="lib/" />
+    <None Include="$(SolutionDir)BuildOutput\net452\Singularity.dll" Pack="true" PackagePath="lib/" />
+    <None Include="$(SolutionDir)BuildOutput\net452\Singularity.pdb" Pack="true" PackagePath="lib/" />
+    <None Include="$(SolutionDir)BuildOutput\net452\Singularity.xml" Pack="true" PackagePath="lib/" />
   </ItemGroup>
 
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='z_CI_config|AnyCPU'">
@@ -33,6 +35,7 @@
     <DocumentationFile>$(SolutionDir)BuildOutput\Singularity.Duality.core.xml</DocumentationFile>
     <OutputPath>$(SolutionDir)BuildOutput\</OutputPath>
   </PropertyGroup>
+
   <Target Name="PostBuild" AfterTargets="PostBuildEvent">
     <Exec Command="if $(ConfigurationName) == Debug (&#xD;&#xA;mkdir &quot;$(SolutionDir)Duality/Plugins&quot;&#xD;&#xA;copy &quot;$(TargetPath)&quot; &quot;$(SolutionDir)Duality/Plugins&quot;&#xD;&#xA;copy &quot;$(TargetDir)$(TargetName).pdb&quot; &quot;$(SolutionDir)Duality/Plugins&quot;&#xD;&#xA;xcopy /Y &quot;$(TargetDir)*.core.xml&quot; &quot;$(SolutionDir)Duality/Plugins&quot;&#xD;&#xA;)" />
   </Target>

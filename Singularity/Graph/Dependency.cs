@@ -1,16 +1,16 @@
-﻿using System;
+﻿using Singularity.Bindings;
 
 namespace Singularity.Graph
 {
     internal sealed class Dependency
     {
-        public UnresolvedDependency UnresolvedDependency { get; }
-        public ResolvedDependency ResolvedDependency { get; }
+        public Binding Binding { get; }
+        public Dependency[]? Dependencies { get; set; }
+        public ResolvedDependency? ResolvedDependency { get; set; }
 
-        public Dependency(UnresolvedDependency unresolvedDependency, ResolvedDependency resolvedDependency)
+        public Dependency(Binding unresolvedDependency)
         {
-            UnresolvedDependency = unresolvedDependency ?? throw new ArgumentNullException(nameof(unresolvedDependency));
-            ResolvedDependency = resolvedDependency ?? throw new ArgumentNullException(nameof(resolvedDependency));
+            Binding = unresolvedDependency;
         }
     }
 }

@@ -5,191 +5,247 @@ using System.Linq;
 using System.Linq.Expressions;
 using System.Reflection;
 using System.Runtime.CompilerServices;
-
 using Singularity.Attributes;
-using Singularity.Bindings;
 using Singularity.Collections;
 using Singularity.Graph;
 
 namespace Singularity
 {
+    /// <summary>
+    /// A thread safe and lock free dependency injection container.
+    /// </summary>
 	public sealed class Container : IDisposable
-	{
+    {
+        /// <summary>
+        /// Is the container disposed or not?
+        /// </summary>
 		public bool IsDisposed { get; private set; }
-		private readonly DependencyGraph _dependencyGraph;
+        private readonly DependencyGraph _dependencyGraph;
+        private readonly ThreadSafeDictionary<Type, Action<object>> _injectionCache = new ThreadSafeDictionary<Type, Action<object>>();
+        private readonly ThreadSafeDictionary<Type, Func<object>> _getInstanceCache = new ThreadSafeDictionary<Type, Func<object>>();
+        private readonly Container? _parentContainer;
+        private readonly Scoped? _containerScope;
 
-		private readonly Dictionary<Type, Action<object>> _injectionCache = new Dictionary<Type, Action<object>>(ReferenceEqualityComparer<Type>.Instance);
-		private readonly Dictionary<Type, Func<object>> _getInstanceCache = new Dictionary<Type, Func<object>>(ReferenceEqualityComparer<Type>.Instance);
+        /// <summary>
+        /// Creates a new container using all the bindings that are in the provided modules
+        /// </summary>
+        /// <param name="modules"></param>
+		public Container(IEnumerable<IModule> modules) : this(modules.ToBindings())
+        {
 
-		private readonly ObjectActionContainer _objectActionContainer;
+        }
 
-		public Container(IEnumerable<IModule> modules) : this(modules.ToBindings(), null)
-		{
+        /// <summary>
+        /// Creates a new container with the provided bindings.
+        /// </summary>
+        /// <param name="bindings"></param>
+        public Container(BindingConfig bindings)
+        {
+            if (bindings == null) throw new ArgumentNullException(nameof(bindings));
+            _containerScope = new Scoped();
+            _dependencyGraph = new DependencyGraph(bindings.GetDependencies(), _containerScope);
+        }
 
-		}
+        private Container(BindingConfig bindings, Scoped? containerScope, Container parentContainer)
+        {
+            if (bindings == null) throw new ArgumentNullException(nameof(bindings));
+            _parentContainer = parentContainer ?? throw new ArgumentNullException(nameof(parentContainer));
+            _containerScope = containerScope;
+            _dependencyGraph = new DependencyGraph(bindings.GetDependencies(), containerScope ?? FindScope() ?? throw new ArgumentException(nameof(parentContainer._containerScope)), parentContainer._dependencyGraph);
+        }
 
-		public Container(IEnumerable<Binding> bindings) : this(bindings, null)
-		{
+        private Scoped? FindScope()
+        {
+            var container = this;
+            do
+            {
+                if(container._parentContainer == null) break;
+                container = container._parentContainer;
+            }
+            while (container._containerScope == null);
+            return container._containerScope;
+        }
 
-		}
+        /// <summary>
+        /// Creates a new nested container using all the bindings that are in the provided modules
+        /// </summary>
+        /// <param name="modules"></param>
+        /// <param name="containerScope"></param>
+        public Container GetNestedContainer(IEnumerable<IModule> modules, Scoped? containerScope = null) => GetNestedContainer(modules.ToBindings(), containerScope);
 
-		private Container(IEnumerable<Binding> bindings, DependencyGraph parentDependencyGraph)
-		{
-			var generators = new List<IDependencyExpressionGenerator>();
-			_objectActionContainer = new ObjectActionContainer();
+        /// <summary>
+        /// Creates a new nested container with the provided bindings.
+        /// </summary>
+        /// <param name="bindings"></param>
+        /// <param name="containerScope"></param>
+        public Container GetNestedContainer(BindingConfig bindings, Scoped? containerScope = null) => new Container(bindings, containerScope, this);
 
-			generators.Add(new OnDeathExpressionGenerator(_objectActionContainer));
-			generators.Add(new DecoratorExpressionGenerator());
-			_dependencyGraph = new DependencyGraph(bindings, generators, parentDependencyGraph);
-		}
+        /// <summary>
+        /// Injects dependencies by calling all methods marked with <see cref="InjectAttribute"/> on the <paramref name="instances"/>.
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        /// <param name="instances"></param>
+        /// <exception cref="DependencyNotFoundException">If the method had parameters that couldn't be resolved</exception>
+        public void MethodInjectAll<T>(IEnumerable<T> instances)
+        {
+            foreach (T instance in instances)
+            {
+                if (instance != null) MethodInject(instance);
+            }
+        }
 
-		public Container GetNestedContainer(IEnumerable<IModule> modules) => GetNestedContainer(modules.ToBindings());
-		public Container GetNestedContainer(IEnumerable<Binding> bindings) => new Container(bindings, _dependencyGraph);
+        /// <summary>
+        /// Injects dependencies by calling all methods marked with <see cref="InjectAttribute"/> on the <paramref name="instance"/>.
+        /// </summary>
+        /// <param name="instance"></param>
+        /// <exception cref="DependencyNotFoundException">If the method had parameters that couldn't be resolved</exception>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public void MethodInject(object instance) => GetMethodInjector(instance.GetType()).Invoke(instance);
 
-		/// <summary>
-		/// Injects dependencies by calling all methods marked with <see cref="InjectAttribute"/> on the <paramref name="instances"/>.
-		/// </summary>
-		/// <typeparam name="T"></typeparam>
-		/// <param name="instances"></param>
-		/// <exception cref="DependencyNotFoundException">If the method had parameters that couldn't be resolved</exception>
-		public void MethodInjectAll<T>(IEnumerable<T> instances)
-		{
-			foreach (T instance in instances)
-			{
-				MethodInject(instance);
-			}
-		}
+        /// <summary>
+        /// Gets a action that can be used to inject dependencies through method injection
+        /// <seealso cref="MethodInject(object)"/>
+        /// </summary>
+        /// <param name="type"></param>
+        /// <param name="throwError"></param>
+        /// <returns></returns>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public Action<object> GetMethodInjector(Type type, bool throwError = true)
+        {
+            Action<object> action = _injectionCache.Search(type);
+            if (action == null)
+            {
+                action = GenerateMethodInjector(type, throwError);
+                _injectionCache.Add(type, action);
+            }
+            return action;
+        }
 
-		/// <summary>
-		/// Injects dependencies by calling all methods marked with <see cref="InjectAttribute"/> on the <paramref name="instance"/>.
-		/// </summary>
-		/// <param name="instance"></param>
-		/// <exception cref="DependencyNotFoundException">If the method had parameters that couldn't be resolved</exception>
-		[MethodImpl(MethodImplOptions.AggressiveInlining)]
-		public void MethodInject(object instance) => GetMethodInjector(instance.GetType()).Invoke(instance);
+        /// <summary>
+        /// Resolves a instance for the given dependency type
+        /// </summary>
+        /// <typeparam name="T">The type of the dependency</typeparam>
+        /// <exception cref="DependencyNotFoundException">If the dependency is not configured</exception>
+        /// <returns></returns>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public Func<T> GetInstanceFactory<T>() where T : class => (Func<T>)GetInstanceFactory(typeof(T));
 
-		[MethodImpl(MethodImplOptions.AggressiveInlining)]
-		public Action<object> GetMethodInjector(Type type)
-		{
-			if (!_injectionCache.TryGetValue(type, out Action<object> action))
-			{
-				action = GenerateMethodInjector(type);
-				_injectionCache.Add(type, action);
-			}
-			return action;
-		}
+        /// <summary>
+        /// Resolves a instance for the given dependency type
+        /// </summary>
+        /// <param name="type">The type of the dependency</param>
+        /// <param name="throwError"></param>
+        /// <exception cref="DependencyNotFoundException">If the dependency is not configured</exception>
+        /// <returns></returns>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public Func<object> GetInstanceFactory(Type type, bool throwError = true)
+        {
+            Func<object> func = _getInstanceCache.Search(type);
+            if (func == null)
+            {
+                func = GenerateInstanceFactory(type, throwError);
+                _getInstanceCache.Add(type, func);
+            }
+            return func;
+        }
 
-		/// <summary>
-		/// Resolves a instance for the given dependency type
-		/// </summary>
-		/// <typeparam name="T">The type of the dependency</typeparam>
-		/// <exception cref="DependencyNotFoundException">If the dependency is not configured</exception>
-		/// <returns></returns>
-		[MethodImpl(MethodImplOptions.AggressiveInlining)]
-		public Func<T> GetInstanceFactory<T>() where T : class => (Func<T>)GetInstanceFactory(typeof(T));
+        /// <summary>
+        /// Resolves a instance for the given dependency type
+        /// </summary>
+        /// <typeparam name="T">The type of the dependency</typeparam>
+        /// <exception cref="DependencyNotFoundException">If the dependency is not configured</exception>
+        /// <returns></returns>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public T GetInstance<T>(bool throwError = true) where T : class => (T)GetInstance(typeof(T), throwError);
 
-		/// <summary>
-		/// Resolves a instance for the given dependency type
-		/// </summary>
-		/// <param name="type">The type of the dependency</param>
-		/// <exception cref="DependencyNotFoundException">If the dependency is not configured</exception>
-		/// <returns></returns>
-		[MethodImpl(MethodImplOptions.AggressiveInlining)]
-		public Func<object> GetInstanceFactory(Type type)
-		{
-			if (!_getInstanceCache.TryGetValue(type, out Func<object> action))
-			{
-				action = GenerateInstanceFactory(type);
-				_getInstanceCache.Add(type, action);
-			}
-			return action;
-		}
+        /// <summary>
+        /// Resolves a instance for the given dependency type
+        /// </summary>
+        /// <param name="type">The type of the dependency</param>
+        /// <param name="throwError"></param>
+        /// <exception cref="DependencyNotFoundException">If the dependency is not configured</exception>
+        /// <returns></returns>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public object GetInstance(Type type, bool throwError = true) => GetInstanceFactory(type, throwError).Invoke();
 
-		/// <summary>
-		/// Resolves a instance for the given dependency type
-		/// </summary>
-		/// <typeparam name="T">The type of the dependency</typeparam>
-		/// <exception cref="DependencyNotFoundException">If the dependency is not configured</exception>
-		/// <returns></returns>
-		[MethodImpl(MethodImplOptions.AggressiveInlining)]
-		public T GetInstance<T>() where T : class => (T)GetInstance(typeof(T));
+        private Func<object> GenerateInstanceFactory(Type type, bool throwError)
+        {
+            Expression expression = GetDependencyExpression(type, throwError);
 
-		/// <summary>
-		/// Resolves a instance for the given dependency type
-		/// </summary>
-		/// <param name="type">The type of the dependency</param>
-		/// <exception cref="DependencyNotFoundException">If the dependency is not configured</exception>
-		/// <returns></returns>
-		[MethodImpl(MethodImplOptions.AggressiveInlining)]
-		public object GetInstance(Type type) => GetInstanceFactory(type).Invoke();
+            return (Func<object>)Expression.Lambda(expression).Compile();
+        }
 
-		private Func<object> GenerateInstanceFactory(Type type)
-		{
-			Expression expression = GetDependencyExpression(type);
+        public Expression GetDependencyExpression(Type type, bool throwError)
+        {
+            if (type.GetTypeInfo().IsInterface)
+            {
+                if (_dependencyGraph.TryGetDependency(type, out Dependency dependencyNode))
+                {
+                    return dependencyNode.ResolvedDependency!.Expression;
+                }
 
-			return (Func<object>)Expression.Lambda(expression).Compile();
-		}
+                if (throwError)
+                {
+                    throw new DependencyNotFoundException(type);
+                }
+                else
+                {
+                    return Expression.Default(type);
+                }
+            }
 
-		private Expression GetDependencyExpression(Type type)
-		{
-			if (type.GetTypeInfo().IsInterface)
-			{
-				if (_dependencyGraph.Dependencies.TryGetValue(type, out Dependency dependencyNode))
-				{
-					return dependencyNode.ResolvedDependency.Expression;
-				}
+            return GenerateConstructorInjector(type, throwError);
+        }
 
-				throw new DependencyNotFoundException(type);
-			}
+        private Expression GenerateConstructorInjector(Type type, bool throwError)
+        {
+            ConstructorInfo constructor = type.AutoResolveConstructor();
+            ParameterInfo[] parameters = constructor.GetParameters();
 
-			return GenerateConstructorInjector(type);
-		}
+            var arguments = new Expression[parameters.Length];
+            for (var i = 0; i < parameters.Length; i++)
+            {
+                Expression dependencyExpression = GetDependencyExpression(parameters[i].ParameterType, throwError);
+                arguments[i] = dependencyExpression;
+            }
 
-		private Expression GenerateConstructorInjector(Type type)
-		{
-			ConstructorInfo constructor = type.AutoResolveConstructor();
-			ParameterInfo[] parameters = constructor.GetParameters();
+            return Expression.New(constructor, arguments);
+        }
 
-			var arguments = new Expression[parameters.Length];
-			for (var i = 0; i < parameters.Length; i++)
-			{
-				Expression dependencyExpression = GetDependencyExpression(parameters[i].ParameterType);
-				arguments[i] = dependencyExpression;
-			}
+        private Action<object> GenerateMethodInjector(Type type, bool throwError)
+        {
+            ParameterExpression instanceParameter = Expression.Parameter(typeof(object));
 
-			return Expression.New(constructor, arguments);
-		}
+            var body = new List<Expression>();
+            ParameterExpression instanceCasted = Expression.Variable(type, "instanceCasted");
+            body.Add(Expression.Assign(instanceCasted, Expression.Convert(instanceParameter, type)));
+            foreach (MethodInfo methodInfo in type.GetRuntimeMethods())
+            {
+                if (methodInfo.CustomAttributes.All(x => x.AttributeType != typeof(InjectAttribute))) continue;
+                ParameterInfo[] parameterTypes = methodInfo.GetParameters();
+                var parameterExpressions = new Expression[parameterTypes.Length];
+                for (var i = 0; i < parameterTypes.Length; i++)
+                {
+                    Type parameterType = parameterTypes[i].ParameterType;
+                    parameterExpressions[i] = GetDependencyExpression(parameterType, throwError);
+                }
+                body.Add(Expression.Call(instanceCasted, methodInfo, parameterExpressions));
+            }
+            BlockExpression block = Expression.Block(new[] { instanceCasted }, body);
+            Expression<Action<object>> expressionTree = Expression.Lambda<Action<object>>(block, instanceParameter);
 
-		private Action<object> GenerateMethodInjector(Type type)
-		{
-			ParameterExpression instanceParameter = Expression.Parameter(typeof(object));
+            Action<object> action = expressionTree.Compile();
 
-			var body = new List<Expression>();
-			ParameterExpression instanceCasted = Expression.Variable(type, "instanceCasted");
-			body.Add(Expression.Assign(instanceCasted, Expression.Convert(instanceParameter, type)));
-			foreach (MethodInfo methodInfo in type.GetRuntimeMethods())
-			{
-				if (methodInfo.CustomAttributes.All(x => x.AttributeType != typeof(InjectAttribute))) continue;
-				ParameterInfo[] parameterTypes = methodInfo.GetParameters();
-				var parameterExpressions = new Expression[parameterTypes.Length];
-				for (var i = 0; i < parameterTypes.Length; i++)
-				{
-					Type parameterType = parameterTypes[i].ParameterType;
-					parameterExpressions[i] = GetDependencyExpression(parameterType);
-				}
-				body.Add(Expression.Call(instanceCasted, methodInfo, parameterExpressions));
-			}
-			BlockExpression block = Expression.Block(new[] { instanceCasted }, body);
-			Expression<Action<object>> expressionTree = Expression.Lambda<Action<object>>(block, instanceParameter);
+            return action;
+        }
 
-			Action<object> action = expressionTree.Compile();
-			return action;
-		}
-
+        /// <summary>
+        /// Disposes the container.
+        /// </summary>
 		public void Dispose()
-		{
-			_objectActionContainer.Invoke();
-			IsDisposed = true;
-		}
-	}
+        {
+            _containerScope?.Dispose();
+            IsDisposed = true;
+        }
+    }
 }

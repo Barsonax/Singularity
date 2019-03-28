@@ -2,7 +2,6 @@
 using System.Collections.Generic;
 using Duality;
 using Duality.Resources;
-using Singularity.Bindings;
 
 namespace Singularity.Duality.Scopes
 {
