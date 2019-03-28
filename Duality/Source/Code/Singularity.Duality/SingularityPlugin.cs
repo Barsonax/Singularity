@@ -8,7 +8,7 @@ namespace Singularity.Duality
 {
 	public class SingularityPlugin : CorePlugin
 	{
-		private GameScope _gameScope;
+		private GameScope? _gameScope;
 
 		protected override void OnGameStarting()
 		{
