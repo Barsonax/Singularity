@@ -11,7 +11,7 @@ namespace Singularity.Bindings
     /// <summary>
     /// Represents a weakly typed registration
     /// </summary>
-    public abstract class WeaklyTypedBinding
+    public class WeaklyTypedBinding
     {
         /// <summary>
         /// The metadata of this binding.
@@ -33,23 +33,24 @@ namespace Singularity.Bindings
         /// </summary>
         public List<WeaklyTypedDecoratorBinding>? Decorators { get; private set; }
 
-        internal bool Verified { get; private set; }
+        internal bool Locked { get; private set; }
 
         internal WeaklyTypedBinding(Type dependencyType, string callerFilePath, int callerLineNumber, IModule? module)
         {
-            DependencyType = dependencyType;
+            DependencyType = dependencyType ?? throw new ArgumentNullException(nameof(dependencyType));
             BindingMetadata = new BindingMetadata(callerFilePath, callerLineNumber, module);
+        }
+
+        public WeaklyTypedBinding(Type dependencyType, BindingMetadata bindingMetadata)
+        {
+            DependencyType = dependencyType ?? throw new ArgumentNullException(nameof(dependencyType));
+            BindingMetadata = bindingMetadata ?? throw new ArgumentNullException(nameof(bindingMetadata));
         }
 
         public WeaklyTypedConfiguredBinding Inject(Expression expression)
         {
-            MethodInfo injectMethod = (from m in typeof(StronglyTypedBinding<>).MakeGenericType(DependencyType).GetRuntimeMethods()
-                                       where m.Name == nameof(Inject)
-                                       where m.IsGenericMethod
-                                       where m.GetGenericArguments().Length == 1
-                                       select m).First().MakeGenericMethod(expression.Type);
-
-            return (WeaklyTypedConfiguredBinding)injectMethod.Invoke(this, new object[] { expression });
+            WeaklyTypedConfiguredBinding = new WeaklyTypedConfiguredBinding(this, expression);
+            return WeaklyTypedConfiguredBinding;
         }
 
         internal void AddDecorator(WeaklyTypedDecoratorBinding weaklyTypedDecoratorBinding)
@@ -71,7 +72,7 @@ namespace Singularity.Bindings
                 }
             }
 
-            Verified = true;
+            Locked = true;
         }
     }
 }

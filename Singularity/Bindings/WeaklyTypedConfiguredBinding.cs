@@ -3,7 +3,7 @@ using System.Linq.Expressions;
 
 namespace Singularity.Bindings
 {
-    public abstract class WeaklyTypedConfiguredBinding
+    public class WeaklyTypedConfiguredBinding
     {
         public Expression Expression { get; }
         public CreationMode CreationMode { get; protected set; }

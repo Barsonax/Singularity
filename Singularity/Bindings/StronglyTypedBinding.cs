@@ -1,7 +1,5 @@
 ﻿using System;
-using System.Linq;
 using System.Linq.Expressions;
-using System.Reflection;
 
 namespace Singularity.Bindings
 {
@@ -11,6 +9,11 @@ namespace Singularity.Bindings
     /// <typeparam name="TDependency"></typeparam>
 	public sealed class StronglyTypedBinding<TDependency> : WeaklyTypedBinding
     {
+        public StronglyTypedBinding(WeaklyTypedBinding weaklyTypedBinding) : base(weaklyTypedBinding.DependencyType, weaklyTypedBinding.BindingMetadata)
+        {
+            WeaklyTypedConfiguredBinding = weaklyTypedBinding.WeaklyTypedConfiguredBinding;
+        }
+
         internal StronglyTypedBinding(string callerFilePath, int callerLineNumber, IModule? module) : base(typeof(TDependency), callerFilePath, callerLineNumber, module)
         {
 

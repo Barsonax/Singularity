@@ -1,14 +1,11 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <TargetFrameworks>net452;netstandard1.0;netstandard2.0</TargetFrameworks>
-    <AssetTargetFallback>$(PackageTargetFallback);net00</AssetTargetFallback>
+    <TargetFrameworks>net452;netstandard2.0</TargetFrameworks>
     <AssemblyName>Singularity.Duality.core</AssemblyName>
-    <PackageLicenseUrl></PackageLicenseUrl>
     <PackageProjectUrl>https://github.com/Barsonax/Singularity</PackageProjectUrl>
     <PackageIconUrl>https://raw.githubusercontent.com/Barsonax/Singularity/master/Icon.png</PackageIconUrl>
     <RepositoryUrl>https://github.com/Barsonax/Singularity</RepositoryUrl>
-
     <Authors>Barsonax</Authors>
     <PackageTags>Duality Plugin ioc di inversion control dependency injection container</PackageTags>
     <Description>Plugin that adds a ioc container to duality</Description>

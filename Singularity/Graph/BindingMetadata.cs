@@ -8,6 +8,8 @@ namespace Singularity.Graph
     /// </summary>
 	public sealed class BindingMetadata
 	{
+        public static BindingMetadata Empty = new BindingMetadata(string.Empty, -1, null);
+
         /// <summary>
         /// The file path of the file in which the binding was registered.
         /// </summary>

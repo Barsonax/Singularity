@@ -2,10 +2,12 @@
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
+using System.Linq.Expressions;
 using System.Reflection;
 using System.Runtime.CompilerServices;
 using Singularity.Bindings;
 using Singularity.Exceptions;
+using Singularity.Expressions;
 
 namespace Singularity
 {
@@ -14,7 +16,7 @@ namespace Singularity
     /// </summary>
     public sealed class BindingConfig
     {
-        public bool Verified => _readonlyBindings != null;
+        public bool Locked => _readonlyBindings != null;
         internal IModule? CurrentModule;
         private readonly Dictionary<Type, WeaklyTypedBinding> _bindings = new Dictionary<Type, WeaklyTypedBinding>();
         private ReadOnlyCollection<Binding>? _readonlyBindings;
@@ -26,7 +28,7 @@ namespace Singularity
         /// <returns></returns>
         public StronglyTypedBinding<TDependency> Register<TDependency>([CallerFilePath]string callerFilePath = "", [CallerLineNumber] int callerLineNumber = -1)
         {
-            if (Verified) throw new BindingConfigException("This config is locked and cannot be modified anymore!");
+            if (Locked) throw new BindingConfigException("This config is locked and cannot be modified anymore!");
             return GetOrCreateBinding<TDependency>(callerFilePath, callerLineNumber);
         }
 
@@ -39,7 +41,7 @@ namespace Singularity
         public StronglyTypedConfiguredBinding<TDependency, TInstance> Register<TDependency, TInstance>([CallerFilePath]string callerFilePath = "", [CallerLineNumber] int callerLineNumber = -1)
             where TInstance : class, TDependency
         {
-            if (Verified) throw new BindingConfigException("This config is locked and cannot be modified anymore!");
+            if (Locked) throw new BindingConfigException("This config is locked and cannot be modified anymore!");
             StronglyTypedBinding<TDependency> binding = Register<TDependency>(callerFilePath, callerLineNumber);
             return binding.Inject<TInstance>(AutoResolveConstructorExpressionCache<TInstance>.Expression);
         }
@@ -53,14 +55,8 @@ namespace Singularity
         public WeaklyTypedBinding Register(Type instanceType, [CallerFilePath]string callerFilePath = "", [CallerLineNumber] int callerLineNumber = -1)
 #pragma warning restore 1573
         {
-            if (Verified) throw new BindingConfigException("This config is locked and cannot be modified anymore!");
-            MethodInfo registerMethod = (from m in typeof(BindingConfig).GetRuntimeMethods()
-                                         where m.Name == nameof(Register)
-                                         where m.IsGenericMethod
-                                         where m.GetGenericArguments().Length == 1
-                                         select m).First().MakeGenericMethod(instanceType);
-
-            return (WeaklyTypedBinding)registerMethod.Invoke(this, new object[] { callerFilePath, callerLineNumber });
+            if (Locked) throw new BindingConfigException("This config is locked and cannot be modified anymore!");
+            return GetOrCreateBinding(instanceType, callerFilePath, callerLineNumber);
         }
 
         /// <summary>
@@ -73,14 +69,19 @@ namespace Singularity
         public WeaklyTypedConfiguredBinding Register(Type dependencyType, Type instanceType, [CallerFilePath]string callerFilePath = "", [CallerLineNumber] int callerLineNumber = -1)
 #pragma warning restore 1573
         {
-            if (Verified) throw new BindingConfigException("This config is locked and cannot be modified anymore!");
-            MethodInfo registerMethod = (from m in typeof(BindingConfig).GetRuntimeMethods()
-                                         where m.Name == nameof(Register)
-                                         where m.IsGenericMethod
-                                         where m.GetGenericArguments().Length == 2
-                                         select m).First().MakeGenericMethod(dependencyType, instanceType);
+            if (Locked) throw new BindingConfigException("This config is locked and cannot be modified anymore!");
+            WeaklyTypedBinding binding = Register(dependencyType, callerFilePath, callerLineNumber);
 
-            return (WeaklyTypedConfiguredBinding)registerMethod.Invoke(this, new object[] { callerFilePath, callerLineNumber });
+            Expression expression;
+            if (dependencyType.ContainsGenericParameters && instanceType.ContainsGenericParameters)
+            {
+                expression = new OpenGenericTypeExpression(instanceType);
+            }
+            else
+            {
+                expression = instanceType.AutoResolveConstructorExpression();
+            }
+            return binding.Inject(expression);
         }
 
         /// <summary>
@@ -92,7 +93,7 @@ namespace Singularity
         public StronglyTypedDecoratorBinding<TDependency> Decorate<TDependency>([CallerFilePath]string callerFilePath = "", [CallerLineNumber] int callerLineNumber = -1)
             where TDependency : class
         {
-            if (Verified) throw new BindingConfigException("This config is locked and cannot be modified anymore!");
+            if (Locked) throw new BindingConfigException("This config is locked and cannot be modified anymore!");
             var decorator = new StronglyTypedDecoratorBinding<TDependency>();
             StronglyTypedBinding<TDependency> binding = GetOrCreateBinding<TDependency>(callerFilePath, callerLineNumber);
             binding.AddDecorator(decorator);
@@ -108,7 +109,7 @@ namespace Singularity
         public WeaklyTypedDecoratorBinding Decorate(Type dependencyType, [CallerFilePath]string callerFilePath = "", [CallerLineNumber] int callerLineNumber = -1)
 #pragma warning restore 1573
         {
-            if (Verified) throw new BindingConfigException("This config is locked and cannot be modified anymore!");
+            if (Locked) throw new BindingConfigException("This config is locked and cannot be modified anymore!");
             MethodInfo decorateMethod = (from m in typeof(BindingConfig).GetRuntimeMethods()
                                          where m.Name == nameof(Decorate)
                                          where m.IsGenericMethod
@@ -140,9 +141,24 @@ namespace Singularity
         {
             if (_bindings.TryGetValue(typeof(TDependency), out WeaklyTypedBinding weaklyTypedBinding))
             {
-                return (StronglyTypedBinding<TDependency>)weaklyTypedBinding;
+                if (weaklyTypedBinding is StronglyTypedBinding<TDependency> b) return b;
+                else
+                {
+                    return new StronglyTypedBinding<TDependency>(weaklyTypedBinding);
+                }
             }
             var binding = new StronglyTypedBinding<TDependency>(callerFilePath, callerLineNumber, CurrentModule);
+            _bindings.Add(binding.DependencyType, binding);
+            return binding;
+        }
+
+        private WeaklyTypedBinding GetOrCreateBinding(Type instanceType, string callerFilePath, int callerLineNumber)
+        {
+            if (_bindings.TryGetValue(instanceType, out WeaklyTypedBinding binding))
+            {
+                return binding;
+            }
+            binding = new WeaklyTypedBinding(instanceType, callerFilePath, callerLineNumber, CurrentModule);
             _bindings.Add(binding.DependencyType, binding);
             return binding;
         }
