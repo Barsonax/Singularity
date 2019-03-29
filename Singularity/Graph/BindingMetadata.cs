@@ -7,9 +7,7 @@ namespace Singularity.Graph
     /// Is used to provide more info in error messages
     /// </summary>
 	public sealed class BindingMetadata
-	{
-        public static BindingMetadata Empty = new BindingMetadata(string.Empty, -1, null);
-
+    {
         /// <summary>
         /// The file path of the file in which the binding was registered.
         /// </summary>
@@ -25,18 +23,33 @@ namespace Singularity.Graph
         /// </summary>
 		public Type? ModuleType { get; }
 
-		internal BindingMetadata(string creatorFilePath, int creatorLineNumber, IModule? module)
-		{
-			ModuleType = module?.GetType();
-			CreatorFilePath = creatorFilePath;
-			CreatorLineNumber = creatorLineNumber;
-		}
+        public bool Generated { get; }
 
-		internal string GetPosition()
-		{
-			return ModuleType == null ?
-				$"{CreatorFilePath} at line {CreatorLineNumber}" :
-				$"module {ModuleType.FullName} at line {CreatorLineNumber}";
-		}
-	}
+        public Type DependencyType { get; }
+
+        internal BindingMetadata(Type dependencyType, string creatorFilePath, int creatorLineNumber, IModule? module)
+        {
+            DependencyType = dependencyType;
+            ModuleType = module?.GetType();
+            CreatorFilePath = creatorFilePath;
+            CreatorLineNumber = creatorLineNumber;
+        }
+
+        internal BindingMetadata(Type type)
+        {
+            Generated = true;
+            DependencyType = type;
+        }
+
+        internal string StringRepresentation()
+        {
+            if (Generated)
+            {
+                return $"dynamically generated binding {DependencyType}";
+            }
+            return ModuleType == null ?
+                $"registered binding in {CreatorFilePath} at line {CreatorLineNumber}" :
+                $"registered binding in module {ModuleType.FullName} at line {CreatorLineNumber}";
+        }
+    }
 }

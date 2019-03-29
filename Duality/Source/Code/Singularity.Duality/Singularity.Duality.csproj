@@ -21,6 +21,7 @@
     <NoWarn>1701;1702;1705;1591;NU1701;CS1591;CS1574;CS1711</NoWarn>
     <DebugType>pdbonly</DebugType>
     <DebugSymbols>true</DebugSymbols>
+    <Optimize>true</Optimize>
     <OutputPath>$(SolutionDir)BuildOutput\</OutputPath>
   </PropertyGroup>
 

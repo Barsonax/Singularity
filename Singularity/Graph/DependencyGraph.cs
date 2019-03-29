@@ -142,13 +142,13 @@ namespace Singularity.Graph
             if (parameters
                 .TryExecute(dependencyType => { resolvedDependencies.Add(GetDependency(dependencyType.Type)); }, out IList<Exception> dependencyExceptions))
             {
-                throw new SingularityAggregateException($"Could not find all dependencies for registered binding in {bindingMetadata.GetPosition()}", dependencyExceptions);
+                throw new SingularityAggregateException($"Could not find all dependencies for {bindingMetadata.StringRepresentation()}", dependencyExceptions);
             }
 
             if (decoratorParameters
                 .TryExecute(parameterExpression => { resolvedDependencies.Add(GetDependency(parameterExpression.Type)); }, out IList<Exception> decoratorExceptions))
             {
-                throw new SingularityAggregateException($"Could not find all decorator dependencies for registered binding in {bindingMetadata.GetPosition()}", decoratorExceptions);
+                throw new SingularityAggregateException($"Could not find all decorator dependencies for {bindingMetadata.StringRepresentation()}", decoratorExceptions);
             }
 
             return resolvedDependencies.ToArray();
@@ -200,7 +200,7 @@ namespace Singularity.Graph
 
         private Dependency AddDependency(Type type, Expression expression, CreationMode creationMode)
         {
-            var binding = new Binding(BindingMetadata.Empty, type, expression, creationMode, new Expression[0], null);
+            var binding = new Binding(new BindingMetadata(type), type, expression, creationMode, new Expression[0], null);
             var dependency = new Dependency(binding);
             Dependencies.Add(type ,dependency);
             return dependency;

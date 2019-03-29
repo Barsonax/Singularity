@@ -38,7 +38,7 @@ namespace Singularity.Bindings
         internal WeaklyTypedBinding(Type dependencyType, string callerFilePath, int callerLineNumber, IModule? module)
         {
             DependencyType = dependencyType ?? throw new ArgumentNullException(nameof(dependencyType));
-            BindingMetadata = new BindingMetadata(callerFilePath, callerLineNumber, module);
+            BindingMetadata = new BindingMetadata(dependencyType ,callerFilePath, callerLineNumber, module);
         }
 
         public WeaklyTypedBinding(Type dependencyType, BindingMetadata bindingMetadata)
@@ -62,7 +62,7 @@ namespace Singularity.Bindings
         public void Verify()
         {
             if (Expression == null && Decorators == null)
-                throw new BindingConfigException($"The binding at {BindingMetadata.GetPosition()} does not have a expression");
+                throw new BindingConfigException($"The binding at {BindingMetadata.StringRepresentation()} does not have a expression");
             if (Decorators != null)
             {
                 foreach (WeaklyTypedDecoratorBinding weaklyTypedDecoratorBinding in Decorators)
