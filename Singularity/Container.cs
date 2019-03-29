@@ -170,46 +170,9 @@ namespace Singularity
 
         private Func<object> GenerateInstanceFactory(Type type, bool throwError)
         {
-            Expression expression = GetDependencyExpression(type, throwError);
+            Expression expression = _dependencyGraph.GetExpression(type, throwError);
 
             return (Func<object>)Expression.Lambda(expression).Compile();
-        }
-
-        public Expression GetDependencyExpression(Type type, bool throwError)
-        {
-            if (type.GetTypeInfo().IsInterface)
-            {
-                if (_dependencyGraph.TryGetDependency(type, out Dependency dependencyNode))
-                {
-                    return dependencyNode.ResolvedDependency!.Expression;
-                }
-
-                if (throwError)
-                {
-                    throw new DependencyNotFoundException(type);
-                }
-                else
-                {
-                    return Expression.Default(type);
-                }
-            }
-
-            return GenerateConstructorInjector(type, throwError);
-        }
-
-        private Expression GenerateConstructorInjector(Type type, bool throwError)
-        {
-            ConstructorInfo constructor = type.AutoResolveConstructor();
-            ParameterInfo[] parameters = constructor.GetParameters();
-
-            var arguments = new Expression[parameters.Length];
-            for (var i = 0; i < parameters.Length; i++)
-            {
-                Expression dependencyExpression = GetDependencyExpression(parameters[i].ParameterType, throwError);
-                arguments[i] = dependencyExpression;
-            }
-
-            return Expression.New(constructor, arguments);
         }
 
         private Action<object> GenerateMethodInjector(Type type, bool throwError)
@@ -227,7 +190,7 @@ namespace Singularity
                 for (var i = 0; i < parameterTypes.Length; i++)
                 {
                     Type parameterType = parameterTypes[i].ParameterType;
-                    parameterExpressions[i] = GetDependencyExpression(parameterType, throwError);
+                    parameterExpressions[i] = _dependencyGraph.GetExpression(parameterType, throwError);
                 }
                 body.Add(Expression.Call(instanceCasted, methodInfo, parameterExpressions));
             }

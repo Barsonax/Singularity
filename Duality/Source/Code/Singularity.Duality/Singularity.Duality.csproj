@@ -1,14 +1,11 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <TargetFrameworks>net452</TargetFrameworks>
-    <PackageTargetFallback>$(PackageTargetFallback);net00</PackageTargetFallback>
+    <TargetFrameworks>net452;netstandard2.0</TargetFrameworks>
     <AssemblyName>Singularity.Duality.core</AssemblyName>
-    <PackageLicenseUrl>https://github.com/Barsonax/Singularity/blob/master/LICENSE</PackageLicenseUrl>
     <PackageProjectUrl>https://github.com/Barsonax/Singularity</PackageProjectUrl>
     <PackageIconUrl>https://raw.githubusercontent.com/Barsonax/Singularity/master/Icon.png</PackageIconUrl>
     <RepositoryUrl>https://github.com/Barsonax/Singularity</RepositoryUrl>
-
     <Authors>Barsonax</Authors>
     <PackageTags>Duality Plugin ioc di inversion control dependency injection container</PackageTags>
     <Description>Plugin that adds a ioc container to duality</Description>
@@ -17,22 +14,13 @@
     <LangVersion>8.0</LangVersion>
     <NullableContextOptions>enable</NullableContextOptions>
     <DocumentationFile>C:\Git\Singularity\Duality\Source\Code\Singularity.Duality\bin\$(Configuration)\$(TargetFramework)\Singularity.Duality.core.xml</DocumentationFile>
+    <PackageLicenseFile>LICENSE</PackageLicenseFile>
   </PropertyGroup>
-
-  <ItemGroup Condition="'$(Configuration)|$(Platform)'=='z_CI_config|AnyCPU'">
-    <None Include="$(SolutionDir)BuildOutput\net452\Singularity.Duality.core.dll" Pack="true" PackagePath="lib/" />
-    <None Include="$(SolutionDir)BuildOutput\net452\Singularity.Duality.core.pdb" Pack="true" PackagePath="lib/" />
-    <None Include="$(SolutionDir)BuildOutput\net452\Singularity.Duality.core.xml" Pack="true" PackagePath="lib/" />
-    <None Include="$(SolutionDir)BuildOutput\net452\Singularity.dll" Pack="true" PackagePath="lib/" />
-    <None Include="$(SolutionDir)BuildOutput\net452\Singularity.pdb" Pack="true" PackagePath="lib/" />
-    <None Include="$(SolutionDir)BuildOutput\net452\Singularity.xml" Pack="true" PackagePath="lib/" />
-  </ItemGroup>
 
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='z_CI_config|AnyCPU'">
     <NoWarn>1701;1702;1705;1591;NU1701;CS1591;CS1574;CS1711</NoWarn>
     <DebugType>pdbonly</DebugType>
     <DebugSymbols>true</DebugSymbols>
-    <DocumentationFile>$(SolutionDir)BuildOutput\Singularity.Duality.core.xml</DocumentationFile>
     <OutputPath>$(SolutionDir)BuildOutput\</OutputPath>
   </PropertyGroup>
 
@@ -44,5 +32,11 @@
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\..\..\..\Singularity\Singularity.csproj" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="..\..\..\..\LICENSE">
+      <Pack>True</Pack>
+      <PackagePath></PackagePath>
+    </None>
   </ItemGroup>
 </Project>

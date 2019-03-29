@@ -1,4 +1,9 @@
-﻿using Singularity.Bindings;
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Linq.Expressions;
+using Singularity.Bindings;
+using Singularity.Exceptions;
 
 namespace Singularity.Graph
 {
@@ -11,6 +16,16 @@ namespace Singularity.Graph
         public Dependency(Binding unresolvedDependency)
         {
             Binding = unresolvedDependency;
+        }
+
+        public IEnumerable<ParameterExpression> GetParameters()
+        {
+            return Binding.Expression.GetParameterExpressions();
+        }
+
+        public IEnumerable<ParameterExpression> GetDecoratorParameters()
+        {
+            return Binding.Decorators.SelectMany(x => x.GetParameterExpressions()).Where(x => x.Type != Binding.DependencyType);
         }
     }
 }

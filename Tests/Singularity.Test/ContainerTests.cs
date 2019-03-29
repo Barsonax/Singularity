@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using Singularity.Exceptions;
 using Singularity.TestClasses.TestClasses;
 using Xunit;
@@ -18,11 +19,14 @@ namespace Singularity.Test
 					var config = new BindingConfig();
 
 					var container = new Container(config);
-					Assert.Throws<DependencyNotFoundException>(() =>
+					var e = Assert.Throws<SingularityAggregateException>(() =>
 					{
 						TestService12WithMixedConcreteDependency value = container.GetInstanceFactory<TestService12WithMixedConcreteDependency>().Invoke();
 					});
-				}
+
+                    Assert.Equal(1, e.InnerExceptions.Count);
+                    Assert.IsType<DependencyNotFoundException>(e.InnerExceptions.First());
+                }
 			}
 
 			public class Decorators

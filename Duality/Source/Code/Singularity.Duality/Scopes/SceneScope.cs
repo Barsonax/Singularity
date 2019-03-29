@@ -8,7 +8,7 @@ namespace Singularity.Duality.Scopes
     internal sealed class SceneScope : IDisposable
 	{
 		public bool IsDisposed { get; private set; }
-		public Container Container { get; }
+		public Container? Container { get; }
 		private readonly ISceneEventsProvider _sceneEventsProvider;
 		private readonly ILogger _logger;
 
@@ -46,6 +46,11 @@ namespace Singularity.Duality.Scopes
 
 		private void Scene_ComponentAdded(object sender, ComponentEventArgs args)
 		{
+            if (Container == null)
+            {
+                _logger.WriteWarning("Scene container failed to initialize, skipping injection");
+                return;
+            }
 			try
 			{
 				Container.MethodInject(args.Component);
@@ -58,7 +63,12 @@ namespace Singularity.Duality.Scopes
 
 		public void InjectGameObjects(IEnumerable<GameObject> gameObjects)
 		{
-			foreach (GameObject gameObject in gameObjects)
+            if (Container == null)
+            {
+                _logger.WriteWarning("Scene container failed to initialize, skipping injection");
+                return;
+            }
+            foreach (GameObject gameObject in gameObjects)
 			{
 				try
 				{

@@ -8,8 +8,8 @@ namespace Singularity.Duality.Scopes
 {
     internal sealed class GameScope : IDisposable
 	{
-		public Container Container { get; }
-		private SceneScope _sceneScope;
+		public Container? Container { get; }
+		private SceneScope? _sceneScope;
 		private readonly ILogger _logger;
 		private readonly ISceneScopeFactory _sceneScopeFactory;
 		private readonly ISceneEventsProvider _sceneEventsProvider;
