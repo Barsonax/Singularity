@@ -12,13 +12,13 @@ Singularity is a ioc container that focuses on the following things
 Its easy to setup a container and request a instance:
 ```cs
 var config = new BindingConfig();
-config.For<ITestService10>().Inject<TestService10>();
+config.Register<ITestService10>, TestService10>();
 
 var container = new Container(config);
 
 var value = container.GetInstance<ITestService10>();
 ```
-However `Singularity` can do much more than this simple example
+However `Singularity` can do much more than this simple example. Advanced scenarios such as open generics are also supported.
 
 ## Documentation
 More info about `Singularity` can be found on the wiki. I suggest you to start [here](https://github.com/Barsonax/Singularity/wiki/Configuring-Dependencies). 
