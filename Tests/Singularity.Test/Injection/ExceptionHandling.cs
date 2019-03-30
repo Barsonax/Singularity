@@ -32,7 +32,7 @@ namespace Singularity.Test.Injection
             {
                 var config = new BindingConfig();
                 config.Register<ITestService10, TestService10>();
-                config.Decorate<ITestService10>().With<TestService10_Decorator1>();
+                config.Decorate<ITestService10, TestService10_Decorator1>();
                 var container = new Container(config);
             }
             catch (AggregateException e)

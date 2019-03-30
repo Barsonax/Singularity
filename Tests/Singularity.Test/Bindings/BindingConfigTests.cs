@@ -23,50 +23,60 @@ namespace Singularity.Test.Bindings
         }
 
         [Fact]
-        public void IncorrectDecoratorBinding_Throws()
-        {
-            Assert.Throws<BindingConfigException>(() =>
-            {
-                var config = new BindingConfig();
-                config.Register<ITestService10, TestService10>();
-                config.Decorate<ITestService10>();
-                var container = new Container(config);
-            });
-        }
-
-        [Fact]
 		public void Decorate_NotAInterface_Throws()
 		{
 			var config = new BindingConfig();
 			Assert.Throws<InterfaceExpectedException>(() =>
-			{
-				config.Decorate<TestService10>().With<DecoratorWithNoInterface>();
-			});
+            {
+                config.Decorate<TestService10, DecoratorWithNoInterface>();
+            });
 		}
 
 	    [Fact]
-	    public void GetDependencies_Enumerate()
+	    public void GetDependencies_SingleRegistration_Enumerate()
 	    {
+            //ARRANGE
 		    var config = new BindingConfig();
 		    config.Register<ITestService10, TestService10>();
 		    config.Register<ITestService11, TestService11>();
 		    config.Register<ITestService12, TestService12>();
 
+            //ACT
             ReadOnlyCollection<Binding> bindings = config.GetDependencies();
 
+            //ASSERT
 			Assert.Equal(3, bindings.Count);
 		    Assert.Contains(bindings, x => x.DependencyType == typeof(ITestService10));
 		    Assert.Contains(bindings, x => x.DependencyType == typeof(ITestService11));
 		    Assert.Contains(bindings, x => x.DependencyType == typeof(ITestService12));
 		}
 
-		[Fact]
+        [Fact]
+        public void GetDependencies_MultiRegistration_Enumerate()
+        {
+            //ARRANGE
+            var config = new BindingConfig();
+            config.Register<IPlugin, Plugin1>();
+            config.Register<IPlugin, Plugin2>();
+            config.Register<IPlugin, Plugin3>();
+
+            //ACT
+            ReadOnlyCollection<Binding> bindings = config.GetDependencies();
+
+            //ASSERT
+            Assert.Equal(3, bindings.Count);
+            Assert.Equal(typeof(Plugin1) ,bindings[0].Expression!.Type);
+            Assert.Equal(typeof(Plugin2), bindings[1].Expression!.Type);
+            Assert.Equal(typeof(Plugin3), bindings[2].Expression!.Type);
+        }
+
+        [Fact]
         public void Decorate_WrongConstructorArguments_Throws()
         {
             var config = new BindingConfig();
             Assert.Throws<ArgumentException>(() =>
             {
-                config.Decorate<ITestService10>().With(typeof(Component));
+                config.Decorate(typeof(ITestService10),typeof(Component));
             });
         }
 
@@ -76,7 +86,7 @@ namespace Singularity.Test.Bindings
             var config = new BindingConfig();
             Assert.Throws<InvalidExpressionArgumentsException>(() =>
             {
-                config.Decorate<ITestService10>().With<DecoratorWrongConstructorArguments>();
+                config.Decorate<ITestService10, DecoratorWrongConstructorArguments>();
             });
         }
 

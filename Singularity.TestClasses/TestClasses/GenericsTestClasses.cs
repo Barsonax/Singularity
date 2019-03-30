@@ -14,6 +14,11 @@ namespace Singularity.TestClasses.TestClasses
 
     public class NestedIntSerializer : INestedSerializer<int>
     {
+        public readonly ISerializer<int> IntSerializer;
+        public NestedIntSerializer(ISerializer<int> intSerializer)
+        {
+            IntSerializer = intSerializer;
+        }
     }
 
     public class IntSerializer : ISerializer<int>

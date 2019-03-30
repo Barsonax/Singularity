@@ -26,7 +26,7 @@ namespace Singularity
             OnDeathAction = onDeath;
         }
 
-        public Binding(WeaklyTypedBinding binding) : this(binding.BindingMetadata, binding.DependencyType, binding.Expression, binding.CreationMode, 
+        public Binding(WeaklyTypedBinding binding) : this(binding.BindingMetadata, binding.DependencyType, binding.Expression, binding.CreationMode,
             binding.Decorators != null ? binding.Decorators.Select(x => x.Expression!).ToArray() : new Expression[0], binding.OnDeathAction)
         {
         }

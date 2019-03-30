@@ -16,8 +16,9 @@ namespace Singularity
             switch (expression)
 			{
 				case ConstantExpression _:
-					return new ParameterExpression[0];
-				case LambdaExpression lambdaExpression:
+                case DefaultExpression _:
+                    return new ParameterExpression[0];
+                case LambdaExpression lambdaExpression:
 					return lambdaExpression.Parameters.ToArray();
 				case NewExpression newExpression:
 					return newExpression.Arguments.OfType<ParameterExpression>().ToArray();

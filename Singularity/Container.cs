@@ -1,6 +1,7 @@
 ﻿using Singularity.Exceptions;
 using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.Linq;
 using System.Linq.Expressions;
 using System.Reflection;
@@ -23,6 +24,7 @@ namespace Singularity
         private readonly DependencyGraph _dependencyGraph;
         private readonly ThreadSafeDictionary<Type, Action<object>> _injectionCache = new ThreadSafeDictionary<Type, Action<object>>();
         private readonly ThreadSafeDictionary<Type, Func<object>> _getInstanceCache = new ThreadSafeDictionary<Type, Func<object>>();
+        private readonly ThreadSafeDictionary<Type, ReadOnlyCollection<Func<object>>> _getEnumerableCache = new ThreadSafeDictionary<Type, ReadOnlyCollection<Func<object>>>();
         private readonly Container? _parentContainer;
         private readonly Scoped? _containerScope;
 
@@ -143,8 +145,27 @@ namespace Singularity
             Func<object> func = _getInstanceCache.Search(type);
             if (func == null)
             {
-                func = GenerateInstanceFactory(type, throwError);
+                func = _dependencyGraph.GetInstanceFactory(type, throwError);
                 _getInstanceCache.Add(type, func);
+            }
+            return func;
+        }
+
+        /// <summary>
+        /// Resolves a instance for the given dependency type
+        /// </summary>
+        /// <param name="type">The type of the dependency</param>
+        /// <param name="throwError"></param>
+        /// <exception cref="DependencyNotFoundException">If the dependency is not configured</exception>
+        /// <returns></returns>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public IEnumerable<Func<object>> GetInstanceFactories(Type type, bool throwError = true)
+        {
+            ReadOnlyCollection<Func<object>> func = _getEnumerableCache.Search(type);
+            if (func == null)
+            {
+                func = _dependencyGraph.GetInstanceFactories(type, throwError);
+                _getEnumerableCache.Add(type, func);
             }
             return func;
         }
@@ -168,11 +189,35 @@ namespace Singularity
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public object GetInstance(Type type, bool throwError = true) => GetInstanceFactory(type, throwError).Invoke();
 
-        private Func<object> GenerateInstanceFactory(Type type, bool throwError)
+        /// <summary>
+        /// Resolves a instance for the given dependency type
+        /// </summary>
+        /// <typeparam name="T">The type of the dependency</typeparam>
+        /// <exception cref="DependencyNotFoundException">If the dependency is not configured</exception>
+        /// <returns></returns>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public IEnumerable<T> GetInstances<T>(bool throwError = true) where T : class
         {
-            Expression expression = _dependencyGraph.GetExpression(type, throwError);
+            foreach (Func<object> instanceFactory in GetInstanceFactories(typeof(T), throwError))
+            {
+                yield return (T)instanceFactory.Invoke();
+            }
+        }
 
-            return (Func<object>)Expression.Lambda(expression).Compile();
+        /// <summary>
+        /// Resolves a instance for the given dependency type
+        /// </summary>
+        /// <param name="type">The type of the dependency</param>
+        /// <param name="throwError"></param>
+        /// <exception cref="DependencyNotFoundException">If the dependency is not configured</exception>
+        /// <returns></returns>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public IEnumerable<object> GetInstances(Type type, bool throwError = true)
+        {
+            foreach (Func<object> instanceFactory in GetInstanceFactories(type, throwError))
+            {
+                yield return instanceFactory.Invoke();
+            }
         }
 
         private Action<object> GenerateMethodInjector(Type type, bool throwError)

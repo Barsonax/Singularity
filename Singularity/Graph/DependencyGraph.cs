@@ -21,6 +21,20 @@ namespace Singularity.Graph
             Dependencies = MergeBindings(bindings, parentDependencyGraph);
         }
 
+        public ReadOnlyCollection<Func<object>> GetInstanceFactories(Type type, bool throwError = true)
+        {
+            var array = new Func<object>[1];
+            array[0] = GetInstanceFactory(type, throwError);
+            return new ReadOnlyCollection<Func<object>>(array);
+        }
+
+        public Func<object> GetInstanceFactory(Type type, bool throwError = true)
+        {
+            Expression expression = GetExpression(type, throwError);
+
+            return (Func<object>)Expression.Lambda(expression).Compile();
+        }
+
         public Expression? GetExpression(Type type, bool throwError = true)
         {
             Dependency? dependency = GetDependency(type, throwError);
@@ -172,7 +186,7 @@ namespace Singularity.Graph
                     {
                         Type openGenericType = ((OpenGenericTypeExpression)openGenericDependency.Binding.Expression).OpenGenericType;
                         Type closedGenericType = openGenericType.MakeGenericType(type.GenericTypeArguments);
-                        NewExpression newExpression = closedGenericType.AutoResolveConstructorExpression();
+                        Expression newExpression = closedGenericType.AutoResolveConstructorExpression();
                         return AddDependency(type, newExpression, openGenericDependency.Binding.CreationMode);
                     }
                 }

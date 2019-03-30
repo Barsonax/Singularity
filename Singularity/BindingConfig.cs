@@ -18,7 +18,8 @@ namespace Singularity
     {
         public bool Locked => _readonlyBindings != null;
         internal IModule? CurrentModule;
-        private readonly Dictionary<Type, WeaklyTypedBinding> _bindings = new Dictionary<Type, WeaklyTypedBinding>();
+        private readonly List<WeaklyTypedDecoratorBinding> _decorators = new List<WeaklyTypedDecoratorBinding>();
+        private readonly List<WeaklyTypedBinding> _bindings = new List<WeaklyTypedBinding>();
         private ReadOnlyCollection<Binding>? _readonlyBindings;
 
         /// <summary>
@@ -29,7 +30,7 @@ namespace Singularity
         public StronglyTypedBinding<TDependency> Register<TDependency>([CallerFilePath]string callerFilePath = "", [CallerLineNumber] int callerLineNumber = -1)
         {
             if (Locked) throw new BindingConfigException("This config is locked and cannot be modified anymore!");
-            return GetOrCreateBinding<TDependency>(callerFilePath, callerLineNumber);
+            return CreateBinding<TDependency>(callerFilePath, callerLineNumber);
         }
 
         /// <summary>
@@ -56,7 +57,7 @@ namespace Singularity
 #pragma warning restore 1573
         {
             if (Locked) throw new BindingConfigException("This config is locked and cannot be modified anymore!");
-            return GetOrCreateBinding(instanceType, callerFilePath, callerLineNumber);
+            return CreateBinding(instanceType, callerFilePath, callerLineNumber);
         }
 
         /// <summary>
@@ -88,33 +89,34 @@ namespace Singularity
         /// Begins configuring a strongly typed decorator for <typeparamref name="TDependency"/>.
         /// </summary>
         /// <typeparam name="TDependency">The type to decorate</typeparam>
+        /// <typeparam name="TDecorator"></typeparam>
         /// <exception cref="InterfaceExpectedException">If <typeparamref name="TDependency"/> is not a interface</exception>
         /// <returns></returns>
-        public StronglyTypedDecoratorBinding<TDependency> Decorate<TDependency>([CallerFilePath]string callerFilePath = "", [CallerLineNumber] int callerLineNumber = -1)
+        public StronglyTypedDecoratorBinding<TDependency> Decorate<TDependency, TDecorator>([CallerFilePath]string callerFilePath = "", [CallerLineNumber] int callerLineNumber = -1)
             where TDependency : class
+            where TDecorator : TDependency
         {
             if (Locked) throw new BindingConfigException("This config is locked and cannot be modified anymore!");
+
+            TypeInfo typeInfo = typeof(TDecorator).GetTypeInfo();
+            if (!typeof(TDependency).GetTypeInfo().IsAssignableFrom(typeInfo)) throw new InterfaceNotImplementedException($"{typeof(TDependency)} is not implemented by {typeof(TDecorator)}");
+
             var decorator = new StronglyTypedDecoratorBinding<TDependency>();
-            StronglyTypedBinding<TDependency> binding = GetOrCreateBinding<TDependency>(callerFilePath, callerLineNumber);
-            binding.AddDecorator(decorator);
+            decorator.Expression = AutoResolveConstructorExpressionCache<TDecorator>.Expression;
+
+            ParameterExpression[] parameters = decorator.Expression.GetParameterExpressions();
+            if (parameters.All(x => x.Type != typeof(TDependency))) throw new InvalidExpressionArgumentsException($"Cannot decorate {typeof(TDependency)} since the expression to create {typeof(TDecorator)} does not have a parameter for {typeof(TDependency)}");
+            _decorators.Add(decorator);
             return decorator;
         }
 
-        /// <summary>
-        /// Begins configuring a weakly typed decorator for <paramref name="dependencyType"/>
-        /// </summary>
-        /// <param name="dependencyType"></param>
-        /// <returns></returns>
-#pragma warning disable 1573
-        public WeaklyTypedDecoratorBinding Decorate(Type dependencyType, [CallerFilePath]string callerFilePath = "", [CallerLineNumber] int callerLineNumber = -1)
-#pragma warning restore 1573
+        public WeaklyTypedDecoratorBinding Decorate(Type dependencyType, Type decoratorType, [CallerFilePath]string callerFilePath = "", [CallerLineNumber] int callerLineNumber = -1)
         {
-            if (Locked) throw new BindingConfigException("This config is locked and cannot be modified anymore!");
             MethodInfo decorateMethod = (from m in typeof(BindingConfig).GetRuntimeMethods()
                                          where m.Name == nameof(Decorate)
                                          where m.IsGenericMethod
-                                         where m.GetGenericArguments().Length == 1
-                                         select m).First().MakeGenericMethod(dependencyType);
+                                         where m.GetGenericArguments().Length == 2
+                                         select m).First().MakeGenericMethod(dependencyType, decoratorType);
 
             return (WeaklyTypedDecoratorBinding)decorateMethod.Invoke(this, new object[] { callerFilePath, callerLineNumber });
         }
@@ -123,13 +125,32 @@ namespace Singularity
         {
             if (_readonlyBindings == null)
             {
+                foreach (WeaklyTypedDecoratorBinding weaklyTypedDecoratorBinding in _decorators)
+                {
+                    var count = 0;
+                    foreach (WeaklyTypedBinding weaklyTypedBinding in _bindings)
+                    {
+                        if (weaklyTypedDecoratorBinding.DependencyType == weaklyTypedBinding.DependencyType)
+                        {
+                            count++;
+                            weaklyTypedBinding.AddDecorator(weaklyTypedDecoratorBinding);
+                        }
+                    }
+
+                    if (count == 0)
+                    {
+                        var binding = Register(weaklyTypedDecoratorBinding.DependencyType);
+                        binding.AddDecorator(weaklyTypedDecoratorBinding);
+                    }
+                }
+
                 var readonlyBindings = new Binding[_bindings.Count];
 
                 var index = 0;
-                foreach (KeyValuePair<Type, WeaklyTypedBinding> weaklyTypedBinding in _bindings)
+                foreach (WeaklyTypedBinding weaklyTypedBinding in _bindings)
                 {
-                    weaklyTypedBinding.Value.Verify();
-                    readonlyBindings[index] = new Binding(weaklyTypedBinding.Value);
+                    weaklyTypedBinding.Verify();
+                    readonlyBindings[index] = new Binding(weaklyTypedBinding);
                     index++;
                 }
                 _readonlyBindings = new ReadOnlyCollection<Binding>(readonlyBindings);
@@ -137,29 +158,18 @@ namespace Singularity
             return _readonlyBindings!;
         }
 
-        private StronglyTypedBinding<TDependency> GetOrCreateBinding<TDependency>(string callerFilePath, int callerLineNumber)
+        private StronglyTypedBinding<TDependency> CreateBinding<TDependency>(string callerFilePath, int callerLineNumber)
         {
-            if (_bindings.TryGetValue(typeof(TDependency), out WeaklyTypedBinding weaklyTypedBinding))
-            {
-                if (weaklyTypedBinding is StronglyTypedBinding<TDependency> b) return b;
-                else
-                {
-                    return new StronglyTypedBinding<TDependency>(weaklyTypedBinding);
-                }
-            }
             var binding = new StronglyTypedBinding<TDependency>(callerFilePath, callerLineNumber, CurrentModule);
-            _bindings.Add(binding.DependencyType, binding);
+            _bindings.Add(binding);
             return binding;
         }
 
-        private WeaklyTypedBinding GetOrCreateBinding(Type instanceType, string callerFilePath, int callerLineNumber)
+        private WeaklyTypedBinding CreateBinding(Type instanceType, string callerFilePath, int callerLineNumber)
         {
-            if (_bindings.TryGetValue(instanceType, out WeaklyTypedBinding binding))
-            {
-                return binding;
-            }
-            binding = new WeaklyTypedBinding(instanceType, callerFilePath, callerLineNumber, CurrentModule);
-            _bindings.Add(binding.DependencyType, binding);
+
+            var binding = new WeaklyTypedBinding(instanceType, callerFilePath, callerLineNumber, CurrentModule);
+            _bindings.Add(binding);
             return binding;
         }
     }

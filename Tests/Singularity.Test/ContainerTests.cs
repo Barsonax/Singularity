@@ -15,7 +15,7 @@ namespace Singularity.Test
                 public void GetInstance_DecoratorInRoot_1Deep_DecoratorsAreCorrectlyApplied()
                 {
                     var rootConfig = new BindingConfig();
-                    rootConfig.Decorate<IComponent>().With<Decorator1>();
+                    rootConfig.Decorate<IComponent, Decorator1>();
 
                     using (var rootContainer = new Container(rootConfig))
                     {
@@ -34,12 +34,12 @@ namespace Singularity.Test
 			    public void GetInstance_DecoratorInRoot_2Deep_DecoratorsAreCorrectlyApplied()
 			    {
 			        var rootConfig = new BindingConfig();
-			        rootConfig.Decorate<IComponent>().With<Decorator1>();
+			        rootConfig.Decorate<IComponent, Decorator1>();
 
 			        using (var rootContainer = new Container(rootConfig))
 			        {
 			            var nested1Config = new BindingConfig();
-			            nested1Config.Decorate<IComponent>().With<Decorator2>();
+			            nested1Config.Decorate<IComponent, Decorator2>();
                         using (Container nested1Container = rootContainer.GetNestedContainer(nested1Config))
 			            {
 			                var nested2Config = new BindingConfig();
@@ -59,7 +59,7 @@ namespace Singularity.Test
 				public void GetInstance_DecoratorsAreCorrectlyApplied()
 				{
 					var config = new BindingConfig();
-					config.Decorate<IComponent>().With<Decorator1>();
+					config.Decorate<IComponent, Decorator1>();
 					config.Register<IComponent, Component>();
 
 					using (var container = new Container(config))
@@ -71,7 +71,7 @@ namespace Singularity.Test
 						Assert.Equal(typeof(Component), decorator1.Component.GetType());
 
 						var nestedConfig = new BindingConfig();
-						nestedConfig.Decorate<IComponent>().With<Decorator2>();
+						nestedConfig.Decorate<IComponent, Decorator2>();
 						using (Container nestedContainer = container.GetNestedContainer(nestedConfig))
 						{
 							var nestedValue = nestedContainer.GetInstance<IComponent>();
@@ -90,14 +90,14 @@ namespace Singularity.Test
 			    public void GetInstance_DecorateNestedContainer_Override_PerContainerLifetime()
 			    {
 			        var rootConfig = new BindingConfig();
-			        rootConfig.Decorate<IComponent>().With<Decorator1>();
+			        rootConfig.Decorate<IComponent, Decorator1>();
 			        rootConfig.Register<IComponent, Component>().With(CreationMode.Singleton);
 
                     using (var rootContainer = new Container(rootConfig))
                     {
                         var rootValue = rootContainer.GetInstance<IComponent>();
 			            var nested1Config = new BindingConfig();
-			            nested1Config.Decorate<IComponent>().With<Decorator2>();
+			            nested1Config.Decorate<IComponent, Decorator2>();
                         nested1Config.Register<IComponent, Component>().With(CreationMode.Singleton);
                         using (Container nested1Container = rootContainer.GetNestedContainer(nested1Config))
 			            {
@@ -114,7 +114,7 @@ namespace Singularity.Test
 				{
 					var config = new BindingConfig();
 
-					config.Decorate<ITestService11>().With<TestService11_Decorator1>();
+					config.Decorate<ITestService11, TestService11_Decorator1>();
 
 					config.Register<ITestService10, TestService10>();
 					config.Register<ITestService11, TestService11>().With(CreationMode.Singleton);
@@ -128,7 +128,7 @@ namespace Singularity.Test
 				        Assert.IsType<TestService10>(testService11.TestService10);
 
 				        var nestedConfig = new BindingConfig();
-				        nestedConfig.Decorate<ITestService11>().With<TestService11_Decorator2>();
+				        nestedConfig.Decorate<ITestService11, TestService11_Decorator2>();
 				        using (Container nestedContainer = container.GetNestedContainer(nestedConfig))
 				        {
 				            var nestedInstance = nestedContainer.GetInstance<ITestService11>();
@@ -152,7 +152,7 @@ namespace Singularity.Test
 					    Assert.IsType<Component>(value);
 
 						var nestedConfig = new BindingConfig();
-						nestedConfig.Decorate<IComponent>().With<Decorator1>();
+						nestedConfig.Decorate<IComponent, Decorator1>();
 						using (Container nestedContainer = container.GetNestedContainer(nestedConfig))
 						{
 							var nestedValue = nestedContainer.GetInstance<IComponent>();
@@ -279,7 +279,7 @@ namespace Singularity.Test
 					Assert.Equal(typeof(Disposable), topLevelInstance.GetType());
 					{
 						var nestedConfig = new BindingConfig();
-						nestedConfig.Decorate<IDisposable>().With<DisposableDecorator>();
+						nestedConfig.Decorate<IDisposable, DisposableDecorator>();
 						Container nestedContainer = container.GetNestedContainer(nestedConfig);
 						var nestedInstance = nestedContainer.GetInstance<IDisposable>();
 
@@ -433,7 +433,7 @@ namespace Singularity.Test
 				public void GetInstance_Decorate_Simple()
 				{
 					var config = new BindingConfig();
-					config.Decorate<IComponent>().With<Decorator1>();
+                    config.Decorate<IComponent, Decorator1>();
 					config.Register<IComponent, Component>();
 
 					var container = new Container(config);
@@ -451,8 +451,8 @@ namespace Singularity.Test
 				{
 					var config = new BindingConfig();
 
-					config.Decorate<IComponent>().With<Decorator1>();
-					config.Decorate<IComponent>().With<Decorator2>();
+					config.Decorate<IComponent, Decorator1>();
+					config.Decorate<IComponent, Decorator2>();
 
 					config.Register<IComponent, Component>();
 
@@ -475,7 +475,7 @@ namespace Singularity.Test
 				{
 					var config = new BindingConfig();
 
-					config.Decorate<ITestService11>().With<TestService11_Decorator1>();
+					config.Decorate<ITestService11, TestService11_Decorator1>();
 
 					config.Register<ITestService10, TestService10>();
 					config.Register<ITestService11, TestService11>();
@@ -501,8 +501,8 @@ namespace Singularity.Test
 				{
 					var config = new BindingConfig();
 
-					config.Decorate<ITestService11>().With<TestService11_Decorator1>();
-					config.Decorate<ITestService11>().With<TestService11_Decorator2>();
+					config.Decorate<ITestService11, TestService11_Decorator1>();
+					config.Decorate<ITestService11, TestService11_Decorator2>();
 
 					config.Register<ITestService10, TestService10>();
 					config.Register<ITestService11, TestService11>();
@@ -572,7 +572,7 @@ namespace Singularity.Test
 				{
 					var config = new BindingConfig();
 					config.Register<IDisposable, Disposable>().OnDeath(x => x.Dispose());
-					config.Decorate<IDisposable>().With<DisposableDecorator>();
+					config.Decorate<IDisposable, DisposableDecorator>();
 
 					var container = new Container(config);
 
