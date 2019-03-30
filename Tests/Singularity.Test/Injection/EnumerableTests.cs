@@ -46,6 +46,58 @@ namespace Singularity.Test.Injection
         }
 
         [Fact]
+        public void MultiBatchRegistration()
+        {
+            //ARRANGE
+            var config = new BindingConfig();
+            config.Register(typeof(IPlugin), new[]
+            {
+                typeof(Plugin1),
+                typeof(Plugin2),
+                typeof(Plugin3)
+            });
+            var container = new Container(config);
+
+            //ACT
+            var plugins = container.GetInstance<IEnumerable<IPlugin>>();
+
+            //ASSERT
+            var enumeratedPlugins = plugins.ToArray();
+            Assert.Equal(3, enumeratedPlugins.Length);
+            Assert.IsType<Plugin1>(enumeratedPlugins[0]);
+            Assert.IsType<Plugin2>(enumeratedPlugins[1]);
+            Assert.IsType<Plugin3>(enumeratedPlugins[2]);
+        }
+
+        [Fact]
+        public void MultiBatchRegistrationWithDecorators()
+        {
+            //ARRANGE
+            var config = new BindingConfig();
+            config.Register(typeof(IPlugin), new[]
+            {
+                typeof(Plugin1),
+                typeof(Plugin2),
+                typeof(Plugin3)
+            });
+            config.Decorate<IPlugin, PluginLogger>();
+            var container = new Container(config);
+
+            //ACT
+            var plugins = container.GetInstance<IEnumerable<IPlugin>>();
+
+            //ASSERT
+            var enumeratedPlugins = plugins.ToArray();
+            Assert.Equal(3, enumeratedPlugins.Length);
+            var pluginLogger1 = Assert.IsType<PluginLogger>(enumeratedPlugins[0]);
+            Assert.IsType<Plugin1>(pluginLogger1.Plugin);
+            var pluginLogger2 = Assert.IsType<PluginLogger>(enumeratedPlugins[1]);
+            Assert.IsType<Plugin2>(pluginLogger2.Plugin);
+            var pluginLogger3 = Assert.IsType<PluginLogger>(enumeratedPlugins[2]);
+            Assert.IsType<Plugin3>(pluginLogger3.Plugin);
+        }
+
+        [Fact]
         public void MultiRegistration_RequestSingle()
         {
             //ARRANGE

@@ -5,7 +5,7 @@ using Singularity.Exceptions;
 
 namespace Singularity.Bindings
 {
-    public abstract class WeaklyTypedDecoratorBinding
+    public class WeaklyTypedDecoratorBinding
     {
         public Type DependencyType { get; }
         public Expression? Expression { get; internal set; }

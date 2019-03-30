@@ -71,17 +71,17 @@ namespace Singularity.Test.Bindings
         }
 
         [Fact]
-        public void Decorate_WrongConstructorArguments_Throws()
+        public void Decorate_InvalidConstructorArguments_WeaklyTyped_Throws()
         {
             var config = new BindingConfig();
-            Assert.Throws<ArgumentException>(() =>
+            Assert.Throws<InvalidExpressionArgumentsException>(() =>
             {
-                config.Decorate(typeof(ITestService10),typeof(Component));
+                config.Decorate(typeof(ITestService10),typeof(DecoratorWrongConstructorArguments));
             });
         }
 
         [Fact]
-        public void Decorate_InvalidConstructorArguments_Throws()
+        public void Decorate_InvalidConstructorArguments_StronglyTyped_Throws()
         {
             var config = new BindingConfig();
             Assert.Throws<InvalidExpressionArgumentsException>(() =>
