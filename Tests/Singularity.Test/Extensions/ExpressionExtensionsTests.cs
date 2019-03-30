@@ -7,14 +7,22 @@ namespace Singularity.Test.Extensions
 {
 	public class ExpressionExtensionsTests
 	{
-		[Fact]
-		public void GetParameterExpressions_InvalidExpressionType_Throws()
-		{
-			DefaultExpression expression = Expression.Default(typeof(Expression));
-			Assert.Throws<NotSupportedException>(() => { expression.GetParameterExpressions(); });
-		}
+        [Fact]
+        public void GetParameterExpressions_InvalidExpressionType_Throws()
+        {
+            Expression expression = Expression.LeftShift(Expression.Constant(0), Expression.Constant(0));
+            Assert.Throws<NotSupportedException>(() => { expression.GetParameterExpressions(); });
+        }
 
-		[Fact]
+        [Fact]
+        public void GetParameterExpressions_DefaultExpression_NoError()
+        {
+            DefaultExpression expression = Expression.Default(typeof(Expression));
+            ParameterExpression[] parameters = expression.GetParameterExpressions();
+            Assert.Equal(0, parameters.Length);
+        }
+
+        [Fact]
 		public void GetParameterExpressions_ConstantExpression_NoError()
 		{
 			ConstantExpression expression = Expression.Constant(5);

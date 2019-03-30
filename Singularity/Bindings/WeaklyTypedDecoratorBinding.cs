@@ -7,13 +7,13 @@ namespace Singularity.Bindings
 {
     public abstract class WeaklyTypedDecoratorBinding
     {
-        public Expression? Expression { get; protected set; }
+        public Type DependencyType { get; }
+        public Expression? Expression { get; internal set; }
 
         internal WeaklyTypedDecoratorBinding(Type dependencyType)
         {
             if (!dependencyType.GetTypeInfo().IsInterface) throw new InterfaceExpectedException($"{dependencyType} is not a interface.");
+            DependencyType = dependencyType;
         }
-
-        public abstract WeaklyTypedDecoratorBinding With(Type decoratorType);
     }
 }

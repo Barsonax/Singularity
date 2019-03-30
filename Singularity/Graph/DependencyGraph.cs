@@ -1,8 +1,11 @@
 ﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
 using System.Linq.Expressions;
+using System.Reflection;
+using Singularity.Collections;
 using Singularity.Exceptions;
 using Singularity.Expressions;
 
@@ -10,10 +13,18 @@ namespace Singularity.Graph
 {
     internal sealed class DependencyGraph
     {
-        private Dictionary<Type, Dependency> Dependencies { get; }
+        private Dictionary<Type, ArrayList<Dependency>> Dependencies { get; }
         private readonly Scoped _defaultScope;
         private readonly ExpressionGenerator _expressionGenerator = new ExpressionGenerator();
         private readonly object _locker = new object();
+        private static readonly MethodInfo GenericCreateEnumerableExpressionMethod;
+
+        static DependencyGraph()
+        {
+            GenericCreateEnumerableExpressionMethod = (from m in typeof(DependencyGraph).GetRuntimeMethods()
+                                                       where m.Name == nameof(CreateEnumerableExpression)
+                                                       select m).Single();
+        }
 
         public DependencyGraph(ReadOnlyCollection<Binding> bindings, Scoped scope, DependencyGraph? parentDependencyGraph = null)
         {
@@ -21,12 +32,12 @@ namespace Singularity.Graph
             Dependencies = MergeBindings(bindings, parentDependencyGraph);
         }
 
-        public Expression? GetExpression(Type type, bool throwError = true)
+        public ResolvedDependency? GetResolvedDependency(Type type, bool throwError = true)
         {
             Dependency? dependency = GetDependency(type, throwError);
-            if (dependency == null && !throwError) return Expression.Default(type);
+            if (dependency == null && !throwError) return null;
             ResolveDependency(dependency);
-            return dependency!.ResolvedDependency!.Expression;
+            return dependency!.ResolvedDependency!;
         }
 
         private void ResolveDependency(Dependency dependency)
@@ -46,17 +57,26 @@ namespace Singularity.Graph
                 if (dependency.ResolvedDependency == null)
                 {
                     Expression expression = _expressionGenerator.GenerateDependencyExpression(dependency, _defaultScope);
-                    dependency.ResolvedDependency = new ResolvedDependency(expression);
+                    var instanceFactory = (Func<object>)Expression.Lambda(expression).Compile();
+                    dependency.ResolvedDependency = new ResolvedDependency(expression, instanceFactory);
                 }
             }
         }
 
-        private static Dictionary<Type, Dependency> MergeBindings(ReadOnlyCollection<Binding> bindings, DependencyGraph? parentDependencyGraph)
+        private static Dictionary<Type, ArrayList<Dependency>> MergeBindings(ReadOnlyCollection<Binding> bindings, DependencyGraph? parentDependencyGraph)
         {
-            var dependencies = new Dictionary<Type, Dependency>(bindings.Count);
+            var dependencies = new Dictionary<Type, ArrayList<Dependency>>(bindings.Count);
             foreach (Binding binding in bindings)
             {
-                dependencies.Add(binding.DependencyType, new Dependency(binding));
+                if (!dependencies.TryGetValue(binding.DependencyType, out var dependency))
+                {
+                    dependency = new ArrayList<Dependency>(new Dependency(binding));
+                    dependencies.Add(binding.DependencyType, dependency);
+                }
+                else
+                {
+                    dependency.Add(new Dependency(binding));
+                }
             }
             if (parentDependencyGraph != null)
             {
@@ -66,12 +86,14 @@ namespace Singularity.Graph
             return dependencies;
         }
 
-        private static void MergeParentBindings(DependencyGraph parentDependencyGraph, Dictionary<Type, Dependency> bindings)
+        private static void MergeParentBindings(DependencyGraph parentDependencyGraph, Dictionary<Type, ArrayList<Dependency>> bindings)
         {
-            foreach (Dependency parentBinding in parentDependencyGraph.Dependencies.Values)
+            foreach (ArrayList<Dependency> parentBindingCollection in parentDependencyGraph.Dependencies.Values)
             {
-                if (bindings.TryGetValue(parentBinding.Binding.DependencyType, out Dependency childBinding))
+                var parentBinding = parentBindingCollection.Array[0];
+                if (bindings.TryGetValue(parentBinding.Binding.DependencyType, out ArrayList<Dependency> childBindingCollection))
                 {
+                    var childBinding = childBindingCollection.Array[0];
                     Expression[] decorators;
                     Expression? expression;
                     Action<object>? onDeathAction;
@@ -106,7 +128,7 @@ namespace Singularity.Graph
                     }
 
                     var readonlyBinding = new Binding(bindingMetadata, childBinding.Binding.DependencyType, expression, parentBinding.Binding.CreationMode, decorators, onDeathAction);
-                    bindings[childBinding.Binding.DependencyType] = new Dependency(readonlyBinding);
+                    bindings[childBinding.Binding.DependencyType] = new ArrayList<Dependency>(new Dependency(readonlyBinding));
                 }
                 else
                 {
@@ -119,11 +141,11 @@ namespace Singularity.Graph
                             parentBinding.Binding.CreationMode,
                             parentBinding.Binding.Decorators,
                             null);
-                        bindings.Add(parentBinding.Binding.DependencyType, new Dependency(readonlyBinding));
+                        bindings.Add(parentBinding.Binding.DependencyType, new ArrayList<Dependency>(new Dependency(readonlyBinding)));
                     }
                     else
                     {
-                        bindings.Add(parentBinding.Binding.DependencyType, new Dependency(parentBinding.Binding));
+                        bindings.Add(parentBinding.Binding.DependencyType, new ArrayList<Dependency>(new Dependency(parentBinding.Binding)));
                     }
                 }
             }
@@ -154,11 +176,16 @@ namespace Singularity.Graph
             return resolvedDependencies.ToArray();
         }
 
-        private Dependency? GetDependency(Type type, bool throwError = true)
+        private Dependency GetDependency(Type type, bool throwError = true)
+        {
+            return GetDependencyCollection(type, throwError).Array[0];
+        }
+
+        private ArrayList<Dependency>? GetDependencyCollection(Type type, bool throwError = true)
         {
             lock (_locker)
             {
-                if (Dependencies.TryGetValue(type, out Dependency parent)) return parent;
+                if (Dependencies.TryGetValue(type, out ArrayList<Dependency> parent)) return parent;
 
                 if (!type.IsInterface)
                 {
@@ -167,12 +194,27 @@ namespace Singularity.Graph
 
                 if (type.IsGenericType)
                 {
-                    Type genericTypeDefinition = type.GetGenericTypeDefinition();
-                    if (Dependencies.TryGetValue(genericTypeDefinition, out Dependency openGenericDependency))
+                    if (typeof(IEnumerable).IsAssignableFrom(type))
                     {
+                        var dependencies = GetDependencyCollection(type.GenericTypeArguments[0], throwError);
+                        foreach (var dependency in dependencies.Array)
+                        {
+                            ResolveDependency(dependency);
+                        }
+                        var instanceFactories = dependencies.Array.Select(x => x.ResolvedDependency!.InstanceFactory).ToArray();
+
+                        var method = GenericCreateEnumerableExpressionMethod.MakeGenericMethod(type.GenericTypeArguments);
+                        var expression = (Expression)method.Invoke(this, new object[]{ instanceFactories } );
+
+                        return AddDependency(type, expression, CreationMode.Transient);
+                    }
+                    Type genericTypeDefinition = type.GetGenericTypeDefinition();
+                    if (Dependencies.TryGetValue(genericTypeDefinition, out ArrayList<Dependency> openGenericDependencyCollection))
+                    {
+                        var openGenericDependency = openGenericDependencyCollection.Array[0];
                         Type openGenericType = ((OpenGenericTypeExpression)openGenericDependency.Binding.Expression).OpenGenericType;
                         Type closedGenericType = openGenericType.MakeGenericType(type.GenericTypeArguments);
-                        NewExpression newExpression = closedGenericType.AutoResolveConstructorExpression();
+                        Expression newExpression = closedGenericType.AutoResolveConstructorExpression();
                         return AddDependency(type, newExpression, openGenericDependency.Binding.CreationMode);
                     }
                 }
@@ -183,14 +225,28 @@ namespace Singularity.Graph
             }
         }
 
-        private Dependency GetOrCreateDependency(Type type)
+        private Expression CreateEnumerableExpression<T>(Func<object>[] instanceFactories)
+        {
+            var enumerable = CreateEnumerable<T>(instanceFactories);
+            return Expression.Constant(enumerable);
+        }
+
+        private IEnumerable<T> CreateEnumerable<T>(Func<object>[] instanceFactories)
+        {
+            foreach (var instanceFactory in instanceFactories)
+            {
+                yield return (T)instanceFactory.Invoke();
+            }
+        }
+
+        private ArrayList<Dependency> GetOrCreateDependency(Type type)
         {
             return GetOrCreateDependency(type, type.AutoResolveConstructorExpression(), CreationMode.Transient);
         }
 
-        private Dependency GetOrCreateDependency(Type type, Expression expression, CreationMode creationMode)
+        private ArrayList<Dependency> GetOrCreateDependency(Type type, Expression expression, CreationMode creationMode)
         {
-            if (!Dependencies.TryGetValue(type, out Dependency dependency))
+            if (!Dependencies.TryGetValue(type, out ArrayList<Dependency> dependency))
             {
                 dependency = AddDependency(type, expression, creationMode);
             }
@@ -198,11 +254,11 @@ namespace Singularity.Graph
             return dependency;
         }
 
-        private Dependency AddDependency(Type type, Expression expression, CreationMode creationMode)
+        private ArrayList<Dependency> AddDependency(Type type, Expression expression, CreationMode creationMode)
         {
             var binding = new Binding(new BindingMetadata(type), type, expression, creationMode, new Expression[0], null);
-            var dependency = new Dependency(binding);
-            Dependencies.Add(type ,dependency);
+            var dependency = new ArrayList<Dependency>(new Dependency(binding));
+            Dependencies.Add(type, dependency);
             return dependency;
         }
     }

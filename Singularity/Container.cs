@@ -1,6 +1,7 @@
 ﻿using Singularity.Exceptions;
 using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.Linq;
 using System.Linq.Expressions;
 using System.Reflection;
@@ -23,6 +24,7 @@ namespace Singularity
         private readonly DependencyGraph _dependencyGraph;
         private readonly ThreadSafeDictionary<Type, Action<object>> _injectionCache = new ThreadSafeDictionary<Type, Action<object>>();
         private readonly ThreadSafeDictionary<Type, Func<object>> _getInstanceCache = new ThreadSafeDictionary<Type, Func<object>>();
+        private readonly ThreadSafeDictionary<Type, ReadOnlyCollection<Func<object>>> _getEnumerableCache = new ThreadSafeDictionary<Type, ReadOnlyCollection<Func<object>>>();
         private readonly Container? _parentContainer;
         private readonly Scoped? _containerScope;
 
@@ -143,7 +145,7 @@ namespace Singularity
             Func<object> func = _getInstanceCache.Search(type);
             if (func == null)
             {
-                func = GenerateInstanceFactory(type, throwError);
+                func = _dependencyGraph.GetResolvedDependency(type, throwError).InstanceFactory;
                 _getInstanceCache.Add(type, func);
             }
             return func;
@@ -168,13 +170,6 @@ namespace Singularity
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public object GetInstance(Type type, bool throwError = true) => GetInstanceFactory(type, throwError).Invoke();
 
-        private Func<object> GenerateInstanceFactory(Type type, bool throwError)
-        {
-            Expression expression = _dependencyGraph.GetExpression(type, throwError);
-
-            return (Func<object>)Expression.Lambda(expression).Compile();
-        }
-
         private Action<object> GenerateMethodInjector(Type type, bool throwError)
         {
             ParameterExpression instanceParameter = Expression.Parameter(typeof(object));
@@ -190,7 +185,7 @@ namespace Singularity
                 for (var i = 0; i < parameterTypes.Length; i++)
                 {
                     Type parameterType = parameterTypes[i].ParameterType;
-                    parameterExpressions[i] = _dependencyGraph.GetExpression(parameterType, throwError);
+                    parameterExpressions[i] = _dependencyGraph.GetResolvedDependency(parameterType, throwError)?.Expression;
                 }
                 body.Add(Expression.Call(instanceCasted, methodInfo, parameterExpressions));
             }

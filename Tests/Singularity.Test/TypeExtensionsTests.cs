@@ -15,7 +15,7 @@ namespace Singularity.Test
             Type type = typeof(NoPublicConstructorClass);
             Assert.Throws<NoConstructorException>(() =>
             {
-                NewExpression constructorExpression = type.AutoResolveConstructorExpression();
+                Expression constructorExpression = type.AutoResolveConstructorExpression();
             });
         }
 
@@ -25,8 +25,16 @@ namespace Singularity.Test
             Type type = typeof(MultipleConstructorsClass);
             Assert.Throws<CannotAutoResolveConstructorException>(() =>
             {
-                NewExpression constructorExpression = type.AutoResolveConstructorExpression();
+                Expression constructorExpression = type.AutoResolveConstructorExpression();
             });
+        }
+
+        [Fact]
+        public void AutoResolveConstructor_ValueTypeWithNoConstructors()
+        {
+            Type type = typeof(int);
+            Expression expression = type.AutoResolveConstructorExpression();
+            Assert.IsType<DefaultExpression>(expression);
         }
     }
 }
