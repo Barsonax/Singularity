@@ -1,10 +1,12 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Runtime.Serialization;
 using System.Text;
 
 namespace Singularity.Exceptions
 {
-	public sealed class SingularityAggregateException : AggregateException
+    [Serializable]
+    public sealed class SingularityAggregateException : AggregateException
 	{
 		public string HeaderMessage { get; }
 		public override string Message => GenerateString(new StringBuilder(), 0, this).ToString();
@@ -40,5 +42,13 @@ namespace Singularity.Exceptions
 		{
 			HeaderMessage = message;
 		}
-	}
+
+        public SingularityAggregateException()
+        {
+        }
+
+        protected SingularityAggregateException(SerializationInfo info, StreamingContext context) : base(info, context)
+        {
+        }
+    }
 }

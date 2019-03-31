@@ -3,6 +3,9 @@ using System.Collections.Generic;
 
 namespace Singularity
 {
+    /// <summary>
+    /// Represents the scope in which instances will life.
+    /// </summary>
     public sealed class Scoped : IDisposable
     {
         private readonly object _locker = new object();
@@ -22,6 +25,9 @@ namespace Singularity
             }
         }
 
+        /// <summary>
+        /// Disposes the scope, calling all dispose actions on the instances that where created in this scope.
+        /// </summary>
         public void Dispose()
         {
             lock (_locker)

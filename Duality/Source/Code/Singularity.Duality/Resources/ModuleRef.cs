@@ -27,11 +27,17 @@ namespace Singularity.Duality.Resources
 		[EditorHintFlags(MemberFlags.AffectsOthers)]
 		public string? Name { get; set; }
 
+        /// <summary>
+        /// The module type
+        /// </summary>
 		public Type Type => Type.GetType(ToString());
 
+        /// <summary>
+        /// Needed for serialization
+        /// </summary>
         public ModuleRef() { }
 
-        public ModuleRef(Type type)
+        internal ModuleRef(Type type)
         {
             Assembly = type.GetTypeInfo().Assembly.ManifestModule.Name.Replace(".dll", "");
             NameSpace = type.Namespace;

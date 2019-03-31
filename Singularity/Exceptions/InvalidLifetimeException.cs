@@ -1,12 +1,23 @@
-﻿using Singularity.Bindings;
+﻿using System;
+using System.Runtime.Serialization;
 
 namespace Singularity.Exceptions
 {
-	public sealed class InvalidLifetimeException : SingularityException
-	{
-		internal InvalidLifetimeException(WeaklyTypedBinding unresolvedDependency) : base($"Registered binding in {unresolvedDependency.BindingMetadata.StringRepresentation()} has a invalid creationMode value of {unresolvedDependency.CreationMode}")
-		{
+    [Serializable]
+    public sealed class InvalidLifetimeException : SingularityException
+    {
+        internal InvalidLifetimeException(CreationMode creationMode) : base($"{creationMode} is a invalid value, valid values are: {string.Join(", ", EnumMetadata<CreationMode>.Values)}")
+        {
 
-		}
-	}
+        }
+
+
+        public InvalidLifetimeException()
+        {
+        }
+
+        protected InvalidLifetimeException(SerializationInfo info, StreamingContext context) : base(info, context)
+        {
+        }
+    }
 }

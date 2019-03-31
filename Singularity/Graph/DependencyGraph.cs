@@ -42,20 +42,47 @@ namespace Singularity.Graph
 
         private void ResolveDependency(Dependency dependency)
         {
+            FindDependencies(dependency);
+            GenerateInstanceFactory(dependency);
+        }
+
+        private void FindDependencies(Dependency dependency, HashSet<Dependency> visitedDependencies = null)
+        {
             lock (dependency)
             {
                 if (dependency.Dependencies == null)
                 {
-                    dependency.Dependencies = GetDependencies(dependency);
-
-                    foreach (var nestedDependency in dependency.Dependencies)
+                    if (visitedDependencies != null && visitedDependencies.Contains(dependency))
                     {
-                        ResolveDependency(nestedDependency);
+                        var error = new CircularDependencyException(visitedDependencies.Select(x => x.Binding.Expression.Type).Concat(new[] { dependency.Binding.Expression.Type }).ToArray());
+                        dependency.ResolveError = error;
+                        throw error;
                     }
-                }
+                    if (visitedDependencies == null) visitedDependencies = new HashSet<Dependency>();
+                    visitedDependencies.Add(dependency);
 
+
+                    foreach (Dependency nestedDependency in GetDependencies(dependency))
+                    {
+                        FindDependencies(nestedDependency, visitedDependencies);
+                        visitedDependencies.Remove(nestedDependency);
+                    }
+                    dependency.Dependencies = GetDependencies(dependency);
+                }
+            }
+        }
+
+        private void GenerateInstanceFactory(Dependency dependency)
+        {
+            lock (dependency)
+            {
+                if (dependency.ResolveError != null) throw dependency.ResolveError;
                 if (dependency.ResolvedDependency == null)
                 {
+                    foreach (var nestedDependency in dependency.Dependencies)
+                    {
+                        GenerateInstanceFactory(nestedDependency);
+                    }
                     Expression expression = _expressionGenerator.GenerateDependencyExpression(dependency, _defaultScope);
                     var instanceFactory = (Func<object>)Expression.Lambda(expression).Compile();
                     dependency.ResolvedDependency = new ResolvedDependency(expression, instanceFactory);
@@ -68,7 +95,7 @@ namespace Singularity.Graph
             var dependencies = new Dictionary<Type, ArrayList<Dependency>>(bindings.Count);
             foreach (Binding binding in bindings)
             {
-                if (!dependencies.TryGetValue(binding.DependencyType, out var dependency))
+                if (!dependencies.TryGetValue(binding.DependencyType, out ArrayList<Dependency> dependency))
                 {
                     dependency = new ArrayList<Dependency>(new Dependency(binding));
                     dependencies.Add(binding.DependencyType, dependency);
@@ -90,10 +117,10 @@ namespace Singularity.Graph
         {
             foreach (ArrayList<Dependency> parentBindingCollection in parentDependencyGraph.Dependencies.Values)
             {
-                var parentBinding = parentBindingCollection.Array[0];
+                Dependency parentBinding = parentBindingCollection.Array[0];
                 if (bindings.TryGetValue(parentBinding.Binding.DependencyType, out ArrayList<Dependency> childBindingCollection))
                 {
-                    var childBinding = childBindingCollection.Array[0];
+                    Dependency childBinding = childBindingCollection.Array[0];
                     Expression[] decorators;
                     Expression? expression;
                     Action<object>? onDeathAction;
@@ -196,23 +223,23 @@ namespace Singularity.Graph
                 {
                     if (typeof(IEnumerable).IsAssignableFrom(type))
                     {
-                        var dependencies = GetDependencyCollection(type.GenericTypeArguments[0], throwError);
+                        ArrayList<Dependency>? dependencies = GetDependencyCollection(type.GenericTypeArguments[0], throwError);
                         foreach (var dependency in dependencies.Array)
                         {
                             ResolveDependency(dependency);
                         }
                         var instanceFactories = dependencies.Array.Select(x => x.ResolvedDependency!.InstanceFactory).ToArray();
 
-                        var method = GenericCreateEnumerableExpressionMethod.MakeGenericMethod(type.GenericTypeArguments);
-                        var expression = (Expression)method.Invoke(this, new object[]{ instanceFactories } );
+                        MethodInfo method = GenericCreateEnumerableExpressionMethod.MakeGenericMethod(type.GenericTypeArguments);
+                        var expression = (Expression)method.Invoke(this, new object[] { instanceFactories });
 
                         return AddDependency(type, expression, CreationMode.Transient);
                     }
                     Type genericTypeDefinition = type.GetGenericTypeDefinition();
                     if (Dependencies.TryGetValue(genericTypeDefinition, out ArrayList<Dependency> openGenericDependencyCollection))
                     {
-                        var openGenericDependency = openGenericDependencyCollection.Array[0];
-                        Type openGenericType = ((OpenGenericTypeExpression)openGenericDependency.Binding.Expression).OpenGenericType;
+                        Dependency openGenericDependency = openGenericDependencyCollection.Array[0];
+                        Type openGenericType = ((OpenGenericTypeExpression)openGenericDependency.Binding.Expression!).OpenGenericType;
                         Type closedGenericType = openGenericType.MakeGenericType(type.GenericTypeArguments);
                         Expression newExpression = closedGenericType.AutoResolveConstructorExpression();
                         return AddDependency(type, newExpression, openGenericDependency.Binding.CreationMode);
@@ -227,13 +254,13 @@ namespace Singularity.Graph
 
         private Expression CreateEnumerableExpression<T>(Func<object>[] instanceFactories)
         {
-            var enumerable = CreateEnumerable<T>(instanceFactories);
+            IEnumerable<T> enumerable = CreateEnumerable<T>(instanceFactories);
             return Expression.Constant(enumerable);
         }
 
         private IEnumerable<T> CreateEnumerable<T>(Func<object>[] instanceFactories)
         {
-            foreach (var instanceFactory in instanceFactories)
+            foreach (Func<object> instanceFactory in instanceFactories)
             {
                 yield return (T)instanceFactory.Invoke();
             }

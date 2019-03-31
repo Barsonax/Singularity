@@ -1,6 +1,4 @@
 ﻿using System;
-using System.Collections.Concurrent;
-using System.Collections.Generic;
 using System.Linq;
 using System.Linq.Expressions;
 using System.Reflection;
@@ -51,8 +49,15 @@ namespace Singularity
         }
     }
 
-    public class AutoResolveConstructorExpressionCache<T>
+    /// <summary>
+    /// A strongly typed cache for <see cref="TypeExtensions.AutoResolveConstructorExpression"/>.
+    /// </summary>
+    /// <typeparam name="T"></typeparam>
+    internal class AutoResolveConstructorExpressionCache<T>
     {
+        /// <summary>
+        /// The cached expression.
+        /// </summary>
         public static readonly Expression Expression = typeof(T).AutoResolveConstructorExpression();
     }
 }

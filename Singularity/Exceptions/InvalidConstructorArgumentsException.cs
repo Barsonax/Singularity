@@ -1,6 +1,9 @@
-﻿namespace Singularity.Exceptions
+﻿using System;
+
+namespace Singularity.Exceptions
 {
-	public sealed class InvalidExpressionArgumentsException : SingularityException
+    [Serializable]
+    public sealed class InvalidExpressionArgumentsException : SingularityException
     {
 		internal InvalidExpressionArgumentsException(string message) : base(message)
 		{

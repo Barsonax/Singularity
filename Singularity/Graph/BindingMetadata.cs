@@ -39,6 +39,8 @@ namespace Singularity.Graph
         {
             Generated = true;
             DependencyType = type;
+            CreatorFilePath = string.Empty;
+            CreatorLineNumber = -1;
         }
 
         internal string StringRepresentation()

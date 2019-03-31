@@ -1,13 +1,14 @@
 ﻿using System;
+using System.Diagnostics;
 using System.Linq;
 using System.Linq.Expressions;
-using System.Runtime.CompilerServices;
 using Singularity.Bindings;
 using Singularity.Graph;
 
 namespace Singularity
 {
-    public readonly struct Binding
+    [DebuggerDisplay("{Expression?.Type}")]
+    internal readonly struct Binding
     {
         public BindingMetadata BindingMetadata { get; }
         public Type DependencyType { get; }

@@ -1,10 +1,8 @@
 ﻿using System;
-using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using System.Linq.Expressions;
 using System.Reflection;
-using Singularity.Collections;
 using Singularity.Graph;
 
 namespace Singularity.Expressions
@@ -32,14 +30,14 @@ namespace Singularity.Expressions
 
                 if (dependency.Binding.OnDeathAction != null)
                 {
-                    var actionList = scope.GetActionList(dependency.Binding.Expression.Type, dependency.Binding.OnDeathAction);
+                    ObjectActionList actionList = scope.GetActionList(dependency.Binding.Expression.Type, dependency.Binding.OnDeathAction);
                     body.Add(Expression.Call(Expression.Constant(actionList), AddMethod, instanceParameter));
                 }
 
                 if (dependency.Binding.Decorators.Length > 0)
                 {
                     Expression previousDecorator = instanceParameter;
-                    foreach (var decorator in dependency.Binding.Decorators)
+                    foreach (Expression decorator in dependency.Binding.Decorators)
                     {
                         Expression decoratorExpression = decorator;
                         foreach (ParameterExpression unresolvedParameter in decorator.GetParameterExpressions())

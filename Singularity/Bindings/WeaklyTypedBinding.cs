@@ -16,15 +16,27 @@ namespace Singularity.Bindings
         /// </summary>
         public BindingMetadata BindingMetadata { get; }
 
+        /// <summary>
+        /// The type of the dependency this binding is defined for, usually a interface.
+        /// </summary>
         public Type DependencyType { get; }
 
-        public WeaklyTypedConfiguredBinding? WeaklyTypedConfiguredBinding { get; protected set; }
-
+        /// <summary>
+        /// A expression that is used to create the instance
+        /// </summary>
         public Expression? Expression => WeaklyTypedConfiguredBinding?.Expression;
 
+        /// <summary>
+        /// When should new instance be created. See <see cref="CreationMode"/> for more detailed information.
+        /// </summary>
         public CreationMode CreationMode => WeaklyTypedConfiguredBinding?.CreationMode ?? CreationMode.Transient;
 
+        /// <summary>
+        /// A action that is executed when the <see cref="Scoped"/> is disposed. This usually happens when the <see cref="Container"/> is disposed.
+        /// </summary>
         public Action<object>? OnDeathAction => WeaklyTypedConfiguredBinding?.OnDeathAction;
+
+        private protected WeaklyTypedConfiguredBinding? WeaklyTypedConfiguredBinding { get; set; }
 
         /// <summary>
         /// The decorators for this binding.
@@ -39,12 +51,11 @@ namespace Singularity.Bindings
             BindingMetadata = new BindingMetadata(dependencyType ,callerFilePath, callerLineNumber, module);
         }
 
-        public WeaklyTypedBinding(Type dependencyType, BindingMetadata bindingMetadata)
-        {
-            DependencyType = dependencyType ?? throw new ArgumentNullException(nameof(dependencyType));
-            BindingMetadata = bindingMetadata ?? throw new ArgumentNullException(nameof(bindingMetadata));
-        }
-
+        /// <summary>
+        /// Sets the expression that is used to create the instance(s)
+        /// </summary>
+        /// <param name="expression"></param>
+        /// <returns></returns>
         public WeaklyTypedConfiguredBinding Inject(Expression expression)
         {
             WeaklyTypedConfiguredBinding = new WeaklyTypedConfiguredBinding(this, expression);
@@ -57,7 +68,7 @@ namespace Singularity.Bindings
             Decorators.Add(weaklyTypedDecoratorBinding);
         }
 
-        public void Verify()
+        internal void Verify()
         {
             if (Expression == null && Decorators == null)
                 throw new BindingConfigException($"The binding at {BindingMetadata.StringRepresentation()} does not have a expression");

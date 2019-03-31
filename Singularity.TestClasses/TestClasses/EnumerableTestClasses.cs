@@ -1,7 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 
 namespace Singularity.TestClasses.TestClasses
 {
@@ -21,6 +19,36 @@ namespace Singularity.TestClasses.TestClasses
     public class Plugin3 : IPlugin
     {
 
+    }
+
+    public class PluginLogger1 : IPlugin
+    {
+        public readonly IPlugin Plugin;
+
+        public PluginLogger1(IPlugin plugin)
+        {
+            Plugin = plugin;
+        }
+    }
+
+    public class PluginLogger2 : IPlugin
+    {
+        public readonly IPlugin Plugin;
+
+        public PluginLogger2(IPlugin plugin)
+        {
+            Plugin = plugin;
+        }
+    }
+
+    public class PluginLogger3 : IPlugin
+    {
+        public readonly IPlugin Plugin;
+
+        public PluginLogger3(IPlugin plugin)
+        {
+            Plugin = plugin;
+        }
     }
 
     public class PluginCollection
