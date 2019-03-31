@@ -1,6 +1,4 @@
-﻿using System.Collections.Generic;
-using System.Linq.Expressions;
-using Singularity.TestClasses.TestClasses;
+﻿using Singularity.TestClasses.TestClasses;
 using Xunit;
 
 namespace Singularity.Test.Injection

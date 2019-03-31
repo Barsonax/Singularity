@@ -1,9 +1,7 @@
 ﻿using System;
 using System.Collections.ObjectModel;
 using System.Linq;
-using Singularity.Bindings;
 using Singularity.Exceptions;
-using Singularity.Graph;
 using Singularity.TestClasses.TestClasses;
 using Xunit;
 

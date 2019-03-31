@@ -2,11 +2,14 @@
 
 namespace Singularity.Bindings
 {
+    /// <summary>
+    /// Represents a batch of <see cref="WeaklyTypedDecoratorBinding"/>s
+    /// </summary>
     public class WeaklyTypedDecoratorBindingBatch
     {
-        public ReadOnlyCollection<WeaklyTypedDecoratorBinding> WeaklyTypedDecoratorBindings { get; }
+        internal ReadOnlyCollection<WeaklyTypedDecoratorBinding> WeaklyTypedDecoratorBindings { get; }
 
-        public WeaklyTypedDecoratorBindingBatch(ReadOnlyCollection<WeaklyTypedDecoratorBinding> weaklyTypedDecoratorBindings)
+        internal WeaklyTypedDecoratorBindingBatch(ReadOnlyCollection<WeaklyTypedDecoratorBinding> weaklyTypedDecoratorBindings)
         {
             WeaklyTypedDecoratorBindings = weaklyTypedDecoratorBindings;
         }

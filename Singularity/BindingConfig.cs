@@ -16,6 +16,9 @@ namespace Singularity
     /// </summary>
     public sealed class BindingConfig
     {
+        /// <summary>
+        /// If true then this config is locked and may not be modified.
+        /// </summary>
         public bool Locked => _readonlyBindings != null;
         internal IModule? CurrentModule;
         private readonly List<WeaklyTypedDecoratorBinding> _decorators = new List<WeaklyTypedDecoratorBinding>();

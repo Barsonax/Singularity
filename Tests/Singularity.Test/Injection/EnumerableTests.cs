@@ -46,6 +46,29 @@ namespace Singularity.Test.Injection
         }
 
         [Fact]
+        public void MultiRegistrationWithLifetimes()
+        {
+            //ARRANGE
+            var config = new BindingConfig();
+            config.Register<IPlugin, Plugin1>().With(CreationMode.Singleton);
+            config.Register<IPlugin, Plugin2>();
+            config.Register<IPlugin, Plugin3>().With(CreationMode.Singleton);
+            var container = new Container(config);
+
+            //ACT
+            var plugins = container.GetInstance<IEnumerable<IPlugin>>();
+
+            //ASSERT
+            var firstEnumeration = plugins.ToArray();
+            var secondEnumeration = plugins.ToArray();
+            Assert.Equal(3, firstEnumeration.Length);
+            Assert.Equal(3, secondEnumeration.Length);
+            Assert.Equal(firstEnumeration[0], secondEnumeration[0]);
+            Assert.NotEqual(firstEnumeration[1], secondEnumeration[1]);
+            Assert.Equal(firstEnumeration[2], secondEnumeration[2]);
+        }
+
+        [Fact]
         public void MultiBatchRegistration()
         {
             //ARRANGE

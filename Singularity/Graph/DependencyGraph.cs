@@ -212,7 +212,7 @@ namespace Singularity.Graph
                     if (Dependencies.TryGetValue(genericTypeDefinition, out ArrayList<Dependency> openGenericDependencyCollection))
                     {
                         var openGenericDependency = openGenericDependencyCollection.Array[0];
-                        Type openGenericType = ((OpenGenericTypeExpression)openGenericDependency.Binding.Expression).OpenGenericType;
+                        Type openGenericType = ((OpenGenericTypeExpression)openGenericDependency.Binding.Expression!).OpenGenericType;
                         Type closedGenericType = openGenericType.MakeGenericType(type.GenericTypeArguments);
                         Expression newExpression = closedGenericType.AutoResolveConstructorExpression();
                         return AddDependency(type, newExpression, openGenericDependency.Binding.CreationMode);
