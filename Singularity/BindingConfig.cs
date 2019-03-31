@@ -198,7 +198,7 @@ namespace Singularity
 
                     if (count == 0)
                     {
-                        var binding = Register(weaklyTypedDecoratorBinding.DependencyType);
+                        WeaklyTypedBinding binding = Register(weaklyTypedDecoratorBinding.DependencyType);
                         binding.AddDecorator(weaklyTypedDecoratorBinding);
                     }
                 }

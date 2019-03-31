@@ -21,11 +21,31 @@ namespace Singularity.TestClasses.TestClasses
 
     }
 
-    public class PluginLogger : IPlugin
+    public class PluginLogger1 : IPlugin
     {
         public readonly IPlugin Plugin;
 
-        public PluginLogger(IPlugin plugin)
+        public PluginLogger1(IPlugin plugin)
+        {
+            Plugin = plugin;
+        }
+    }
+
+    public class PluginLogger2 : IPlugin
+    {
+        public readonly IPlugin Plugin;
+
+        public PluginLogger2(IPlugin plugin)
+        {
+            Plugin = plugin;
+        }
+    }
+
+    public class PluginLogger3 : IPlugin
+    {
+        public readonly IPlugin Plugin;
+
+        public PluginLogger3(IPlugin plugin)
         {
             Plugin = plugin;
         }

@@ -15,6 +15,14 @@ namespace Singularity.Test.Extensions
         }
 
         [Fact]
+        public void GetParameterExpressions_UnaryExpression_NoError()
+        {
+            UnaryExpression expression = Expression.UnaryPlus(Expression.Constant(4));
+            ParameterExpression[] parameters = expression.GetParameterExpressions();
+            Assert.Equal(0, parameters.Length);
+        }
+
+        [Fact]
         public void GetParameterExpressions_DefaultExpression_NoError()
         {
             DefaultExpression expression = Expression.Default(typeof(Expression));

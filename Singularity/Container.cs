@@ -58,7 +58,7 @@ namespace Singularity
 
         private Scoped? FindScope()
         {
-            var container = this;
+            Container container = this;
             do
             {
                 if(container._parentContainer == null) break;

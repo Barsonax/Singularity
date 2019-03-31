@@ -47,15 +47,15 @@ namespace Singularity.Test.Benchmark
         {
             Expression singleton1NewExpression = AutoResolveConstructorExpressionCache<Singleton1>.Expression;
             Delegate action1 = Expression.Lambda(singleton1NewExpression).Compile();
-            var value = action1.DynamicInvoke();
+            object value = action1.DynamicInvoke();
             singleton1NewExpression = Expression.Constant(value);
 
-            var transient1NewExpression = AutoResolveConstructorExpressionCache<Transient1>.Expression;
+            Expression transient1NewExpression = AutoResolveConstructorExpressionCache<Transient1>.Expression;
 
-            var expression = Expression.New(typeof(Combined1).AutoResolveConstructor(), singleton1NewExpression, transient1NewExpression);
+            NewExpression expression = Expression.New(typeof(Combined1).AutoResolveConstructor(), singleton1NewExpression, transient1NewExpression);
             Delegate action = Expression.Lambda(expression).Compile();
             var func = (Func<object>)action;
-            var instance = func.Invoke();
+            object instance = func.Invoke();
         }
 
         [Fact]

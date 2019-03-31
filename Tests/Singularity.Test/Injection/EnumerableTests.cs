@@ -19,7 +19,7 @@ namespace Singularity.Test.Injection
             var plugins = container.GetInstance<IEnumerable<IPlugin>>();
 
             //ASSERT
-            var enumeratedPlugins = plugins.ToArray();
+            IPlugin[] enumeratedPlugins = plugins.ToArray();
             Assert.Equal(1, enumeratedPlugins.Length);
             Assert.IsType<Plugin1>(enumeratedPlugins[0]);
         }
@@ -38,7 +38,7 @@ namespace Singularity.Test.Injection
             var plugins = container.GetInstance<IEnumerable<IPlugin>>();
 
             //ASSERT
-            var enumeratedPlugins = plugins.ToArray();
+            IPlugin[] enumeratedPlugins = plugins.ToArray();
             Assert.Equal(3, enumeratedPlugins.Length);
             Assert.IsType<Plugin1>(enumeratedPlugins[0]);
             Assert.IsType<Plugin2>(enumeratedPlugins[1]);
@@ -59,13 +59,13 @@ namespace Singularity.Test.Injection
             var plugins = container.GetInstance<IEnumerable<IPlugin>>();
 
             //ASSERT
-            var firstEnumeration = plugins.ToArray();
-            var secondEnumeration = plugins.ToArray();
+            IPlugin[] firstEnumeration = plugins.ToArray();
+            IPlugin[] secondEnumeration = plugins.ToArray();
             Assert.Equal(3, firstEnumeration.Length);
             Assert.Equal(3, secondEnumeration.Length);
-            Assert.Equal(firstEnumeration[0], secondEnumeration[0]);
-            Assert.NotEqual(firstEnumeration[1], secondEnumeration[1]);
-            Assert.Equal(firstEnumeration[2], secondEnumeration[2]);
+            Assert.Same(firstEnumeration[0], secondEnumeration[0]);
+            Assert.NotSame(firstEnumeration[1], secondEnumeration[1]);
+            Assert.Same(firstEnumeration[2], secondEnumeration[2]);
         }
 
         [Fact]
@@ -85,7 +85,7 @@ namespace Singularity.Test.Injection
             var plugins = container.GetInstance<IEnumerable<IPlugin>>();
 
             //ASSERT
-            var enumeratedPlugins = plugins.ToArray();
+            IPlugin[] enumeratedPlugins = plugins.ToArray();
             Assert.Equal(3, enumeratedPlugins.Length);
             Assert.IsType<Plugin1>(enumeratedPlugins[0]);
             Assert.IsType<Plugin2>(enumeratedPlugins[1]);
@@ -103,20 +103,20 @@ namespace Singularity.Test.Injection
                 typeof(Plugin2),
                 typeof(Plugin3)
             });
-            config.Decorate<IPlugin, PluginLogger>();
+            config.Decorate<IPlugin, PluginLogger1>();
             var container = new Container(config);
 
             //ACT
             var plugins = container.GetInstance<IEnumerable<IPlugin>>();
 
             //ASSERT
-            var enumeratedPlugins = plugins.ToArray();
+            IPlugin[] enumeratedPlugins = plugins.ToArray();
             Assert.Equal(3, enumeratedPlugins.Length);
-            var pluginLogger1 = Assert.IsType<PluginLogger>(enumeratedPlugins[0]);
+            var pluginLogger1 = Assert.IsType<PluginLogger1>(enumeratedPlugins[0]);
             Assert.IsType<Plugin1>(pluginLogger1.Plugin);
-            var pluginLogger2 = Assert.IsType<PluginLogger>(enumeratedPlugins[1]);
+            var pluginLogger2 = Assert.IsType<PluginLogger1>(enumeratedPlugins[1]);
             Assert.IsType<Plugin2>(pluginLogger2.Plugin);
-            var pluginLogger3 = Assert.IsType<PluginLogger>(enumeratedPlugins[2]);
+            var pluginLogger3 = Assert.IsType<PluginLogger1>(enumeratedPlugins[2]);
             Assert.IsType<Plugin3>(pluginLogger3.Plugin);
         }
 

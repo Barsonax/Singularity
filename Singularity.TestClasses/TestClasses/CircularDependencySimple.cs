@@ -1,32 +1,68 @@
 ﻿namespace Singularity.TestClasses.TestClasses
 {
-	public interface ICircularDependency1
+	public interface ISimpleCircularDependency1
 	{
-		ICircularDependency2 circularDependency2 { get; }
+		ISimpleCircularDependency2 circularDependency2 { get; }
 	}
 
-	public class CircularDependency1 : ICircularDependency1
+	public class SimpleCircularDependency1 : ISimpleCircularDependency1
 	{
-		public ICircularDependency2 circularDependency2 { get; }
+		public ISimpleCircularDependency2 circularDependency2 { get; }
 
-		public CircularDependency1(ICircularDependency2 circularDependency2)
+		public SimpleCircularDependency1(ISimpleCircularDependency2 circularDependency2)
 		{
 			this.circularDependency2 = circularDependency2;
 		}
 	}
 
-    public interface ICircularDependency2
+    public interface ISimpleCircularDependency2
     {
-        ICircularDependency1 circularDependency1 { get; }
+        ISimpleCircularDependency1 circularDependency1 { get; }
     }
 
-    public class CircularDependency2 : ICircularDependency2
+    public class SimpleCircularDependency2 : ISimpleCircularDependency2
     {
-        public ICircularDependency1 circularDependency1 { get; }
+        public ISimpleCircularDependency1 circularDependency1 { get; }
 
-        public CircularDependency2(ICircularDependency1 circularDependency1)
+        public SimpleCircularDependency2(ISimpleCircularDependency1 circularDependency1)
         {
             this.circularDependency1 = circularDependency1;
+        }
+    }
+
+    public interface IComplexCircularDependency1
+    {
+
+    }
+    public class ComplexCircularDependency1 : IComplexCircularDependency1
+    {
+        public ComplexCircularDependency1(IComplexCircularDependency2 complexCircularDependency)
+        {
+
+        }
+    }
+
+    public interface IComplexCircularDependency2
+    {
+
+    }
+    public class ComplexCircularDependency2 : IComplexCircularDependency2
+    {
+        public ComplexCircularDependency2(IComplexCircularDependency3 complexCircularDependency)
+        {
+
+        }
+    }
+
+    public interface IComplexCircularDependency3
+    {
+
+    }
+    public class ComplexCircularDependency3 : IComplexCircularDependency3
+    {
+        public ComplexCircularDependency3(IComplexCircularDependency1 complexCircularDependency)
+        {
+
         }
     }
 }

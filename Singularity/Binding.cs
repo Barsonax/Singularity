@@ -29,5 +29,10 @@ namespace Singularity
             binding.Decorators != null ? binding.Decorators.Select(x => x.Expression!).ToArray() : new Expression[0], binding.OnDeathAction)
         {
         }
+
+        public override string ToString()
+        {
+            return $"{Expression?.Type}";
+        }
     }
 }

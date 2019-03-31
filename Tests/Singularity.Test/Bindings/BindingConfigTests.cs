@@ -54,9 +54,12 @@ namespace Singularity.Test.Bindings
         {
             //ARRANGE
             var config = new BindingConfig();
-            config.Register<IPlugin, Plugin1>();
-            config.Register<IPlugin, Plugin2>();
-            config.Register<IPlugin, Plugin3>();
+            config.Register(typeof(IPlugin), new[]
+            {
+                typeof(Plugin1),
+                typeof(Plugin2),
+                typeof(Plugin3),
+            });
 
             //ACT
             ReadOnlyCollection<Binding> bindings = config.GetDependencies();
@@ -66,6 +69,60 @@ namespace Singularity.Test.Bindings
             Assert.Equal(typeof(Plugin1) ,bindings[0].Expression!.Type);
             Assert.Equal(typeof(Plugin2), bindings[1].Expression!.Type);
             Assert.Equal(typeof(Plugin3), bindings[2].Expression!.Type);
+        }
+
+        [Fact]
+        public void GetDependencies_MultiRegistrationWithLifetime_Enumerate()
+        {
+            //ARRANGE
+            var config = new BindingConfig();
+            config.Register(typeof(IPlugin), new[]
+            {
+                typeof(Plugin1),
+                typeof(Plugin2),
+                typeof(Plugin3),
+            }).With(CreationMode.Singleton);
+
+            //ACT
+            ReadOnlyCollection<Binding> bindings = config.GetDependencies();
+
+            //ASSERT
+            Assert.Equal(3, bindings.Count);
+            Assert.Equal(typeof(Plugin1), bindings[0].Expression!.Type);
+            Assert.Equal(typeof(Plugin2), bindings[1].Expression!.Type);
+            Assert.Equal(typeof(Plugin3), bindings[2].Expression!.Type);
+            Assert.True(bindings.All(x => x.CreationMode == CreationMode.Singleton));
+        }
+
+        [Fact]
+        public void GetDependencies_MultiDecoratorRegistration_Enumerate()
+        {
+            //ARRANGE
+            var config = new BindingConfig();
+            config.Register<IPlugin, Plugin1>();
+            config.Register<IPlugin, Plugin2>();
+            config.Register<IPlugin, Plugin3>();
+
+            config.Decorate(typeof(IPlugin), new[]
+            {
+                typeof(PluginLogger1),
+                typeof(PluginLogger2),
+                typeof(PluginLogger3),
+            });
+
+            //ACT
+            ReadOnlyCollection<Binding> bindings = config.GetDependencies();
+
+            //ASSERT
+            Assert.Equal(3, bindings.Count);
+            Assert.Equal(typeof(Plugin1), bindings[0].Expression!.Type);
+            Assert.Equal(typeof(Plugin2), bindings[1].Expression!.Type);
+            Assert.Equal(typeof(Plugin3), bindings[2].Expression!.Type);
+
+            foreach (Binding binding in bindings)
+            {
+                Assert.Equal(new[] { typeof(PluginLogger1), typeof(PluginLogger2), typeof(PluginLogger3) }, binding.Decorators.Select(x => x.Type));
+            }
         }
 
         [Fact]
