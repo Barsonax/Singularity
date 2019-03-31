@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Diagnostics;
 using System.Linq;
 using System.Linq.Expressions;
 using Singularity.Bindings;
@@ -6,6 +7,7 @@ using Singularity.Graph;
 
 namespace Singularity
 {
+    [DebuggerDisplay("{Expression?.Type}")]
     internal readonly struct Binding
     {
         public BindingMetadata BindingMetadata { get; }
@@ -28,11 +30,6 @@ namespace Singularity
         public Binding(WeaklyTypedBinding binding) : this(binding.BindingMetadata, binding.DependencyType, binding.Expression, binding.CreationMode,
             binding.Decorators != null ? binding.Decorators.Select(x => x.Expression!).ToArray() : new Expression[0], binding.OnDeathAction)
         {
-        }
-
-        public override string ToString()
-        {
-            return $"{Expression?.Type}";
         }
     }
 }

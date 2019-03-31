@@ -26,10 +26,5 @@ namespace Singularity.Graph
         {
             return Binding.Decorators.SelectMany(x => x.GetParameterExpressions()).Where(x => x.Type != Binding.DependencyType);
         }
-
-        public override string ToString()
-        {
-            return Binding.ToString();
-        }
     }
 }

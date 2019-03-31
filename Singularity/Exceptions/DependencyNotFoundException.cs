@@ -1,8 +1,10 @@
 ﻿using System;
+using System.Runtime.Serialization;
 
 namespace Singularity.Exceptions
 {
-	public sealed class DependencyNotFoundException : SingularityException
+    [Serializable]
+    public sealed class DependencyNotFoundException : SingularityException
     {
 		public Type Type { get; }
 
@@ -10,5 +12,13 @@ namespace Singularity.Exceptions
 		{
 			Type = type;
 		}
-	}
+
+        public DependencyNotFoundException()
+        {
+        }
+
+        protected DependencyNotFoundException(SerializationInfo info, StreamingContext context) : base(info, context)
+        {
+        }
+    }
 }

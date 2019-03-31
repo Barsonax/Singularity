@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Linq.Expressions;
+using Singularity.Exceptions;
 
 namespace Singularity.Bindings
 {
@@ -27,6 +28,7 @@ namespace Singularity.Bindings
         /// <returns></returns>
         public WeaklyTypedConfiguredBinding With(CreationMode creationMode)
         {
+            if (!EnumMetadata<CreationMode>.IsValidValue(creationMode)) throw new InvalidLifetimeException(creationMode);
             CreationMode = creationMode;
             return this;
         }

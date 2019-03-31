@@ -74,6 +74,15 @@ namespace Singularity
 #pragma warning restore 1573
         {
             if (Locked) throw new BindingConfigException("This config is locked and cannot be modified anymore!");
+            if (dependencyType.ContainsGenericParameters)
+            {
+
+            }
+            else
+            {
+                if (!dependencyType.IsAssignableFrom(instanceType)) throw new TypeNotAssignableException($"{dependencyType} is not implemented by {instanceType}");
+            }
+
             WeaklyTypedBinding binding = Register(dependencyType, callerFilePath, callerLineNumber);
 
             Expression expression;
@@ -122,9 +131,6 @@ namespace Singularity
         {
             if (Locked) throw new BindingConfigException("This config is locked and cannot be modified anymore!");
 
-            TypeInfo typeInfo = typeof(TDecorator).GetTypeInfo();
-            if (!typeof(TDependency).GetTypeInfo().IsAssignableFrom(typeInfo)) throw new InterfaceNotImplementedException($"{typeof(TDependency)} is not implemented by {typeof(TDecorator)}");
-
             var decorator = new StronglyTypedDecoratorBinding<TDependency>();
             decorator.Expression = AutoResolveConstructorExpressionCache<TDecorator>.Expression;
 
@@ -147,7 +153,7 @@ namespace Singularity
             if (Locked) throw new BindingConfigException("This config is locked and cannot be modified anymore!");
 
             TypeInfo typeInfo = decoratorType.GetTypeInfo();
-            if (!dependencyType.GetTypeInfo().IsAssignableFrom(typeInfo)) throw new InterfaceNotImplementedException($"{dependencyType} is not implemented by {decoratorType}");
+            if (!dependencyType.GetTypeInfo().IsAssignableFrom(typeInfo)) throw new TypeNotAssignableException($"{dependencyType} is not implemented by {decoratorType}");
 
             var decorator = new WeaklyTypedDecoratorBinding(dependencyType);
             decorator.Expression = decoratorType.AutoResolveConstructorExpression();

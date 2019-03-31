@@ -1,10 +1,12 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Runtime.Serialization;
 
 namespace Singularity.Exceptions
 {
-	public sealed class CircularDependencyException : SingularityException
+    [Serializable]
+    public sealed class CircularDependencyException : SingularityException
     {
 		public IReadOnlyList<Type> Cycle { get; }
 
@@ -12,5 +14,13 @@ namespace Singularity.Exceptions
 		{
 			Cycle = cycle;
 		}
-	}
+
+        public CircularDependencyException()
+        {
+        }
+
+        protected CircularDependencyException(SerializationInfo info, StreamingContext context) : base(info, context)
+        {
+        }
+    }
 }

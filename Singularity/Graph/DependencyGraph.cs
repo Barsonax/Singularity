@@ -50,19 +50,19 @@ namespace Singularity.Graph
         {
             lock (dependency)
             {
-                if (visitedDependencies != null && visitedDependencies.Contains(dependency))
-                {
-                    var error = new CircularDependencyException(visitedDependencies.Select(x => x.Binding.Expression.Type).Concat(new[] { dependency.Binding.Expression.Type }).ToArray());
-                    dependency.ResolveError = error;
-                    throw error;
-                }
                 if (dependency.Dependencies == null)
                 {
+                    if (visitedDependencies != null && visitedDependencies.Contains(dependency))
+                    {
+                        var error = new CircularDependencyException(visitedDependencies.Select(x => x.Binding.Expression.Type).Concat(new[] { dependency.Binding.Expression.Type }).ToArray());
+                        dependency.ResolveError = error;
+                        throw error;
+                    }
                     if (visitedDependencies == null) visitedDependencies = new HashSet<Dependency>();
                     visitedDependencies.Add(dependency);
 
 
-                    foreach (var nestedDependency in GetDependencies(dependency))
+                    foreach (Dependency nestedDependency in GetDependencies(dependency))
                     {
                         FindDependencies(nestedDependency, visitedDependencies);
                         visitedDependencies.Remove(nestedDependency);
