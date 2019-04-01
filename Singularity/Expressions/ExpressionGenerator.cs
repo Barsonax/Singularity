@@ -11,7 +11,7 @@ namespace Singularity.Expressions
     {
         private static readonly MethodInfo AddMethod = typeof(ObjectActionList).GetRuntimeMethod(nameof(ObjectActionList.Add), new[] { typeof(object) });
 
-        public Expression GenerateDependencyExpression(Dependency dependency, Scoped scope)
+        public ResolvedDependency GenerateDependencyExpression(Dependency dependency, Scoped scope)
         {
             Expression expression = dependency.Binding.Expression! is LambdaExpression lambdaExpression ? lambdaExpression.Body : dependency.Binding.Expression;
             var expressionVisitor = new ReplaceExpressionVisitor();
@@ -67,10 +67,12 @@ namespace Singularity.Expressions
             {
                 Delegate action = Expression.Lambda(expression).Compile();
                 object value = action.DynamicInvoke();
-                return Expression.Constant(value, dependency.Binding.DependencyType);
+                expression = Expression.Constant(value, dependency.Binding.DependencyType);
+                return new ResolvedDependency(expression, () => value);
             }
 
-            return expression;
+            var instanceFactory = (Func<object>)Expression.Lambda(expression).Compile();
+            return new ResolvedDependency(expression, instanceFactory);
         }
     }
 }

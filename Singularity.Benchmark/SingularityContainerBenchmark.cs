@@ -42,6 +42,22 @@ namespace Singularity.Benchmark
         }
 
         [Benchmark]
+        public ISimpleAdapter[] MultiEnumerate()
+        {
+            foreach (ISimpleAdapter obj in _containerBenchmark.Multi())
+            {
+            }
+
+            return null;
+        }
+
+        [Benchmark]
+        public void MultiNoEnumeration()
+        {
+            var foo = _containerBenchmark.Multi();
+        }
+
+        [Benchmark]
         public IDisposable Disposable()
         {
             return _containerBenchmark.Disposable();

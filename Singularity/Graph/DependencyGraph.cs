@@ -22,7 +22,7 @@ namespace Singularity.Graph
         static DependencyGraph()
         {
             GenericCreateEnumerableExpressionMethod = (from m in typeof(DependencyGraph).GetRuntimeMethods()
-                                                       where m.Name == nameof(CreateEnumerableExpression)
+                                                       where m.Name == nameof(CreateEnumerableDependency)
                                                        select m).Single();
         }
 
@@ -83,9 +83,7 @@ namespace Singularity.Graph
                     {
                         GenerateInstanceFactory(nestedDependency);
                     }
-                    Expression expression = _expressionGenerator.GenerateDependencyExpression(dependency, _defaultScope);
-                    var instanceFactory = (Func<object>)Expression.Lambda(expression).Compile();
-                    dependency.ResolvedDependency = new ResolvedDependency(expression, instanceFactory);
+                    dependency.ResolvedDependency = _expressionGenerator.GenerateDependencyExpression(dependency, _defaultScope);
                 }
             }
         }
@@ -223,21 +221,17 @@ namespace Singularity.Graph
                 {
                     if (typeof(IEnumerable).IsAssignableFrom(type))
                     {
-                        ArrayList<Dependency>? dependencies = GetDependencyCollection(type.GenericTypeArguments[0], false);
-                        if (dependencies == null)
-                        {
-                            dependencies = ArrayList<Dependency>.Empty;
-                        }
-                        foreach (var dependency in dependencies.Array)
+                        ArrayList<Dependency> dependencies = GetDependencyCollection(type.GenericTypeArguments[0], false) ?? ArrayList<Dependency>.Empty;
+                        foreach (Dependency dependency in dependencies.Array)
                         {
                             ResolveDependency(dependency);
                         }
-                        var instanceFactories = dependencies.Array.Select(x => x.ResolvedDependency!.InstanceFactory).ToArray();
+                        IEnumerable<Func<object>?> instanceFactories = dependencies.Array.Select(x => x.ResolvedDependency!.InstanceFactory).ToArray();
 
                         MethodInfo method = GenericCreateEnumerableExpressionMethod.MakeGenericMethod(type.GenericTypeArguments);
-                        var expression = (Expression)method.Invoke(this, new object[] { instanceFactories });
+                        var enumerableDependency = (ArrayList<Dependency>)method.Invoke(this, new object[] { type, instanceFactories });
 
-                        return AddDependency(type, expression, CreationMode.Transient);
+                        return enumerableDependency;
                     }
                     Type genericTypeDefinition = type.GetGenericTypeDefinition();
                     if (Dependencies.TryGetValue(genericTypeDefinition, out ArrayList<Dependency> openGenericDependencyCollection))
@@ -256,11 +250,12 @@ namespace Singularity.Graph
             }
         }
 
-        private Expression CreateEnumerableExpression<T>(Func<object>[] instanceFactories)
+        private ArrayList<Dependency> CreateEnumerableDependency<T>(Type type, Func<object>[] instanceFactories)
         {
-            if (instanceFactories.Length == 0) return Expression.Constant(new T[0]);
-            IEnumerable<T> enumerable = CreateEnumerable<T>(instanceFactories);
-            return Expression.Constant(enumerable);
+            IEnumerable<T> enumerable = instanceFactories.Length == 0 ? new T[0] : CreateEnumerable<T>(instanceFactories);
+            ConstantExpression expression = Expression.Constant(enumerable);
+            ArrayList<Dependency> dependency = AddDependency(type, expression, CreationMode.Transient, () => enumerable);
+            return dependency;
         }
 
         private IEnumerable<T> CreateEnumerable<T>(Func<object>[] instanceFactories)
@@ -286,10 +281,14 @@ namespace Singularity.Graph
             return dependency;
         }
 
-        private ArrayList<Dependency> AddDependency(Type type, Expression expression, CreationMode creationMode)
+        private ArrayList<Dependency> AddDependency(Type type, Expression expression, CreationMode creationMode, Func<object> instanceFactory = null)
         {
             var binding = new Binding(new BindingMetadata(type), type, expression, creationMode, new Expression[0], null);
             var dependency = new ArrayList<Dependency>(new Dependency(binding));
+            if (instanceFactory != null)
+            {
+                dependency.Array[0].ResolvedDependency = new ResolvedDependency(expression, instanceFactory);
+            }
             Dependencies.Add(type, dependency);
             return dependency;
         }
