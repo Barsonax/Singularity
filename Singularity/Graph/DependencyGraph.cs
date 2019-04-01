@@ -223,7 +223,11 @@ namespace Singularity.Graph
                 {
                     if (typeof(IEnumerable).IsAssignableFrom(type))
                     {
-                        ArrayList<Dependency>? dependencies = GetDependencyCollection(type.GenericTypeArguments[0], throwError);
+                        ArrayList<Dependency>? dependencies = GetDependencyCollection(type.GenericTypeArguments[0], false);
+                        if (dependencies == null)
+                        {
+                            dependencies = ArrayList<Dependency>.Empty;
+                        }
                         foreach (var dependency in dependencies.Array)
                         {
                             ResolveDependency(dependency);
@@ -254,6 +258,7 @@ namespace Singularity.Graph
 
         private Expression CreateEnumerableExpression<T>(Func<object>[] instanceFactories)
         {
+            if (instanceFactories.Length == 0) return Expression.Constant(new T[0]);
             IEnumerable<T> enumerable = CreateEnumerable<T>(instanceFactories);
             return Expression.Constant(enumerable);
         }

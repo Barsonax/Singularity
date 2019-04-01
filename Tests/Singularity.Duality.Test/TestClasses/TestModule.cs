@@ -2,9 +2,9 @@
 {
 	public class TestModule : IModule
 	{
-		public void Register(BindingConfig bindingConfig)
+		public void Register(BindingConfig config)
 		{
-			bindingConfig.Register<IModule, TestModule>();
+			config.Register<IModule, TestModule>();
 		}
 	}
 }
