@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Linq.Expressions;
 using System.Reflection;
+using FastExpressionCompiler;
 using Singularity.Graph;
 
 namespace Singularity.Expressions
@@ -11,16 +12,11 @@ namespace Singularity.Expressions
     {
         private static readonly MethodInfo AddMethod = typeof(ObjectActionList).GetRuntimeMethod(nameof(ObjectActionList.Add), new[] { typeof(object) });
 
-        public ResolvedDependency GenerateDependencyExpression(Dependency dependency, Scoped scope)
+        public Expression GenerateDependencyExpression(Dependency dependency, Scoped scope)
         {
             Expression expression = dependency.Binding.Expression! is LambdaExpression lambdaExpression ? lambdaExpression.Body : dependency.Binding.Expression;
-            var expressionVisitor = new ReplaceExpressionVisitor();
-            foreach (ParameterExpression unresolvedParameter in expression.GetParameterExpressions())
-            {
-                var nestedDependency = dependency.Dependencies.First(x => x.Binding.DependencyType == unresolvedParameter.Type);
-
-                expression = expressionVisitor.Visit(expression, unresolvedParameter, nestedDependency.ResolvedDependency!.Expression);
-            }
+            var parameterExpressionVisitor = new ParameterExpressionVisitor(dependency.Dependencies);
+            expression = parameterExpressionVisitor.Visit(expression);
 
             if (dependency.Binding.OnDeathAction != null || dependency.Binding.Decorators.Length > 0)
             {
@@ -36,27 +32,17 @@ namespace Singularity.Expressions
 
                 if (dependency.Binding.Decorators.Length > 0)
                 {
-                    Expression previousDecorator = instanceParameter;
+                    var decoratorExpressionVisitor = new DecoratorExpressionVisitor(dependency.Dependencies, instanceParameter.Type);
+                    decoratorExpressionVisitor.PreviousDecorator = instanceParameter;
                     foreach (Expression decorator in dependency.Binding.Decorators)
                     {
                         Expression decoratorExpression = decorator;
-                        foreach (ParameterExpression unresolvedParameter in decorator.GetParameterExpressions())
-                        {
-                            if (unresolvedParameter.Type == instanceParameter.Type)
-                            {
-                                decoratorExpression = expressionVisitor.Visit(decoratorExpression, unresolvedParameter, previousDecorator);
-                            }
-                            else
-                            {
-                                var decoratorDependency = dependency.Dependencies.First(x => x.Binding.DependencyType == unresolvedParameter.Type);
-                                decoratorExpression = expressionVisitor.Visit(decoratorExpression, unresolvedParameter, decoratorDependency.ResolvedDependency!.Expression);
-                            }
 
-                        }
+                        decoratorExpression = decoratorExpressionVisitor.Visit(decoratorExpression);
 
-                        previousDecorator = decoratorExpression;
+                        decoratorExpressionVisitor.PreviousDecorator = decoratorExpression;
                     }
-                    body.Add(previousDecorator);
+                    body.Add(decoratorExpressionVisitor.PreviousDecorator);
                 }
 
                 if (body.Last().Type == typeof(void)) body.Add(instanceParameter);
@@ -65,14 +51,12 @@ namespace Singularity.Expressions
 
             if (dependency.Binding.CreationMode is CreationMode.Singleton)
             {
-                Delegate action = Expression.Lambda(expression).Compile();
-                object value = action.DynamicInvoke();
-                expression = Expression.Constant(value, dependency.Binding.DependencyType);
-                return new ResolvedDependency(expression, () => value);
+                var action = (Func<object>)Expression.Lambda(expression).CompileFast();
+                object value = action.Invoke();
+                dependency.InstanceFactory = () => value;
+                return Expression.Constant(value, dependency.Binding.DependencyType);
             }
-
-            var instanceFactory = (Func<object>)Expression.Lambda(expression).Compile();
-            return new ResolvedDependency(expression, instanceFactory);
+            return expression;
         }
     }
 }

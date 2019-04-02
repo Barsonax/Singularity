@@ -12,7 +12,7 @@
 
         public ArrayList(T obj)
         {
-            Array = new[] {obj};
+            Array = new[] { obj };
         }
 
         public void Add(T obj)

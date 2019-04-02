@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Singularity.Expressions;
+using System;
 using System.Linq;
 using System.Linq.Expressions;
 
@@ -18,6 +19,7 @@ namespace Singularity
 				case ConstantExpression _:
                 case DefaultExpression _:
                 case UnaryExpression _:
+                case OpenGenericTypeExpression _:
                     return new ParameterExpression[0];
                 case LambdaExpression lambdaExpression:
 					return lambdaExpression.Parameters.ToArray();
