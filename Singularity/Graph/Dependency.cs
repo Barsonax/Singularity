@@ -9,22 +9,13 @@ namespace Singularity.Graph
     {
         public Binding Binding { get; }
         public Dependency[]? Dependencies { get; set; }
-        public ResolvedDependency? ResolvedDependency { get; set; }
+        public Expression? Expression { get; set; }
+        public Func<object>? InstanceFactory { get; set; }
         public Exception ResolveError { get; set; }
 
         public Dependency(Binding unresolvedDependency)
         {
             Binding = unresolvedDependency;
-        }
-
-        public IEnumerable<ParameterExpression> GetParameters()
-        {
-            return Binding.Expression.GetParameterExpressions();
-        }
-
-        public IEnumerable<ParameterExpression> GetDecoratorParameters()
-        {
-            return Binding.Decorators.SelectMany(x => x.GetParameterExpressions()).Where(x => x.Type != Binding.DependencyType);
         }
     }
 }

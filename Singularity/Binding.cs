@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.ObjectModel;
 using System.Diagnostics;
 using System.Linq;
 using System.Linq.Expressions;
@@ -13,17 +14,30 @@ namespace Singularity
         public BindingMetadata BindingMetadata { get; }
         public Type DependencyType { get; }
         public Expression? Expression { get; }
+        public ReadOnlyCollection<ParameterExpression> Parameters { get; }
+        public ReadOnlyCollection<ParameterExpression> DecoratorParameters { get; }
+
         public CreationMode CreationMode { get; }
         public Action<object>? OnDeathAction { get; }
         public Expression[] Decorators { get; }
+
+        private static readonly ReadOnlyCollection<ParameterExpression> EmptyParameters = new ReadOnlyCollection<ParameterExpression>(new ParameterExpression[0]);
 
         public Binding(BindingMetadata bindingMetadata, Type dependencyType, Expression? expression, CreationMode creationMode, Expression[] decorators, Action<object>? onDeath)
         {
             BindingMetadata = bindingMetadata ?? throw new ArgumentNullException(nameof(bindingMetadata));
             DependencyType = dependencyType ?? throw new ArgumentNullException(nameof(dependencyType));
             CreationMode = creationMode;
+
             Expression = expression;
+            Parameters = expression != null ? new ReadOnlyCollection<ParameterExpression>(expression.GetParameterExpressions()) : EmptyParameters;
+
             Decorators = decorators ?? throw new ArgumentNullException(nameof(decorators));
+            DecoratorParameters = decorators.Length != 0
+                ? new ReadOnlyCollection<ParameterExpression>(
+                    Decorators.SelectMany(x => x.GetParameterExpressions())
+                              .Where(x => x.Type != dependencyType).ToArray())
+                : EmptyParameters;
             OnDeathAction = onDeath;
         }
 

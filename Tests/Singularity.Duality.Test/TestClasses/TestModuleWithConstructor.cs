@@ -2,7 +2,7 @@
 {
 	public class TestModuleWithConstructor : IModule
 	{
-		public void Register(BindingConfig bindingConfig)
+		public void Register(BindingConfig config)
 		{
 
 		}

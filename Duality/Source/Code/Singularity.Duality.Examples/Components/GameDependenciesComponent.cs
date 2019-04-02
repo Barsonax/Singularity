@@ -4,10 +4,10 @@ namespace Singularity.Duality.Examples.Components
 {
     public class GameDependenciesComponent : Component, IModule
     {
-	    public void Register(BindingConfig bindingConfig)
+	    public void Register(BindingConfig config)
 	    {
-            bindingConfig.Register<IPathfinder, Pathfinder>();
-			bindingConfig.Register<IGameManager>().Inject(() => GameObj.Scene.FindComponent<GameManagerComponent>(true)).With(CreationMode.Singleton);
+            config.Register<IPathfinder, Pathfinder>();
+			config.Register<IGameManager>().Inject(() => GameObj.Scene.FindComponent<GameManagerComponent>(true)).With(CreationMode.Singleton);
 	    }
     }
 }

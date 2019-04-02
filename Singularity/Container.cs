@@ -109,15 +109,14 @@ namespace Singularity
         /// <seealso cref="MethodInject(object)"/>
         /// </summary>
         /// <param name="type"></param>
-        /// <param name="throwError"></param>
         /// <returns></returns>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public Action<object> GetMethodInjector(Type type, bool throwError = true)
+        public Action<object> GetMethodInjector(Type type)
         {
             Action<object> action = _injectionCache.Search(type);
             if (action == null)
             {
-                action = GenerateMethodInjector(type, throwError);
+                action = GenerateMethodInjector(type);
                 _injectionCache.Add(type, action);
             }
             return action;
@@ -136,16 +135,15 @@ namespace Singularity
         /// Resolves a instance for the given dependency type
         /// </summary>
         /// <param name="type">The type of the dependency</param>
-        /// <param name="throwError"></param>
         /// <exception cref="DependencyNotFoundException">If the dependency is not configured</exception>
         /// <returns></returns>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public Func<object> GetInstanceFactory(Type type, bool throwError = true)
+        public Func<object> GetInstanceFactory(Type type)
         {
             Func<object> func = _getInstanceCache.Search(type);
             if (func == null)
             {
-                func = _dependencyGraph.GetResolvedDependency(type, throwError).InstanceFactory;
+                func = _dependencyGraph.GetResolvedFactory(type)!;
                 _getInstanceCache.Add(type, func);
             }
             return func;
@@ -158,19 +156,18 @@ namespace Singularity
         /// <exception cref="DependencyNotFoundException">If the dependency is not configured</exception>
         /// <returns></returns>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public T GetInstance<T>(bool throwError = true) where T : class => (T)GetInstance(typeof(T), throwError);
+        public T GetInstance<T>() where T : class => (T)GetInstance(typeof(T));
 
         /// <summary>
         /// Resolves a instance for the given dependency type
         /// </summary>
         /// <param name="type">The type of the dependency</param>
-        /// <param name="throwError"></param>
         /// <exception cref="DependencyNotFoundException">If the dependency is not configured</exception>
         /// <returns></returns>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public object GetInstance(Type type, bool throwError = true) => GetInstanceFactory(type, throwError).Invoke();
+        public object GetInstance(Type type) => GetInstanceFactory(type).Invoke();
 
-        private Action<object> GenerateMethodInjector(Type type, bool throwError)
+        private Action<object> GenerateMethodInjector(Type type)
         {
             ParameterExpression instanceParameter = Expression.Parameter(typeof(object));
 
@@ -185,7 +182,7 @@ namespace Singularity
                 for (var i = 0; i < parameterTypes.Length; i++)
                 {
                     Type parameterType = parameterTypes[i].ParameterType;
-                    parameterExpressions[i] = _dependencyGraph.GetResolvedDependency(parameterType, throwError)?.Expression;
+                    parameterExpressions[i] = _dependencyGraph.GetResolvedExpression(parameterType)!;
                 }
                 body.Add(Expression.Call(instanceCasted, methodInfo, parameterExpressions));
             }

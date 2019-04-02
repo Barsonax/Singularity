@@ -2,9 +2,9 @@
 {
 	public class ExampleGameDependency : IModule
 	{
-		public void Register(BindingConfig bindingConfig)
+		public void Register(BindingConfig config)
 		{
-			bindingConfig.Register<object, Pathfinder>();
+			config.Register<object, Pathfinder>();
 		}
 	}
 }

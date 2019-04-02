@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using Singularity.TestClasses.TestClasses;
 
@@ -34,6 +35,11 @@ namespace Singularity.TestClasses.Benchmark
         public IComplex1 Complex()
         {
             return (IComplex1)_container.GetInstance(typeof(IComplex1));
+        }
+
+        public IEnumerable<ISimpleAdapter> Multi()
+        {
+            return (IEnumerable<ISimpleAdapter>)_container.GetInstance(typeof(IEnumerable<ISimpleAdapter>));
         }
 
         public IDisposable Disposable()
@@ -119,6 +125,12 @@ namespace Singularity.TestClasses.Benchmark
             config.Register<ISecondService, SecondService>().With(CreationMode.Singleton);
             config.Register<IThirdService, ThirdService>().With(CreationMode.Singleton);
             config.Register<IComplex1, Complex1>();
+
+            config.Register<ISimpleAdapter, SimpleAdapterOne>();
+            config.Register<ISimpleAdapter, SimpleAdapterTwo>();
+            config.Register<ISimpleAdapter, SimpleAdapterThree>();
+            config.Register<ISimpleAdapter, SimpleAdapterFour>();
+            config.Register<ISimpleAdapter, SimpleAdapterFive>();
 
             config.Register<IDisposable, Disposable>().OnDeath(x => x.Dispose());
         }

@@ -8,6 +8,21 @@ namespace Singularity.Test.Injection
     public class EnumerableTests
     {
         [Fact]
+        public void NoRegistration()
+        {
+            //ARRANGE
+            var config = new BindingConfig();
+            var container = new Container(config);
+
+            //ACT
+            var plugins = container.GetInstance<IEnumerable<IPlugin>>();
+
+            //ASSERT
+            IPlugin[] enumeratedPlugins = plugins.ToArray();
+            Assert.Equal(0, enumeratedPlugins.Length);
+        }
+
+        [Fact]
         public void SingleRegistration()
         {
             //ARRANGE

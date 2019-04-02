@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Linq.Expressions;
 using BenchmarkDotNet.Attributes;
 using Singularity.TestClasses.Benchmark;
 using Singularity.TestClasses.TestClasses;
@@ -39,6 +40,22 @@ namespace Singularity.Benchmark
         public IComplex1 Complex()
         {
             return _containerBenchmark.Complex();
+        }
+
+        [Benchmark]
+        public ISimpleAdapter[] MultiEnumerate()
+        {
+            foreach (ISimpleAdapter obj in _containerBenchmark.Multi())
+            {
+            }
+
+            return null;
+        }
+
+        [Benchmark]
+        public void MultiNoEnumeration()
+        {
+            var foo = _containerBenchmark.Multi();
         }
 
         [Benchmark]
