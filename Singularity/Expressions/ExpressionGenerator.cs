@@ -51,8 +51,16 @@ namespace Singularity.Expressions
 
             if (dependency.Binding.CreationMode is CreationMode.Singleton)
             {
-                var action = (Func<object>)Expression.Lambda(expression).CompileFast();
-                object value = action.Invoke();
+                object value;
+                if (expression is NewExpression newExpression && newExpression.Arguments.Count == 0)
+                {
+                    //In this case we know the signature and can call the constructor directly instead of doing a costly compile.
+                    value = newExpression.Constructor.Invoke(null);
+                }
+                else
+                {
+                    value = ((Func<object>)Expression.Lambda(expression).CompileFast()).Invoke();
+                }
                 dependency.InstanceFactory = () => value;
                 return Expression.Constant(value, dependency.Binding.DependencyType);
             }
