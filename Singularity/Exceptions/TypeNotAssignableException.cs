@@ -4,7 +4,7 @@ using System.Runtime.Serialization;
 namespace Singularity.Exceptions
 {
     [Serializable]
-    public sealed class TypeNotAssignableException : SingularityException
+    public class TypeNotAssignableException : SingularityException
     {
         internal TypeNotAssignableException(string message) : base(message)
         {

@@ -2,54 +2,39 @@
 
 namespace Singularity.TestClasses.TestClasses
 {
-    public interface ICombined1
+    public class ScopedTransient : ITransient1
     {
-        ITransient1 Transient { get; }
-        ISingleton1 Singleton { get; }
+
     }
 
-    public interface ICombined2
-    {
-        ITransient2 Transient { get; }
-        ISingleton2 Singleton { get; }
-    }
-
-    public interface ICombined3
-    {
-        ITransient3 Transient { get; }
-        ISingleton3 Singleton { get; }
-    }
-
-    public class Combined1 : ICombined1
+    public class ScopedCombined1 : ICombined1
     {
         public ITransient1 Transient { get; }
         public ISingleton1 Singleton { get; }
-
-        public Combined1(ISingleton1 singleton, ITransient1 transient)
+        public ScopedCombined1(ITransient1 transient, ISingleton1 singleton)
         {
             Transient = transient ?? throw new ArgumentNullException(nameof(transient));
             Singleton = singleton ?? throw new ArgumentNullException(nameof(singleton));
         }
+
     }
 
-    public class Combined2 : ICombined2
+    public class ScopedCombined2 : ICombined2
     {
         public ITransient2 Transient { get; }
         public ISingleton2 Singleton { get; }
-
-        public Combined2(ISingleton2 singleton, ITransient2 transient)
+        public ScopedCombined2(ITransient2 transient, ISingleton2 singleton)
         {
             Transient = transient ?? throw new ArgumentNullException(nameof(transient));
             Singleton = singleton ?? throw new ArgumentNullException(nameof(singleton));
         }
     }
 
-    public class Combined3 : ICombined3
+    public class ScopedCombined3 : ICombined3
     {
         public ITransient3 Transient { get; }
         public ISingleton3 Singleton { get; }
-
-        public Combined3(ISingleton3 singleton, ITransient3 transient)
+        public ScopedCombined3(ITransient3 transient, ISingleton3 singleton)
         {
             Transient = transient ?? throw new ArgumentNullException(nameof(transient));
             Singleton = singleton ?? throw new ArgumentNullException(nameof(singleton));

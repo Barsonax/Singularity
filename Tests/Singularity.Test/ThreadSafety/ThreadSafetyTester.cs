@@ -8,7 +8,7 @@ namespace Singularity.Test.ThreadSafety
 {
     /// <summary>
     /// A helper class to search for threading bugs
-    /// Runs a bunch of tasks at the same that execute testcases in a random order
+    /// Runs a bunch of tasks at the same time that execute testcases in a random order
     /// </summary>
     /// <typeparam name="TTestCase"></typeparam>
     public class ThreadSafetyTester<TTestCase>

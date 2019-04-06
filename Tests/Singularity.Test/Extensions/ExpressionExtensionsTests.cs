@@ -19,7 +19,7 @@ namespace Singularity.Test.Extensions
         {
             UnaryExpression expression = Expression.UnaryPlus(Expression.Constant(4));
             ParameterExpression[] parameters = expression.GetParameterExpressions();
-            Assert.Equal(0, parameters.Length);
+            Assert.Empty(parameters);
         }
 
         [Fact]
@@ -27,7 +27,7 @@ namespace Singularity.Test.Extensions
         {
             DefaultExpression expression = Expression.Default(typeof(Expression));
             ParameterExpression[] parameters = expression.GetParameterExpressions();
-            Assert.Equal(0, parameters.Length);
+            Assert.Empty(parameters);
         }
 
         [Fact]
@@ -35,16 +35,16 @@ namespace Singularity.Test.Extensions
 		{
 			ConstantExpression expression = Expression.Constant(5);
 			ParameterExpression[] parameters = expression.GetParameterExpressions();
-			Assert.Equal(0, parameters.Length);
-		}
+            Assert.Empty(parameters);
+        }
 
 		[Fact]
 		public void GetParameterExpressions_BlockExpression_NoError()
 		{
 			BlockExpression expression = Expression.Block(new[] { Expression.Parameter(typeof(int)) }, Expression.Constant(5));
 			ParameterExpression[] parameters = expression.GetParameterExpressions();
-			Assert.Equal(1, parameters.Length);
-		}
+            Assert.Single(parameters);
+        }
 
 		[Fact]
 		public void GetParameterExpressions_MethodCallExpression_NoError()
@@ -52,7 +52,7 @@ namespace Singularity.Test.Extensions
 			MethodInfo methodInfo = typeof(ExpressionExtensionsTests).GetRuntimeMethod(nameof(GetParameterExpressions_MethodCallExpression_NoError), new Type[0]);
 			MethodCallExpression expression = Expression.Call(Expression.Constant(this), methodInfo);
 			ParameterExpression[] parameters = expression.GetParameterExpressions();
-			Assert.Equal(0, parameters.Length);
-		}
+            Assert.Empty(parameters);
+        }
 	}
 }

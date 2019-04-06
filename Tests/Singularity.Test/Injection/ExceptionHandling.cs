@@ -9,17 +9,17 @@ namespace Singularity.Test.Injection
     public class ExceptionHandling
     {
         [Fact]
-        public void GetInstanceFactory_GetDependencyByConcreteType_WithMixedConcreteDependency_2Deep_ReturnsCorrectDependency()
+        public void GetInstance_GetDependencyByConcreteType_WithMixedConcreteDependency_2Deep_ReturnsCorrectDependency()
         {
             var config = new BindingConfig();
 
             var container = new Container(config);
             var e = Assert.Throws<SingularityAggregateException>(() =>
             {
-                TestService12WithMixedConcreteDependency value = container.GetInstanceFactory<TestService12WithMixedConcreteDependency>().Invoke();
+                TestService12WithMixedConcreteDependency value = container.GetInstance<TestService12WithMixedConcreteDependency>();
             });
 
-            Assert.Equal(1, e.InnerExceptions.Count);
+            Assert.Single(e.InnerExceptions);
             Assert.IsType<DependencyNotFoundException>(e.InnerExceptions.First());
         }
 
@@ -38,7 +38,7 @@ namespace Singularity.Test.Injection
                 Assert.Equal(typeof(SingularityAggregateException), e.GetType());
                 AggregateException aggregateException = e.Flatten();
 
-                Assert.Equal(1, aggregateException.InnerExceptions.Count);
+                Assert.Single(aggregateException.InnerExceptions);
                 Assert.Equal(typeof(DependencyNotFoundException), aggregateException.InnerExceptions[0].GetType());
                 var dependencyNotFoundException = (DependencyNotFoundException)aggregateException.InnerExceptions[0];
 
@@ -70,7 +70,7 @@ namespace Singularity.Test.Injection
                 Assert.Equal(typeof(SingularityAggregateException), e.GetType());
                 AggregateException aggregateException = e.Flatten();
 
-                Assert.Equal(1, aggregateException.InnerExceptions.Count);
+                Assert.Single(aggregateException.InnerExceptions);
                 Assert.Equal(typeof(DependencyNotFoundException), aggregateException.InnerExceptions[0].GetType());
                 var dependencyNotFoundException = (DependencyNotFoundException)aggregateException.InnerExceptions[0];
 

@@ -4,7 +4,7 @@ using System.Runtime.Serialization;
 namespace Singularity.Exceptions
 {
     [Serializable]
-    public sealed class InterfaceExpectedException : SingularityException
+    public class InterfaceExpectedException : SingularityException
     {
 	    internal InterfaceExpectedException(string message) : base(message)
         {

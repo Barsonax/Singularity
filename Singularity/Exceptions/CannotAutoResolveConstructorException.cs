@@ -4,7 +4,7 @@ using System.Runtime.Serialization;
 namespace Singularity.Exceptions
 {
     [Serializable]
-    public sealed class CannotAutoResolveConstructorException : SingularityException
+    public class CannotAutoResolveConstructorException : SingularityException
     {
         internal CannotAutoResolveConstructorException(string message) : base(message)
         {

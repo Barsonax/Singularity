@@ -8,6 +8,7 @@ using System.Reflection;
 using System.Runtime.CompilerServices;
 using Singularity.Attributes;
 using Singularity.Collections;
+using Singularity.Expressions;
 using Singularity.Graph;
 
 namespace Singularity
@@ -22,10 +23,10 @@ namespace Singularity
         /// </summary>
 		public bool IsDisposed { get; private set; }
         private readonly DependencyGraph _dependencyGraph;
-        private readonly ThreadSafeDictionary<Type, Action<object>> _injectionCache = new ThreadSafeDictionary<Type, Action<object>>();
-        private readonly ThreadSafeDictionary<Type, Func<object>> _getInstanceCache = new ThreadSafeDictionary<Type, Func<object>>();
-        private readonly ThreadSafeDictionary<Type, ReadOnlyCollection<Func<object>>> _getEnumerableCache = new ThreadSafeDictionary<Type, ReadOnlyCollection<Func<object>>>();
+        private readonly ThreadSafeDictionary<Type, Action<Scoped, object>> _injectionCache = new ThreadSafeDictionary<Type, Action<Scoped, object>>();
+        private readonly ThreadSafeDictionary<Type, Func<Scoped, object>> _getInstanceCache = new ThreadSafeDictionary<Type, Func<Scoped, object>>();
         private readonly Container? _parentContainer;
+        private readonly Scoped _effectiveScope;
         private readonly Scoped? _containerScope;
 
         /// <summary>
@@ -45,6 +46,7 @@ namespace Singularity
         {
             if (bindings == null) throw new ArgumentNullException(nameof(bindings));
             _containerScope = new Scoped();
+            _effectiveScope = FindScope();
             _dependencyGraph = new DependencyGraph(bindings.GetDependencies(), _containerScope);
         }
 
@@ -53,15 +55,16 @@ namespace Singularity
             if (bindings == null) throw new ArgumentNullException(nameof(bindings));
             _parentContainer = parentContainer ?? throw new ArgumentNullException(nameof(parentContainer));
             _containerScope = containerScope;
-            _dependencyGraph = new DependencyGraph(bindings.GetDependencies(), containerScope ?? FindScope() ?? throw new ArgumentException(nameof(parentContainer._containerScope)), parentContainer._dependencyGraph);
+            _effectiveScope = containerScope ?? FindScope();
+            _dependencyGraph = new DependencyGraph(bindings.GetDependencies(), _effectiveScope ?? throw new ArgumentException(nameof(parentContainer._containerScope)), parentContainer._dependencyGraph);
         }
 
-        private Scoped? FindScope()
+        private Scoped FindScope()
         {
             Container container = this;
             do
             {
-                if(container._parentContainer == null) break;
+                if (container._parentContainer == null) break;
                 container = container._parentContainer;
             }
             while (container._containerScope == null);
@@ -102,52 +105,7 @@ namespace Singularity
         /// <param name="instance"></param>
         /// <exception cref="DependencyNotFoundException">If the method had parameters that couldn't be resolved</exception>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public void MethodInject(object instance) => GetMethodInjector(instance.GetType()).Invoke(instance);
-
-        /// <summary>
-        /// Gets a action that can be used to inject dependencies through method injection
-        /// <seealso cref="MethodInject(object)"/>
-        /// </summary>
-        /// <param name="type"></param>
-        /// <returns></returns>
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public Action<object> GetMethodInjector(Type type)
-        {
-            Action<object> action = _injectionCache.Search(type);
-            if (action == null)
-            {
-                action = GenerateMethodInjector(type);
-                _injectionCache.Add(type, action);
-            }
-            return action;
-        }
-
-        /// <summary>
-        /// Resolves a instance for the given dependency type
-        /// </summary>
-        /// <typeparam name="T">The type of the dependency</typeparam>
-        /// <exception cref="DependencyNotFoundException">If the dependency is not configured</exception>
-        /// <returns></returns>
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public Func<T> GetInstanceFactory<T>() where T : class => (Func<T>)GetInstanceFactory(typeof(T));
-
-        /// <summary>
-        /// Resolves a instance for the given dependency type
-        /// </summary>
-        /// <param name="type">The type of the dependency</param>
-        /// <exception cref="DependencyNotFoundException">If the dependency is not configured</exception>
-        /// <returns></returns>
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public Func<object> GetInstanceFactory(Type type)
-        {
-            Func<object> func = _getInstanceCache.Search(type);
-            if (func == null)
-            {
-                func = _dependencyGraph.GetResolvedFactory(type)!;
-                _getInstanceCache.Add(type, func);
-            }
-            return func;
-        }
+        public void MethodInject(object instance) => GetMethodInjector(instance.GetType()).Invoke(_effectiveScope, instance);
 
         /// <summary>
         /// Resolves a instance for the given dependency type
@@ -165,9 +123,45 @@ namespace Singularity
         /// <exception cref="DependencyNotFoundException">If the dependency is not configured</exception>
         /// <returns></returns>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public object GetInstance(Type type) => GetInstanceFactory(type).Invoke();
+        public object GetInstance(Type type) => GetInstanceFactory(type).Invoke(_effectiveScope);
 
-        private Action<object> GenerateMethodInjector(Type type)
+        /// <summary>
+        /// Resolves a instance for the given dependency type
+        /// </summary>
+        /// <param name="type">The type of the dependency</param>
+        /// <exception cref="DependencyNotFoundException">If the dependency is not configured</exception>
+        /// <returns></returns>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        internal Func<Scoped, object> GetInstanceFactory(Type type)
+        {
+            Func<Scoped, object> func = _getInstanceCache.Search(type);
+            if (func == null)
+            {
+                func = _dependencyGraph.GetResolvedFactory(type)!;
+                _getInstanceCache.Add(type, func);
+            }
+            return func;
+        }
+
+        /// <summary>
+        /// Gets a action that can be used to inject dependencies through method injection
+        /// <seealso cref="MethodInject(object)"/>
+        /// </summary>
+        /// <param name="type"></param>
+        /// <returns></returns>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        internal Action<Scoped, object> GetMethodInjector(Type type)
+        {
+            Action<Scoped, object> action = _injectionCache.Search(type);
+            if (action == null)
+            {
+                action = GenerateMethodInjector(type);
+                _injectionCache.Add(type, action);
+            }
+            return action;
+        }
+
+        private Action<Scoped, object> GenerateMethodInjector(Type type)
         {
             ParameterExpression instanceParameter = Expression.Parameter(typeof(object));
 
@@ -187,9 +181,9 @@ namespace Singularity
                 body.Add(Expression.Call(instanceCasted, methodInfo, parameterExpressions));
             }
             BlockExpression block = Expression.Block(new[] { instanceCasted }, body);
-            Expression<Action<object>> expressionTree = Expression.Lambda<Action<object>>(block, instanceParameter);
+            var expressionTree = Expression.Lambda<Action<Scoped, object>>(block, ExpressionGenerator.ScopeParameter, instanceParameter);
 
-            Action<object> action = expressionTree.Compile();
+            Action<Scoped, object> action = expressionTree.Compile();
 
             return action;
         }
