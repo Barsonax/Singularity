@@ -6,7 +6,7 @@ using System.Runtime.Serialization;
 namespace Singularity.Exceptions
 {
     [Serializable]
-    public sealed class CircularDependencyException : SingularityException
+    public class CircularDependencyException : SingularityException
     {
 		public IReadOnlyList<Type> Cycle { get; }
 

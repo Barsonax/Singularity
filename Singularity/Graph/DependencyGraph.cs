@@ -40,7 +40,7 @@ namespace Singularity.Graph
             return dependency.Expression;
         }
 
-        public Func<object>? GetResolvedFactory(Type type)
+        public Func<Scoped, object>? GetResolvedFactory(Type type)
         {
             Dependency dependency = GetDependency(type);
             ResolveDependency(dependency);
@@ -58,7 +58,7 @@ namespace Singularity.Graph
         {
             lock (dependency)
             {
-                if (dependency.Dependencies == null)
+                if (dependency.Children == null)
                 {
                     if (visitedDependencies != null && visitedDependencies.Contains(dependency))
                     {
@@ -75,7 +75,7 @@ namespace Singularity.Graph
                         FindDependencies(nestedDependency, visitedDependencies);
                         visitedDependencies.Remove(nestedDependency);
                     }
-                    dependency.Dependencies = dependencies;
+                    dependency.Children = dependencies;
                 }
             }
         }
@@ -87,7 +87,7 @@ namespace Singularity.Graph
                 if (dependency.ResolveError != null) throw dependency.ResolveError;
                 if (dependency.Expression == null)
                 {
-                    foreach (var nestedDependency in dependency.Dependencies)
+                    foreach (var nestedDependency in dependency.Children)
                     {
                         GenerateExpression(nestedDependency);
                     }
@@ -103,7 +103,7 @@ namespace Singularity.Graph
                 if (dependency.ResolveError != null) throw dependency.ResolveError;
                 if (dependency.InstanceFactory == null)
                 {
-                    dependency.InstanceFactory = (Func<object>)Expression.Lambda(dependency.Expression).CompileFast();
+                    dependency.InstanceFactory = (Func<Scoped, object>)Expression.Lambda(dependency.Expression, ExpressionGenerator.ScopeParameter).CompileFast();
                 }
             }
         }
@@ -240,7 +240,7 @@ namespace Singularity.Graph
                         {
                             ResolveDependency(dependency);
                         }
-                        IEnumerable<Func<object>?> instanceFactories = dependencies.Array.Select(x => x.InstanceFactory!).ToArray();
+                        IEnumerable<Func<Scoped, object>?> instanceFactories = dependencies.Array.Select(x => x.InstanceFactory!).ToArray();
 
                         MethodInfo method = GenericCreateEnumerableExpressionMethod.MakeGenericMethod(type.GenericTypeArguments);
                         var enumerableDependency = (ArrayList<Dependency>)method.Invoke(this, new object[] { type, instanceFactories });
@@ -269,19 +269,19 @@ namespace Singularity.Graph
             return dependency;
         }
 
-        private ArrayList<Dependency> CreateEnumerableDependency<T>(Type type, Func<object>[] instanceFactories)
+        private ArrayList<Dependency> CreateEnumerableDependency<T>(Type type, Func<Scoped, object>[] instanceFactories)
         {
             IEnumerable<T> enumerable = instanceFactories.Length == 0 ? new T[0] : CreateEnumerable<T>(instanceFactories);
             ConstantExpression expression = Expression.Constant(enumerable);
-            ArrayList<Dependency> dependency = AddDependency(type, expression, CreationMode.Transient, () => enumerable);
+            ArrayList<Dependency> dependency = AddDependency(type, expression, CreationMode.Transient, scope => enumerable);
             return dependency;
         }
 
-        private IEnumerable<T> CreateEnumerable<T>(Func<object>[] instanceFactories)
+        private IEnumerable<T> CreateEnumerable<T>(Func<Scoped, object>[] instanceFactories)
         {
-            foreach (Func<object> instanceFactory in instanceFactories)
+            foreach (Func<Scoped, object> instanceFactory in instanceFactories)
             {
-                yield return (T)instanceFactory.Invoke();
+                yield return (T)instanceFactory.Invoke(_defaultScope);
             }
         }
 
@@ -300,7 +300,7 @@ namespace Singularity.Graph
             return dependency;
         }
 
-        private ArrayList<Dependency> AddDependency(Type type, Expression expression, CreationMode creationMode, Func<object> instanceFactory = null)
+        private ArrayList<Dependency> AddDependency(Type type, Expression expression, CreationMode creationMode, Func<Scoped, object> instanceFactory = null)
         {
             var binding = new Binding(new BindingMetadata(type), type, expression, creationMode, new Expression[0], null);
             var dependency = new ArrayList<Dependency>(new Dependency(binding));

@@ -6,7 +6,7 @@ using System.Text;
 namespace Singularity.Exceptions
 {
     [Serializable]
-    public sealed class SingularityAggregateException : AggregateException
+    public class SingularityAggregateException : AggregateException
 	{
 		public string HeaderMessage { get; }
 		public override string Message => GenerateString(new StringBuilder(), 0, this).ToString();

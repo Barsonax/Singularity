@@ -19,7 +19,7 @@ namespace Singularity.Test.Injection
 
             //ASSERT
             IPlugin[] enumeratedPlugins = plugins.ToArray();
-            Assert.Equal(0, enumeratedPlugins.Length);
+            Assert.Empty(enumeratedPlugins);
         }
 
         [Fact]
@@ -35,7 +35,7 @@ namespace Singularity.Test.Injection
 
             //ASSERT
             IPlugin[] enumeratedPlugins = plugins.ToArray();
-            Assert.Equal(1, enumeratedPlugins.Length);
+            Assert.Single(enumeratedPlugins);
             Assert.IsType<Plugin1>(enumeratedPlugins[0]);
         }
 

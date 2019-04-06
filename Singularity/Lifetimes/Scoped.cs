@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Concurrent;
 using System.Collections.Generic;
 
 namespace Singularity
@@ -9,20 +10,23 @@ namespace Singularity
     public sealed class Scoped : IDisposable
     {
         private readonly object _locker = new object();
-        private Dictionary<Type, ObjectActionList> ObjectActionLists { get; } = new Dictionary<Type, ObjectActionList>();
+        private ConcurrentDictionary<Type, ObjectActionList> ObjectActionLists { get; } = new ConcurrentDictionary<Type, ObjectActionList>();
 
-        internal ObjectActionList GetActionList(Type type, Action<object> action)
+        private string _name;
+        public Scoped(string name = null)
         {
-            lock (_locker)
-            {
-                if (!ObjectActionLists.TryGetValue(type, out ObjectActionList list))
-                {
-                    list = new ObjectActionList(action, _locker);
-                    ObjectActionLists.Add(type, list);
-                }
+            _name = name ?? "defaultScope";
+        }
 
-                return list;
-            }
+        public override string ToString()
+        {
+            return _name;
+        }
+
+        internal void Add(object obj, Binding binding)
+        {
+            var list = ObjectActionLists.GetOrAdd(binding.Expression.Type, t => new ObjectActionList(binding.OnDeathAction, _locker));
+            list.Add(obj);
         }
 
         /// <summary>

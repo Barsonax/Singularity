@@ -4,7 +4,7 @@ using System.Runtime.Serialization;
 namespace Singularity.Exceptions
 {
     [Serializable]
-    public sealed class BindingConfigException : SingularityException
+    public class BindingConfigException : SingularityException
     {
         internal BindingConfigException(string message) : base(message)
         {

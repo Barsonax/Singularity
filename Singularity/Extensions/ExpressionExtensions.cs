@@ -26,7 +26,7 @@ namespace Singularity
 				case NewExpression newExpression:
 					return newExpression.Arguments.OfType<ParameterExpression>().ToArray();
 				case BlockExpression blockExpression:
-					return blockExpression.Variables.ToArray();
+                    return blockExpression.Variables.Where(x => x.NodeType != ExpressionType.RuntimeVariables).ToArray();
 				case MethodCallExpression methodCallExpression:
 					return methodCallExpression.Arguments.OfType<ParameterExpression>().ToArray();
                 default:

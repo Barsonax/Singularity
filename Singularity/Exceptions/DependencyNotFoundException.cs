@@ -4,7 +4,7 @@ using System.Runtime.Serialization;
 namespace Singularity.Exceptions
 {
     [Serializable]
-    public sealed class DependencyNotFoundException : SingularityException
+    public class DependencyNotFoundException : SingularityException
     {
 		public Type Type { get; }
 
