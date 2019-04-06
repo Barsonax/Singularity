@@ -1,4 +1,6 @@
-﻿namespace Singularity.Bindings
+﻿using System.Linq.Expressions;
+
+namespace Singularity.Bindings
 {
     /// <summary>
     /// Represents a strongly typed registration
@@ -6,7 +8,7 @@
     public sealed class StronglyTypedDecoratorBinding<TDependency> : WeaklyTypedDecoratorBinding
         where TDependency : class
     {
-        internal StronglyTypedDecoratorBinding() : base(typeof(TDependency))
+        internal StronglyTypedDecoratorBinding(Expression expression) : base(typeof(TDependency), expression)
         {
 
         }

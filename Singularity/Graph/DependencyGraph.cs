@@ -6,6 +6,7 @@ using System.Linq;
 using System.Linq.Expressions;
 using System.Reflection;
 using FastExpressionCompiler;
+using Singularity.Bindings;
 using Singularity.Collections;
 using Singularity.Exceptions;
 using Singularity.Expressions;
@@ -27,7 +28,7 @@ namespace Singularity.Graph
                                                        select m).Single();
         }
 
-        public DependencyGraph(ReadOnlyCollection<Binding> bindings, Scoped scope, DependencyGraph? parentDependencyGraph = null)
+        public DependencyGraph(ReadOnlyCollection<ReadonlyRegistration> bindings, Scoped scope, DependencyGraph? parentDependencyGraph = null)
         {
             _defaultScope = scope;
             Dependencies = MergeBindings(bindings, parentDependencyGraph);
@@ -108,20 +109,24 @@ namespace Singularity.Graph
             }
         }
 
-        private static Dictionary<Type, ArrayList<Dependency>> MergeBindings(ReadOnlyCollection<Binding> bindings, DependencyGraph? parentDependencyGraph)
+        private static Dictionary<Type, ArrayList<Dependency>> MergeBindings(ReadOnlyCollection<ReadonlyRegistration> registrations, DependencyGraph? parentDependencyGraph)
         {
-            var dependencies = new Dictionary<Type, ArrayList<Dependency>>(bindings.Count);
-            foreach (Binding binding in bindings)
+            var dependencies = new Dictionary<Type, ArrayList<Dependency>>(registrations.Count);
+            foreach (ReadonlyRegistration registration in registrations)
             {
-                if (!dependencies.TryGetValue(binding.DependencyType, out ArrayList<Dependency> dependency))
+                var dependency = new ArrayList<Dependency>();
+                if (registration.Bindings.Count == 0 && registration.Decorators.Count > 0)
                 {
-                    dependency = new ArrayList<Dependency>(new Dependency(binding));
-                    dependencies.Add(binding.DependencyType, dependency);
+                    dependency.Add(new Dependency(new Binding(new BindingMetadata(registration.DependencyType), registration.DependencyType, null, CreationMode.Transient, null), registration.Decorators));
                 }
                 else
                 {
-                    dependency.Add(new Dependency(binding));
+                    foreach (Binding binding in registration.Bindings)
+                    {
+                        dependency.Add(new Dependency(binding, registration.Decorators));
+                    }
                 }
+                dependencies.Add(registration.DependencyType, dependency);
             }
             if (parentDependencyGraph != null)
             {
@@ -139,7 +144,7 @@ namespace Singularity.Graph
                 if (bindings.TryGetValue(parentBinding.Binding.DependencyType, out ArrayList<Dependency> childBindingCollection))
                 {
                     Dependency childBinding = childBindingCollection.Array[0];
-                    Expression[] decorators;
+                    ReadOnlyCollection<Expression> decorators;
                     Expression? expression;
                     Action<object>? onDeathAction;
                     BindingMetadata bindingMetadata;
@@ -153,13 +158,13 @@ namespace Singularity.Graph
                             }
                             expression = parentBinding.Expression!;
                             bindingMetadata = parentBinding.Binding.BindingMetadata;
-                            decorators = childBinding.Binding.Decorators; //The resolved expression already contains the decorators of the parent
+                            decorators = childBinding.Decorators; //The resolved expression already contains the decorators of the parent
                         }
                         else
                         {
                             bindingMetadata = childBinding.Binding.BindingMetadata;
                             expression = childBinding.Binding.Expression;
-                            decorators = parentBinding.Binding.Decorators.Concat(childBinding.Binding.Decorators).ToArray();
+                            decorators = new ReadOnlyCollection<Expression>(parentBinding.Decorators.Concat(childBinding.Decorators).ToArray());
                         }
 
                         onDeathAction = childBinding.Binding.OnDeathAction;
@@ -168,12 +173,12 @@ namespace Singularity.Graph
                     {
                         bindingMetadata = parentBinding.Binding.BindingMetadata;
                         expression = childBinding.Binding.Expression ?? parentBinding.Binding.Expression;
-                        decorators = parentBinding.Binding.Decorators.Concat(childBinding.Binding.Decorators).ToArray();
+                        decorators = new ReadOnlyCollection<Expression>(parentBinding.Decorators.Concat(childBinding.Decorators).ToArray());
                         onDeathAction = parentBinding.Binding.OnDeathAction;
                     }
 
-                    var readonlyBinding = new Binding(bindingMetadata, childBinding.Binding.DependencyType, expression, parentBinding.Binding.CreationMode, decorators, onDeathAction);
-                    bindings[childBinding.Binding.DependencyType] = new ArrayList<Dependency>(new Dependency(readonlyBinding));
+                    var readonlyBinding = new Binding(bindingMetadata, childBinding.Binding.DependencyType, expression, parentBinding.Binding.CreationMode, onDeathAction);
+                    bindings[childBinding.Binding.DependencyType] = new ArrayList<Dependency>(new Dependency(readonlyBinding, decorators));
                 }
                 else
                 {
@@ -184,13 +189,12 @@ namespace Singularity.Graph
                             parentBinding.Binding.DependencyType,
                             parentBinding.Binding.Expression,
                             parentBinding.Binding.CreationMode,
-                            parentBinding.Binding.Decorators,
                             null);
-                        bindings.Add(parentBinding.Binding.DependencyType, new ArrayList<Dependency>(new Dependency(readonlyBinding)));
+                        bindings.Add(parentBinding.Binding.DependencyType, new ArrayList<Dependency>(new Dependency(readonlyBinding, parentBinding.Decorators)));
                     }
                     else
                     {
-                        bindings.Add(parentBinding.Binding.DependencyType, new ArrayList<Dependency>(new Dependency(parentBinding.Binding)));
+                        bindings.Add(parentBinding.Binding.DependencyType, new ArrayList<Dependency>(new Dependency(parentBinding.Binding, parentBinding.Decorators)));
                     }
                 }
             }
@@ -206,7 +210,7 @@ namespace Singularity.Graph
                 throw new SingularityAggregateException($"Could not find all dependencies for {dependency.Binding.BindingMetadata.StringRepresentation()}", dependencyExceptions);
             }
 
-            if (dependency.Binding.DecoratorParameters
+            if (dependency.DecoratorParameters
                 .TryExecute(parameterExpression => { resolvedDependencies.Add(GetDependency(parameterExpression.Type)); }, out IList<Exception> decoratorExceptions))
             {
                 throw new SingularityAggregateException($"Could not find all decorator dependencies for {dependency.Binding.BindingMetadata.StringRepresentation()}", decoratorExceptions);
@@ -302,8 +306,8 @@ namespace Singularity.Graph
 
         private ArrayList<Dependency> AddDependency(Type type, Expression expression, CreationMode creationMode, Func<Scoped, object> instanceFactory = null)
         {
-            var binding = new Binding(new BindingMetadata(type), type, expression, creationMode, new Expression[0], null);
-            var dependency = new ArrayList<Dependency>(new Dependency(binding));
+            var binding = new Binding(new BindingMetadata(type), type, expression, creationMode, null);
+            var dependency = new ArrayList<Dependency>(new Dependency(binding, new ReadOnlyCollection<Expression>(new Expression[0])));
             if (instanceFactory != null)
             {
                 dependency.Array[0].Expression = expression;

@@ -19,7 +19,7 @@ namespace Singularity.Expressions
             var parameterExpressionVisitor = new ParameterExpressionVisitor(dependency.Children);
             expression = parameterExpressionVisitor.Visit(expression);
 
-            if (dependency.Binding.OnDeathAction != null || dependency.Binding.Decorators.Length > 0)
+            if (dependency.Binding.OnDeathAction != null || dependency.Decorators.Count > 0)
             {
                 var body = new List<Expression>();
                 ParameterExpression instanceParameter = Expression.Variable(dependency.Binding.DependencyType, $"{expression.Type} instance");
@@ -30,11 +30,11 @@ namespace Singularity.Expressions
                     body.Add(Expression.Call(ScopeParameter, AddMethod, instanceParameter, Expression.Constant(dependency.Binding)));
                 }
 
-                if (dependency.Binding.Decorators.Length > 0)
+                if (dependency.Decorators.Count > 0)
                 {
                     var decoratorExpressionVisitor = new DecoratorExpressionVisitor(dependency.Children, instanceParameter.Type);
                     decoratorExpressionVisitor.PreviousDecorator = instanceParameter;
-                    foreach (Expression decorator in dependency.Binding.Decorators)
+                    foreach (Expression decorator in dependency.Decorators)
                     {
                         Expression decoratorExpression = decorator;
 

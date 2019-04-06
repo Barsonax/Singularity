@@ -18,12 +18,13 @@ namespace Singularity.Bindings
         /// <summary>
         /// A expression to create the decorator.
         /// </summary>
-        public Expression? Expression { get; internal set; }
+        public Expression Expression { get; }
 
-        internal WeaklyTypedDecoratorBinding(Type dependencyType)
+        internal WeaklyTypedDecoratorBinding(Type dependencyType, Expression expression)
         {
+            DependencyType = dependencyType ?? throw new ArgumentNullException(nameof(dependencyType));
+            Expression = expression ?? throw new ArgumentNullException(nameof(expression));
             if (!dependencyType.GetTypeInfo().IsInterface) throw new InterfaceExpectedException($"{dependencyType} is not a interface.");
-            DependencyType = dependencyType;
         }
     }
 }

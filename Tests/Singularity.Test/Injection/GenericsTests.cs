@@ -33,7 +33,7 @@ namespace Singularity.Test.Injection
 
             //ACT
             var serializer = container.GetInstance<ISerializer<int>>();
-            var nestedContainer = container.GetNestedContainer(nestedConfig);
+            Container nestedContainer = container.GetNestedContainer(nestedConfig);
             var intSerializer = nestedContainer.GetInstance<ISerializer<int>>();
 
             //ASSERT
