@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using Singularity.Exceptions;
 using Singularity.TestClasses.TestClasses;
@@ -76,6 +77,35 @@ namespace Singularity.Test.Injection
 
                 Assert.Equal(typeof(ITestService10), dependencyNotFoundException.Type);
             }
+        }
+
+        [Fact]
+        public void GetNestedContainer_OverrideInChild_OpenGeneric_Throws()
+        {
+            //ARRANGE
+            var config = new BindingConfig();
+            config.Register(typeof(ISerializer<>), typeof(DefaultSerializer<>));
+            var nestedConfig = new BindingConfig();
+            nestedConfig.Register<ISerializer<int>, IntSerializer>();
+            var container = new Container(config);
+
+            //ACT
+            //ASSERT
+            Assert.Throws<RegistrationAlreadyExistsException>(() =>
+            {
+                Container nestedContainer = container.GetNestedContainer(nestedConfig);
+            });
+        }
+
+        [Fact]
+        public void DirectlyRegisteredEnumerable_Throws()
+        {
+            //ARRANGE
+            var config = new BindingConfig();
+            Assert.Throws<EnumerableRegistrationException>(() =>
+            {
+                config.Register<IEnumerable<IPlugin>>().Inject(() => new IPlugin[] { new Plugin1(), new Plugin2(), new Plugin3() });
+            });
         }
     }
 }

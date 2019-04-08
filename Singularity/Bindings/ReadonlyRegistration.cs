@@ -1,5 +1,7 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.Linq;
 using System.Linq.Expressions;
 
 namespace Singularity.Bindings
@@ -10,25 +12,18 @@ namespace Singularity.Bindings
         public ReadOnlyCollection<Binding> Bindings { get; }
         public ReadOnlyCollection<Expression> Decorators { get; }
 
-        public ReadonlyRegistration(Registration registration)
+        public ReadonlyRegistration(Type dependencyType, IEnumerable<Binding> bindings, IEnumerable<Expression> decorators)
         {
-            DependencyType = registration.DependencyType;
-            var bindings = new Binding[registration.Bindings.Count];
-            for (var i = 0; i < registration.Bindings.Count; i++)
-            {
-                bindings[i] = new Binding(registration.Bindings[i]);
-            }
+            DependencyType = dependencyType;
+            Bindings = new ReadOnlyCollection<Binding>(bindings.ToArray());
+            Decorators = new ReadOnlyCollection<Expression>(decorators.ToArray());
+        }
 
-            Bindings = new ReadOnlyCollection<Binding>(bindings);
-
-            var decorators = new Expression[registration.DecoratorBindings.Count];
-
-            for (var i = 0; i < registration.DecoratorBindings.Count; i++)
-            {
-                decorators[i] = registration.DecoratorBindings[i].Expression;
-            }
-
-            Decorators = new ReadOnlyCollection<Expression>(decorators);
+        public ReadonlyRegistration(Type dependencyType, Binding binding, IEnumerable<Expression> decorators)
+        {
+            DependencyType = dependencyType;
+            Bindings = new ReadOnlyCollection<Binding>(new[] { binding });
+            Decorators = new ReadOnlyCollection<Expression>(decorators.ToArray());
         }
     }
 }

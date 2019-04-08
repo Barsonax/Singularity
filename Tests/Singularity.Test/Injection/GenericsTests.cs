@@ -22,26 +22,6 @@ namespace Singularity.Test.Injection
         }
 
         [Fact]
-        public void OpenGenericTypeNestedContainer()
-        {
-            //ARRANGE
-            var config = new BindingConfig();
-            config.Register(typeof(ISerializer<>), typeof(DefaultSerializer<>));
-            var nestedConfig = new BindingConfig();
-            nestedConfig.Register<ISerializer<int>, IntSerializer>();
-            var container = new Container(config);
-
-            //ACT
-            var serializer = container.GetInstance<ISerializer<int>>();
-            Container nestedContainer = container.GetNestedContainer(nestedConfig);
-            var intSerializer = nestedContainer.GetInstance<ISerializer<int>>();
-
-            //ASSERT
-            Assert.IsType<DefaultSerializer<int>>(serializer);
-            Assert.IsType<IntSerializer>(intSerializer);
-        }
-
-        [Fact]
         public void NestedOpenGenericType()
         {
             //ARRANGE

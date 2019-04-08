@@ -195,7 +195,7 @@ namespace Singularity
                 {
                     registration.Verify();
 
-                    readonlyRegistrations[count] = new ReadonlyRegistration(registration);
+                    readonlyRegistrations[count] = new ReadonlyRegistration(registration.DependencyType, registration.Bindings.Select(x => new Binding(x)), registration.DecoratorBindings.Select(x => x.Expression));
                     count++;
                 }
 

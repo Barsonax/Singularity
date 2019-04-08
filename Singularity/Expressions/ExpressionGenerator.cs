@@ -13,28 +13,28 @@ namespace Singularity.Expressions
         public static ParameterExpression ScopeParameter = Expression.Parameter(typeof(Scoped));
         private static readonly MethodInfo AddMethod = typeof(Scoped).GetRuntimeMethods().FirstOrDefault(x => x.Name == nameof(Scoped.Add));
 
-        public Expression GenerateDependencyExpression(Dependency dependency, Scoped graphScope)
+        public Expression GenerateDependencyExpression(ResolvedDependency dependency, Scoped graphScope)
         {
             Expression expression = dependency.Binding.Expression! is LambdaExpression lambdaExpression ? lambdaExpression.Body : dependency.Binding.Expression;
             var parameterExpressionVisitor = new ParameterExpressionVisitor(dependency.Children);
             expression = parameterExpressionVisitor.Visit(expression);
 
-            if (dependency.Binding.OnDeathAction != null || dependency.Decorators.Count > 0)
+            if (dependency.Binding.OnDeathAction != null || dependency.Registration.Decorators.Count > 0)
             {
                 var body = new List<Expression>();
-                ParameterExpression instanceParameter = Expression.Variable(dependency.Binding.DependencyType, $"{expression.Type} instance");
-                body.Add(Expression.Assign(instanceParameter, Expression.Convert(expression, dependency.Binding.DependencyType)));
+                ParameterExpression instanceParameter = Expression.Variable(dependency.Registration.DependencyType, $"{expression.Type} instance");
+                body.Add(Expression.Assign(instanceParameter, Expression.Convert(expression, dependency.Registration.DependencyType)));
 
                 if (dependency.Binding.OnDeathAction != null)
                 {
                     body.Add(Expression.Call(ScopeParameter, AddMethod, instanceParameter, Expression.Constant(dependency.Binding)));
                 }
 
-                if (dependency.Decorators.Count > 0)
+                if (dependency.Registration.Decorators.Count > 0)
                 {
                     var decoratorExpressionVisitor = new DecoratorExpressionVisitor(dependency.Children, instanceParameter.Type);
                     decoratorExpressionVisitor.PreviousDecorator = instanceParameter;
-                    foreach (Expression decorator in dependency.Decorators)
+                    foreach (Expression decorator in dependency.Registration.Decorators)
                     {
                         Expression decoratorExpression = decorator;
 
@@ -62,7 +62,7 @@ namespace Singularity.Expressions
                     value = ((Func<Scoped, object>)Expression.Lambda(expression, ScopeParameter).CompileFast()).Invoke(graphScope);
                 }
                 dependency.InstanceFactory = scope => value;
-                return Expression.Constant(value, dependency.Binding.DependencyType);
+                return Expression.Constant(value, dependency.Registration.DependencyType);
             }
             return expression;
         }

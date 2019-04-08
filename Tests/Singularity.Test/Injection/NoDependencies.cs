@@ -36,38 +36,13 @@ namespace Singularity.Test.Injection
             var config = new BindingConfig();
             config.Register<ITestService10, TestService10>();
 
-            var container = new Container(config);
-            Container nestedContainer = container.GetNestedContainer(new[] { new TestModule1() });
+            var container = new Container(new[] { new TestModule1() });
 
             //ACT
             var value = container.GetInstance<ITestService10>();
-            var nestedValue = nestedContainer.GetInstance<ITestService10>();
 
             //ASSERT
             Assert.IsType<TestService10>(value);
-            Assert.IsType<TestService10>(nestedValue);
-        }
-
-        [Fact]
-        public void GetInstance_Override_CorrectDependencyIsReturned()
-        {
-            //ARRANGE
-            var config = new BindingConfig();
-            config.Register<ITestService10, TestService10>();
-
-            var nestedConfig = new BindingConfig();
-            nestedConfig.Register<ITestService10, TestService10Variant>();
-
-            var container = new Container(config);
-            Container nestedContainer = container.GetNestedContainer(nestedConfig);
-
-            //ACT
-            var value = container.GetInstance<ITestService10>();
-            var nestedValue = nestedContainer.GetInstance<ITestService10>();
-
-            //ASSERT
-            Assert.IsType<TestService10>(value);
-            Assert.IsType<TestService10Variant>(nestedValue);
         }
 
         [Fact]

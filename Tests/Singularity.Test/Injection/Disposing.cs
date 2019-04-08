@@ -69,36 +69,6 @@ namespace Singularity.Test.Injection
         }
 
         [Fact]
-        public void GetInstance_PerContainerLifetimeAndOverride_IsDisposed()
-        {
-            //ARRANGE
-            var config = new BindingConfig();
-            config.Register<IDisposable, Disposable>().With(CreationMode.Singleton).OnDeath(x => x.Dispose());
-
-            var nestedConfig = new BindingConfig();
-            nestedConfig.Register<IDisposable, Disposable>().With(CreationMode.Singleton).OnDeath(x => x.Dispose());
-
-            var container = new Container(config);
-            Container nestedContainer = container.GetNestedContainer(nestedConfig, new Scoped("nestedScope"));
-
-            //ACT
-            var topLevelInstance = container.GetInstance<IDisposable>();
-            var nestedInstance = nestedContainer.GetInstance<IDisposable>();
-
-            //ASSERT
-            var castedTopLevelInstance = Assert.IsType<Disposable>(topLevelInstance);
-            var castednestedInstance = Assert.IsType<Disposable>(nestedInstance);
-
-            Assert.False(castednestedInstance.IsDisposed);
-            nestedContainer.Dispose();
-            Assert.True(castednestedInstance.IsDisposed);
-
-            Assert.False(castedTopLevelInstance.IsDisposed);
-            container.Dispose();
-            Assert.True(castedTopLevelInstance.IsDisposed);
-        }
-
-        [Fact]
         public void GetInstance_PerContainerLifetime_IsDisposedInTopLevel()
         {
             //ARRANGE
@@ -153,34 +123,6 @@ namespace Singularity.Test.Injection
             Assert.False(castedTopLevelInstance.IsDisposed);
             container.Dispose();
             Assert.True(castedTopLevelInstance.IsDisposed);
-        }
-
-        [Fact]
-        public void GetInstance_PerContainerLifetimeAndNestedContainerDecorator_IsDisposed()
-        {
-            //ARRANGE
-            var config = new BindingConfig();
-            config.Register<IDisposable, Disposable>().With(CreationMode.Singleton).OnDeath(x => x.Dispose());
-
-            var nestedConfig = new BindingConfig();
-            nestedConfig.Decorate<IDisposable, DisposableDecorator>();
-
-            var container = new Container(config);
-            Container nestedContainer = container.GetNestedContainer(nestedConfig);
-
-            //ACT
-            var topLevelInstance = container.GetInstance<IDisposable>();
-            var nestedInstance = nestedContainer.GetInstance<IDisposable>();
-
-            //ASSERT
-            var castedTopLevelInstance = Assert.IsType<Disposable>(topLevelInstance);
-            var disposableDecorator = Assert.IsType<DisposableDecorator>(nestedInstance);
-            var value = Assert.IsType<Disposable>(disposableDecorator.Disposable);
-
-            Assert.Same(topLevelInstance, value);
-            Assert.False(value.IsDisposed);
-            container.Dispose();
-            Assert.True(value.IsDisposed);
         }
     }
 }

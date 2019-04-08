@@ -1,35 +1,43 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Collections.ObjectModel;
 using System.Linq;
 using System.Linq.Expressions;
+using Singularity.Bindings;
+using Singularity.Collections;
 
 namespace Singularity.Graph
 {
     internal sealed class Dependency
     {
-        public Binding Binding { get; }
-        public ReadOnlyCollection<Expression> Decorators { get; }
-        public ReadOnlyCollection<ParameterExpression> DecoratorParameters { get; }
+        public ReadonlyRegistration Registration { get; }
+        public ArrayList<ResolvedDependency> ResolvedDependencies { get; }
+        public ResolvedDependency Default { get; }
 
+        public Dependency(ReadonlyRegistration registration)
+        {
+            Registration = registration ?? throw new ArgumentNullException(nameof(registration));
+            ResolvedDependencies = new ArrayList<ResolvedDependency>();
+            foreach (Binding binding in registration.Bindings)
+            {
+                ResolvedDependencies.Add(new ResolvedDependency(registration, binding));
+            }
+
+            Default = ResolvedDependencies.Array.LastOrDefault();
+        }
+    }
+
+    internal sealed class ResolvedDependency
+    {
+        public ReadonlyRegistration Registration { get; }
+        public Binding Binding { get; }
         public Dependency[]? Children { get; set; }
-        public Dependency[]? Parents { get; set; }
         public Expression? Expression { get; set; }
         public Func<Scoped, object>? InstanceFactory { get; set; }
         public Exception ResolveError { get; set; }
 
-        private static readonly ReadOnlyCollection<ParameterExpression> EmptyParameters = new ReadOnlyCollection<ParameterExpression>(new ParameterExpression[0]);
-
-        public Dependency(Binding unresolvedDependency, ReadOnlyCollection<Expression> decorators)
+        public ResolvedDependency(ReadonlyRegistration registration, Binding binding)
         {
-            Binding = unresolvedDependency;
-
-            Decorators = decorators ?? throw new ArgumentNullException(nameof(decorators));
-            DecoratorParameters = decorators.Count != 0
-                ? new ReadOnlyCollection<ParameterExpression>(
-                    Decorators.SelectMany(x => x.GetParameterExpressions())
-                        .Where(x => x.Type != Binding.DependencyType).ToArray())
-                : EmptyParameters;
+            Registration = registration;
+            Binding = binding;
         }
     }
 }

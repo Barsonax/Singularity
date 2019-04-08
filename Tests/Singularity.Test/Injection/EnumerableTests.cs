@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
+using Singularity.Exceptions;
 using Singularity.TestClasses.TestClasses;
 using Xunit;
 
@@ -149,7 +150,7 @@ namespace Singularity.Test.Injection
             var plugin = container.GetInstance<IPlugin>();
 
             //ASSERT
-            Assert.IsType<Plugin1>(plugin);
+            Assert.IsType<Plugin3>(plugin);
         }
 
         [Fact]
