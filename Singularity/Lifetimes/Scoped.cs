@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Collections.Concurrent;
 using System.Collections.Generic;
 
 namespace Singularity
@@ -10,9 +9,9 @@ namespace Singularity
     public sealed class Scoped : IDisposable
     {
         private readonly object _locker = new object();
-        private ConcurrentDictionary<Type, ObjectActionList> ObjectActionLists { get; } = new ConcurrentDictionary<Type, ObjectActionList>();
+        private Dictionary<Binding, DisposeList> DisposeList { get; } = new Dictionary<Binding, DisposeList>();
 
-        private string _name;
+        private readonly string _name;
         public Scoped(string name = null)
         {
             _name = name ?? "defaultScope";
@@ -25,7 +24,15 @@ namespace Singularity
 
         internal void Add(object obj, Binding binding)
         {
-            var list = ObjectActionLists.GetOrAdd(binding.Expression.Type, t => new ObjectActionList(binding.OnDeathAction, _locker));
+            DisposeList list;
+            lock (_locker)
+            {
+                if (!DisposeList.TryGetValue(binding, out list))
+                {
+                    list = new DisposeList(binding.OnDeathAction);
+                    DisposeList.Add(binding, list);
+                }
+            }
             list.Add(obj);
         }
 
@@ -36,35 +43,10 @@ namespace Singularity
         {
             lock (_locker)
             {
-                foreach (ObjectActionList objectActionList in ObjectActionLists.Values)
+                foreach (DisposeList objectActionList in DisposeList.Values)
                 {
-                    foreach (object obj in objectActionList.Objects)
-                    {
-                        objectActionList.Action.Invoke(obj);
-                    }
+                    objectActionList.Invoke();
                 }
-            }
-        }
-    }
-
-    internal readonly struct ObjectActionList
-    {
-        public Action<object> Action { get; }
-        public List<object> Objects { get; }
-        private readonly object _locker;
-
-        public ObjectActionList(Action<object> action, object locker)
-        {
-            Action = action;
-            Objects = new List<object>();
-            _locker = locker;
-        }
-
-        public void Add(object obj)
-        {
-            lock (_locker)
-            {
-                Objects.Add(obj);
             }
         }
     }
