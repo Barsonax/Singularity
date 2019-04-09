@@ -23,6 +23,12 @@ namespace Singularity.Graph
 
             Default = ResolvedDependencies.Array.LastOrDefault();
         }
+
+        public Dependency(Type type, Expression expression, CreationMode creationMode) :
+            this(new ReadonlyRegistration(type, new Binding(new BindingMetadata(type), expression, creationMode, null), new Expression[0]))
+        {
+
+        }
     }
 
     internal sealed class ResolvedDependency

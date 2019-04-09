@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 
 namespace Singularity.TestClasses.TestClasses
@@ -57,7 +58,7 @@ namespace Singularity.TestClasses.TestClasses
 
         public PluginCollection(IEnumerable<IPlugin> plugins)
         {
-            Plugins = plugins.ToArray();
+            Plugins = (plugins ?? throw new ArgumentNullException(nameof(plugins))) .ToArray();
         }
     }
 }
