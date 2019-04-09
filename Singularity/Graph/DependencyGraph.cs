@@ -14,7 +14,7 @@ namespace Singularity.Graph
     internal sealed class DependencyGraph
     {
         internal Dictionary<Type, Dependency> Dependencies { get; }
-        private readonly IDependencyResolver[] _resolvers = {new ConcreteDependencyResolver(), new EnumerableDependencyResolver(), new OpenGenericResolver(), };
+        private readonly IDependencyResolver[] _resolvers = {new ConcreteDependencyResolver(), new EnumerableDependencyResolver(), new LazyDependencyResolver(), new OpenGenericResolver() };
         private readonly Scoped _defaultScope;
         private readonly ExpressionGenerator _expressionGenerator = new ExpressionGenerator();
         private readonly object _syncRoot;
@@ -79,12 +79,12 @@ namespace Singularity.Graph
 
         internal void ResolveDependency(ResolvedDependency dependency)
         {
-            FindDependencies(dependency);
+            FindChildDependencies(dependency);
             GenerateExpression(dependency);
             GenerateInstanceFactory(dependency);
         }
 
-        private void FindDependencies(ResolvedDependency dependency, HashSet<ResolvedDependency>? visitedDependencies = null)
+        private void FindChildDependencies(ResolvedDependency dependency, HashSet<ResolvedDependency>? visitedDependencies = null)
         {
             lock (dependency)
             {
@@ -102,7 +102,7 @@ namespace Singularity.Graph
                     Dependency[] dependencies = FindChilds(dependency);
                     foreach (Dependency nestedDependency in dependencies)
                     {
-                        FindDependencies(nestedDependency.Default, visitedDependencies);
+                        FindChildDependencies(nestedDependency.Default, visitedDependencies);
                         visitedDependencies.Remove(nestedDependency.Default);
                     }
                     dependency.Children = dependencies;

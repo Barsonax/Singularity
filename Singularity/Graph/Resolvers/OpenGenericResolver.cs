@@ -8,7 +8,7 @@ namespace Singularity.Graph.Resolvers
     {
         public Dependency? Resolve(DependencyGraph graph, Type type)
         {
-            if (type.IsGenericType)
+            if (type.IsGenericType && !type.ContainsGenericParameters)
             {
                 Type genericTypeDefinition = type.GetGenericTypeDefinition();
                 Dependency? genericDependency = graph.TryGetDependency(genericTypeDefinition);

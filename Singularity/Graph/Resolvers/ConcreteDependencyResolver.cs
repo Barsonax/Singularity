@@ -8,6 +8,7 @@ namespace Singularity.Graph.Resolvers
         {
             if (!type.IsInterface)
             {
+                if (type.IsGenericType && type.GetGenericTypeDefinition() == typeof(Lazy<>)) return null;
                 if (!graph.Dependencies.TryGetValue(type, out Dependency dependency))
                 {
                     dependency = new Dependency(type, type.AutoResolveConstructorExpression(), CreationMode.Transient);

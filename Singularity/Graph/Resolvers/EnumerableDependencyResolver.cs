@@ -26,7 +26,7 @@ namespace Singularity.Graph.Resolvers
 
         public Dependency? Resolve(DependencyGraph graph, Type type)
         {
-            if (type.IsGenericType && typeof(IEnumerable).IsAssignableFrom(type))
+            if (type.IsGenericType && type.GetGenericTypeDefinition() == typeof(IEnumerable<>))
             {
                 var childDependency = graph.TryGetDependency(type.GenericTypeArguments[0]);
                 var dependencies = childDependency?.ResolvedDependencies.Array ?? new ResolvedDependency[0];
