@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.ObjectModel;
 using System.Linq;
+using Singularity.Bindings;
 using Singularity.Exceptions;
 using Singularity.TestClasses.TestClasses;
 using Xunit;
@@ -40,13 +41,13 @@ namespace Singularity.Test.Bindings
             config.Register<ITestService12, TestService12>();
 
             //ACT
-            ReadOnlyCollection<Binding> bindings = config.GetDependencies();
+            ReadOnlyCollection<ReadonlyRegistration> registrations = config.GetDependencies();
 
             //ASSERT
-            Assert.Equal(3, bindings.Count);
-            Assert.Contains(bindings, x => x.DependencyType == typeof(ITestService10));
-            Assert.Contains(bindings, x => x.DependencyType == typeof(ITestService11));
-            Assert.Contains(bindings, x => x.DependencyType == typeof(ITestService12));
+            Assert.Equal(3, registrations.Count);
+            Assert.Contains(registrations, x => x.DependencyType == typeof(ITestService10));
+            Assert.Contains(registrations, x => x.DependencyType == typeof(ITestService11));
+            Assert.Contains(registrations, x => x.DependencyType == typeof(ITestService12));
         }
 
         [Fact]
@@ -62,13 +63,13 @@ namespace Singularity.Test.Bindings
             });
 
             //ACT
-            ReadOnlyCollection<Binding> bindings = config.GetDependencies();
+            ReadOnlyCollection<ReadonlyRegistration> registrations = config.GetDependencies();
 
             //ASSERT
-            Assert.Equal(3, bindings.Count);
-            Assert.Equal(typeof(Plugin1), bindings[0].Expression!.Type);
-            Assert.Equal(typeof(Plugin2), bindings[1].Expression!.Type);
-            Assert.Equal(typeof(Plugin3), bindings[2].Expression!.Type);
+            ReadonlyRegistration registration = Assert.Single(registrations);
+            Assert.Equal(typeof(Plugin1), registration.Bindings[0].Expression!.Type);
+            Assert.Equal(typeof(Plugin2), registration.Bindings[1].Expression!.Type);
+            Assert.Equal(typeof(Plugin3), registration.Bindings[2].Expression!.Type);
         }
 
         [Fact]
@@ -84,14 +85,14 @@ namespace Singularity.Test.Bindings
             }).With(CreationMode.Singleton);
 
             //ACT
-            ReadOnlyCollection<Binding> bindings = config.GetDependencies();
+            ReadOnlyCollection<ReadonlyRegistration> registrations = config.GetDependencies();
 
             //ASSERT
-            Assert.Equal(3, bindings.Count);
-            Assert.Equal(typeof(Plugin1), bindings[0].Expression!.Type);
-            Assert.Equal(typeof(Plugin2), bindings[1].Expression!.Type);
-            Assert.Equal(typeof(Plugin3), bindings[2].Expression!.Type);
-            Assert.True(bindings.All(x => x.CreationMode == CreationMode.Singleton));
+            ReadonlyRegistration registration = Assert.Single(registrations);
+            Assert.Equal(typeof(Plugin1), registration.Bindings[0].Expression!.Type);
+            Assert.Equal(typeof(Plugin2), registration.Bindings[1].Expression!.Type);
+            Assert.Equal(typeof(Plugin3), registration.Bindings[2].Expression!.Type);
+            Assert.True(registrations[0].Bindings.All(x => x.CreationMode == CreationMode.Singleton));
         }
 
         [Fact]
@@ -111,18 +112,15 @@ namespace Singularity.Test.Bindings
             });
 
             //ACT
-            ReadOnlyCollection<Binding> bindings = config.GetDependencies();
+            ReadOnlyCollection<ReadonlyRegistration> registrations = config.GetDependencies();
 
             //ASSERT
-            Assert.Equal(3, bindings.Count);
-            Assert.Equal(typeof(Plugin1), bindings[0].Expression!.Type);
-            Assert.Equal(typeof(Plugin2), bindings[1].Expression!.Type);
-            Assert.Equal(typeof(Plugin3), bindings[2].Expression!.Type);
+            ReadonlyRegistration registration = Assert.Single(registrations);
+            Assert.Equal(typeof(Plugin1), registration.Bindings[0].Expression!.Type);
+            Assert.Equal(typeof(Plugin2), registration.Bindings[1].Expression!.Type);
+            Assert.Equal(typeof(Plugin3), registration.Bindings[2].Expression!.Type);
 
-            foreach (Binding binding in bindings)
-            {
-                Assert.Equal(new[] { typeof(PluginLogger1), typeof(PluginLogger2), typeof(PluginLogger3) }, binding.Decorators.Select(x => x.Type));
-            }
+            Assert.Equal(new[] { typeof(PluginLogger1), typeof(PluginLogger2), typeof(PluginLogger3) }, registration.Decorators.Select(x => x.Type));
         }
 
         [Fact]
@@ -181,9 +179,9 @@ namespace Singularity.Test.Bindings
             var config = new BindingConfig();
             config.Register<object>().Inject<object, object>((obj0) => new object());
 
-            Binding binding = config.GetDependencies().First();
-            Assert.Equal(typeof(object), binding.DependencyType);
-            Assert.Equal(typeof(Func<object, object>), binding.Expression?.Type);
+            ReadonlyRegistration registration = config.GetDependencies().Single();
+            Assert.Equal(typeof(object), registration.DependencyType);
+            Assert.Equal(typeof(Func<object, object>), registration.Bindings.Single().Expression?.Type);
         }
 
         [Fact]
@@ -192,9 +190,9 @@ namespace Singularity.Test.Bindings
             var config = new BindingConfig();
             config.Register<object>().Inject<object, object, object>((obj0, obj1) => new object());
 
-            Binding binding = config.GetDependencies().First();
-            Assert.Equal(typeof(object), binding.DependencyType);
-            Assert.Equal(typeof(Func<object, object, object>), binding.Expression?.Type);
+            ReadonlyRegistration registration = config.GetDependencies().Single();
+            Assert.Equal(typeof(object), registration.DependencyType);
+            Assert.Equal(typeof(Func<object, object, object>), registration.Bindings.Single().Expression?.Type);
         }
 
         [Fact]
@@ -203,9 +201,9 @@ namespace Singularity.Test.Bindings
             var config = new BindingConfig();
             config.Register<object>().Inject<object, object, object, object>((obj0, obj1, obj2) => new object());
 
-            Binding binding = config.GetDependencies().First();
-            Assert.Equal(typeof(object), binding.DependencyType);
-            Assert.Equal(typeof(Func<object, object, object, object>), binding.Expression?.Type);
+            ReadonlyRegistration registration = config.GetDependencies().Single();
+            Assert.Equal(typeof(object), registration.DependencyType);
+            Assert.Equal(typeof(Func<object, object, object, object>), registration.Bindings.Single().Expression?.Type);
         }
 
         [Fact]
@@ -214,9 +212,9 @@ namespace Singularity.Test.Bindings
             var config = new BindingConfig();
             config.Register<object>().Inject<object, object, object, object, object>((obj0, obj1, obj2, obj3) => new object());
 
-            Binding binding = config.GetDependencies().First();
-            Assert.Equal(typeof(object), binding.DependencyType);
-            Assert.Equal(typeof(Func<object, object, object, object, object>), binding.Expression?.Type);
+            ReadonlyRegistration registration = config.GetDependencies().Single();
+            Assert.Equal(typeof(object), registration.DependencyType);
+            Assert.Equal(typeof(Func<object, object, object, object, object>), registration.Bindings.Single().Expression?.Type);
         }
 
         [Fact]
@@ -225,9 +223,9 @@ namespace Singularity.Test.Bindings
             var config = new BindingConfig();
             config.Register<object>().Inject<object, object, object, object, object, object>((obj0, obj1, obj2, obj3, obj4) => new object());
 
-            Binding binding = config.GetDependencies().First();
-            Assert.Equal(typeof(object), binding.DependencyType);
-            Assert.Equal(typeof(Func<object, object, object, object, object, object>), binding.Expression?.Type);
+            ReadonlyRegistration registration = config.GetDependencies().Single();
+            Assert.Equal(typeof(object), registration.DependencyType);
+            Assert.Equal(typeof(Func<object, object, object, object, object, object>), registration.Bindings.Single().Expression?.Type);
         }
 
         [Fact]
@@ -236,9 +234,9 @@ namespace Singularity.Test.Bindings
             var config = new BindingConfig();
             config.Register<object>().Inject<object, object, object, object, object, object, object>((obj0, obj1, obj2, obj3, obj4, obj5) => new object());
 
-            Binding binding = config.GetDependencies().First();
-            Assert.Equal(typeof(object), binding.DependencyType);
-            Assert.Equal(typeof(Func<object, object, object, object, object, object, object>), binding.Expression?.Type);
+            ReadonlyRegistration registration = config.GetDependencies().Single();
+            Assert.Equal(typeof(object), registration.DependencyType);
+            Assert.Equal(typeof(Func<object, object, object, object, object, object, object>), registration.Bindings.Single().Expression?.Type);
         }
 
         [Fact]
@@ -247,9 +245,9 @@ namespace Singularity.Test.Bindings
             var config = new BindingConfig();
             config.Register<object>().Inject<object, object, object, object, object, object, object, object>((obj0, obj1, obj2, obj3, obj4, obj5, obj6) => new object());
 
-            Binding binding = config.GetDependencies().First();
-            Assert.Equal(typeof(object), binding.DependencyType);
-            Assert.Equal(typeof(Func<object, object, object, object, object, object, object, object>), binding.Expression?.Type);
+            ReadonlyRegistration registration = config.GetDependencies().Single();
+            Assert.Equal(typeof(object), registration.DependencyType);
+            Assert.Equal(typeof(Func<object, object, object, object, object, object, object, object>), registration.Bindings.Single().Expression?.Type);
         }
 
         [Fact]
@@ -258,9 +256,9 @@ namespace Singularity.Test.Bindings
             var config = new BindingConfig();
             config.Register<object>().Inject<object, object, object, object, object, object, object, object, object>((obj0, obj1, obj2, obj3, obj4, obj5, obj6, obj7) => new object());
 
-            Binding binding = config.GetDependencies().First();
-            Assert.Equal(typeof(object), binding.DependencyType);
-            Assert.Equal(typeof(Func<object, object, object, object, object, object, object, object, object>), binding.Expression?.Type);
+            ReadonlyRegistration registration = config.GetDependencies().Single();
+            Assert.Equal(typeof(object), registration.DependencyType);
+            Assert.Equal(typeof(Func<object, object, object, object, object, object, object, object, object>), registration.Bindings.Single().Expression?.Type);
         }
     }
 }

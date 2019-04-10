@@ -1,5 +1,6 @@
 ﻿using Singularity.Expressions;
 using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Linq.Expressions;
 
@@ -7,7 +8,12 @@ namespace Singularity
 {
 	internal static class ExpressionExtensions
 	{
-		public static ParameterExpression[] GetParameterExpressions(this Expression expression)
+        public static IEnumerable<ParameterExpression> GetParameterExpressions(this IEnumerable<Expression> expressions)
+        {
+            return expressions.SelectMany(x => x.GetParameterExpressions());
+        }
+
+        public static ParameterExpression[] GetParameterExpressions(this Expression expression)
 		{
             if (expression == null)
             {

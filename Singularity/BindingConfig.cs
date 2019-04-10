@@ -21,9 +21,8 @@ namespace Singularity
         /// </summary>
         public bool Locked => _readonlyBindings != null;
         internal IModule? CurrentModule;
-        private readonly List<WeaklyTypedDecoratorBinding> _decorators = new List<WeaklyTypedDecoratorBinding>();
-        private readonly List<WeaklyTypedBinding> _bindings = new List<WeaklyTypedBinding>();
-        private ReadOnlyCollection<Binding>? _readonlyBindings;
+        private readonly Dictionary<Type, Registration> _registrations = new Dictionary<Type, Registration>();
+        private ReadOnlyCollection<ReadonlyRegistration>? _readonlyBindings;
 
         /// <summary>
         /// Begins configuring a strongly typed binding for <typeparamref name="TDependency"/>
@@ -51,16 +50,16 @@ namespace Singularity
         }
 
         /// <summary>
-        /// Begins configuring a weakly typed binding for <paramref name="instanceType"/>
+        /// Begins configuring a weakly typed binding for <paramref name="dependencyType"/>
         /// </summary>
-        /// <param name="instanceType"></param>
+        /// <param name="dependencyType"></param>
         /// <returns></returns>
 #pragma warning disable 1573
-        public WeaklyTypedBinding Register(Type instanceType, [CallerFilePath]string callerFilePath = "", [CallerLineNumber] int callerLineNumber = -1)
+        public WeaklyTypedBinding Register(Type dependencyType, [CallerFilePath]string callerFilePath = "", [CallerLineNumber] int callerLineNumber = -1)
 #pragma warning restore 1573
         {
             if (Locked) throw new BindingConfigException("This config is locked and cannot be modified anymore!");
-            return CreateBinding(instanceType, callerFilePath, callerLineNumber);
+            return CreateBinding(dependencyType, callerFilePath, callerLineNumber);
         }
 
         /// <summary>
@@ -131,12 +130,12 @@ namespace Singularity
         {
             if (Locked) throw new BindingConfigException("This config is locked and cannot be modified anymore!");
 
-            var decorator = new StronglyTypedDecoratorBinding<TDependency>();
-            decorator.Expression = AutoResolveConstructorExpressionCache<TDecorator>.Expression;
+            var decorator = new StronglyTypedDecoratorBinding<TDependency>(AutoResolveConstructorExpressionCache<TDecorator>.Expression);
 
             ParameterExpression[] parameters = decorator.Expression.GetParameterExpressions();
             if (parameters.All(x => x.Type != typeof(TDependency))) throw new InvalidExpressionArgumentsException($"Cannot decorate {typeof(TDependency)} since the expression to create {typeof(TDecorator)} does not have a parameter for {typeof(TDependency)}");
-            _decorators.Add(decorator);
+            Registration registration = GetOrCreateRegistration(typeof(TDependency));
+            registration.DecoratorBindings.Add(decorator);
             return decorator;
         }
 
@@ -155,12 +154,12 @@ namespace Singularity
             TypeInfo typeInfo = decoratorType.GetTypeInfo();
             if (!dependencyType.GetTypeInfo().IsAssignableFrom(typeInfo)) throw new TypeNotAssignableException($"{dependencyType} is not implemented by {decoratorType}");
 
-            var decorator = new WeaklyTypedDecoratorBinding(dependencyType);
-            decorator.Expression = decoratorType.AutoResolveConstructorExpression();
+            var decorator = new WeaklyTypedDecoratorBinding(dependencyType, decoratorType.AutoResolveConstructorExpression());
 
             ParameterExpression[] parameters = decorator.Expression.GetParameterExpressions();
             if (parameters.All(x => x.Type != dependencyType)) throw new InvalidExpressionArgumentsException($"Cannot decorate {dependencyType} since the expression to create {decoratorType} does not have a parameter for {dependencyType}");
-            _decorators.Add(decorator);
+            Registration registration = GetOrCreateRegistration(dependencyType);
+            registration.DecoratorBindings.Add(decorator);
             return decorator;
         }
 
@@ -186,55 +185,49 @@ namespace Singularity
             return new WeaklyTypedDecoratorBindingBatch(new ReadOnlyCollection<WeaklyTypedDecoratorBinding>(bindings));
         }
 
-        internal ReadOnlyCollection<Binding> GetDependencies()
+        internal ReadOnlyCollection<ReadonlyRegistration> GetDependencies()
         {
             if (_readonlyBindings == null)
             {
-                foreach (WeaklyTypedDecoratorBinding weaklyTypedDecoratorBinding in _decorators)
+                var readonlyRegistrations = new ReadonlyRegistration[_registrations.Count];
+                var count = 0;
+                foreach (var registration in _registrations.Values)
                 {
-                    var count = 0;
-                    foreach (WeaklyTypedBinding weaklyTypedBinding in _bindings)
-                    {
-                        if (weaklyTypedDecoratorBinding.DependencyType == weaklyTypedBinding.DependencyType)
-                        {
-                            count++;
-                            weaklyTypedBinding.AddDecorator(weaklyTypedDecoratorBinding);
-                        }
-                    }
+                    registration.Verify();
 
-                    if (count == 0)
-                    {
-                        WeaklyTypedBinding binding = Register(weaklyTypedDecoratorBinding.DependencyType);
-                        binding.AddDecorator(weaklyTypedDecoratorBinding);
-                    }
+                    readonlyRegistrations[count] = new ReadonlyRegistration(registration.DependencyType, registration.Bindings.Select(x => new Binding(x)), registration.DecoratorBindings.Select(x => x.Expression));
+                    count++;
                 }
 
-                var readonlyBindings = new Binding[_bindings.Count];
-
-                var index = 0;
-                foreach (WeaklyTypedBinding weaklyTypedBinding in _bindings)
-                {
-                    weaklyTypedBinding.Verify();
-                    readonlyBindings[index] = new Binding(weaklyTypedBinding);
-                    index++;
-                }
-                _readonlyBindings = new ReadOnlyCollection<Binding>(readonlyBindings);
+                _readonlyBindings = new ReadOnlyCollection<ReadonlyRegistration>(readonlyRegistrations);
             }
             return _readonlyBindings!;
         }
 
+        private Registration GetOrCreateRegistration(Type type)
+        {
+            if (!_registrations.TryGetValue(type, out Registration registration))
+            {
+                registration = new Registration(type);
+                _registrations.Add(type, registration);
+            }
+
+            return registration;
+        }
+
         private StronglyTypedBinding<TDependency> CreateBinding<TDependency>(string callerFilePath, int callerLineNumber)
         {
+            Registration registration = GetOrCreateRegistration(typeof(TDependency));
             var binding = new StronglyTypedBinding<TDependency>(callerFilePath, callerLineNumber, CurrentModule);
-            _bindings.Add(binding);
+            registration.Bindings.Add(binding);
             return binding;
         }
 
-        private WeaklyTypedBinding CreateBinding(Type instanceType, string callerFilePath, int callerLineNumber)
+        private WeaklyTypedBinding CreateBinding(Type dependencyType, string callerFilePath, int callerLineNumber)
         {
-
-            var binding = new WeaklyTypedBinding(instanceType, callerFilePath, callerLineNumber, CurrentModule);
-            _bindings.Add(binding);
+            Registration registration = GetOrCreateRegistration(dependencyType);
+            var binding = new WeaklyTypedBinding(dependencyType, callerFilePath, callerLineNumber, CurrentModule);
+            registration.Bindings.Add(binding);
             return binding;
         }
     }

@@ -14,9 +14,9 @@ namespace Singularity.Expressions
 
         protected override Expression VisitParameter(ParameterExpression node)
         {
-            var nestedDependency = _dependencies.First(x => x.Binding.DependencyType == node.Type);
+            var nestedDependency = _dependencies.First(x => x.Registration.DependencyType == node.Type);
 
-            return nestedDependency.Expression!;
+            return nestedDependency.Default.Expression!;
         }
     }
 }

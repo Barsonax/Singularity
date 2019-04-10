@@ -25,8 +25,8 @@ namespace Singularity.Expressions
             }
             else
             {
-                var decoratorDependency = _dependencies.First(x => x.Binding.DependencyType == node.Type);
-                return decoratorDependency.Expression;
+                var decoratorDependency = _dependencies.First(x => x.Registration.DependencyType == node.Type);
+                return decoratorDependency.Default.Expression;
             }
         }
     }
