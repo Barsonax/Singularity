@@ -3,7 +3,6 @@ using System.Collections.ObjectModel;
 using System.Linq;
 using Singularity.Bindings;
 using Singularity.Exceptions;
-using Singularity.Test.Injection;
 using Singularity.TestClasses.TestClasses;
 using Xunit;
 

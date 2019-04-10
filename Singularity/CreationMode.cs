@@ -1,6 +1,4 @@
-﻿using System.Collections.Generic;
-
-namespace Singularity
+﻿namespace Singularity
 {
     /// <summary>
     /// Specifies when new instances of dependencies should be made

@@ -1,6 +1,4 @@
-﻿using System;
-
-namespace Singularity.TestClasses.TestClasses
+﻿namespace Singularity.TestClasses.TestClasses
 {
     public interface ITransient1
     {

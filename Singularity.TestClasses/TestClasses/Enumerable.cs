@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-
-namespace Singularity.TestClasses.TestClasses
+﻿namespace Singularity.TestClasses.TestClasses
 {
     public interface ISimpleAdapter
     {

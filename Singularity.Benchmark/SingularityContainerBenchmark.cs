@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Linq.Expressions;
 using BenchmarkDotNet.Attributes;
 using Singularity.TestClasses.Benchmark;
 using Singularity.TestClasses.TestClasses;
