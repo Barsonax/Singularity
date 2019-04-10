@@ -21,7 +21,7 @@ namespace Singularity.Graph.Resolvers
         {
             if (type.IsGenericType && type.GetGenericTypeDefinition() == typeof(Func<>))
             {
-                var dependency = graph.TryGetDependency(type.GenericTypeArguments[0]);
+                var dependency = graph.GetDependency(type.GenericTypeArguments[0]);
                 graph.ResolveDependency(dependency!.Default);
 
                 var method = GenericCreateFactoryDependencyMethod.MakeGenericMethod(type.GenericTypeArguments);
@@ -34,10 +34,7 @@ namespace Singularity.Graph.Resolvers
 
         private static Dependency CreateFactoryDependency<T>(Type type, Dependency dependency)
         {
-            var expression = Expression.Lambda(
-                Expression.Convert(
-                    Expression.Call(dependency.Default.InstanceFactory!.Method, ExpressionGenerator.ScopeParameter), type.GenericTypeArguments[0]));
-
+            LambdaExpression expression = Expression.Lambda(dependency.Default.Expression);
             var factoryDependency = new Dependency(type, expression, CreationMode.Transient);
             factoryDependency.Default.Expression = expression;
             factoryDependency.Default.InstanceFactory = scoped =>

@@ -9,7 +9,7 @@ namespace Singularity.Test.Injection
     public class EnumerableTests
     {
         [Fact]
-        public void NoRegistration()
+        public void GetInstance_AsEnumerable_NoRegistration()
         {
             //ARRANGE
             var config = new BindingConfig();
@@ -24,7 +24,7 @@ namespace Singularity.Test.Injection
         }
 
         [Fact]
-        public void SingleRegistration()
+        public void GetInstance_AsEnumerable_SingleRegistration()
         {
             //ARRANGE
             var config = new BindingConfig();
@@ -41,7 +41,7 @@ namespace Singularity.Test.Injection
         }
 
         [Fact]
-        public void MultiRegistration()
+        public void GetInstance_AsEnumerable_MultiRegistration()
         {
             //ARRANGE
             var config = new BindingConfig();
@@ -62,7 +62,7 @@ namespace Singularity.Test.Injection
         }
 
         [Fact]
-        public void MultiRegistrationWithLifetimes()
+        public void GetInstance_AsEnumerable_MultiRegistrationWithLifetimes()
         {
             //ARRANGE
             var config = new BindingConfig();
@@ -85,7 +85,7 @@ namespace Singularity.Test.Injection
         }
 
         [Fact]
-        public void MultiBatchRegistration()
+        public void GetInstance_AsEnumerable_MultiBatchRegistration()
         {
             //ARRANGE
             var config = new BindingConfig();
@@ -109,7 +109,7 @@ namespace Singularity.Test.Injection
         }
 
         [Fact]
-        public void MultiBatchRegistrationWithDecorators()
+        public void GetInstance_AsEnumerable_MultiBatchRegistrationWithDecorators()
         {
             //ARRANGE
             var config = new BindingConfig();
@@ -137,7 +137,7 @@ namespace Singularity.Test.Injection
         }
 
         [Fact]
-        public void MultiRegistration_RequestSingle()
+        public void GetInstance_MultiRegistration()
         {
             //ARRANGE
             var config = new BindingConfig();
@@ -154,7 +154,7 @@ namespace Singularity.Test.Injection
         }
 
         [Fact]
-        public void MultiRegistrationNestedType()
+        public void GetInstance_MultiRegistrationNestedType()
         {
             //ARRANGE
             var config = new BindingConfig();

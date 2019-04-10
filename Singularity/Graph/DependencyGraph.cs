@@ -180,7 +180,7 @@ namespace Singularity.Graph
             }
         }
 
-        private Dependency GetDependency(Type type)
+        internal Dependency GetDependency(Type type)
         {
             Dependency? dependency = TryGetDependency(type);
             if (dependency == null) throw new DependencyNotFoundException(type);
