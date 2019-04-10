@@ -10,7 +10,7 @@ namespace Singularity.Graph.Resolvers
             if (!type.IsInterface)
             {
                 if (type.IsGenericType) return null;
-                return new[] { new Dependency(type, type.AutoResolveConstructorExpression(), CreationMode.Transient) };
+                return new[] { new Dependency(type, CreationMode.Transient) };
             }
 
             return null;

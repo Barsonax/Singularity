@@ -1,4 +1,6 @@
 ﻿using System;
+using System.Collections.Generic;
+using Singularity.Collections;
 using Singularity.TestClasses.TestClasses;
 using Xunit;
 
@@ -16,11 +18,32 @@ namespace Singularity.Test.Injection
 
             //ACT
             var lazyPlugin = container.GetInstance<Lazy<IPlugin>>();
-            var plugin = lazyPlugin.Value;
+            IPlugin plugin = lazyPlugin.Value;
 
             //ASSERT
             Assert.IsType<Lazy<IPlugin>>(lazyPlugin);
             Assert.IsType<Plugin1>(plugin);
+        }
+
+        [Fact]
+        public void GetInstance_AsLazyEnumerable()
+        {
+            //ARRANGE
+            var config = new BindingConfig();
+            config.Register<IPlugin, Plugin1>();
+            config.Register<IPlugin, Plugin2>();
+            config.Register<IPlugin, Plugin3>();
+            var container = new Container(config);
+
+            //ACT
+            var lazyInstances = container.GetInstance<IReadOnlyList<Lazy<IPlugin>>>();
+
+            //ASSERT
+            Assert.IsType<InstanceFactoryList<Lazy<IPlugin>>>(lazyInstances);
+            Assert.Equal(3, lazyInstances.Count);
+            Assert.IsType<Plugin1>(lazyInstances[0].Value);
+            Assert.IsType<Plugin2>(lazyInstances[1].Value);
+            Assert.IsType<Plugin3>(lazyInstances[2].Value);
         }
 
         [Fact]
@@ -33,7 +56,7 @@ namespace Singularity.Test.Injection
 
             //ACT
             var lazyPlugin = container.GetInstance<Lazy<IPlugin>>();
-            var plugin = lazyPlugin.Value;
+            IPlugin plugin = lazyPlugin.Value;
             int disposeCountBefore = plugin.DisposeInvocations;
             container.Dispose();
             int disposeCountAfter = plugin.DisposeInvocations;

@@ -10,12 +10,20 @@ namespace Singularity.Graph.Resolvers
         {
             if (type.IsGenericType && type.GetGenericTypeDefinition() == typeof(Func<>))
             {
-                var dependency = graph.GetDependency(type.GenericTypeArguments[0]);
-                graph.ResolveDependency(dependency!.Default);
+                Dependency dependency = graph.GetDependency(type.GenericTypeArguments[0]);
 
-                LambdaExpression expression = Expression.Lambda(dependency.Default.Expression);
-                var factoryDependency = new Dependency(type, expression, CreationMode.Transient);
-                factoryDependency.Default.Expression = expression;
+                var expressions = new List<Expression>();
+                foreach (ResolvedDependency resolvedDependency in dependency.ResolvedDependencies.Array)
+                {
+                    graph.ResolveDependency(resolvedDependency);
+                    expressions.Add(Expression.Lambda(resolvedDependency.Expression));
+                }
+
+                var factoryDependency = new Dependency(type, expressions, CreationMode.Transient);
+                for (int i = 0; i < factoryDependency.ResolvedDependencies.Array.Length; i++)
+                {
+                    factoryDependency.ResolvedDependencies.Array[i].Expression = expressions[i];
+                }
                 return new[] { factoryDependency };
             }
 

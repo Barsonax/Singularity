@@ -1,4 +1,6 @@
 ﻿using System;
+using System.Collections.Generic;
+using Singularity.Collections;
 using Singularity.TestClasses.TestClasses;
 using Xunit;
 
@@ -21,6 +23,27 @@ namespace Singularity.Test.Injection
             //ASSERT
             Assert.IsType<Func<Plugin1>>(factory);
             Assert.IsType<Plugin1>(plugin);
+        }
+
+        [Fact]
+        public void GetInstance_AsEnumerableFactory()
+        {
+            //ARRANGE
+            var config = new BindingConfig();
+            config.Register<IPlugin, Plugin1>();
+            config.Register<IPlugin, Plugin2>();
+            config.Register<IPlugin, Plugin3>();
+            var container = new Container(config);
+
+            //ACT
+            var factories = container.GetInstance<IReadOnlyList<Func<IPlugin>>>();
+
+            //ASSERT
+            Assert.IsType<InstanceFactoryList<Func<IPlugin>>>(factories);
+            Assert.Equal(3, factories.Count);
+            Assert.IsType<Plugin1>(factories[0].Invoke());
+            Assert.IsType<Plugin2>(factories[1].Invoke());
+            Assert.IsType<Plugin3>(factories[2].Invoke());
         }
 
         [Fact]
