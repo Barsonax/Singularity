@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Linq.Expressions;
 using Singularity.Expressions;
 
@@ -6,7 +7,7 @@ namespace Singularity.Graph.Resolvers
 {
     internal class OpenGenericResolver : IDependencyResolver
     {
-        public Dependency? Resolve(DependencyGraph graph, Type type)
+        public IEnumerable<Dependency>? Resolve(DependencyGraph graph, Type type)
         {
             if (type.IsGenericType && !type.ContainsGenericParameters)
             {
@@ -21,7 +22,7 @@ namespace Singularity.Graph.Resolvers
 
                     var dependency = new Dependency(type, newExpression, openGenericDependency.Binding.CreationMode);
 
-                    return dependency;
+                    return new[] { dependency };
                 }
             }
 

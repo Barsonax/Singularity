@@ -1,8 +1,8 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Linq.Expressions;
 using System.Reflection;
-using Singularity.Expressions;
 
 namespace Singularity.Graph.Resolvers
 {
@@ -13,20 +13,20 @@ namespace Singularity.Graph.Resolvers
         static FactoryDependencyResolver()
         {
             GenericCreateFactoryDependencyMethod = (from m in typeof(FactoryDependencyResolver).GetRuntimeMethods()
-                where m.Name == nameof(CreateFactoryDependency)
-                select m).Single();
+                                                    where m.Name == nameof(CreateFactoryDependency)
+                                                    select m).Single();
         }
 
-        public Dependency? Resolve(DependencyGraph graph, Type type)
+        public IEnumerable<Dependency>? Resolve(DependencyGraph graph, Type type)
         {
             if (type.IsGenericType && type.GetGenericTypeDefinition() == typeof(Func<>))
             {
                 var dependency = graph.GetDependency(type.GenericTypeArguments[0]);
                 graph.ResolveDependency(dependency!.Default);
 
-                var method = GenericCreateFactoryDependencyMethod.MakeGenericMethod(type.GenericTypeArguments);
+                MethodInfo method = GenericCreateFactoryDependencyMethod.MakeGenericMethod(type.GenericTypeArguments);
                 var factoryDependency = (Dependency)method.Invoke(null, new object[] { type, dependency });
-                return factoryDependency;
+                return new[] { factoryDependency };
             }
 
             return null;

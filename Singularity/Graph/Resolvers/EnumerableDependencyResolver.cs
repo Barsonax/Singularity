@@ -3,65 +3,75 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using System.Linq.Expressions;
-using System.Reflection;
 using Singularity.Expressions;
 
 namespace Singularity.Graph.Resolvers
 {
     internal class EnumerableDependencyResolver : IDependencyResolver
     {
-        private static readonly MethodInfo GenericCreateEnumerableMethod;
-        private static readonly MethodInfo GenericCreateEnumerableDependencyMethod;
-
-        static EnumerableDependencyResolver()
+        public IEnumerable<Dependency>? Resolve(DependencyGraph graph, Type type)
         {
-            GenericCreateEnumerableMethod = (from m in typeof(EnumerableDependencyResolver).GetRuntimeMethods()
-                where m.Name == nameof(CreateEnumerable)
-                select m).Single();
-
-            GenericCreateEnumerableDependencyMethod = (from m in typeof(EnumerableDependencyResolver).GetRuntimeMethods()
-                where m.Name == nameof(CreateEnumerableDependency)
-                select m).Single();
-        }
-
-        public Dependency? Resolve(DependencyGraph graph, Type type)
-        {
-            if (type.IsGenericType && type.GetGenericTypeDefinition() == typeof(IEnumerable<>))
+            if (type.IsGenericType)
             {
-                var childDependency = graph.TryGetDependency(type.GenericTypeArguments[0]);
-                var dependencies = childDependency?.ResolvedDependencies.Array ?? new ResolvedDependency[0];
-                foreach (ResolvedDependency dependency in dependencies)
+                Type definition = type.GetGenericTypeDefinition();
+                if (definition == typeof(IEnumerable<>) || definition == typeof(IReadOnlyCollection<>) || definition == typeof(IReadOnlyList<>))
                 {
-                    graph.ResolveDependency(dependency);
+                    Dependency childDependency = graph.TryGetDependency(type.GenericTypeArguments[0]);
+                    ResolvedDependency[] dependencies = childDependency?.ResolvedDependencies.Array ?? new ResolvedDependency[0];
+                    foreach (ResolvedDependency dependency in dependencies)
+                    {
+                        graph.ResolveDependency(dependency);
+                    }
+
+                    Func<Scoped, object>[] instanceFactories = dependencies.Select(x => x.InstanceFactory!).ToArray();
+
+                    Type instanceFactoryListType = typeof(InstanceFactoryList<>).MakeGenericType(type.GenericTypeArguments);
+                    Expression expression = Expression.New(instanceFactoryListType.AutoResolveConstructor(), ExpressionGenerator.ScopeParameter, Expression.Constant(instanceFactories));
+
+                    Type enumerableType = typeof(IEnumerable<>).MakeGenericType(type.GenericTypeArguments[0]);
+                    Type collectionType = typeof(IReadOnlyCollection<>).MakeGenericType(type.GenericTypeArguments[0]);
+                    Type listType = typeof(IReadOnlyList<>).MakeGenericType(type.GenericTypeArguments[0]);
+
+                    IEnumerable<Dependency> collectionDependencies = new[] { enumerableType, collectionType, listType }.Select(x =>
+                          new Dependency(x, expression, CreationMode.Transient)).ToArray();
+                    foreach (Dependency collectionDependency in collectionDependencies)
+                    {
+                        collectionDependency.Default.Expression = expression;
+                    }
+
+                    return collectionDependencies;
                 }
-
-                Func<Scoped, object>[] instanceFactories = dependencies.Select(x => x.InstanceFactory!).ToArray();
-
-                var method = GenericCreateEnumerableDependencyMethod.MakeGenericMethod(type.GenericTypeArguments);
-                Dependency enumerableDependency = (Dependency)method.Invoke(null, new object[] { type, instanceFactories });
-                enumerableDependency.Default.Children = childDependency != null ? new[] { childDependency } : new Dependency[0];
-                return enumerableDependency;
             }
-
             return null;
         }
+    }
 
-        private static Dependency CreateEnumerableDependency<T>(Type type, Func<Scoped, object>[] instanceFactories)
+    internal class InstanceFactoryList<T> : IReadOnlyList<T>
+    {
+        private readonly Func<Scoped, object>[] _instanceFactories;
+        private readonly Scoped _scope;
+
+        public InstanceFactoryList(Scoped scope, Func<Scoped, object>[] instanceFactories)
         {
-            MethodInfo createEnumerableMethod = GenericCreateEnumerableMethod.MakeGenericMethod(type.GenericTypeArguments);
-            Expression expression = Expression.Call(createEnumerableMethod, ExpressionGenerator.ScopeParameter, Expression.Constant(instanceFactories));
-            Dependency dependency = new Dependency(type, expression, CreationMode.Transient);
-            dependency.Default.Expression = expression;
-            dependency.Default.InstanceFactory = scoped => CreateEnumerable<T>(scoped, instanceFactories);
-            return dependency;
+            _instanceFactories = instanceFactories ?? throw new ArgumentNullException(nameof(instanceFactories));
+            _scope = scope ?? throw new ArgumentNullException(nameof(scope));
         }
 
-        private static IEnumerable<T> CreateEnumerable<T>(Scoped scope, Func<Scoped, object>[] instanceFactories)
+        public IEnumerator<T> GetEnumerator()
         {
-            foreach (Func<Scoped, object> instanceFactory in instanceFactories)
+            foreach (Func<Scoped, object> instanceFactory in _instanceFactories)
             {
-                yield return (T)instanceFactory.Invoke(scope);
+                yield return (T)instanceFactory.Invoke(_scope);
             }
         }
+
+        IEnumerator IEnumerable.GetEnumerator()
+        {
+            return GetEnumerator();
+        }
+
+        public int Count => _instanceFactories.Length;
+
+        public T this[int index] => (T)_instanceFactories[index].Invoke(_scope);
     }
 }

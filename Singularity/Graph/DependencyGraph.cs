@@ -13,7 +13,7 @@ namespace Singularity.Graph
 {
     internal sealed class DependencyGraph
     {
-        internal Dictionary<Type, Dependency> Dependencies { get; }
+        private Dictionary<Type, Dependency> Dependencies { get; }
         private readonly IDependencyResolver[] _resolvers = { new EnumerableDependencyResolver(), new LazyDependencyResolver(), new FactoryDependencyResolver(),  new ConcreteDependencyResolver(), new OpenGenericResolver() };
         private readonly Scoped _defaultScope;
         private readonly ExpressionGenerator _expressionGenerator = new ExpressionGenerator();
@@ -165,14 +165,14 @@ namespace Singularity.Graph
 
                 foreach (IDependencyResolver dependencyResolver in _resolvers)
                 {
-                    Dependency? dependency = dependencyResolver.Resolve(this, type);
-                    if (dependency != null)
+                    IEnumerable<Dependency>? resolvedDependencies = dependencyResolver.Resolve(this, type);
+                    if (resolvedDependencies != null)
                     {
-                        if (!Dependencies.ContainsKey(type))
+                        foreach (Dependency resolvedDependency in resolvedDependencies)
                         {
-                            Dependencies.Add(type, dependency);
+                            Dependencies.Add(resolvedDependency.Registration.DependencyType, resolvedDependency);
                         }
-                        return dependency;
+                        return TryGetDependency(type);
                     }
                 }
 
