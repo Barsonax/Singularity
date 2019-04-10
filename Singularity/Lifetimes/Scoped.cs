@@ -22,7 +22,7 @@ namespace Singularity
             return _name;
         }
 
-        internal void Add(object obj, Binding binding)
+        internal T Add<T>(T obj, Binding binding)
         {
             DisposeList list;
             lock (_locker)
@@ -34,6 +34,7 @@ namespace Singularity
                 }
             }
             list.Add(obj);
+            return obj;
         }
 
         /// <summary>

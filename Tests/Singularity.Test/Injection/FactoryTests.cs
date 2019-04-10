@@ -19,7 +19,7 @@ namespace Singularity.Test.Injection
             IPlugin plugin = factory.Invoke();
 
             //ASSERT
-            Assert.IsType<Func<IPlugin>>(factory);
+            Assert.IsType<Func<Plugin1>>(factory);
             Assert.IsType<Plugin1>(plugin);
         }
 
@@ -39,7 +39,7 @@ namespace Singularity.Test.Injection
             int disposeCountAfter = plugin.DisposeInvocations;
 
             //ASSERT
-            Assert.IsType<Func<IPlugin>>(factory);
+            Assert.IsType<Func<Plugin1>>(factory);
             Assert.IsType<Plugin1>(plugin);
             Assert.Equal(0, disposeCountBefore);
             Assert.Equal(1,disposeCountAfter);

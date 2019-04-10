@@ -37,11 +37,6 @@ namespace Singularity.Graph.Resolvers
             LambdaExpression expression = Expression.Lambda(dependency.Default.Expression);
             var factoryDependency = new Dependency(type, expression, CreationMode.Transient);
             factoryDependency.Default.Expression = expression;
-            factoryDependency.Default.InstanceFactory = scoped =>
-            {
-                T Func() => (T) dependency.Default.InstanceFactory!.Invoke(scoped);
-                return (Func<T>) Func;
-            };
             return factoryDependency;
         }
     }

@@ -11,7 +11,7 @@ namespace Singularity.Expressions
     internal class ExpressionGenerator
     {
         public static ParameterExpression ScopeParameter = Expression.Parameter(typeof(Scoped));
-        private static readonly MethodInfo AddMethod = typeof(Scoped).GetRuntimeMethods().FirstOrDefault(x => x.Name == nameof(Scoped.Add));
+        private static readonly MethodInfo GenericAddMethod = typeof(Scoped).GetRuntimeMethods().FirstOrDefault(x => x.Name == nameof(Scoped.Add));
 
         public Expression GenerateDependencyExpression(ResolvedDependency dependency, Scoped graphScope)
         {
@@ -19,16 +19,17 @@ namespace Singularity.Expressions
             var parameterExpressionVisitor = new ParameterExpressionVisitor(dependency.Children);
             expression = parameterExpressionVisitor.Visit(expression);
 
-            if (dependency.Binding.OnDeathAction != null || dependency.Registration.Decorators.Count > 0)
+            if (dependency.Binding.OnDeathAction != null)
+            {
+                MethodInfo method = GenericAddMethod.MakeGenericMethod(expression.Type);
+                expression = Expression.Call(ScopeParameter, method, expression, Expression.Constant(dependency.Binding));
+            }
+
+            if (dependency.Registration.Decorators.Count > 0)
             {
                 var body = new List<Expression>();
                 ParameterExpression instanceParameter = Expression.Variable(dependency.Registration.DependencyType, $"{expression.Type} instance");
                 body.Add(Expression.Assign(instanceParameter, Expression.Convert(expression, dependency.Registration.DependencyType)));
-
-                if (dependency.Binding.OnDeathAction != null)
-                {
-                    body.Add(Expression.Call(ScopeParameter, AddMethod, instanceParameter, Expression.Constant(dependency.Binding)));
-                }
 
                 if (dependency.Registration.Decorators.Count > 0)
                 {
