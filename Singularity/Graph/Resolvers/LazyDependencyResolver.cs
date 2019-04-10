@@ -17,7 +17,7 @@ namespace Singularity.Graph.Resolvers
                                                    select m).Single();
         }
 
-        public Dependency Resolve(DependencyGraph graph, Type type)
+        public Dependency? Resolve(DependencyGraph graph, Type type)
         {
             if (type.IsGenericType && type.GetGenericTypeDefinition() == typeof(Lazy<>))
             {

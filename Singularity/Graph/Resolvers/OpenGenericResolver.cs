@@ -20,7 +20,6 @@ namespace Singularity.Graph.Resolvers
                     Expression newExpression = closedGenericType.AutoResolveConstructorExpression();
 
                     var dependency = new Dependency(type, newExpression, openGenericDependency.Binding.CreationMode);
-                    graph.Dependencies.Add(type, dependency);
 
                     return dependency;
                 }
