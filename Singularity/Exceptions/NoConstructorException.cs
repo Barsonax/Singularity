@@ -6,11 +6,15 @@ namespace Singularity.Exceptions
     [Serializable]
     public class NoConstructorException : SingularityException
     {
-        internal NoConstructorException(string message) : base(message)
+        public NoConstructorException()
         {
         }
 
-        public NoConstructorException()
+        public NoConstructorException(string message) : base(message)
+        {
+        }
+
+        public NoConstructorException(string message, Exception inner) : base(message, inner)
         {
         }
 

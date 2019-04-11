@@ -10,13 +10,23 @@ namespace Singularity.Exceptions
     {
 		public IReadOnlyList<Type> Cycle { get; }
 
-		internal CircularDependencyException(IReadOnlyList<Type> cycle) : base($"{cycle.First()} has circular dependencies! ({string.Join("->", cycle.Select(x => x.Name))})")
+        public CircularDependencyException()
+        {
+        }
+
+        internal CircularDependencyException(IReadOnlyList<Type> cycle) : base(GetMessage(cycle))
 		{
 			Cycle = cycle;
 		}
 
-        public CircularDependencyException()
+        public CircularDependencyException(IReadOnlyList<Type> cycle, Exception inner) : base(GetMessage(cycle), inner)
         {
+            Cycle = cycle;
+        }
+
+        private static string GetMessage(IReadOnlyList<Type> cycle)
+        {
+            return $"{cycle.First()} has circular dependencies! ({string.Join("->", cycle.Select(x => x.Name))})";
         }
 
         protected CircularDependencyException(SerializationInfo info, StreamingContext context) : base(info, context)

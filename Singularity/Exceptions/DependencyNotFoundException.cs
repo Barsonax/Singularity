@@ -8,16 +8,28 @@ namespace Singularity.Exceptions
     {
 		public Type Type { get; }
 
-		internal DependencyNotFoundException(Type type) : base($"Could not find dependency {type}")
-		{
-			Type = type;
-		}
-
         public DependencyNotFoundException()
         {
         }
 
-        protected DependencyNotFoundException(SerializationInfo info, StreamingContext context) : base(info, context)
+        internal DependencyNotFoundException(Type type) : base(GetMessage(type))
+		{
+			Type = type;
+		}
+
+        public DependencyNotFoundException(Type type, Exception inner) : base(GetMessage(type), inner)
+        {
+            Type = type;
+        }
+
+        private static string GetMessage(Type type)
+        {
+            return $"Could not find dependency {type}";
+        }
+
+        protected DependencyNotFoundException(
+            SerializationInfo info,
+            StreamingContext context) : base(info, context)
         {
         }
     }

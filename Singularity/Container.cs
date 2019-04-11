@@ -63,7 +63,14 @@ namespace Singularity
             Container container = this;
             do
             {
-                if (container._parentContainer == null) break;
+                if (container._parentContainer == null)
+                {
+                    if (container._containerScope == null)
+                    {
+                        throw new SingularityException("The root container does not seem to be valid as it has no scope");
+                    }
+                    break;
+                }
                 container = container._parentContainer;
             }
             while (container._containerScope == null);

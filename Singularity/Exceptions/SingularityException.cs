@@ -4,14 +4,14 @@ using System.Runtime.Serialization;
 namespace Singularity.Exceptions
 {
     [Serializable]
-	public abstract class SingularityException : Exception
+	public class SingularityException : Exception
 	{
 
 		public SingularityException(){}
 
-		internal SingularityException(string message) : base(message){}
+        public SingularityException(string message) : base(message){}
 
-		internal SingularityException(string message, Exception innerException) : base(message, innerException) { }
+		public SingularityException(string message, Exception innerException) : base(message, innerException) { }
 
         protected SingularityException(
             SerializationInfo info,

@@ -6,14 +6,22 @@ namespace Singularity.Exceptions
     [Serializable]
     public class InvalidLifetimeException : SingularityException
     {
-        internal InvalidLifetimeException(CreationMode creationMode) : base($"{creationMode} is a invalid value, valid values are: {string.Join(", ", EnumMetadata<CreationMode>.Values)}")
+        public InvalidLifetimeException()
+        {
+        }
+
+        public InvalidLifetimeException(CreationMode creationMode) : base(GetMessage(creationMode))
         {
 
         }
 
-
-        public InvalidLifetimeException()
+        public InvalidLifetimeException(CreationMode creationMode, Exception inner) : base(GetMessage(creationMode), inner)
         {
+        }
+
+        private static string GetMessage(CreationMode creationMode)
+        {
+            return $"{creationMode} is a invalid value, valid values are: {string.Join(", ", EnumMetadata<CreationMode>.Values)}";
         }
 
         protected InvalidLifetimeException(SerializationInfo info, StreamingContext context) : base(info, context)

@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Runtime.Serialization;
+using System.Security.Permissions;
 using System.Text;
 
 namespace Singularity.Exceptions
@@ -49,6 +50,15 @@ namespace Singularity.Exceptions
 
         protected SingularityAggregateException(SerializationInfo info, StreamingContext context) : base(info, context)
         {
+            HeaderMessage = info.GetString(nameof(HeaderMessage));
+        }
+
+        [SecurityPermission(SecurityAction.Demand, SerializationFormatter = true)]
+        public override void GetObjectData(SerializationInfo info, StreamingContext context)
+        {
+            if (info == null) throw new ArgumentNullException(nameof(info));
+            info.AddValue(nameof(HeaderMessage), HeaderMessage);
+            base.GetObjectData(info, context);
         }
     }
 }
