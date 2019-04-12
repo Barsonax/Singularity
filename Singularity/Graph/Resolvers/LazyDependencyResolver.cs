@@ -7,7 +7,7 @@ namespace Singularity.Graph.Resolvers
 {
     internal class LazyDependencyResolver : IDependencyResolver
     {
-        public IEnumerable<Dependency>? Resolve(DependencyGraph graph, Type type)
+        public IEnumerable<Dependency>? Resolve(IResolverPipeline graph, Type type)
         {
             if (type.IsGenericType && type.GetGenericTypeDefinition() == typeof(Lazy<>))
             {

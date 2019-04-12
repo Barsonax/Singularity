@@ -6,18 +6,15 @@ namespace Singularity.Exceptions
     [Serializable]
     public class NoConstructorException : SingularityException
     {
-        public NoConstructorException()
+        internal NoConstructorException(string message, Exception? inner = null) : base(message, inner)
         {
         }
 
-        public NoConstructorException(string message) : base(message)
-        {
-        }
-
-        public NoConstructorException(string message, Exception inner) : base(message, inner)
-        {
-        }
-
+        /// <summary>
+        /// Deserialization constructor
+        /// </summary>
+        /// <param name="info"></param>
+        /// <param name="context"></param>
         protected NoConstructorException(SerializationInfo info, StreamingContext context) : base(info, context)
         {
         }

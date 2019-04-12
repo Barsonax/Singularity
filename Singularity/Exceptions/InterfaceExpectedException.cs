@@ -6,19 +6,15 @@ namespace Singularity.Exceptions
     [Serializable]
     public class InterfaceExpectedException : SingularityException
     {
-        public InterfaceExpectedException()
+        internal InterfaceExpectedException(string message, Exception? inner = null) : base(message, inner)
         {
         }
 
-        internal InterfaceExpectedException(string message) : base(message)
-        {
-        }
-
-        public InterfaceExpectedException(string message, Exception inner) : base(message, inner)
-        {
-        }
-
-
+        /// <summary>
+        /// Deserialization constructor
+        /// </summary>
+        /// <param name="info"></param>
+        /// <param name="context"></param>
         protected InterfaceExpectedException(SerializationInfo info, StreamingContext context) : base(info, context)
         {
         }

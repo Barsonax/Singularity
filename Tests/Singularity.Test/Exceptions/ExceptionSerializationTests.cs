@@ -1,12 +1,7 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.IO;
-using System.Runtime.Serialization;
 using System.Runtime.Serialization.Formatters.Binary;
 using Singularity.Exceptions;
-using Singularity.Test.Collections;
-using Singularity.TestClasses.Extensions;
-using Singularity.TestClasses.TestClasses;
 using Xunit;
 
 namespace Singularity.Test.Exceptions
@@ -46,7 +41,7 @@ namespace Singularity.Test.Exceptions
             Add(new EnumerableRegistrationException(message, inner));
             Add(new InterfaceExpectedException(message, inner));
             Add(new InvalidExpressionArgumentsException(message, inner));
-            Add(new InvalidLifetimeException(CreationMode.Singleton, inner));
+            Add(new InvalidLifetimeException(CreationMode.PerContainer, inner));
             Add(new NoConstructorException(message, inner));
             Add(new RegistrationAlreadyExistsException(message, inner));
             Add(new SingularityException(message, inner));

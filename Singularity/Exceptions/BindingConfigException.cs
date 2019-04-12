@@ -6,18 +6,15 @@ namespace Singularity.Exceptions
     [Serializable]
     public class BindingConfigException : SingularityException
     {
-        public BindingConfigException()
+        internal BindingConfigException(string message, Exception? inner = null) : base(message, inner)
         {
         }
 
-        internal BindingConfigException(string message) : base(message)
-        {
-        }
-
-        public BindingConfigException(string message, Exception inner) : base(message, inner)
-        {
-        }
-
+        /// <summary>
+        /// Deserialization constructor
+        /// </summary>
+        /// <param name="info"></param>
+        /// <param name="context"></param>
         protected BindingConfigException(SerializationInfo info, StreamingContext context) : base(info, context)
         {
         }

@@ -44,6 +44,10 @@ namespace Singularity.Duality.Resources
             Name = type.Name;
         }
 
+        /// <summary>
+        /// The string representation of the <see cref="IModule"/> reference
+        /// </summary>
+        /// <returns></returns>
 		public override string ToString()
 		{
 			return $"{NameSpace}.{Name},{Assembly}";

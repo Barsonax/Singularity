@@ -7,7 +7,7 @@ namespace Singularity.Graph.Resolvers
 {
     internal class OpenGenericResolver : IDependencyResolver
     {
-        public IEnumerable<Dependency>? Resolve(DependencyGraph graph, Type type)
+        public IEnumerable<Dependency>? Resolve(IResolverPipeline graph, Type type)
         {
             if (type.IsGenericType && !type.ContainsGenericParameters)
             {

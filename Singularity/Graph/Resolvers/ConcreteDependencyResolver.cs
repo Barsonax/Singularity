@@ -5,7 +5,7 @@ namespace Singularity.Graph.Resolvers
 {
     internal class ConcreteDependencyResolver : IDependencyResolver
     {
-        public IEnumerable<Dependency>? Resolve(DependencyGraph graph, Type type)
+        public IEnumerable<Dependency>? Resolve(IResolverPipeline graph, Type type)
         {
             if (!type.IsInterface)
             {

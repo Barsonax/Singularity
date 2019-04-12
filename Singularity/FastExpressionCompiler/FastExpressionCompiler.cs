@@ -286,7 +286,7 @@ namespace FastExpressionCompiler
                 for (var i = 0; i < nestedConstants.Length; i++)
                     info.AddConstant(nestedConstants[i]);
 
-            // Add nested constants to outer lambda closure.
+            // AddDisposable nested constants to outer lambda closure.
             // At this moment we  know that NestedLambdaExprs are non-empty, cause we doing this from the nested lambda already.
             var nestedNestedLambdaExprs = nestedInfo.NestedLambdaExprs;
             if (nestedNestedLambdaExprs.Length != 0)
@@ -1054,7 +1054,7 @@ namespace FastExpressionCompiler
         {
             // 1. Try to compile nested lambda in place
             // 2. Check that parameters used in compiled lambda are passed or closed by outer lambda
-            // 3. Add the compiled lambda to closure of outer lambda for later invocation
+            // 3. AddDisposable the compiled lambda to closure of outer lambda for later invocation
 
             var lambdaParamExprs = lambdaExpr.Parameters;
 
@@ -1554,7 +1554,7 @@ namespace FastExpressionCompiler
                 {
                     var catchBlock = catchBlocks[i];
                     if (catchBlock.Filter != null)
-                        return false; // todo: Add support for filters on catch expression
+                        return false; // todo: AddDisposable support for filters on catch expression
 
                     il.BeginCatchBlock(catchBlock.Test);
 

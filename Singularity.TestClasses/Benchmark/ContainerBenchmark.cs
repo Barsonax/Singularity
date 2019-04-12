@@ -105,9 +105,9 @@ namespace Singularity.TestClasses.Benchmark
             config.Register<IDummyNine, DummyNine>();
             config.Register<IDummyTen, DummyTen>();
 
-            config.Register<ISingleton1, Singleton1>().With(CreationMode.Singleton);
-            config.Register<ISingleton2, Singleton2>().With(CreationMode.Singleton);
-            config.Register<ISingleton3, Singleton3>().With(CreationMode.Singleton);
+            config.Register<ISingleton1, Singleton1>().With(CreationMode.PerContainer);
+            config.Register<ISingleton2, Singleton2>().With(CreationMode.PerContainer);
+            config.Register<ISingleton3, Singleton3>().With(CreationMode.PerContainer);
             config.Register<ITransient1, Transient1>();
             config.Register<ITransient2, Transient2>();
             config.Register<ITransient3, Transient3>();
@@ -121,9 +121,9 @@ namespace Singularity.TestClasses.Benchmark
             config.Register<ISubObjectOne, SubObjectOne>();
             config.Register<ISubObjectTwo, SubObjectTwo>();
             config.Register<ISubObjectThree, SubObjectThree>();
-            config.Register<IFirstService, FirstService>().With(CreationMode.Singleton);
-            config.Register<ISecondService, SecondService>().With(CreationMode.Singleton);
-            config.Register<IThirdService, ThirdService>().With(CreationMode.Singleton);
+            config.Register<IFirstService, FirstService>().With(CreationMode.PerContainer);
+            config.Register<ISecondService, SecondService>().With(CreationMode.PerContainer);
+            config.Register<IThirdService, ThirdService>().With(CreationMode.PerContainer);
             config.Register<IComplex1, Complex1>();
 
             config.Register<ISimpleAdapter, SimpleAdapterOne>();
