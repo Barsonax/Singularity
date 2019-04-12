@@ -21,9 +21,7 @@ var value = container.GetInstance<ITestService10>();
 However `Singularity` can do much more than this simple example. Advanced scenarios such as open generics are also supported.
 
 ## Documentation
-More info about `Singularity` can be found on the wiki. I suggest you to start [here](https://github.com/Barsonax/Singularity/wiki/Configuring-Dependencies). 
-
-For duality users there is also a guide on how to use `Singularity.Duality` in duality [here](https://github.com/Barsonax/Singularity/wiki/Using-Singularity-in-Duality).
+More info about `Singularity` can be found on the documentation website which can be found [here](http://www.the-photographing-programmer.com/Singularity/).
 
 ## Other
 
