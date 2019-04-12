@@ -1,0 +1,596 @@
+{
+  "homepages": [],
+  "source_base_path": "C:/Git/Singularity/docfx_project",
+  "xrefmap": "xrefmap.yml",
+  "files": [
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/Singularity.Attributes.InjectAttribute.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Singularity.Attributes.InjectAttribute.html",
+          "hash": "uLF5HcINLKATgmqhlJZuyQ=="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/Singularity.Attributes.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Singularity.Attributes.html",
+          "hash": "OcUCnS1fiQmyAvrxu/tDqQ=="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/Singularity.BindingConfig.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Singularity.BindingConfig.html",
+          "hash": "9fsavuGmGjxILwNXpA8DhQ=="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/Singularity.Bindings.StronglyTypedBinding-1.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Singularity.Bindings.StronglyTypedBinding-1.html",
+          "hash": "+dkeh2W0q2bCo5NZgln9DA=="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/Singularity.Bindings.StronglyTypedConfiguredBinding-2.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Singularity.Bindings.StronglyTypedConfiguredBinding-2.html",
+          "hash": "KZ7QLQLI2GvockVlWFvbaQ=="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/Singularity.Bindings.StronglyTypedDecoratorBinding-1.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Singularity.Bindings.StronglyTypedDecoratorBinding-1.html",
+          "hash": "YYCXFKc235ckC8G3lDoLFA=="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/Singularity.Bindings.WeaklyTypedBinding.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Singularity.Bindings.WeaklyTypedBinding.html",
+          "hash": "QWEMjFisNJErjxrMem3yYw=="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/Singularity.Bindings.WeaklyTypedBindingBatch.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Singularity.Bindings.WeaklyTypedBindingBatch.html",
+          "hash": "+7Lq1quUgx1H+z6frRaySg=="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/Singularity.Bindings.WeaklyTypedConfiguredBinding.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Singularity.Bindings.WeaklyTypedConfiguredBinding.html",
+          "hash": "oveyIcrQsXPjXo/ehR+Maw=="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/Singularity.Bindings.WeaklyTypedDecoratorBinding.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Singularity.Bindings.WeaklyTypedDecoratorBinding.html",
+          "hash": "NPfMhVXZlqweRex69Uh1nQ=="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/Singularity.Bindings.WeaklyTypedDecoratorBindingBatch.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Singularity.Bindings.WeaklyTypedDecoratorBindingBatch.html",
+          "hash": "n6Uvki+DYfn3PEdIwfjkgg=="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/Singularity.Bindings.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Singularity.Bindings.html",
+          "hash": "JG8z8Yjs23Bh97IlF8iNtA=="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/Singularity.Container.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Singularity.Container.html",
+          "hash": "BSt5c+qhx80eGY+Gfv2s5w=="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/Singularity.CreationMode.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Singularity.CreationMode.html",
+          "hash": "EI6yAKo8ZMb8quhVm78ZTQ=="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/Singularity.Duality.Resources.ModuleRef.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Singularity.Duality.Resources.ModuleRef.html",
+          "hash": "aiDnlsNzXfCbty9H+hSqhw=="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/Singularity.Duality.Resources.SingularityModules.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Singularity.Duality.Resources.SingularityModules.html",
+          "hash": "dMB+CJr16uAGYJAnkP1+WA=="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/Singularity.Duality.Resources.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Singularity.Duality.Resources.html",
+          "hash": "sPcAxWJq8/R8LlcTrY0Vvg=="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/Singularity.Duality.SingularityPlugin.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Singularity.Duality.SingularityPlugin.html",
+          "hash": "YK/QzB/ButafsdBfS9sDqA=="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/Singularity.Duality.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Singularity.Duality.html",
+          "hash": "eKi5uQyobrETzok+MCa2sw=="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/Singularity.Exceptions.BindingConfigException.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Singularity.Exceptions.BindingConfigException.html",
+          "hash": "p6HiL0ac1+jFIY3ccydOxA=="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/Singularity.Exceptions.CannotAutoResolveConstructorException.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Singularity.Exceptions.CannotAutoResolveConstructorException.html",
+          "hash": "FkEz8/RQeeByy+8RTa6Xmg=="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/Singularity.Exceptions.CircularDependencyException.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Singularity.Exceptions.CircularDependencyException.html",
+          "hash": "QZFS0NaFAVO8RyXPfam0qw=="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/Singularity.Exceptions.DependencyNotFoundException.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Singularity.Exceptions.DependencyNotFoundException.html",
+          "hash": "lh0MxWcxmtRqElwKSR94Hw=="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/Singularity.Exceptions.EnumerableRegistrationException.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Singularity.Exceptions.EnumerableRegistrationException.html",
+          "hash": "RRYjBTn9Bf9NDb0XMt1AXQ=="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/Singularity.Exceptions.InterfaceExpectedException.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Singularity.Exceptions.InterfaceExpectedException.html",
+          "hash": "09o0zTQbOgvrAlxT4G6Txg=="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/Singularity.Exceptions.InvalidExpressionArgumentsException.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Singularity.Exceptions.InvalidExpressionArgumentsException.html",
+          "hash": "/sXIiOo3H8cAHxMMI5zTSA=="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/Singularity.Exceptions.InvalidLifetimeException.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Singularity.Exceptions.InvalidLifetimeException.html",
+          "hash": "mMZ+n/WrWvaj3ZCrqprLTQ=="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/Singularity.Exceptions.NoConstructorException.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Singularity.Exceptions.NoConstructorException.html",
+          "hash": "RXf3PhUWLvbJiGODXaY17w=="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/Singularity.Exceptions.RegistrationAlreadyExistsException.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Singularity.Exceptions.RegistrationAlreadyExistsException.html",
+          "hash": "q8vgk0rG+2xQX/+Mx3PaJA=="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/Singularity.Exceptions.SingularityAggregateException.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Singularity.Exceptions.SingularityAggregateException.html",
+          "hash": "LR8zFyL8xSJYlVWBlPlPxw=="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/Singularity.Exceptions.SingularityException.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Singularity.Exceptions.SingularityException.html",
+          "hash": "uruFcMlmQxWxptYQC8JTDA=="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/Singularity.Exceptions.TypeNotAssignableException.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Singularity.Exceptions.TypeNotAssignableException.html",
+          "hash": "WEK6+USiOYco+Zp2dORcfQ=="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/Singularity.Exceptions.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Singularity.Exceptions.html",
+          "hash": "Qd5q/N+7ywBLa3qxgLjPRQ=="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/Singularity.Graph.BindingMetadata.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Singularity.Graph.BindingMetadata.html",
+          "hash": "AomZVCD3f+gVuS+XYss3IA=="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/Singularity.Graph.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Singularity.Graph.html",
+          "hash": "ErCEZgzXPbDkJ1lovB8IeA=="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/Singularity.IContainer.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Singularity.IContainer.html",
+          "hash": "ud23C/nJyWH7QyMD+arPnQ=="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/Singularity.IModule.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Singularity.IModule.html",
+          "hash": "f9ZwQDmqTKdlBmx8mMzVqA=="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/Singularity.Scoped.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Singularity.Scoped.html",
+          "hash": "wLjRldZzrpouoy1hApRa/Q=="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/Singularity.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Singularity.html",
+          "hash": "Nf/XEDn1HyO8y8LB5XW6Bg=="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "Conceptual",
+      "source_relative_path": "api/index.md",
+      "output": {
+        ".html": {
+          "relative_path": "api/index.html",
+          "hash": "fTR1tG44pYXq9ZOO3ovdMQ=="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "Toc",
+      "source_relative_path": "api/toc.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/toc.html",
+          "hash": "+YosvF1x26sN2bpKsAn1Aw=="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "Conceptual",
+      "source_relative_path": "articles/intro.md",
+      "output": {
+        ".html": {
+          "relative_path": "articles/intro.html",
+          "hash": "tC2b8UFqXew51vFfczsC/A=="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "Toc",
+      "source_relative_path": "articles/toc.yml",
+      "output": {
+        ".html": {
+          "relative_path": "articles/toc.html",
+          "hash": "t7iiFrmuYmrKWisdq+lN6Q=="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "Conceptual",
+      "source_relative_path": "index.md",
+      "output": {
+        ".html": {
+          "relative_path": "index.html",
+          "hash": "t7nbokNLPoZdosE7rc4Hvw=="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "Toc",
+      "source_relative_path": "toc.yml",
+      "output": {
+        ".html": {
+          "relative_path": "toc.html",
+          "hash": "k+/dkjFuwAVS32HduMpmBw=="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    }
+  ],
+  "incremental_info": [
+    {
+      "status": {
+        "can_incremental": false,
+        "details": "Disable incremental build by force rebuild option.",
+        "incrementalPhase": "build",
+        "total_file_count": 0,
+        "skipped_file_count": 0,
+        "full_build_reason_code": "ForceRebuild"
+      },
+      "processors": {
+        "TocDocumentProcessor": {
+          "can_incremental": false,
+          "details": "Processor TocDocumentProcessor cannot support incremental build because the processor doesn't implement ISupportIncrementalDocumentProcessor interface.",
+          "incrementalPhase": "build",
+          "total_file_count": 0,
+          "skipped_file_count": 0
+        },
+        "ConceptualDocumentProcessor": {
+          "can_incremental": false,
+          "incrementalPhase": "build",
+          "total_file_count": 3,
+          "skipped_file_count": 0
+        },
+        "ManagedReferenceDocumentProcessor": {
+          "can_incremental": false,
+          "incrementalPhase": "build",
+          "total_file_count": 39,
+          "skipped_file_count": 0
+        }
+      }
+    },
+    {
+      "status": {
+        "can_incremental": false,
+        "details": "Cannot support incremental post processing, the reason is: it's disabled.",
+        "incrementalPhase": "postProcessing",
+        "total_file_count": 0,
+        "skipped_file_count": 0
+      },
+      "processors": {}
+    }
+  ],
+  "version_info": {},
+  "groups": [
+    {
+      "xrefmap": "xrefmap.yml"
+    }
+  ]
+}

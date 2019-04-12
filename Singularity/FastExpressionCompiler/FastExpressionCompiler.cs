@@ -40,7 +40,7 @@ namespace FastExpressionCompiler
     /// <summary>Compiles expression to delegate ~20 times faster than Expression.Compile.
     /// Partial to extend with your things when used as source file.</summary>
     // ReSharper disable once PartialTypeWithSinglePart
-    public static partial class ExpressionCompiler
+    internal static partial class ExpressionCompiler
     {
         #region Expression.CompileFast overloads for Delegate, Funcs, and Actions
 
