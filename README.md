@@ -32,7 +32,6 @@ For duality users there is also a guide on how to use `Singularity.Duality` in d
 | Branch | Status | Coverage |
 |-------------|--------|-----|
 | master      | [![Build status](https://ci.appveyor.com/api/projects/status/7fp2lnmhmgld0l37/branch/master?svg=true)](https://ci.appveyor.com/project/Barsonax/singularity/branch/master) | [![codecov](https://codecov.io/gh/Barsonax/Singularity/branch/master/graph/badge.svg)](https://codecov.io/gh/Barsonax/Singularity) |
-| develop      | [![Build status](https://ci.appveyor.com/api/projects/status/7fp2lnmhmgld0l37/branch/develop?svg=true)](https://ci.appveyor.com/project/Barsonax/singularity/branch/develop) | [![codecov](https://codecov.io/gh/Barsonax/Singularity/branch/develop/graph/badge.svg)](https://codecov.io/gh/Barsonax/Singularity) |
 
 ### Nuget
 
