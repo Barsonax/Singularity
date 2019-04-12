@@ -23,8 +23,14 @@ namespace Singularity.Graph
         /// </summary>
 		public Type? ModuleType { get; }
 
+        /// <summary>
+        /// Is this binding dynamically generated or not?
+        /// </summary>
         public bool Generated { get; }
 
+        /// <summary>
+        /// The dependency type
+        /// </summary>
         public Type DependencyType { get; }
 
         internal BindingMetadata(Type dependencyType, string creatorFilePath, int creatorLineNumber, IModule? module)

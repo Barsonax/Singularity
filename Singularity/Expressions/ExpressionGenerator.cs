@@ -11,9 +11,8 @@ namespace Singularity.Expressions
     internal class ExpressionGenerator
     {
         public static ParameterExpression ScopeParameter = Expression.Parameter(typeof(Scoped));
-        private static readonly MethodInfo GenericAddMethod = typeof(Scoped).GetRuntimeMethods().FirstOrDefault(x => x.Name == nameof(Scoped.Add));
 
-        public Expression GenerateDependencyExpression(ResolvedDependency dependency, Scoped graphScope)
+        public Expression GenerateDependencyExpression(ResolvedDependency dependency, Scoped containerScope)
         {
             Expression expression = dependency.Binding.Expression! is LambdaExpression lambdaExpression ? lambdaExpression.Body : dependency.Binding.Expression;
             var parameterExpressionVisitor = new ParameterExpressionVisitor(dependency.Children);
@@ -21,7 +20,7 @@ namespace Singularity.Expressions
 
             if (dependency.Binding.OnDeathAction != null)
             {
-                MethodInfo method = GenericAddMethod.MakeGenericMethod(expression.Type);
+                MethodInfo method = Scoped.GenericAddMethod.MakeGenericMethod(expression.Type);
                 expression = Expression.Call(ScopeParameter, method, expression, Expression.Constant(dependency.Binding));
             }
 
@@ -50,22 +49,21 @@ namespace Singularity.Expressions
                 expression = body.Count == 1 ? expression : Expression.Block(new[] { instanceParameter }, body);
             }
 
-            if (dependency.Binding.CreationMode is CreationMode.Singleton)
+            switch (dependency.Binding.CreationMode)
             {
-                object value;
-                if (expression is NewExpression newExpression && newExpression.Arguments.Count == 0)
-                {
-                    //In this case we know the signature and can call the constructor directly instead of doing a costly compile.
-                    value = newExpression.Constructor.Invoke(null);
-                }
-                else
-                {
-                    value = ((Func<Scoped, object>)Expression.Lambda(expression, ScopeParameter).CompileFast()).Invoke(graphScope);
-                }
-                dependency.InstanceFactory = scope => value;
-                return Expression.Constant(value, dependency.Registration.DependencyType);
+                case CreationMode.Transient:
+                    return expression;
+                case CreationMode.PerContainer:
+                    object singletonInstance = ((Func<Scoped, object>)Expression.Lambda(expression, ScopeParameter).CompileFast()).Invoke(containerScope);
+                    dependency.InstanceFactory = scope => singletonInstance;
+                    return Expression.Constant(singletonInstance, dependency.Registration.DependencyType);
+                case CreationMode.PerScope:
+                    var scopedFactory = (Func<Scoped, object>)Expression.Lambda(expression, ScopeParameter).CompileFast();
+                    expression = Expression.Call(ScopeParameter, Scoped.GetorAddScopedInstanceMethod, Expression.Constant(dependency.Registration.DependencyType), Expression.Constant(scopedFactory));
+                    return expression;
+                default:
+                    throw new ArgumentOutOfRangeException();
             }
-            return expression;
         }
     }
 }

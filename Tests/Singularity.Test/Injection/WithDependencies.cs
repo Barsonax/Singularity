@@ -72,7 +72,7 @@ namespace Singularity.Test.Injection
         {
             //ARRANGE
             var config = new BindingConfig();
-            config.Register<ITestService10, TestService10>().With(CreationMode.Singleton);
+            config.Register<ITestService10, TestService10>().With(CreationMode.PerContainer);
             config.Register<ITestService11, TestService11>();
 
             var container = new Container(config);
@@ -125,7 +125,7 @@ namespace Singularity.Test.Injection
         {
             //ARRANGE
             var config = new BindingConfig();
-            config.Register<ITestService10, TestService10>().With(CreationMode.Singleton);
+            config.Register<ITestService10, TestService10>().With(CreationMode.PerContainer);
             config.Register<ITestService11, TestService11>();
             config.Register<ITestService12, TestService12>();
 

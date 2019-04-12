@@ -43,7 +43,7 @@ namespace Singularity.Test.Injection
                 Assert.Equal(typeof(DependencyNotFoundException), aggregateException.InnerExceptions[0].GetType());
                 var dependencyNotFoundException = (DependencyNotFoundException)aggregateException.InnerExceptions[0];
 
-                Assert.Equal(typeof(int), dependencyNotFoundException.Type);
+                Assert.Equal(typeof(int).AssemblyQualifiedName, dependencyNotFoundException.Type);
             }
         }
 
@@ -75,7 +75,7 @@ namespace Singularity.Test.Injection
                 Assert.Equal(typeof(DependencyNotFoundException), aggregateException.InnerExceptions[0].GetType());
                 var dependencyNotFoundException = (DependencyNotFoundException)aggregateException.InnerExceptions[0];
 
-                Assert.Equal(typeof(ITestService10), dependencyNotFoundException.Type);
+                Assert.Equal(typeof(ITestService10).AssemblyQualifiedName, dependencyNotFoundException.Type);
             }
         }
 

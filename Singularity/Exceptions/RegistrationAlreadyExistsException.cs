@@ -6,18 +6,15 @@ namespace Singularity.Exceptions
     [Serializable]
     public class RegistrationAlreadyExistsException : SingularityException
     {
-        public RegistrationAlreadyExistsException()
+        internal RegistrationAlreadyExistsException(string message, Exception? inner = null) : base(message, inner)
         {
         }
 
-        public RegistrationAlreadyExistsException(string message) : base(message)
-        {
-        }
-
-        public RegistrationAlreadyExistsException(string message, Exception inner) : base(message, inner)
-        {
-        }
-
+        /// <summary>
+        /// Deserialization constructor
+        /// </summary>
+        /// <param name="info"></param>
+        /// <param name="context"></param>
         protected RegistrationAlreadyExistsException(SerializationInfo info, StreamingContext context) : base(info, context)
         {
         }

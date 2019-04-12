@@ -9,14 +9,14 @@ namespace Singularity.Graph.Resolvers
 {
     internal class EnumerableDependencyResolver : IDependencyResolver
     {
-        public IEnumerable<Dependency>? Resolve(DependencyGraph graph, Type type)
+        public IEnumerable<Dependency>? Resolve(IResolverPipeline graph, Type type)
         {
             if (type.IsGenericType)
             {
                 Type definition = type.GetGenericTypeDefinition();
                 if (definition == typeof(IEnumerable<>) || definition == typeof(IReadOnlyCollection<>) || definition == typeof(IReadOnlyList<>))
                 {
-                    Dependency childDependency = graph.TryGetDependency(type.GenericTypeArguments[0]);
+                    Dependency? childDependency = graph.TryGetDependency(type.GenericTypeArguments[0]);
                     ResolvedDependency[] dependencies = childDependency?.ResolvedDependencies.Array ?? new ResolvedDependency[0];
                     foreach (ResolvedDependency dependency in dependencies)
                     {
@@ -32,8 +32,7 @@ namespace Singularity.Graph.Resolvers
                     Type collectionType = typeof(IReadOnlyCollection<>).MakeGenericType(type.GenericTypeArguments[0]);
                     Type listType = typeof(IReadOnlyList<>).MakeGenericType(type.GenericTypeArguments[0]);
 
-                    IEnumerable<Dependency> collectionDependencies = new[] { enumerableType, collectionType, listType }.Select(t =>
-                          new Dependency(t, expression, CreationMode.Transient)).ToArray();
+                    IEnumerable<Dependency> collectionDependencies = new[] { enumerableType, collectionType, listType }.Select(t => new Dependency(t, expression, CreationMode.Transient)).ToArray();
                     foreach (Dependency collectionDependency in collectionDependencies)
                     {
                         collectionDependency.Default.Expression = expression;

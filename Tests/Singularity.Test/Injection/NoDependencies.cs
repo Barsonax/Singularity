@@ -173,7 +173,7 @@ namespace Singularity.Test.Injection
         {
             //ARRANGE
             var config = new BindingConfig();
-            config.Register<ITestService10, TestService10>().With(CreationMode.Singleton);
+            config.Register<ITestService10, TestService10>().With(CreationMode.PerContainer);
 
             var container = new Container(config);
 

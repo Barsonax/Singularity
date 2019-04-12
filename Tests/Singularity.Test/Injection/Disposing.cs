@@ -11,7 +11,7 @@ namespace Singularity.Test.Injection
         {
             //ARRANGE
             var config = new BindingConfig();
-            config.Register<IDisposable, Disposable>().With(CreationMode.Singleton).OnDeath(x => x.Dispose());
+            config.Register<IDisposable, Disposable>().With(CreationMode.PerContainer).OnDeath(x => x.Dispose());
 
             var container = new Container(config);
 
@@ -73,7 +73,7 @@ namespace Singularity.Test.Injection
         {
             //ARRANGE
             var config = new BindingConfig();
-            config.Register<IDisposable, Disposable>().With(CreationMode.Singleton).OnDeath(x => x.Dispose());
+            config.Register<IDisposable, Disposable>().With(CreationMode.PerContainer).OnDeath(x => x.Dispose());
             var nestedConfig = new BindingConfig();
 
             var container = new Container(config);
@@ -105,7 +105,7 @@ namespace Singularity.Test.Injection
             var nestedConfig = new BindingConfig();
 
             var container = new Container(config);
-            Container nestedContainer = container.GetNestedContainer(nestedConfig, new Scoped("nestedScope"));
+            Container nestedContainer = container.GetNestedContainer(nestedConfig);
 
             //ACT
             var topLevelInstance = container.GetInstance<IDisposable>();

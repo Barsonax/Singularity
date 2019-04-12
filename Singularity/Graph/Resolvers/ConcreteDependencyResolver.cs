@@ -5,12 +5,12 @@ namespace Singularity.Graph.Resolvers
 {
     internal class ConcreteDependencyResolver : IDependencyResolver
     {
-        public IEnumerable<Dependency>? Resolve(DependencyGraph graph, Type type)
+        public IEnumerable<Dependency>? Resolve(IResolverPipeline graph, Type type)
         {
             if (!type.IsInterface)
             {
                 if (type.IsGenericType) return null;
-                return new[] { new Dependency(type, type.AutoResolveConstructorExpression(), CreationMode.Transient) };
+                return new[] { new Dependency(type, CreationMode.Transient) };
             }
 
             return null;

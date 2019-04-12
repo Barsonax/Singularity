@@ -6,14 +6,15 @@ namespace Singularity.Exceptions
     [Serializable]
     public class CannotAutoResolveConstructorException : SingularityException
     {
-        internal CannotAutoResolveConstructorException(string message) : base(message)
+        internal CannotAutoResolveConstructorException(string message, Exception? inner = null) : base(message, inner)
         {
         }
 
-        public CannotAutoResolveConstructorException()
-        {
-        }
-
+        /// <summary>
+        /// Deserialization constructor
+        /// </summary>
+        /// <param name="info"></param>
+        /// <param name="context"></param>
         protected CannotAutoResolveConstructorException(SerializationInfo info, StreamingContext context) : base(info, context)
         {
         }

@@ -82,7 +82,7 @@ namespace Singularity.Test.Bindings
                 typeof(Plugin1),
                 typeof(Plugin2),
                 typeof(Plugin3),
-            }).With(CreationMode.Singleton);
+            }).With(CreationMode.PerContainer);
 
             //ACT
             ReadOnlyCollection<ReadonlyRegistration> registrations = config.GetDependencies();
@@ -92,7 +92,7 @@ namespace Singularity.Test.Bindings
             Assert.Equal(typeof(Plugin1), registration.Bindings[0].Expression!.Type);
             Assert.Equal(typeof(Plugin2), registration.Bindings[1].Expression!.Type);
             Assert.Equal(typeof(Plugin3), registration.Bindings[2].Expression!.Type);
-            Assert.True(registrations[0].Bindings.All(x => x.CreationMode == CreationMode.Singleton));
+            Assert.True(registrations[0].Bindings.All(x => x.CreationMode == CreationMode.PerContainer));
         }
 
         [Fact]

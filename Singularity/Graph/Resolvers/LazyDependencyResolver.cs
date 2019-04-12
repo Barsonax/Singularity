@@ -7,19 +7,27 @@ namespace Singularity.Graph.Resolvers
 {
     internal class LazyDependencyResolver : IDependencyResolver
     {
-        public IEnumerable<Dependency>? Resolve(DependencyGraph graph, Type type)
+        public IEnumerable<Dependency>? Resolve(IResolverPipeline graph, Type type)
         {
             if (type.IsGenericType && type.GetGenericTypeDefinition() == typeof(Lazy<>))
             {
                 Type funcType = typeof(Func<>).MakeGenericType(type.GenericTypeArguments[0]);
                 Type lazyType = typeof(Lazy<>).MakeGenericType(type.GenericTypeArguments[0]);
                 Dependency factoryDependency = graph.GetDependency(funcType);
-                graph.ResolveDependency(factoryDependency.Default);
 
+                var expressions = new List<Expression>();
                 ConstructorInfo constructor = lazyType.GetConstructor(new[] { funcType });
-                Expression expression = Expression.New(constructor, factoryDependency.Default.Expression);
-                var lazyDependency = new Dependency(type, expression, CreationMode.Transient);
-                lazyDependency.Default.Expression = expression;
+                foreach (ResolvedDependency resolvedDependency in factoryDependency.ResolvedDependencies.Array)
+                {
+                    graph.ResolveDependency(resolvedDependency);
+                    expressions.Add(Expression.New(constructor, resolvedDependency.Expression));
+                }
+
+                var lazyDependency = new Dependency(type, expressions, CreationMode.Transient);
+                for (int i = 0; i < lazyDependency.ResolvedDependencies.Array.Length; i++)
+                {
+                    lazyDependency.ResolvedDependencies.Array[i].Expression = expressions[i];
+                }
                 return new[] { lazyDependency };
             }
 

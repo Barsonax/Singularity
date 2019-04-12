@@ -6,12 +6,16 @@
     public enum CreationMode
     {
         /// <summary>
-        /// Every time a dependency is requested a new instance is returned
+        /// Every time a instance is requested a new instance is returned.
         /// </summary>
         Transient,
         /// <summary>
-        /// Every time a dependency is requested the same instance is returned
+        /// The same instance will be returned as long as it is requested in the same <see cref="Container"/> or a child of this container.
         /// </summary>
-        Singleton
+        PerContainer,
+        /// <summary>
+        /// The same instance will be returned as long as it is requested in the same <see cref="Scoped"/>.
+        /// </summary>
+        PerScope
     }
 }
