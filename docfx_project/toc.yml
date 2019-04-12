@@ -3,7 +3,7 @@
 - name: Api Documentation
   href: api/
   homepage: api/index.md
-  name: Github
+- name: Github
   href: https://github.com/Barsonax/Singularity
-  name: Blog
+- name: Blog
   href: https://www.the-photographing-programmer.com/
