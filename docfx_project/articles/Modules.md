@@ -1,0 +1,1 @@
+A module in Singularity is nothing more than a class that implements the `IModule` interface. The intention of this interface is to enable developers to group together related dependencies and reduce the amount of weakly typed dependencies. 

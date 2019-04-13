@@ -15,15 +15,15 @@ namespace Singularity.Bindings
         }
 
         /// <summary>
-        /// Sets the <see cref="CreationMode"/> on all <see cref="WeaklyTypedConfiguredBinding"/>s in this batch.
+        /// Sets the <see cref="Lifetime"/> on all <see cref="WeaklyTypedConfiguredBinding"/>s in this batch.
         /// </summary>
-        /// <param name="creationMode"></param>
+        /// <param name="lifetime"></param>
         /// <returns></returns>
-        public WeaklyTypedBindingBatch With(CreationMode creationMode)
+        public WeaklyTypedBindingBatch With(Lifetime lifetime)
         {
             foreach (WeaklyTypedConfiguredBinding weaklyTypedConfiguredBinding in WeaklyTypedBindings)
             {
-                weaklyTypedConfiguredBinding.With(creationMode);
+                weaklyTypedConfiguredBinding.With(lifetime);
             }
 
             return this;

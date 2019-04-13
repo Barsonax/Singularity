@@ -45,7 +45,7 @@
       "output": {
         ".html": {
           "relative_path": "api/Singularity.Bindings.StronglyTypedBinding-1.html",
-          "hash": "Af6HwHvJYWQWmXe3Ep6VWw=="
+          "hash": "Zk7mK4cwcdZZZBl9sKZUaQ=="
         }
       },
       "is_incremental": false,
@@ -57,7 +57,7 @@
       "output": {
         ".html": {
           "relative_path": "api/Singularity.Bindings.StronglyTypedConfiguredBinding-2.html",
-          "hash": "1YxeDPsP+s455d4bPOU8Cw=="
+          "hash": "OTyDC7K/cRJWaYVZoruKDg=="
         }
       },
       "is_incremental": false,
@@ -81,7 +81,7 @@
       "output": {
         ".html": {
           "relative_path": "api/Singularity.Bindings.WeaklyTypedBinding.html",
-          "hash": "pPLXVGb2ebbFpfFKD+20uQ=="
+          "hash": "/NASDfS1Zg7oZG9UdrKjrg=="
         }
       },
       "is_incremental": false,
@@ -93,7 +93,7 @@
       "output": {
         ".html": {
           "relative_path": "api/Singularity.Bindings.WeaklyTypedBindingBatch.html",
-          "hash": "Pej8staHrJZi2CjW8j+Yyg=="
+          "hash": "yEGoQmDc/FVuYpGqO6GGBg=="
         }
       },
       "is_incremental": false,
@@ -105,7 +105,7 @@
       "output": {
         ".html": {
           "relative_path": "api/Singularity.Bindings.WeaklyTypedConfiguredBinding.html",
-          "hash": "1wbwE1JPFDMs7m8yHlNa8A=="
+          "hash": "nCQxtI04PBYBU28ohjq/LQ=="
         }
       },
       "is_incremental": false,
@@ -154,18 +154,6 @@
         ".html": {
           "relative_path": "api/Singularity.Container.html",
           "hash": "kTJTn4Hj0uBI+Z4JG4Zr2w=="
-        }
-      },
-      "is_incremental": false,
-      "version": ""
-    },
-    {
-      "type": "ManagedReference",
-      "source_relative_path": "api/Singularity.CreationMode.yml",
-      "output": {
-        ".html": {
-          "relative_path": "api/Singularity.CreationMode.html",
-          "hash": "cywoF2q/fXrnmKebKY2nfQ=="
         }
       },
       "is_incremental": false,
@@ -449,6 +437,18 @@
     },
     {
       "type": "ManagedReference",
+      "source_relative_path": "api/Singularity.Lifetime.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Singularity.Lifetime.html",
+          "hash": "9q7zWHBosXf56zPOZN+qYA=="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
       "source_relative_path": "api/Singularity.Scoped.yml",
       "output": {
         ".html": {
@@ -465,7 +465,7 @@
       "output": {
         ".html": {
           "relative_path": "api/Singularity.html",
-          "hash": "Nf/XEDn1HyO8y8LB5XW6Bg=="
+          "hash": "ksiLvs2FJnUHo0+oo5LWKg=="
         }
       },
       "is_incremental": false,
@@ -489,7 +489,7 @@
       "output": {
         ".html": {
           "relative_path": "api/toc.html",
-          "hash": "+YosvF1x26sN2bpKsAn1Aw=="
+          "hash": "FlAr08QDV0YOh2AGRYO46g=="
         }
       },
       "is_incremental": false,
@@ -497,11 +497,95 @@
     },
     {
       "type": "Conceptual",
-      "source_relative_path": "articles/intro.md",
+      "source_relative_path": "articles/Configuring Dependencies.md",
       "output": {
         ".html": {
-          "relative_path": "articles/intro.html",
-          "hash": "VGO+vO7JGkM5BeFw/x8WCQ=="
+          "relative_path": "articles/Configuring Dependencies.html",
+          "hash": "BWvCZVUeGfT2vrp0IZ1Tfw=="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "Conceptual",
+      "source_relative_path": "articles/Game Scope Dependencies.md",
+      "output": {
+        ".html": {
+          "relative_path": "articles/Game Scope Dependencies.html",
+          "hash": "fEc2trO377Y68YLaxjCPuQ=="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "Conceptual",
+      "source_relative_path": "articles/Lifetimes.md",
+      "output": {
+        ".html": {
+          "relative_path": "articles/Lifetimes.html",
+          "hash": "x2Dv9oFXj8nWE1AsEvW7+g=="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "Conceptual",
+      "source_relative_path": "articles/Method injection.md",
+      "output": {
+        ".html": {
+          "relative_path": "articles/Method injection.html",
+          "hash": "RvF6V7V/JYGaMbX8eEXOVw=="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "Conceptual",
+      "source_relative_path": "articles/Modules.md",
+      "output": {
+        ".html": {
+          "relative_path": "articles/Modules.html",
+          "hash": "5MhfvZ2eGobYQiSUrzNnSg=="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "Conceptual",
+      "source_relative_path": "articles/Scene Scope Dependencies.md",
+      "output": {
+        ".html": {
+          "relative_path": "articles/Scene Scope Dependencies.html",
+          "hash": "1fJDd5AUnoppSNBYjDqCMw=="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "Conceptual",
+      "source_relative_path": "articles/Scopes.md",
+      "output": {
+        ".html": {
+          "relative_path": "articles/Scopes.html",
+          "hash": "Y3ZeyxEiH0MhMKgIQmgKRg=="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "Conceptual",
+      "source_relative_path": "articles/Using Singularity in Duality.md",
+      "output": {
+        ".html": {
+          "relative_path": "articles/Using Singularity in Duality.html",
+          "hash": "CdFotZgi3EoK8frs8rF61w=="
         }
       },
       "is_incremental": false,
@@ -513,7 +597,7 @@
       "output": {
         ".html": {
           "relative_path": "articles/toc.html",
-          "hash": "t7iiFrmuYmrKWisdq+lN6Q=="
+          "hash": "/fmvbxMnr0EnbfUcMIpcCw=="
         }
       },
       "is_incremental": false,
@@ -525,7 +609,7 @@
       "output": {
         ".html": {
           "relative_path": "index.html",
-          "hash": "5j+nMfYjSmcAUHwrXrxL5g=="
+          "hash": "703GLU8ViS7XUZNIi4FtPQ=="
         }
       },
       "is_incremental": false,
@@ -537,7 +621,7 @@
       "output": {
         ".html": {
           "relative_path": "toc.html",
-          "hash": "cdSdjLGqBI9Cy2ipULnkJw=="
+          "hash": "Y/0pSEpfXlEtlm/eEtIk5g=="
         }
       },
       "is_incremental": false,
@@ -571,7 +655,7 @@
         "ConceptualDocumentProcessor": {
           "can_incremental": false,
           "incrementalPhase": "build",
-          "total_file_count": 3,
+          "total_file_count": 10,
           "skipped_file_count": 0
         }
       }

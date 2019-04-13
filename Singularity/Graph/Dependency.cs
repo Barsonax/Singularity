@@ -25,20 +25,20 @@ namespace Singularity.Graph
             Default = ResolvedDependencies.Array.LastOrDefault();
         }
 
-        public Dependency(Type type, CreationMode creationMode) :
-            this(new ReadonlyRegistration(type, new Binding(new BindingMetadata(type), type.AutoResolveConstructorExpression(), creationMode, null), new Expression[0]))
+        public Dependency(Type type, Lifetime lifetime) :
+            this(new ReadonlyRegistration(type, new Binding(new BindingMetadata(type), type.AutoResolveConstructorExpression(), lifetime, null), new Expression[0]))
         {
 
         }
 
-        public Dependency(Type type, Expression expression, CreationMode creationMode) :
-            this(new ReadonlyRegistration(type, new Binding(new BindingMetadata(type), expression, creationMode, null), new Expression[0]))
+        public Dependency(Type type, Expression expression, Lifetime lifetime) :
+            this(new ReadonlyRegistration(type, new Binding(new BindingMetadata(type), expression, lifetime, null), new Expression[0]))
         {
 
         }
 
-        public Dependency(Type type, IEnumerable<Expression> expressions, CreationMode creationMode) :
-            this(new ReadonlyRegistration(type, expressions.Select(expression => new Binding(new BindingMetadata(type), expression, creationMode, null)) , new Expression[0]))
+        public Dependency(Type type, IEnumerable<Expression> expressions, Lifetime lifetime) :
+            this(new ReadonlyRegistration(type, expressions.Select(expression => new Binding(new BindingMetadata(type), expression, lifetime, null)) , new Expression[0]))
         {
 
         }

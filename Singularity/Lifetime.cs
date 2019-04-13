@@ -3,7 +3,7 @@
     /// <summary>
     /// Specifies when new instances of dependencies should be made
     /// </summary>
-    public enum CreationMode
+    public enum Lifetime
     {
         /// <summary>
         /// Every time a instance is requested a new instance is returned.

@@ -82,7 +82,7 @@ namespace Singularity.Test.Bindings
                 typeof(Plugin1),
                 typeof(Plugin2),
                 typeof(Plugin3),
-            }).With(CreationMode.PerContainer);
+            }).With(Lifetime.PerContainer);
 
             //ACT
             ReadOnlyCollection<ReadonlyRegistration> registrations = config.GetDependencies();
@@ -92,7 +92,7 @@ namespace Singularity.Test.Bindings
             Assert.Equal(typeof(Plugin1), registration.Bindings[0].Expression!.Type);
             Assert.Equal(typeof(Plugin2), registration.Bindings[1].Expression!.Type);
             Assert.Equal(typeof(Plugin3), registration.Bindings[2].Expression!.Type);
-            Assert.True(registrations[0].Bindings.All(x => x.CreationMode == CreationMode.PerContainer));
+            Assert.True(registrations[0].Bindings.All(x => x.Lifetime == Lifetime.PerContainer));
         }
 
         [Fact]
@@ -129,7 +129,7 @@ namespace Singularity.Test.Bindings
             var config = new BindingConfig();
             Assert.Throws<InvalidLifetimeException>(() =>
             {
-                config.Register<ITestService10, TestService10>().With((CreationMode)234234);
+                config.Register<ITestService10, TestService10>().With((Lifetime)234234);
             });
         }
 
@@ -139,7 +139,7 @@ namespace Singularity.Test.Bindings
             var config = new BindingConfig();
             Assert.Throws<InvalidLifetimeException>(() =>
             {
-                config.Register(typeof(ITestService10), typeof(TestService10)).With((CreationMode)234234);
+                config.Register(typeof(ITestService10), typeof(TestService10)).With((Lifetime)234234);
             });
         }
 

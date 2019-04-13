@@ -18,12 +18,12 @@ namespace Singularity.Bindings
         /// <summary>
         /// Sets the lifetime of the instance(s)
         /// </summary>
-        /// <param name="creationMode"></param>
+        /// <param name="lifetime"></param>
         /// <returns></returns>
-        public new StronglyTypedConfiguredBinding<TDependency, TInstance> With(CreationMode creationMode)
+        public new StronglyTypedConfiguredBinding<TDependency, TInstance> With(Lifetime lifetime)
         {
-            if (!EnumMetadata<CreationMode>.IsValidValue(creationMode)) throw new InvalidLifetimeException(creationMode);
-            CreationMode = creationMode;
+            if (!EnumMetadata<Lifetime>.IsValidValue(lifetime)) throw new InvalidLifetimeException(lifetime);
+            Lifetime = lifetime;
             return this;
         }
 

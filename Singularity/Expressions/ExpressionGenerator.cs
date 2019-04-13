@@ -49,15 +49,15 @@ namespace Singularity.Expressions
                 expression = body.Count == 1 ? expression : Expression.Block(new[] { instanceParameter }, body);
             }
 
-            switch (dependency.Binding.CreationMode)
+            switch (dependency.Binding.Lifetime)
             {
-                case CreationMode.Transient:
+                case Lifetime.Transient:
                     return expression;
-                case CreationMode.PerContainer:
+                case Lifetime.PerContainer:
                     object singletonInstance = ((Func<Scoped, object>)Expression.Lambda(expression, ScopeParameter).CompileFast())(containerScope);
                     dependency.InstanceFactory = scope => singletonInstance;
                     return Expression.Constant(singletonInstance, dependency.Registration.DependencyType);
-                case CreationMode.PerScope:
+                case Lifetime.PerScope:
                     var scopedFactory = (Func<Scoped, object>)Expression.Lambda(expression, ScopeParameter).CompileFast();
                     expression = Expression.Call(ScopeParameter, Scoped.GetorAddScopedInstanceMethod, Expression.Constant(dependency.Registration.DependencyType), Expression.Constant(scopedFactory));
                     return expression;

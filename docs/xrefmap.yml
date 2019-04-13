@@ -247,14 +247,14 @@ references:
   fullName.vb: Singularity.Bindings.StronglyTypedConfiguredBinding(Of TDependency, TInstance).OnDeath
   nameWithType: StronglyTypedConfiguredBinding<TDependency, TInstance>.OnDeath
   nameWithType.vb: StronglyTypedConfiguredBinding(Of TDependency, TInstance).OnDeath
-- uid: Singularity.Bindings.StronglyTypedConfiguredBinding`2.With(Singularity.CreationMode)
-  name: With(CreationMode)
-  href: api/Singularity.Bindings.StronglyTypedConfiguredBinding-2.html#Singularity_Bindings_StronglyTypedConfiguredBinding_2_With_Singularity_CreationMode_
-  commentId: M:Singularity.Bindings.StronglyTypedConfiguredBinding`2.With(Singularity.CreationMode)
-  fullName: Singularity.Bindings.StronglyTypedConfiguredBinding<TDependency, TInstance>.With(Singularity.CreationMode)
-  fullName.vb: Singularity.Bindings.StronglyTypedConfiguredBinding(Of TDependency, TInstance).With(Singularity.CreationMode)
-  nameWithType: StronglyTypedConfiguredBinding<TDependency, TInstance>.With(CreationMode)
-  nameWithType.vb: StronglyTypedConfiguredBinding(Of TDependency, TInstance).With(CreationMode)
+- uid: Singularity.Bindings.StronglyTypedConfiguredBinding`2.With(Singularity.Lifetime)
+  name: With(Lifetime)
+  href: api/Singularity.Bindings.StronglyTypedConfiguredBinding-2.html#Singularity_Bindings_StronglyTypedConfiguredBinding_2_With_Singularity_Lifetime_
+  commentId: M:Singularity.Bindings.StronglyTypedConfiguredBinding`2.With(Singularity.Lifetime)
+  fullName: Singularity.Bindings.StronglyTypedConfiguredBinding<TDependency, TInstance>.With(Singularity.Lifetime)
+  fullName.vb: Singularity.Bindings.StronglyTypedConfiguredBinding(Of TDependency, TInstance).With(Singularity.Lifetime)
+  nameWithType: StronglyTypedConfiguredBinding<TDependency, TInstance>.With(Lifetime)
+  nameWithType.vb: StronglyTypedConfiguredBinding(Of TDependency, TInstance).With(Lifetime)
 - uid: Singularity.Bindings.StronglyTypedConfiguredBinding`2.With*
   name: With
   href: api/Singularity.Bindings.StronglyTypedConfiguredBinding-2.html#Singularity_Bindings_StronglyTypedConfiguredBinding_2_With_
@@ -292,19 +292,6 @@ references:
   isSpec: "True"
   fullName: Singularity.Bindings.WeaklyTypedBinding.BindingMetadata
   nameWithType: WeaklyTypedBinding.BindingMetadata
-- uid: Singularity.Bindings.WeaklyTypedBinding.CreationMode
-  name: CreationMode
-  href: api/Singularity.Bindings.WeaklyTypedBinding.html#Singularity_Bindings_WeaklyTypedBinding_CreationMode
-  commentId: P:Singularity.Bindings.WeaklyTypedBinding.CreationMode
-  fullName: Singularity.Bindings.WeaklyTypedBinding.CreationMode
-  nameWithType: WeaklyTypedBinding.CreationMode
-- uid: Singularity.Bindings.WeaklyTypedBinding.CreationMode*
-  name: CreationMode
-  href: api/Singularity.Bindings.WeaklyTypedBinding.html#Singularity_Bindings_WeaklyTypedBinding_CreationMode_
-  commentId: Overload:Singularity.Bindings.WeaklyTypedBinding.CreationMode
-  isSpec: "True"
-  fullName: Singularity.Bindings.WeaklyTypedBinding.CreationMode
-  nameWithType: WeaklyTypedBinding.CreationMode
 - uid: Singularity.Bindings.WeaklyTypedBinding.DependencyType
   name: DependencyType
   href: api/Singularity.Bindings.WeaklyTypedBinding.html#Singularity_Bindings_WeaklyTypedBinding_DependencyType
@@ -344,6 +331,19 @@ references:
   isSpec: "True"
   fullName: Singularity.Bindings.WeaklyTypedBinding.Inject
   nameWithType: WeaklyTypedBinding.Inject
+- uid: Singularity.Bindings.WeaklyTypedBinding.Lifetime
+  name: Lifetime
+  href: api/Singularity.Bindings.WeaklyTypedBinding.html#Singularity_Bindings_WeaklyTypedBinding_Lifetime
+  commentId: P:Singularity.Bindings.WeaklyTypedBinding.Lifetime
+  fullName: Singularity.Bindings.WeaklyTypedBinding.Lifetime
+  nameWithType: WeaklyTypedBinding.Lifetime
+- uid: Singularity.Bindings.WeaklyTypedBinding.Lifetime*
+  name: Lifetime
+  href: api/Singularity.Bindings.WeaklyTypedBinding.html#Singularity_Bindings_WeaklyTypedBinding_Lifetime_
+  commentId: Overload:Singularity.Bindings.WeaklyTypedBinding.Lifetime
+  isSpec: "True"
+  fullName: Singularity.Bindings.WeaklyTypedBinding.Lifetime
+  nameWithType: WeaklyTypedBinding.Lifetime
 - uid: Singularity.Bindings.WeaklyTypedBinding.OnDeathAction
   name: OnDeathAction
   href: api/Singularity.Bindings.WeaklyTypedBinding.html#Singularity_Bindings_WeaklyTypedBinding_OnDeathAction
@@ -363,12 +363,12 @@ references:
   commentId: T:Singularity.Bindings.WeaklyTypedBindingBatch
   fullName: Singularity.Bindings.WeaklyTypedBindingBatch
   nameWithType: WeaklyTypedBindingBatch
-- uid: Singularity.Bindings.WeaklyTypedBindingBatch.With(Singularity.CreationMode)
-  name: With(CreationMode)
-  href: api/Singularity.Bindings.WeaklyTypedBindingBatch.html#Singularity_Bindings_WeaklyTypedBindingBatch_With_Singularity_CreationMode_
-  commentId: M:Singularity.Bindings.WeaklyTypedBindingBatch.With(Singularity.CreationMode)
-  fullName: Singularity.Bindings.WeaklyTypedBindingBatch.With(Singularity.CreationMode)
-  nameWithType: WeaklyTypedBindingBatch.With(CreationMode)
+- uid: Singularity.Bindings.WeaklyTypedBindingBatch.With(Singularity.Lifetime)
+  name: With(Lifetime)
+  href: api/Singularity.Bindings.WeaklyTypedBindingBatch.html#Singularity_Bindings_WeaklyTypedBindingBatch_With_Singularity_Lifetime_
+  commentId: M:Singularity.Bindings.WeaklyTypedBindingBatch.With(Singularity.Lifetime)
+  fullName: Singularity.Bindings.WeaklyTypedBindingBatch.With(Singularity.Lifetime)
+  nameWithType: WeaklyTypedBindingBatch.With(Lifetime)
 - uid: Singularity.Bindings.WeaklyTypedBindingBatch.With*
   name: With
   href: api/Singularity.Bindings.WeaklyTypedBindingBatch.html#Singularity_Bindings_WeaklyTypedBindingBatch_With_
@@ -398,12 +398,12 @@ references:
   isSpec: "True"
   fullName: Singularity.Bindings.WeaklyTypedConfiguredBinding.OnDeath
   nameWithType: WeaklyTypedConfiguredBinding.OnDeath
-- uid: Singularity.Bindings.WeaklyTypedConfiguredBinding.With(Singularity.CreationMode)
-  name: With(CreationMode)
-  href: api/Singularity.Bindings.WeaklyTypedConfiguredBinding.html#Singularity_Bindings_WeaklyTypedConfiguredBinding_With_Singularity_CreationMode_
-  commentId: M:Singularity.Bindings.WeaklyTypedConfiguredBinding.With(Singularity.CreationMode)
-  fullName: Singularity.Bindings.WeaklyTypedConfiguredBinding.With(Singularity.CreationMode)
-  nameWithType: WeaklyTypedConfiguredBinding.With(CreationMode)
+- uid: Singularity.Bindings.WeaklyTypedConfiguredBinding.With(Singularity.Lifetime)
+  name: With(Lifetime)
+  href: api/Singularity.Bindings.WeaklyTypedConfiguredBinding.html#Singularity_Bindings_WeaklyTypedConfiguredBinding_With_Singularity_Lifetime_
+  commentId: M:Singularity.Bindings.WeaklyTypedConfiguredBinding.With(Singularity.Lifetime)
+  fullName: Singularity.Bindings.WeaklyTypedConfiguredBinding.With(Singularity.Lifetime)
+  nameWithType: WeaklyTypedConfiguredBinding.With(Lifetime)
 - uid: Singularity.Bindings.WeaklyTypedConfiguredBinding.With*
   name: With
   href: api/Singularity.Bindings.WeaklyTypedConfiguredBinding.html#Singularity_Bindings_WeaklyTypedConfiguredBinding_With_
@@ -589,30 +589,6 @@ references:
   fullName.vb: Singularity.Container.MethodInjectAll(Of T)(System.Collections.Generic.IEnumerable(Of T))
   nameWithType: Container.MethodInjectAll<T>(IEnumerable<T>)
   nameWithType.vb: Container.MethodInjectAll(Of T)(IEnumerable(Of T))
-- uid: Singularity.CreationMode
-  name: CreationMode
-  href: api/Singularity.CreationMode.html
-  commentId: T:Singularity.CreationMode
-  fullName: Singularity.CreationMode
-  nameWithType: CreationMode
-- uid: Singularity.CreationMode.PerContainer
-  name: PerContainer
-  href: api/Singularity.CreationMode.html#Singularity_CreationMode_PerContainer
-  commentId: F:Singularity.CreationMode.PerContainer
-  fullName: Singularity.CreationMode.PerContainer
-  nameWithType: CreationMode.PerContainer
-- uid: Singularity.CreationMode.PerScope
-  name: PerScope
-  href: api/Singularity.CreationMode.html#Singularity_CreationMode_PerScope
-  commentId: F:Singularity.CreationMode.PerScope
-  fullName: Singularity.CreationMode.PerScope
-  nameWithType: CreationMode.PerScope
-- uid: Singularity.CreationMode.Transient
-  name: Transient
-  href: api/Singularity.CreationMode.html#Singularity_CreationMode_Transient
-  commentId: F:Singularity.CreationMode.Transient
-  fullName: Singularity.CreationMode.Transient
-  nameWithType: CreationMode.Transient
 - uid: Singularity.Duality
   name: Singularity.Duality
   href: api/Singularity.Duality.html
@@ -1241,6 +1217,30 @@ references:
   isSpec: "True"
   fullName: Singularity.IModule.Register
   nameWithType: IModule.Register
+- uid: Singularity.Lifetime
+  name: Lifetime
+  href: api/Singularity.Lifetime.html
+  commentId: T:Singularity.Lifetime
+  fullName: Singularity.Lifetime
+  nameWithType: Lifetime
+- uid: Singularity.Lifetime.PerContainer
+  name: PerContainer
+  href: api/Singularity.Lifetime.html#Singularity_Lifetime_PerContainer
+  commentId: F:Singularity.Lifetime.PerContainer
+  fullName: Singularity.Lifetime.PerContainer
+  nameWithType: Lifetime.PerContainer
+- uid: Singularity.Lifetime.PerScope
+  name: PerScope
+  href: api/Singularity.Lifetime.html#Singularity_Lifetime_PerScope
+  commentId: F:Singularity.Lifetime.PerScope
+  fullName: Singularity.Lifetime.PerScope
+  nameWithType: Lifetime.PerScope
+- uid: Singularity.Lifetime.Transient
+  name: Transient
+  href: api/Singularity.Lifetime.html#Singularity_Lifetime_Transient
+  commentId: F:Singularity.Lifetime.Transient
+  fullName: Singularity.Lifetime.Transient
+  nameWithType: Lifetime.Transient
 - uid: Singularity.Scoped
   name: Scoped
   href: api/Singularity.Scoped.html

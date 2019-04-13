@@ -41,7 +41,7 @@ namespace Singularity.Test.Exceptions
             Add(new EnumerableRegistrationException(message, inner));
             Add(new InterfaceExpectedException(message, inner));
             Add(new InvalidExpressionArgumentsException(message, inner));
-            Add(new InvalidLifetimeException(CreationMode.PerContainer, inner));
+            Add(new InvalidLifetimeException(Lifetime.PerContainer, inner));
             Add(new NoConstructorException(message, inner));
             Add(new RegistrationAlreadyExistsException(message, inner));
             Add(new SingularityException(message, inner));

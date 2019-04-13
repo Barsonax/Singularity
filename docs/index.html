@@ -70,7 +70,11 @@
 </ul>
 <h2 id="getting-started">Getting started</h2>
 <h3 id="installation">Installation</h3>
-<p><code>Singularity</code> can be installed through nuget. The packages that are available can be found in the <a href="#nuget">nuget</a> section</p>
+<p><code>Singularity</code> can be installed through nuget:
+| Library | Version |
+|-------------|--------|
+| Singularity      | <a href="https://www.nuget.org/packages/Singularity/"><img src="https://buildstats.info/nuget/Singularity" alt="NuGet Badge"></a> |
+| Singularity.Duality.core      | <a href="https://www.nuget.org/packages/Singularity.Duality.core/"><img src="https://buildstats.info/nuget/Singularity.Duality.core" alt="NuGet Badge"></a>|</p>
 <h3 id="a-simple-example">A simple example</h3>
 <p>Its easy to setup a container and request a instance:</p>
 <pre><code class="lang-cs">var config = new BindingConfig();
@@ -78,10 +82,21 @@ config.Register&lt;ITestService10&gt;, TestService10&gt;();
 
 var container = new Container(config);
 
-var value = container.GetInstance&lt;ITestService10&gt;();
+var instance = container.GetInstance&lt;ITestService10&gt;();
 </code></pre>
-<p>However <code>Singularity</code> can do much more than this simple example. Advanced scenarios such as open generics are also supported.</p>
-</article>
+<p>However <code>Singularity</code> can do much more than this simple example. You can request the instance with different wrapper types such as <code>Lazy&lt;T&gt;</code>:</p>
+<pre><code class="lang-cs">var lazyInstance = container.GetInstance&lt;Lazy&lt;ITestService10&gt;&gt;();
+</code></pre>
+<p>Or you can request the factory to create the instance:</p>
+<pre><code class="lang-cs">var factory = container.GetInstance&lt;Func&lt;ITestService10&gt;&gt;();
+</code></pre>
+<p>You can even request the expression itself:</p>
+<pre><code class="lang-cs">var instanceExpression = container.GetInstance&lt;Expression&lt;Func&lt;ITestService10&gt;&gt;&gt;();
+</code></pre>
+<p>Ofcourse its possible to combine these with for instance a collection type such as IEnumerable<t> or IReadOnlyList<t>:<p>
+<pre><code class="lang-cs">var instanceExpressions = container.GetInstance&lt;IReadOnlyList&lt;Expression&lt;Func&lt;IPlugin&gt;&gt;&gt;&gt;(); //Returns all expressions for IPlugin registrations
+</code></pre>
+</t></t></article>
           </div>
           
           <div class="hidden-sm col-md-2" role="complementary">

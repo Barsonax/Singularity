@@ -10,7 +10,7 @@ namespace Singularity.Bindings
     public class WeaklyTypedConfiguredBinding
     {
         internal Expression Expression { get; }
-        internal CreationMode CreationMode { get; set; }
+        internal Lifetime Lifetime { get; set; }
         internal Action<object>? OnDeathAction { get; set; }
         private protected readonly WeaklyTypedBinding WeaklyTypedBinding;
 
@@ -18,18 +18,18 @@ namespace Singularity.Bindings
         {
             WeaklyTypedBinding = weaklyTypedBinding;
             Expression = expression;
-            CreationMode = CreationMode.Transient;
+            Lifetime = Lifetime.Transient;
         }
 
         /// <summary>
         /// Sets the lifetime of the instance(s)
         /// </summary>
-        /// <param name="creationMode"></param>
+        /// <param name="lifetime"></param>
         /// <returns></returns>
-        public WeaklyTypedConfiguredBinding With(CreationMode creationMode)
+        public WeaklyTypedConfiguredBinding With(Lifetime lifetime)
         {
-            if (!EnumMetadata<CreationMode>.IsValidValue(creationMode)) throw new InvalidLifetimeException(creationMode);
-            CreationMode = creationMode;
+            if (!EnumMetadata<Lifetime>.IsValidValue(lifetime)) throw new InvalidLifetimeException(lifetime);
+            Lifetime = lifetime;
             return this;
         }
 

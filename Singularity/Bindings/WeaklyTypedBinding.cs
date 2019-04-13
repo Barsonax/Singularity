@@ -27,9 +27,9 @@ namespace Singularity.Bindings
         public Expression? Expression => WeaklyTypedConfiguredBinding?.Expression;
 
         /// <summary>
-        /// When should new instance be created. See <see cref="CreationMode"/> for more detailed information.
+        /// When should new instance be created. See <see cref="Lifetime"/> for more detailed information.
         /// </summary>
-        public CreationMode CreationMode => WeaklyTypedConfiguredBinding?.CreationMode ?? CreationMode.Transient;
+        public Lifetime Lifetime => WeaklyTypedConfiguredBinding?.Lifetime ?? Lifetime.Transient;
 
         /// <summary>
         /// A action that is executed when the <see cref="Scoped"/> is disposed. This usually happens when the <see cref="Container"/> is disposed.

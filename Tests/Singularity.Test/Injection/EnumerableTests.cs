@@ -139,9 +139,9 @@ namespace Singularity.Test.Injection
         {
             //ARRANGE
             var config = new BindingConfig();
-            config.Register<IPlugin, Plugin1>().With(CreationMode.PerContainer);
+            config.Register<IPlugin, Plugin1>().With(Lifetime.PerContainer);
             config.Register<IPlugin, Plugin2>();
-            config.Register<IPlugin, Plugin3>().With(CreationMode.PerContainer);
+            config.Register<IPlugin, Plugin3>().With(Lifetime.PerContainer);
             var container = new Container(config);
 
             //ACT

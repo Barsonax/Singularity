@@ -5,11 +5,9 @@
   <head>
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
-    <title>Namespace Singularity
-   </title>
+    <title>Why </title>
     <meta name="viewport" content="width=device-width">
-    <meta name="title" content="Namespace Singularity
-   ">
+    <meta name="title" content="Why ">
     <meta name="generator" content="docfx 2.41.0.0">
     
     <link rel="shortcut icon" href="../favicon.ico">
@@ -68,36 +66,34 @@
         </div>
         <div class="article row grid-right">
           <div class="col-md-10">
-            <article class="content wrap" id="_content" data-uid="Singularity">
-  
-  <h1 id="Singularity" data-uid="Singularity" class="text-break">Namespace Singularity
-  </h1>
-  <div class="markdown level0 summary"></div>
-  <div class="markdown level0 conceptual"></div>
-  <div class="markdown level0 remarks"></div>
-    <h3 id="classes">Classes
-  </h3>
-      <h4><a class="xref" href="Singularity.BindingConfig.html">BindingConfig</a></h4>
-      <section><p>A class to make configuring dependencies easier</p>
-</section>
-      <h4><a class="xref" href="Singularity.Container.html">Container</a></h4>
-      <section><p>A thread safe and lock free dependency injection container.</p>
-</section>
-      <h4><a class="xref" href="Singularity.Scoped.html">Scoped</a></h4>
-      <section><p>Represents the scope in which instances will life.</p>
-</section>
-    <h3 id="interfaces">Interfaces
-  </h3>
-      <h4><a class="xref" href="Singularity.IContainer.html">IContainer</a></h4>
-      <section></section>
-      <h4><a class="xref" href="Singularity.IModule.html">IModule</a></h4>
-      <section><p>The interface for modules that can register dependencies.</p>
-</section>
-    <h3 id="enums">Enums
-  </h3>
-      <h4><a class="xref" href="Singularity.Lifetime.html">Lifetime</a></h4>
-      <section><p>Specifies when new instances of dependencies should be made</p>
-</section>
+            <article class="content wrap" id="_content" data-uid="">
+<h2 id="why">Why</h2>
+
+<p>While not recommended sometimes you cannot get away with using just constructor injection and you have to use a different way to inject your dependencies.
+For instance in duality the component instances are not managed by the container but by the game engine. This makes it impossible to use constructor injection as the container is not the one that is creating the component instances.</p>
+<h2 id="how">How</h2>
+<p>Singularity supports method injection through the <code>MethodInject</code> method:</p>
+<pre><code class="lang-cs">var config = new BindingConfig();
+config.For&lt;ITestService10&gt;().Inject&lt;TestService10&gt;();
+
+var container = new Container(config);
+
+var instance = new MethodInjectionClass();
+container.MethodInject(instance);
+</code></pre>
+<p>The MethodInjectionClass is defined as follows:</p>
+<pre><code class="lang-cs">public class MethodInjectionClass
+{
+    public ITestService10 TestService10 { get; private set; }
+
+    [Inject]
+    public void Inject(ITestService10 testService10)
+    {
+        TestService10 = testService10;
+    }
+}
+</code></pre>
+<p>When <code>MethodInject</code> is called the container will look for all methods that are marked with <code>[Inject]</code> and it will call those methods to provide the dependencies.</p>
 </article>
           </div>
           
@@ -105,6 +101,9 @@
             <div class="sideaffix">
               <div class="contribution">
                 <ul class="nav">
+                  <li>
+                    <a href="https://github.com/Barsonax/Singularity/blob/master/docfx_project/articles/Method injection.md/#L1" class="contribution-link">Improve this Doc</a>
+                  </li>
                 </ul>
               </div>
               <nav class="bs-docs-sidebar hidden-print hidden-xs hidden-sm affix" id="affix">

@@ -30,7 +30,7 @@ namespace Singularity.Graph.Resolvers
                         expressions.Add(resolvedDependency.Expression);
                     }
 
-                    var expressionDependency = new Dependency(type, expressions, CreationMode.Transient);
+                    var expressionDependency = new Dependency(type, expressions, Lifetime.Transient);
                     var method = GenericCreateLambdaMethod.MakeGenericMethod(dependencyType);
                     for (int i = 0; i < expressionDependency.ResolvedDependencies.Array.Length; i++)
                     {

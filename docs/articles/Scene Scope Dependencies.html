@@ -5,11 +5,9 @@
   <head>
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
-    <title>Namespace Singularity
-   </title>
+    <title> </title>
     <meta name="viewport" content="width=device-width">
-    <meta name="title" content="Namespace Singularity
-   ">
+    <meta name="title" content=" ">
     <meta name="generator" content="docfx 2.41.0.0">
     
     <link rel="shortcut icon" href="../favicon.ico">
@@ -68,36 +66,18 @@
         </div>
         <div class="article row grid-right">
           <div class="col-md-10">
-            <article class="content wrap" id="_content" data-uid="Singularity">
-  
-  <h1 id="Singularity" data-uid="Singularity" class="text-break">Namespace Singularity
-  </h1>
-  <div class="markdown level0 summary"></div>
-  <div class="markdown level0 conceptual"></div>
-  <div class="markdown level0 remarks"></div>
-    <h3 id="classes">Classes
-  </h3>
-      <h4><a class="xref" href="Singularity.BindingConfig.html">BindingConfig</a></h4>
-      <section><p>A class to make configuring dependencies easier</p>
-</section>
-      <h4><a class="xref" href="Singularity.Container.html">Container</a></h4>
-      <section><p>A thread safe and lock free dependency injection container.</p>
-</section>
-      <h4><a class="xref" href="Singularity.Scoped.html">Scoped</a></h4>
-      <section><p>Represents the scope in which instances will life.</p>
-</section>
-    <h3 id="interfaces">Interfaces
-  </h3>
-      <h4><a class="xref" href="Singularity.IContainer.html">IContainer</a></h4>
-      <section></section>
-      <h4><a class="xref" href="Singularity.IModule.html">IModule</a></h4>
-      <section><p>The interface for modules that can register dependencies.</p>
-</section>
-    <h3 id="enums">Enums
-  </h3>
-      <h4><a class="xref" href="Singularity.Lifetime.html">Lifetime</a></h4>
-      <section><p>Specifies when new instances of dependencies should be made</p>
-</section>
+            <article class="content wrap" id="_content" data-uid="">
+
+<p>When the entering a new scene <code>Singularity.Duality</code> will search the entire scene for any components implementing <code>IModule</code>. It will then call <code>Register</code> on all those components in order to get the dependencies. A example component that implements <code>IModule</code> can be found below:</p>
+<pre><code class="lang-cs">public class SceneDependenciesComponent : Component, IModule
+{
+	public void Register(BindingConfig config)
+	{
+		config.For&lt;IGameManager&gt;().Inject(() =&gt; GameObj.ParentScene.FindComponent&lt;GameManagerComponent&gt;(true)).With(Lifetime.PerContainer);
+	}
+}
+</code></pre>
+<p>It will then create a <a href="https://github.com/Barsonax/Singularity/wiki/Nested-containers">Nested container</a> with the registered scene dependencies. This means any dependencies that are defined as <a href="https://github.com/Barsonax/Singularity/wiki/Game-Scope-Dependencies">Game Scope Dependencies</a> will also be available.</p>
 </article>
           </div>
           
@@ -105,6 +85,9 @@
             <div class="sideaffix">
               <div class="contribution">
                 <ul class="nav">
+                  <li>
+                    <a href="https://github.com/Barsonax/Singularity/blob/master/docfx_project/articles/Scene Scope Dependencies.md/#L1" class="contribution-link">Improve this Doc</a>
+                  </li>
                 </ul>
               </div>
               <nav class="bs-docs-sidebar hidden-print hidden-xs hidden-sm affix" id="affix">

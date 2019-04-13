@@ -23,7 +23,7 @@ namespace Singularity.Graph.Resolvers
                     expressions.Add(Expression.New(constructor, resolvedDependency.Expression));
                 }
 
-                var lazyDependency = new Dependency(type, expressions, CreationMode.Transient);
+                var lazyDependency = new Dependency(type, expressions, Lifetime.Transient);
                 for (int i = 0; i < lazyDependency.ResolvedDependencies.Array.Length; i++)
                 {
                     lazyDependency.ResolvedDependencies.Array[i].Expression = expressions[i];

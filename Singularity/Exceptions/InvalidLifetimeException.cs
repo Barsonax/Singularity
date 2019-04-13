@@ -6,13 +6,13 @@ namespace Singularity.Exceptions
     [Serializable]
     public class InvalidLifetimeException : SingularityException
     {
-        internal InvalidLifetimeException(CreationMode creationMode, Exception? inner = null) : base(GetMessage(creationMode), inner)
+        internal InvalidLifetimeException(Lifetime lifetime, Exception? inner = null) : base(GetMessage(lifetime), inner)
         {
         }
 
-        private static string GetMessage(CreationMode creationMode)
+        private static string GetMessage(Lifetime lifetime)
         {
-            return $"{creationMode} is a invalid value, valid values are: {string.Join(", ", EnumMetadata<CreationMode>.Values)}";
+            return $"{lifetime} is a invalid value, valid values are: {string.Join(", ", EnumMetadata<Lifetime>.Values)}";
         }
 
         /// <summary>
