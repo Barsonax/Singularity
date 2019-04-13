@@ -14,7 +14,7 @@ namespace Singularity
 			{
 				try
 				{
-					action.Invoke(o);
+					action(o);
 				}
 				catch (Exception e)
 				{
