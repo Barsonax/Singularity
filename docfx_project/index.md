@@ -7,8 +7,8 @@ Singularity is a ioc container that focuses on the following things
 ## Getting started
 ### Installation
 `Singularity` can be installed through nuget:
-- Singularity [![NuGet Badge](https://buildstats.info/nuget/Singularity)](https://www.nuget.org/packages/Singularity/)
-- Singularity.Duality.core [![NuGet Badge](https://buildstats.info/nuget/Singularity.Duality.core)](https://www.nuget.org/packages/Singularity.Duality.core/)|
+- [![NuGet Badge](https://buildstats.info/nuget/Singularity)](https://www.nuget.org/packages/Singularity/) Singularity
+- [![NuGet Badge](https://buildstats.info/nuget/Singularity.Duality.core)](https://www.nuget.org/packages/Singularity.Duality.core/) Singularity.Duality.core
 
 ### A simple example
 Its easy to setup a container and request a instance:
