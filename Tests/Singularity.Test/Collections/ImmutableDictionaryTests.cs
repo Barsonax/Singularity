@@ -28,36 +28,55 @@ namespace Singularity.Test.Collections
 
         [Theory]
         [ClassData(typeof(ImmutableDictionaryTestsValueTypeTheoryData))]
-        public void SearchValueType(IEnumerable<(int key, int value)> testValues)
+        public void SearchValueType(IEnumerable<(ReferenceInt key, ReferenceInt value)> testValues)
         {
-            ImmutableDictionary<int, int> dic = ImmutableDictionary<int, int>.Empty;
+            ImmutableDictionary<ReferenceInt, ReferenceInt> dic = ImmutableDictionary<ReferenceInt, ReferenceInt>.Empty;
 
-            foreach ((int key, int value) in testValues)
+            foreach ((ReferenceInt key, ReferenceInt value) in testValues)
             {
                 dic = dic.Add(key, value);
             }
 
-            foreach ((int key, int value) in testValues)
+            foreach ((ReferenceInt key, ReferenceInt value) in testValues)
             {
                 Assert.Equal(value, dic.Search(key));
             }
         }
     }
 
-    public class ImmutableDictionaryTestsValueTypeTheoryData : TheoryData<IEnumerable<(int key, int value)>>
+    public class ReferenceInt
+    {
+        public readonly int Value;
+        public ReferenceInt(int value)
+        {
+            Value = value;
+        }
+
+        public override string ToString()
+        {
+            return Value.ToString();
+        }
+
+        public static implicit operator ReferenceInt(int value)
+        {
+            return new ReferenceInt(value);
+        }
+    }
+
+    public class ImmutableDictionaryTestsValueTypeTheoryData : TheoryData<IEnumerable<(ReferenceInt key, ReferenceInt value)>>
     {
         public ImmutableDictionaryTestsValueTypeTheoryData()
         {
-            var typeMappings = new List<(int key, int value)>();
+            var typeMappings = new List<(ReferenceInt key, ReferenceInt value)>();
             typeMappings.Add((0, 0));
             typeMappings.Add((1, 1));
             typeMappings.Add((2, 2));
 
             typeMappings.Add((4, 4));
 
-            IEnumerable<IEnumerable<(int key, int value)>> permutations = typeMappings.GetPermutations();
+            IEnumerable<IEnumerable<(ReferenceInt key, ReferenceInt value)>> permutations = typeMappings.GetPermutations();
 
-            foreach (IEnumerable<(int key, int value)> permutation in permutations)
+            foreach (IEnumerable<(ReferenceInt key, ReferenceInt value)> permutation in permutations)
             {
                 Add(permutation);
             }

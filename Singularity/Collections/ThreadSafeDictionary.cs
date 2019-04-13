@@ -10,6 +10,7 @@ namespace Singularity.Collections
     /// <typeparam name="TKey"></typeparam>
     /// <typeparam name="TValue"></typeparam>
     internal class ThreadSafeDictionary<TKey, TValue>
+        where TKey : class
     {
         public int Count => _immutableDictionary.Count;
         internal ImmutableDictionary<TKey, TValue> _immutableDictionary = ImmutableDictionary<TKey, TValue>.Empty;
@@ -30,27 +31,11 @@ namespace Singularity.Collections
             }
             while (initialValue != Interlocked.CompareExchange(ref _immutableDictionary, computedValue, initialValue));
         }
-    }
 
-    internal static class ThreadSafeDictionaryReferenceTypes
-    {
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static TValue Search<TKey, TValue, TKey2>(this ThreadSafeDictionary<TKey, TValue> instance, TKey2 key)
-            where TKey2 : class, TKey
+        public TValue Search(TKey key)
         {
-            int hashCode = RuntimeHelpers.GetHashCode(key);
-            return instance._immutableDictionary.SearchInternal(key, hashCode);
-        }
-    }
-
-    internal static class ThreadSafeDictionaryValueTypes
-    {
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static TValue Search<TKey, TValue, TKey2>(this ThreadSafeDictionary<TKey, TValue> instance, TKey2 key)
-            where TKey2 : struct, TKey
-        {
-            int hashCode = key.GetHashCode();
-            return instance._immutableDictionary.SearchInternal(key, hashCode);
+            return _immutableDictionary.Search(key);
         }
     }
 }
