@@ -52,5 +52,25 @@ namespace Singularity.Test.Injection
             Assert.Same(disposable3, disposable4);
             Assert.NotSame(disposable1, disposable3);
         }
+
+        [Fact]
+        public void BeginScope_GetInstance_Nested()
+        {
+            //ARRANGE
+            var config = new BindingConfig();
+            config.Register<ITestService10, TestService10>().With(Lifetime.PerScope);
+            config.Register<ITestService11, TestService11>();
+
+            var container = new Container(config);
+
+            //ACT
+            Scoped scope1 = container.BeginScope();
+            var testService11 = scope1.GetInstance<ITestService11>();
+
+
+            //ASSERT
+            Assert.IsType<TestService11>(testService11);
+            Assert.IsType<TestService10>(testService11.TestService10);
+        }
     }
 }
