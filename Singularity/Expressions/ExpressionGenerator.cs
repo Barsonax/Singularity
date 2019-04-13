@@ -59,7 +59,8 @@ namespace Singularity.Expressions
                     return Expression.Constant(singletonInstance, dependency.Registration.DependencyType);
                 case Lifetime.PerScope:
                     var scopedFactory = (Func<Scoped, object>)Expression.Lambda(expression, ScopeParameter).CompileFast();
-                    expression = Expression.Call(ScopeParameter, Scoped.GetorAddScopedInstanceMethod, Expression.Constant(dependency.Registration.DependencyType), Expression.Constant(scopedFactory));
+                    var method = Scoped.GenericGetorAddScopedInstanceMethod.MakeGenericMethod(expression.Type);
+                    expression = Expression.Call(ScopeParameter, method, Expression.Constant(dependency.Registration.DependencyType), Expression.Constant(scopedFactory));
                     return expression;
                 default:
                     throw new ArgumentOutOfRangeException();

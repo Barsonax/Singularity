@@ -11,7 +11,7 @@ namespace Singularity
     public sealed class Scoped : IContainer
     {
         internal static readonly MethodInfo GenericAddMethod = typeof(Scoped).GetRuntimeMethods().FirstOrDefault(x => x.Name == nameof(AddDisposable));
-        internal static readonly MethodInfo GetorAddScopedInstanceMethod = typeof(Scoped).GetRuntimeMethods().FirstOrDefault(x => x.Name == nameof(GetorAddScopedInstance));
+        internal static readonly MethodInfo GenericGetorAddScopedInstanceMethod = typeof(Scoped).GetRuntimeMethods().FirstOrDefault(x => x.Name == nameof(GetorAddScopedInstance));
         private readonly object _locker = new object();
         private Dictionary<Binding, DisposeList> DisposeList { get; } = new Dictionary<Binding, DisposeList>();
         private Dictionary<Type, object> ScopedInstances { get; } = new Dictionary<Type, object>();
@@ -54,7 +54,7 @@ namespace Singularity
         }
 
 
-        internal object GetorAddScopedInstance(Type key, Func<Scoped, object> factory)
+        internal T GetorAddScopedInstance<T>(Type key, Func<Scoped, object> factory)
         {
             lock (ScopedInstances)
             {
@@ -64,7 +64,7 @@ namespace Singularity
                     ScopedInstances.Add(key, instance);
                 }
 
-                return instance;
+                return (T)instance;
             }
         }
 
