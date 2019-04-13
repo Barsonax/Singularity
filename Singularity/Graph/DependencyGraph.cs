@@ -18,7 +18,7 @@ namespace Singularity.Graph
             {
                 dependencies.Add(registration.DependencyType, new Dependency(registration));
             }
-            var resolvers = new IDependencyResolver[] { new EnumerableDependencyResolver(), new LazyDependencyResolver(), new FactoryDependencyResolver(), new ConcreteDependencyResolver(), new OpenGenericResolver() };
+            var resolvers = new IDependencyResolver[] { new EnumerableDependencyResolver(), new ExpressionDependencyResolver(), new LazyDependencyResolver(), new FactoryDependencyResolver(), new ConcreteDependencyResolver(), new OpenGenericResolver() };
             _resolverPipeline = new ResolverPipeline(dependencies, resolvers, scope, parentDependencyGraph?._resolverPipeline);
         }
 
