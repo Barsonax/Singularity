@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using Singularity.Collections;
+using Singularity.Test.Collections;
 using Xunit;
 
 namespace Singularity.Test.ThreadSafety
@@ -9,16 +10,16 @@ namespace Singularity.Test.ThreadSafety
         [Fact]
         public void AddAndGet()
         {
-            var testCases = new List<(int input, object output)>();
+            var testCases = new List<(ReferenceInt input, object output)>();
 
             for (var i = 0; i < 1000; i++)
             {
                 testCases.Add((i, new object()));
             }
 
-            var dic = new ThreadSafeDictionary<int, object>();
+            var dic = new ThreadSafeDictionary<ReferenceInt, object>();
 
-            var tester = new ThreadSafetyTester<(int input, object expectedOutput)>();
+            var tester = new ThreadSafetyTester<(ReferenceInt input, object expectedOutput)>();
 
             tester.Test(testCase =>
             {

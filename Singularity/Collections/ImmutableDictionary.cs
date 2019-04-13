@@ -4,6 +4,7 @@ using System.Runtime.CompilerServices;
 namespace Singularity.Collections
 {
     internal sealed class ImmutableDictionary<TKey, TValue>
+        where TKey : class
     {
         public static readonly ImmutableDictionary<TKey, TValue> Empty = new ImmutableDictionary<TKey, TValue>();
         public readonly int Count;
@@ -16,29 +17,32 @@ namespace Singularity.Collections
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        internal TValue SearchInternal(TKey key, int hashCode)
+        internal TValue SearchInternal(TKey key)
         {
+            int hashCode = RuntimeHelpers.GetHashCode(key);
             int bucketIndex = hashCode & (Divisor - 1);
             ImmutableAvlNode<TKey, TValue> avlNode = Buckets[bucketIndex];
+
+            if (ReferenceEquals(avlNode.KeyValue.Key, key))
+            {
+                return avlNode.KeyValue.Value;
+            }
 
             while (avlNode.Height != 0 && avlNode.KeyValue.HashCode != hashCode)
             {
                 avlNode = hashCode < avlNode.KeyValue.HashCode ? avlNode.Left! : avlNode.Right!;
             }
 
-            if (avlNode.Height != 0 && (ReferenceEquals(avlNode.KeyValue.Key, key) || Equals(avlNode.KeyValue.Key, key)))
+            if (avlNode.Height != 0 && ReferenceEquals(avlNode.KeyValue.Key, key))
             {
                 return avlNode.KeyValue.Value;
             }
 
-            if (avlNode.Duplicates.Items.Length > 0)
+            for (var i = 0; i < avlNode.Duplicates.Items.Length; i++)
             {
-                foreach (KeyValue<TKey, TValue> keyValue in avlNode.Duplicates.Items)
+                if (ReferenceEquals(avlNode.Duplicates.Items[i].Key, key))
                 {
-                    if (ReferenceEquals(keyValue.Key, key) || Equals(keyValue.Key, key))
-                    {
-                        return keyValue.Value;
-                    }
+                    return avlNode.Duplicates.Items[i].Value;
                 }
             }
 
@@ -91,28 +95,6 @@ namespace Singularity.Collections
             {
                 this.Buckets[i] = ImmutableAvlNode<TKey, TValue>.Empty;
             }
-        }
-    }
-
-    internal static class ImmutableDictionaryReferenceTypes
-    {
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static TValue Search<TKey, TValue, TKey2>(this ImmutableDictionary<TKey, TValue> instance, TKey2 key)
-            where TKey2 : class, TKey
-        {
-            int hashCode = RuntimeHelpers.GetHashCode(key);
-            return instance.SearchInternal(key, hashCode);
-        }
-    }
-
-    internal static class ImmutableDictionaryValueTypes
-    {
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static TValue Search<TKey, TValue, TKey2>(this ImmutableDictionary<TKey, TValue> instance, TKey2 key)
-            where TKey2 : struct, TKey
-        {
-            int hashCode = key.GetHashCode();
-            return instance.SearchInternal(key, hashCode);
         }
     }
 }

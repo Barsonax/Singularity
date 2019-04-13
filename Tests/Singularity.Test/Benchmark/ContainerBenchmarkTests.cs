@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Linq.Expressions;
+using System.Runtime.CompilerServices;
 using Singularity.TestClasses.Benchmark;
 using Singularity.TestClasses.TestClasses;
 using Xunit;
@@ -13,6 +14,9 @@ namespace Singularity.Test.Benchmark
         [Fact]
         public void Singleton()
         {
+            var foo = typeof(ISingleton1);
+            var type1 = Type.GetType(foo.AssemblyQualifiedName);
+            var type2 = Type.GetType(foo.AssemblyQualifiedName);
             ISingleton1 value = _containerBenchmark.Singleton();
 
             Assert.IsType<Singleton1>(value);
@@ -93,3 +97,4 @@ namespace Singularity.Test.Benchmark
         }
     }
 }
+
