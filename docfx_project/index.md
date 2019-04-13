@@ -16,6 +16,21 @@ config.Register<ITestService10>, TestService10>();
 
 var container = new Container(config);
 
-var value = container.GetInstance<ITestService10>();
+var instance = container.GetInstance<ITestService10>();
 ```
-However `Singularity` can do much more than this simple example. Advanced scenarios such as open generics are also supported.
+However `Singularity` can do much more than this simple example. You can request the instance with different wrapper types such as `Lazy<T>`:
+```cs
+var lazyInstance = container.GetInstance<Lazy<ITestService10>>();
+```
+Or you can request the factory to create the instance:
+```cs
+var factory = container.GetInstance<Func<ITestService10>>();
+```
+You can even request the expression itself:
+```cs
+var instanceExpression = container.GetInstance<Expression<Func<ITestService10>>>();
+```
+Ofcourse its possible to combine these with for instance a collection type such as IEnumerable<T> or IReadOnlyList<T>:
+```cs
+var instanceExpressions = container.GetInstance<IReadOnlyList<Expression<Func<IPlugin>>>>(); //Returns all expressions for IPlugin registrations
+```

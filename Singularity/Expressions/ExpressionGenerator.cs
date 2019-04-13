@@ -54,7 +54,7 @@ namespace Singularity.Expressions
                 case CreationMode.Transient:
                     return expression;
                 case CreationMode.PerContainer:
-                    object singletonInstance = ((Func<Scoped, object>)Expression.Lambda(expression, ScopeParameter).CompileFast()).Invoke(containerScope);
+                    object singletonInstance = ((Func<Scoped, object>)Expression.Lambda(expression, ScopeParameter).CompileFast())(containerScope);
                     dependency.InstanceFactory = scope => singletonInstance;
                     return Expression.Constant(singletonInstance, dependency.Registration.DependencyType);
                 case CreationMode.PerScope:

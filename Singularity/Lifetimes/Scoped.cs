@@ -60,7 +60,7 @@ namespace Singularity
             {
                 if (!ScopedInstances.TryGetValue(key, out object instance))
                 {
-                    instance = factory.Invoke(this);
+                    instance = factory(this);
                     ScopedInstances.Add(key, instance);
                 }
 

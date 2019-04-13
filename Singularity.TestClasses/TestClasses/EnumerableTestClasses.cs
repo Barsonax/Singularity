@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Linq.Expressions;
 using System.Threading;
 
 namespace Singularity.TestClasses.TestClasses
@@ -91,6 +92,16 @@ namespace Singularity.TestClasses.TestClasses
         public PluginFactory(Func<IPlugin> factory)
         {
             Factory = factory ?? throw new ArgumentNullException(nameof(factory));
+        }
+    }
+
+    public class PluginExpression
+    {
+        public Expression<Func<IPlugin>> Expression { get; }
+
+        public PluginExpression(Expression<Func<IPlugin>> expression)
+        {
+            Expression = expression ?? throw new ArgumentNullException(nameof(expression));
         }
     }
 

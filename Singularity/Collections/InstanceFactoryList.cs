@@ -19,7 +19,7 @@ namespace Singularity.Collections
         {
             foreach (Func<Scoped, object> instanceFactory in _instanceFactories)
             {
-                yield return (T)instanceFactory.Invoke(_scope);
+                yield return (T)instanceFactory(_scope);
             }
         }
 
@@ -30,6 +30,6 @@ namespace Singularity.Collections
 
         public int Count => _instanceFactories.Length;
 
-        public T this[int index] => (T)_instanceFactories[index].Invoke(_scope);
+        public T this[int index] => (T)_instanceFactories[index](_scope);
     }
 }

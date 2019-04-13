@@ -23,7 +23,7 @@ namespace Singularity
             {
                 foreach (object obj in Objects)
                 {
-                    Action.Invoke(obj);
+                    Action(obj);
                 }
                 Objects.Clear();
                 IsDisposed = true;
@@ -36,7 +36,7 @@ namespace Singularity
             {
                 if (IsDisposed)
                 {
-                    Action.Invoke(obj);
+                    Action(obj);
                 }
                 else
                 {

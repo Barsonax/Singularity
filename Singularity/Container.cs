@@ -113,7 +113,7 @@ namespace Singularity
                 func = _dependencyGraph.GetResolvedFactory(type)!;
                 _getInstanceCache.Add(type, func);
             }
-            return func.Invoke(scope);
+            return func(scope);
         }
 
         /// <summary>
@@ -134,7 +134,7 @@ namespace Singularity
                 action = GenerateMethodInjector(type);
                 _injectionCache.Add(type, action);
             }
-            action.Invoke(scope, instance);
+            action(scope, instance);
         }
 
         private Action<Scoped, object> GenerateMethodInjector(Type type)
