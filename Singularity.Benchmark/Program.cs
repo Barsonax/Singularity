@@ -3,7 +3,6 @@ using System;
 using System.Linq.Expressions;
 using System.Runtime.CompilerServices;
 using BenchmarkDotNet.Attributes;
-using FastExpressionCompiler;
 using Singularity.Collections;
 using Singularity.TestClasses.Benchmark;
 using Singularity.TestClasses.TestClasses;
@@ -60,13 +59,13 @@ namespace Singularity.Benchmark
         //[Benchmark]
         //public ISingleton1 Container()
         //{
-        //    return (ISingleton1)_container.GetInstance(typeof(ISingleton1));
+        //    return (ISingleton1)Container.GetInstance(typeof(ISingleton1));
         //}
 
         //[Benchmark]
         //public object ContainerNoCast()
         //{
-        //    return _container.GetInstance(typeof(ISingleton1));
+        //    return Container.GetInstance(typeof(ISingleton1));
         //}
 
         //[Benchmark]

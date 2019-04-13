@@ -2,9 +2,9 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Linq.Expressions;
-using FastExpressionCompiler;
 using Singularity.Exceptions;
 using Singularity.Expressions;
+using Singularity.FastExpressionCompiler;
 
 namespace Singularity.Graph.Resolvers
 {
