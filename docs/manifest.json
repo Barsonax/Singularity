@@ -525,7 +525,7 @@
       "output": {
         ".html": {
           "relative_path": "articles/Lifetimes.html",
-          "hash": "x2Dv9oFXj8nWE1AsEvW7+g=="
+          "hash": "8uXyHlGyB3I0fDWE0lKmzg=="
         }
       },
       "is_incremental": false,
@@ -609,7 +609,7 @@
       "output": {
         ".html": {
           "relative_path": "index.html",
-          "hash": "703GLU8ViS7XUZNIi4FtPQ=="
+          "hash": "vq9o0JRcvUYapKVJcUWJ7Q=="
         }
       },
       "is_incremental": false,
@@ -646,16 +646,16 @@
           "total_file_count": 0,
           "skipped_file_count": 0
         },
-        "ManagedReferenceDocumentProcessor": {
-          "can_incremental": false,
-          "incrementalPhase": "build",
-          "total_file_count": 39,
-          "skipped_file_count": 0
-        },
         "ConceptualDocumentProcessor": {
           "can_incremental": false,
           "incrementalPhase": "build",
           "total_file_count": 10,
+          "skipped_file_count": 0
+        },
+        "ManagedReferenceDocumentProcessor": {
+          "can_incremental": false,
+          "incrementalPhase": "build",
+          "total_file_count": 39,
           "skipped_file_count": 0
         }
       }

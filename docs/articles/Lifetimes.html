@@ -81,9 +81,9 @@ config.Register&lt;ITestService10, TestService10&gt;().With(Lifetime.Singleton);
 <ul>
 <li><code>Lifetime.Transient</code></li>
 <li><code>Lifetime.PerContainer</code></li>
-<li><code>PerScope</code>
-The <code>Lifetime.Transient</code> is the default setting which means singularity will return a new instance everytime a instance is requested. For more info see <a href="../api/Singularity.Lifetime.html">Lifetime</a></li>
+<li><code>Lifetime.PerScope</code></li>
 </ul>
+<p>The <code>Lifetime.Transient</code> is the default setting which means singularity will return a new instance everytime a instance is requested. For more info see <a href="../api/Singularity.Lifetime.html">Lifetime</a></p>
 <p>The following example illustrates how lifetimes can be used:</p>
 <pre><code class="lang-cs">var config = new BindingConfig();
 config.Register&lt;IScopedService, ScopedService&gt;().With(Lifetime.PerScope));
