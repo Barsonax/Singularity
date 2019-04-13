@@ -23,20 +23,21 @@ THE SOFTWARE.
 */
 
 // ReSharper disable CoVariantArrayConversion
+
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Linq.Expressions;
+using System.Reflection;
+using System.Reflection.Emit;
+
 #nullable disable
 #if LIGHT_EXPRESSION
 namespace FastExpressionCompiler.LightExpression
 #else
-namespace FastExpressionCompiler
+namespace Singularity.FastExpressionCompiler
 #endif
 {
-    using System;
-    using System.Collections.Generic;
-    using System.Linq;
-    using System.Linq.Expressions;
-    using System.Reflection;
-    using System.Reflection.Emit;
-
     /// <summary>Compiles expression to delegate ~20 times faster than Expression.Compile.
     /// Partial to extend with your things when used as source file.</summary>
     // ReSharper disable once PartialTypeWithSinglePart

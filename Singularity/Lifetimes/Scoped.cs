@@ -11,21 +11,21 @@ namespace Singularity
     public sealed class Scoped : IContainer
     {
         internal static readonly MethodInfo GenericAddMethod = typeof(Scoped).GetRuntimeMethods().FirstOrDefault(x => x.Name == nameof(AddDisposable));
-        internal static readonly MethodInfo GetorAddScopedInstanceMethod = typeof(Scoped).GetRuntimeMethods().FirstOrDefault(x => x.Name == nameof(GetorAddScopedInstance));
+        internal static readonly MethodInfo GenericGetorAddScopedInstanceMethod = typeof(Scoped).GetRuntimeMethods().FirstOrDefault(x => x.Name == nameof(GetorAddScopedInstance));
         private readonly object _locker = new object();
         private Dictionary<Binding, DisposeList> DisposeList { get; } = new Dictionary<Binding, DisposeList>();
         private Dictionary<Type, object> ScopedInstances { get; } = new Dictionary<Type, object>();
 
         internal Scoped() { }
 
-        private readonly Container _container;
+        public readonly Container Container;
         internal Scoped(Container container)
         {
-            _container = container;
+            Container = container;
         }
 
         /// <summary>
-        /// <see cref="Container.GetInstance{T}()"/>
+        /// <see cref="Singularity.Container.GetInstance{T}()"/>
         /// </summary>
         /// <typeparam name="T"></typeparam>
         /// <returns></returns>
@@ -35,26 +35,26 @@ namespace Singularity
         }
 
         /// <summary>
-        /// <see cref="Container.GetInstance(Type)"/>
+        /// <see cref="Singularity.Container.GetInstance(Type)"/>
         /// </summary>
         /// <param name="type"></param>
         /// <returns></returns>
         public object GetInstance(Type type)
         {
-            return _container.GetInstance(type, this);
+            return Container.GetInstance(type, this);
         }
 
         /// <summary>
-        /// <see cref="Container.MethodInject(object)"/>
+        /// <see cref="Singularity.Container.MethodInject(object)"/>
         /// </summary>
         /// <param name="instance"></param>
         public void MethodInject(object instance)
         {
-            _container.MethodInject(instance, this);
+            Container.MethodInject(instance, this);
         }
 
 
-        internal object GetorAddScopedInstance(Type key, Func<Scoped, object> factory)
+        internal T GetorAddScopedInstance<T>(Type key, Func<Scoped, object> factory)
         {
             lock (ScopedInstances)
             {
@@ -64,7 +64,7 @@ namespace Singularity
                     ScopedInstances.Add(key, instance);
                 }
 
-                return instance;
+                return (T)instance;
             }
         }
 
