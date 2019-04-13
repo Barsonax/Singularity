@@ -17,7 +17,7 @@ namespace Singularity.Collections
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        internal TValue SearchInternal(TKey key)
+        internal TValue Search(TKey key)
         {
             int hashCode = RuntimeHelpers.GetHashCode(key);
             int bucketIndex = hashCode & (Divisor - 1);

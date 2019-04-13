@@ -35,7 +35,7 @@ namespace Singularity.Collections
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public TValue Search(TKey key)
         {
-            return _immutableDictionary.SearchInternal(key);
+            return _immutableDictionary.Search(key);
         }
     }
 }
