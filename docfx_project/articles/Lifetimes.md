@@ -13,7 +13,7 @@ config.Register<ITestService10, TestService10>().With(Lifetime.Singleton);
 There are a few different lifetimes:
 - `Lifetime.Transient`
 - `Lifetime.PerContainer`
-- `Lifetime.PerScope`
+- `Lifetime.PerScope`  
 
 The `Lifetime.Transient` is the default setting which means singularity will return a new instance everytime a instance is requested. For more info see [Lifetime](~/api/Singularity.Lifetime.yml)
 
