@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Linq.Expressions;
 using Microsoft.Extensions.DependencyInjection;
+using Singularity.Bindings;
 
 namespace Singularity.Microsoft.DependencyInjection
 {
@@ -32,15 +33,27 @@ namespace Singularity.Microsoft.DependencyInjection
             if (registration.ImplementationFactory != null)
             {
                 Expression<Func<Scoped, object>> foo = scope => registration.ImplementationFactory.Invoke(new SingularityServiceProvider(scope.Container));
-                config.Register(registration.ServiceType).Inject(foo).With(ConvertLifetime(registration.Lifetime));
+                WeaklyTypedConfiguredBinding binding = config.Register(registration.ServiceType).Inject(foo).With(ConvertLifetime(registration.Lifetime));
+                if (typeof(IDisposable).IsAssignableFrom(registration.ImplementationType))
+                {
+                    binding.OnDeath(obj => ((IDisposable)obj).Dispose());
+                }
             }
             else if (registration.ImplementationInstance != null)
             {
-                config.Register(registration.ServiceType).Inject(Expression.Constant(registration.ImplementationInstance));
+                WeaklyTypedConfiguredBinding binding = config.Register(registration.ServiceType).Inject(Expression.Constant(registration.ImplementationInstance));
+                if (typeof(IDisposable).IsAssignableFrom(registration.ImplementationType))
+                {
+                    binding.OnDeath(obj => ((IDisposable)obj).Dispose());
+                }
             }
             else
             {
-                config.Register(registration.ServiceType, registration.ImplementationType).With(ConvertLifetime(registration.Lifetime));
+                WeaklyTypedConfiguredBinding binding = config.Register(registration.ServiceType, registration.ImplementationType).With(ConvertLifetime(registration.Lifetime));
+                if (typeof(IDisposable).IsAssignableFrom(registration.ImplementationType))
+                {
+                    binding.OnDeath(obj => ((IDisposable)obj).Dispose());
+                }
             }
         }
 
