@@ -3,14 +3,13 @@ using Microsoft.Extensions.DependencyInjection;
 
 namespace Singularity.Microsoft.DependencyInjection
 {
-    public class SingularityServiceScope : IServiceScope
+    public class SingularityServiceScope : IServiceScope, IServiceProvider
     {
         private readonly Scoped _scope;
 
         public SingularityServiceScope(SingularityServiceProvider container)
         {
             _scope = container.BeginScope();
-            ServiceProvider = container;
         }
 
         public void Dispose()
@@ -18,6 +17,10 @@ namespace Singularity.Microsoft.DependencyInjection
             _scope.Dispose();
         }
 
-        public IServiceProvider ServiceProvider { get; }
+        public IServiceProvider ServiceProvider => this;
+        public object GetService(Type serviceType)
+        {
+            return _scope.GetInstance(serviceType);
+        }
     }
 }

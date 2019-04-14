@@ -28,8 +28,10 @@ namespace Singularity.Microsoft.DependencyInjection.Test
 
             using (var scope = factory.CreateScope())
             {
-                var controller = scope.ServiceProvider.GetService(typeof(RepositoryTransient1));
+                var controller = scope.ServiceProvider.GetService(typeof(TestController1));
             }
+            Assert.Equal(1, TestController1.Instances);
+            Assert.Equal(1, TestController1.DisposeCount);
         }
     }
 }
