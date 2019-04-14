@@ -54,6 +54,7 @@ More info about `Singularity` can be found on the documentation website which ca
 |-------------|--------|
 | Singularity      | [![NuGet Badge](https://buildstats.info/nuget/Singularity)](https://www.nuget.org/packages/Singularity/) |
 | Singularity.Duality.core      | [![NuGet Badge](https://buildstats.info/nuget/Singularity.Duality.core)](https://www.nuget.org/packages/Singularity.Duality.core/)|
+| Singularity.Microsoft.DependencyInjection      | [![NuGet Badge](https://buildstats.info/nuget/Singularity.Microsoft.DependencyInjection)](https://www.nuget.org/packages/Singularity.Microsoft.DependencyInjection/)|
 
 ### Donations
 Donations can be done through my Patreon page: https://www.patreon.com/rickthephotogrammer
