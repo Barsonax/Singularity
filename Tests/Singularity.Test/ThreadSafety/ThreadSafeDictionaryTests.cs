@@ -1,6 +1,6 @@
 ﻿using System.Collections.Generic;
 using Singularity.Collections;
-using Singularity.Test.Collections;
+using Singularity.TestClasses.TestClasses;
 using Xunit;
 
 namespace Singularity.Test.ThreadSafety

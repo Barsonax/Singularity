@@ -7,22 +7,62 @@ using Xunit;
 
 namespace Singularity.Test.Collections
 {
+    public class HashTableTests
+    {
+        [Fact]
+        public void Add()
+        {
+            ImmutableDictionary<Type, int> hashtable = ImmutableDictionary<Type, int>.Empty;
+            hashtable = hashtable.Add(typeof(ITestService10), 0);
+            hashtable = hashtable.Add(typeof(ITestService11), 1);
+            hashtable = hashtable.Add(typeof(ITestService12), 2);
+        }
+
+        [Fact]
+        public void Get()
+        {
+            ImmutableDictionary<Type, int> hashtable = ImmutableDictionary<Type, int>.Empty;
+            hashtable = hashtable.Add(typeof(ITestService10), 0);
+            hashtable = hashtable.Add(typeof(ITestService11), 1);
+            hashtable = hashtable.Add(typeof(ITestService12), 2);
+
+            int test10 = hashtable.Get(typeof(ITestService10));
+            int test11 = hashtable.Get(typeof(ITestService11));
+            int test12 = hashtable.Get(typeof(ITestService12));
+
+            Assert.Equal(0, test10);
+            Assert.Equal(1, test11);
+            Assert.Equal(2, test12);
+
+        }
+
+        [Fact]
+        public void GetNoValues()
+        {
+            ImmutableDictionary<Type, int> hashtable = ImmutableDictionary<Type, int>.Empty;
+
+            int test10 = hashtable.Get(typeof(ITestService10));
+
+            Assert.Equal(0, test10);
+        }
+    }
+
     public class ImmutableDictionaryTests
     {
         [Theory]
         [ClassData(typeof(ImmutableDictionaryTestsReferenceTypeTheoryData))]
-        public void SearchReferenceType(IEnumerable<(Type type, int value)> testValues)
+        public void SearchReferenceType(IEnumerable<(Type type, ReferenceInt value)> testValues)
         {
-            ImmutableDictionary<Type, int> dic = ImmutableDictionary<Type, int>.Empty;
+            ImmutableDictionary<Type, ReferenceInt> hashtable = ImmutableDictionary<Type, ReferenceInt>.Empty;
 
-            foreach ((Type type, int value) in testValues)
+            foreach ((Type type, ReferenceInt value) in testValues)
             {
-                dic = dic.Add(type, value);
+                hashtable = hashtable.Add(type, value);
             }
 
-            foreach ((Type type, int value) in testValues)
+            foreach ((Type type, ReferenceInt value) in testValues)
             {
-                Assert.Equal(value, dic.Search(type));
+                Assert.Equal(value, hashtable.Get(type));
             }
         }
 
@@ -30,36 +70,17 @@ namespace Singularity.Test.Collections
         [ClassData(typeof(ImmutableDictionaryTestsValueTypeTheoryData))]
         public void SearchValueType(IEnumerable<(ReferenceInt key, ReferenceInt value)> testValues)
         {
-            ImmutableDictionary<ReferenceInt, ReferenceInt> dic = ImmutableDictionary<ReferenceInt, ReferenceInt>.Empty;
+            ImmutableDictionary<ReferenceInt, ReferenceInt> hashtable = ImmutableDictionary<ReferenceInt, ReferenceInt>.Empty;
 
             foreach ((ReferenceInt key, ReferenceInt value) in testValues)
             {
-                dic = dic.Add(key, value);
+                hashtable = hashtable.Add(key, value);
             }
 
             foreach ((ReferenceInt key, ReferenceInt value) in testValues)
             {
-                Assert.Equal(value, dic.Search(key));
+                Assert.Equal(value, hashtable.Get(key));
             }
-        }
-    }
-
-    public class ReferenceInt
-    {
-        public readonly int Value;
-        public ReferenceInt(int value)
-        {
-            Value = value;
-        }
-
-        public override string ToString()
-        {
-            return Value.ToString();
-        }
-
-        public static implicit operator ReferenceInt(int value)
-        {
-            return new ReferenceInt(value);
         }
     }
 
@@ -71,7 +92,7 @@ namespace Singularity.Test.Collections
             typeMappings.Add((0, 0));
             typeMappings.Add((1, 1));
             typeMappings.Add((2, 2));
-
+            typeMappings.Add((3, 3));
             typeMappings.Add((4, 4));
 
             IEnumerable<IEnumerable<(ReferenceInt key, ReferenceInt value)>> permutations = typeMappings.GetPermutations();
@@ -83,20 +104,20 @@ namespace Singularity.Test.Collections
         }
     }
 
-    public class ImmutableDictionaryTestsReferenceTypeTheoryData : TheoryData<IEnumerable<(Type type, int value)>>
+    public class ImmutableDictionaryTestsReferenceTypeTheoryData : TheoryData<IEnumerable<(Type type, ReferenceInt value)>>
     {
         public ImmutableDictionaryTestsReferenceTypeTheoryData()
         {
-            var typeMappings = new List<(Type type, int value)>();
+            var typeMappings = new List<(Type type, ReferenceInt value)>();
             typeMappings.Add((typeof(ITestService10), 0));
             typeMappings.Add((typeof(ITestService11), 1));
             typeMappings.Add((typeof(ITestService12), 2));
 
             typeMappings.Add((typeof(ITestService20), 4));
 
-            IEnumerable<IEnumerable<(Type type, int value)>> permutations = typeMappings.GetPermutations();
+            IEnumerable<IEnumerable<(Type type, ReferenceInt value)>> permutations = typeMappings.GetPermutations();
 
-            foreach (IEnumerable<(Type type, int value)> permutation in permutations)
+            foreach (IEnumerable<(Type type, ReferenceInt value)> permutation in permutations)
             {
                 Add(permutation);
             }

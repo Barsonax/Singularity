@@ -11,6 +11,7 @@ namespace Singularity.Expressions
     internal class ExpressionGenerator
     {
         public static ParameterExpression ScopeParameter = Expression.Parameter(typeof(Scoped));
+        internal static readonly MethodInfo CreateScopedExpressionMethod = typeof(ExpressionGenerator).GetRuntimeMethods().FirstOrDefault(x => x.Name == nameof(CreateScopedExpression));
 
         public Expression GenerateDependencyExpression(ResolvedDependency dependency, Scoped containerScope)
         {
@@ -20,7 +21,7 @@ namespace Singularity.Expressions
 
             if (dependency.Binding.OnDeathAction != null)
             {
-                MethodInfo method = Scoped.GenericAddMethod.MakeGenericMethod(expression.Type);
+                var method = Scoped.AddMethod.MakeGenericMethod(expression.Type);
                 expression = Expression.Call(ScopeParameter, method, expression, Expression.Constant(dependency.Binding));
             }
 
@@ -58,13 +59,34 @@ namespace Singularity.Expressions
                     dependency.InstanceFactory = scope => singletonInstance;
                     return Expression.Constant(singletonInstance, dependency.Registration.DependencyType);
                 case Lifetime.PerScope:
-                    var scopedFactory = (Func<Scoped, object>)Expression.Lambda(expression, ScopeParameter).CompileFast();
-                    var method = Scoped.GenericGetorAddScopedInstanceMethod.MakeGenericMethod(expression.Type);
-                    expression = Expression.Call(ScopeParameter, method, Expression.Constant(dependency.Registration.DependencyType), Expression.Constant(scopedFactory));
+                    //var scopedFactory = (Func<Scoped, object>)Expression.Lambda(expression, ScopeParameter).CompileFast();
+                    //var factory = new InstanceFactory(dependency.Registration.DependencyType, scopedFactory);
+                    var method = CreateScopedExpressionMethod.MakeGenericMethod(expression.Type);
+                    expression = (Expression)method.Invoke(null, new object[] { dependency, expression });
+                    //expression = Expression.Call(ScopeParameter, method, Expression.Lambda(expression, ScopeParameter), Expression.Constant(dependency.Registration.DependencyType));
                     return expression;
                 default:
                     throw new ArgumentOutOfRangeException();
             }
+        }
+
+        public static Expression CreateScopedExpression<T>(ResolvedDependency dependency, Expression expression)
+        {
+            var factory = (Func<Scoped, T>)Expression.Lambda(expression, ScopeParameter).CompileFast();
+            MethodInfo method = Scoped.GetOrAddScopedInstanceMethod.MakeGenericMethod(dependency.Registration.DependencyType);
+            return Expression.Call(ScopeParameter, method, Expression.Constant(factory), Expression.Constant(dependency.Registration.DependencyType));
+        }
+    }
+
+    public readonly struct InstanceFactory
+    {
+        public Type Type { get; }
+        public Func<Scoped, object> Factory { get; }
+
+        public InstanceFactory(Type type, Func<Scoped, object> factory)
+        {
+            Type = type;
+            Factory = factory;
         }
     }
 }

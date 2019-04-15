@@ -1,6 +1,9 @@
-﻿namespace Singularity.Collections
+﻿using System.Runtime.CompilerServices;
+
+namespace Singularity.Collections
 {
-    internal struct KeyValue<TKey, TValue>
+    internal readonly struct KeyValue<TKey, TValue>
+        where TKey : class
     {
         public readonly TKey Key;
         public readonly TValue Value;
@@ -10,7 +13,7 @@
         {
             Key = key;
             Value = value;
-            HashCode = key!.GetHashCode();
+            HashCode = RuntimeHelpers.GetHashCode(key);
         }
     }
 }

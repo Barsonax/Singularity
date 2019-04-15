@@ -1,4 +1,6 @@
 ﻿using System;
+using System.Collections;
+using System.Collections.Generic;
 using System.Runtime.CompilerServices;
 
 namespace Singularity.Collections
@@ -9,18 +11,18 @@ namespace Singularity.Collections
         public static readonly ImmutableDictionary<TKey, TValue> Empty = new ImmutableDictionary<TKey, TValue>();
         public readonly int Count;
         public readonly ImmutableAvlNode<TKey, TValue>[] Buckets;
-        public readonly int Divisor;
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public ImmutableDictionary<TKey, TValue> Add(TKey key, TValue value)
         {
             return new ImmutableDictionary<TKey, TValue>(this, new KeyValue<TKey, TValue>(key, value));
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        internal TValue Search(TKey key)
+        internal TValue Get(TKey key)
         {
             int hashCode = RuntimeHelpers.GetHashCode(key);
-            int bucketIndex = hashCode & (Divisor - 1);
+            int bucketIndex = hashCode & (Buckets.Length - 1);
             ImmutableAvlNode<TKey, TValue> avlNode = Buckets[bucketIndex];
 
             if (ReferenceEquals(avlNode.KeyValue.Key, key))
@@ -49,52 +51,73 @@ namespace Singularity.Collections
             return default!;
         }
 
-        private ImmutableDictionary(ImmutableDictionary<TKey, TValue> previous, KeyValue<TKey, TValue> keyValue)
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        private ImmutableDictionary(ImmutableDictionary<TKey, TValue> previous, in KeyValue<TKey, TValue> keyValue)
         {
             this.Count = previous.Count + 1;
-            if (previous.Count >= previous.Divisor)
+            if (previous.Count >= previous.Buckets.Length)
             {
-                this.Divisor = previous.Divisor * 2;
-                this.Buckets = new ImmutableAvlNode<TKey, TValue>[this.Divisor];
-                InitializeBuckets(0, this.Divisor);
+                this.Buckets = new ImmutableAvlNode<TKey, TValue>[previous.Buckets.Length * 2];
                 this.AddExistingValues(previous);
             }
             else
             {
-                this.Divisor = previous.Divisor;
-                this.Buckets = new ImmutableAvlNode<TKey, TValue>[this.Divisor];
-                Array.Copy(previous.Buckets, this.Buckets, previous.Divisor);
+                this.Buckets = new ImmutableAvlNode<TKey, TValue>[previous.Buckets.Length];
+                for (var i = 0; i < previous.Buckets.Length; i++)
+                {
+                    this.Buckets[i] = previous.Buckets[i];
+                }
             }
 
-            int bucketIndex = keyValue.HashCode & (this.Divisor - 1);
-            this.Buckets[bucketIndex] = this.Buckets[bucketIndex].Add(keyValue);
+            int bucketIndex = keyValue.HashCode & (this.Buckets.Length - 1);
+            this.Buckets[bucketIndex] = this.Buckets[bucketIndex].Add(in keyValue);
         }
 
         private ImmutableDictionary()
         {
             this.Buckets = new ImmutableAvlNode<TKey, TValue>[2];
-            this.Divisor = 2;
-            InitializeBuckets(0, 2);
+            this.Buckets[0] = ImmutableAvlNode<TKey, TValue>.Empty;
+            this.Buckets[1] = ImmutableAvlNode<TKey, TValue>.Empty;
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         private void AddExistingValues(ImmutableDictionary<TKey, TValue> previous)
         {
-            foreach (ImmutableAvlNode<TKey, TValue> bucket in previous.Buckets)
+            for (var i = 0; i < this.Buckets.Length; i++)
             {
-                foreach (KeyValue<TKey, TValue> keyValue in bucket.InOrder())
+                this.Buckets[i] = ImmutableAvlNode<TKey, TValue>.Empty;
+            }
+
+            foreach (ImmutableAvlNode<TKey, TValue> avlNode in previous.Buckets)
+            {
+                if (avlNode.IsEmpty) continue;
+                ImmutableAvlNode<TKey, TValue> current = avlNode;
+                var stack = new Stack<ImmutableAvlNode<TKey, TValue>>();
+
+                while (true)
                 {
-                    int bucketIndex = keyValue.HashCode & (this.Divisor - 1);
-                    this.Buckets[bucketIndex] = this.Buckets[bucketIndex].Add(keyValue);
+                    FillBucket(current.KeyValue);
+
+                    for (int i = 0; i < current.Duplicates.Items.Length; i++)
+                    {
+                        FillBucket(current.Duplicates.Items[i]);
+                    }
+
+                    if (!current.Left.IsEmpty)
+                        stack.Push(current.Left);
+                    if (!current.Right.IsEmpty)
+                        stack.Push(current.Right);
+                    if (stack.Count == 0) break;
+                    current = stack.Pop();
                 }
             }
         }
 
-        private void InitializeBuckets(int startIndex, int count)
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        private void FillBucket(KeyValue<TKey, TValue> keyValue)
         {
-            for (int i = startIndex; i < count; i++)
-            {
-                this.Buckets[i] = ImmutableAvlNode<TKey, TValue>.Empty;
-            }
+            int bucketIndex = keyValue.HashCode & (this.Buckets.Length - 1);
+            this.Buckets[bucketIndex] = this.Buckets[bucketIndex].Add(in keyValue);
         }
     }
 }

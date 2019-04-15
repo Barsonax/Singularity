@@ -7,41 +7,29 @@ namespace Singularity
     {
         private Action<object> Action { get; }
         private List<object> Objects { get; }
-        private readonly object _locker;
-        private bool IsDisposed { get; set; }
 
         public DisposeList(Action<object> action)
         {
             Action = action;
-            Objects = new List<object>();
-            _locker = new object();
+            Objects = new List<object>(4);
         }
 
         public void Invoke()
         {
-            lock (_locker)
+            lock (Objects)
             {
                 foreach (object obj in Objects)
                 {
                     Action(obj);
                 }
-                Objects.Clear();
-                IsDisposed = true;
             }
         }
 
         public void Add(object obj)
         {
-            lock (_locker)
+            lock (Objects)
             {
-                if (IsDisposed)
-                {
-                    Action(obj);
-                }
-                else
-                {
-                    Objects.Add(obj);
-                }
+                Objects.Add(obj);
             }
         }
     }
