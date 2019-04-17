@@ -13,7 +13,7 @@ namespace Singularity
     {
         internal static readonly MethodInfo AddMethod = typeof(Scoped).GetRuntimeMethods().FirstOrDefault(x => x.Name == nameof(AddDisposable));
         internal static readonly MethodInfo GetOrAddScopedInstanceMethod = typeof(Scoped).GetRuntimeMethods().FirstOrDefault(x => x.Name == nameof(GetOrAddScopedInstance));
-        private Dictionary<Binding, DisposeList> DisposeList { get; } = new Dictionary<Binding, DisposeList>();
+        private Dictionary<Binding, DisposeList<object>> DisposeList { get; } = new Dictionary<Binding, DisposeList<object>>();
         private ThreadSafeDictionary<Type, object> ScopedInstances { get; } = new ThreadSafeDictionary<Type, object>();
         public readonly Container Container;
 
@@ -69,12 +69,12 @@ namespace Singularity
 
         internal T AddDisposable<T>(T obj, Binding binding)
         {
-            DisposeList list;
+            DisposeList<object> list;
             lock (DisposeList)
             {
                 if (!DisposeList.TryGetValue(binding, out list))
                 {
-                    list = new DisposeList(binding.OnDeathAction!);
+                    list = new DisposeList<object>(binding.OnDeathAction!);
                     DisposeList.Add(binding, list);
                 }
             }
@@ -89,7 +89,7 @@ namespace Singularity
         {
             lock (DisposeList)
             {
-                foreach (DisposeList objectActionList in DisposeList.Values)
+                foreach (DisposeList<object> objectActionList in DisposeList.Values)
                 {
                     objectActionList.Invoke();
                 }

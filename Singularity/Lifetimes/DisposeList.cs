@@ -4,34 +4,34 @@ using Singularity.Collections;
 
 namespace Singularity
 {
-    internal class DisposeList
+    internal class DisposeList<T>
     {
-        private Action<object> Action { get; }
-        private SinglyLinkedListNode<object> _root;
+        private Action<T> Action { get; }
+        private SinglyLinkedListNode<T> _root;
 
-        public DisposeList(Action<object> action)
+        public DisposeList(Action<T> action)
         {
             Action = action;
-            _root = SinglyLinkedListNode<object>.Empty;
+            _root = SinglyLinkedListNode<T>.Empty;
         }
 
         public void Invoke()
         {
-            SinglyLinkedListNode<object> root = _root;
-            while (!ReferenceEquals(root, SinglyLinkedListNode<object>.Empty))
+            SinglyLinkedListNode<T> root = _root;
+            while (!ReferenceEquals(root, SinglyLinkedListNode<T>.Empty))
             {
                 Action(root.Value);
                 root = root.Next;
             }
         }
 
-        public void Add(object obj)
+        public void Add(T obj)
         {
-            SinglyLinkedListNode<object> initialValue, computedValue;
+            SinglyLinkedListNode<T> initialValue, computedValue;
             do
             {
                 initialValue = _root;
-                computedValue = new SinglyLinkedListNode<object>(_root, obj);
+                computedValue = new SinglyLinkedListNode<T>(_root, obj);
             }
             while (initialValue != Interlocked.CompareExchange(ref _root, computedValue, initialValue));
         }

@@ -14,8 +14,14 @@ namespace Singularity.Test.ThreadSafety
     public class ThreadSafetyTester<TTestCase>
     {
         public int TaskCount { get; } = 10;
+        private readonly Func<IEnumerable<TTestCase>> _testCasesFactory;
 
-        public void Test(Action<TTestCase> action, List<TTestCase> testCases)
+        public ThreadSafetyTester(Func<IEnumerable<TTestCase>> testCasesFactory)
+        {
+            _testCasesFactory = testCasesFactory;
+        }
+
+        public void Test(Action<TTestCase> action)
         {
             var manualResetEvent = new ManualResetEvent(false);
             var tasks = new Task[TaskCount];
@@ -27,11 +33,11 @@ namespace Singularity.Test.ThreadSafety
                 tasks[i] = Task.Run(() =>
                 {
                     //Randomize the order to maximize the chance on threading issues.
-                    testCases = Shuffle(testCases, seed);
+                    var testCases = Shuffle(_testCasesFactory.Invoke(), seed);
 
                     Interlocked.Increment(ref threadsWaiting);
                     manualResetEvent.WaitOne();
- 
+
                     foreach (TTestCase testCase in testCases)
                     {
                         action.Invoke(testCase);
@@ -50,11 +56,11 @@ namespace Singularity.Test.ThreadSafety
             Task.WaitAll(tasks);
         }
 
-        private static List<T> Shuffle<T>(List<T> list, int seed)
+        private static T[] Shuffle<T>(IEnumerable<T> list, int seed)
         {
             var rng = new Random(seed);
-            List<T> randomizedList = list.ToList();
-            int n = randomizedList.Count;
+            T[] randomizedList = list.ToArray();
+            int n = randomizedList.Length;
             while (n > 1)
             {
                 n--;
