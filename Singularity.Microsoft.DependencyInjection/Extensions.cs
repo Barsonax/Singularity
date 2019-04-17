@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Linq.Expressions;
 using Microsoft.Extensions.DependencyInjection;
+using Singularity.Bindings;
 
 namespace Singularity.Microsoft.DependencyInjection
 {
@@ -10,7 +11,7 @@ namespace Singularity.Microsoft.DependencyInjection
         {
             Container container = null;
             // ReSharper disable once AccessToModifiedClosure
-            config.Register<Container>().Inject(() => container);
+            config.Register<Container>().Inject(() => container).With(Dispose.Never);
             config.Register<IServiceProvider, SingularityServiceProvider>();
             config.Register<IServiceScopeFactory, SingularityServiceScopeFactory>();
 

@@ -16,18 +16,6 @@ namespace Singularity.Bindings
         }
 
         /// <summary>
-        /// Sets the lifetime of the instance(s)
-        /// </summary>
-        /// <param name="lifetime"></param>
-        /// <returns></returns>
-        public new StronglyTypedConfiguredBinding<TDependency, TInstance> With(Lifetime lifetime)
-        {
-            if (!EnumMetadata<Lifetime>.IsValidValue(lifetime)) throw new InvalidLifetimeException(lifetime);
-            Lifetime = lifetime;
-            return this;
-        }
-
-        /// <summary>
         /// Sets the action that will be executed when the scope ends.
         /// </summary>
         /// <param name="onDeathAction"></param>

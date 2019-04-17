@@ -26,19 +26,19 @@ namespace Singularity.Graph
         }
 
         public Dependency(Type type, Lifetime lifetime) :
-            this(new ReadonlyRegistration(type, new Binding(new BindingMetadata(type), type.AutoResolveConstructorExpression(), lifetime, null, false), new Expression[0]))
+            this(new ReadonlyRegistration(type, new Binding(new BindingMetadata(type), type.AutoResolveConstructorExpression(), lifetime, null, Dispose.Default), new Expression[0]))
         {
 
         }
 
         public Dependency(Type type, Expression expression, Lifetime lifetime) :
-            this(new ReadonlyRegistration(type, new Binding(new BindingMetadata(type), expression, lifetime, null, false), new Expression[0]))
+            this(new ReadonlyRegistration(type, new Binding(new BindingMetadata(type), expression, lifetime, null, Dispose.Default), new Expression[0]))
         {
 
         }
 
         public Dependency(Type type, IEnumerable<Expression> expressions, Lifetime lifetime) :
-            this(new ReadonlyRegistration(type, expressions.Select(expression => new Binding(new BindingMetadata(type), expression, lifetime, null, false)) , new Expression[0]))
+            this(new ReadonlyRegistration(type, expressions.Select(expression => new Binding(new BindingMetadata(type), expression, lifetime, null, Dispose.Default)), new Expression[0]))
         {
 
         }
