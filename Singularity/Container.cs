@@ -69,6 +69,7 @@ namespace Singularity
         /// Starts a new scope
         /// </summary>
         /// <returns></returns>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public Scoped BeginScope()
         {
             return new Scoped(this);

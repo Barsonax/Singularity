@@ -27,10 +27,7 @@ namespace Singularity.TestClasses.Benchmark
 
             using (var scope = factory.CreateScope())
             {
-                //var controller = scope.ServiceProvider.GetService(typeof(IDisposable));
                 var controller = scope.ServiceProvider.GetService(typeof(TestController1));
-                
-                var foo = scope.ServiceProvider.GetService<Expression<Func<TestController1>>>();
             }
         }
 

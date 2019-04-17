@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Runtime.CompilerServices;
 using Microsoft.Extensions.DependencyInjection;
 
 namespace Singularity.Microsoft.DependencyInjection
@@ -7,9 +8,9 @@ namespace Singularity.Microsoft.DependencyInjection
     {
         private readonly Scoped _scope;
 
-        public SingularityServiceScope(SingularityServiceProvider container)
+        public SingularityServiceScope(Scoped scope)
         {
-            _scope = container.BeginScope();
+            _scope = scope;
         }
 
         public void Dispose()

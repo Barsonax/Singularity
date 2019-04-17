@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Linq;
 using System.Reflection;
+using System.Runtime.CompilerServices;
 using Singularity.Collections;
 
 namespace Singularity
@@ -13,8 +14,10 @@ namespace Singularity
         internal static readonly MethodInfo AddDisposableMethod = typeof(Scoped).GetRuntimeMethods().Single(x => x.Name == nameof(AddDisposable));
         internal static readonly MethodInfo AddFinalizerMethod = typeof(Scoped).GetRuntimeMethods().Single(x => x.Name == nameof(AddFinalizer));
         internal static readonly MethodInfo GetOrAddScopedInstanceMethod = typeof(Scoped).GetRuntimeMethods().Single(x => x.Name == nameof(GetOrAddScopedInstance));
+        internal static readonly Action<IDisposable> DisposeAction = x => x.Dispose();
+
         private ThreadSafeDictionary<Binding, ActionList<object>> Finalizers { get; } = new ThreadSafeDictionary<Binding, ActionList<object>>();
-        private ActionList<IDisposable> Disposables { get; } = new ActionList<IDisposable>(x => x.Dispose());
+        private ActionList<IDisposable> Disposables { get; } = new ActionList<IDisposable>(DisposeAction);
         private ThreadSafeDictionary<Type, object> ScopedInstances { get; } = new ThreadSafeDictionary<Type, object>();
         private readonly Container _container;
 
@@ -28,6 +31,7 @@ namespace Singularity
         /// </summary>
         /// <typeparam name="T"></typeparam>
         /// <returns></returns>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public T GetInstance<T>() where T : class
         {
             return (T)GetInstance(typeof(T));
@@ -38,6 +42,7 @@ namespace Singularity
         /// </summary>
         /// <param name="type"></param>
         /// <returns></returns>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public object GetInstance(Type type)
         {
             return _container.GetInstance(type, this);
@@ -47,6 +52,7 @@ namespace Singularity
         /// <see cref="Singularity.Container.MethodInject(object)"/>
         /// </summary>
         /// <param name="instance"></param>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public void MethodInject(object instance)
         {
             _container.MethodInject(instance, this);
@@ -104,10 +110,11 @@ namespace Singularity
         {
             Disposables.Invoke();
 
-            foreach (ActionList<object> objectActionList in Finalizers)
-            {
-                objectActionList.Invoke();
-            }
+            if (Finalizers.Count > 0)
+                foreach (ActionList<object> objectActionList in Finalizers)
+                {
+                    objectActionList.Invoke();
+                }
         }
     }
 }
