@@ -1,36 +1,39 @@
 ﻿using System;
-using System.Collections.Generic;
+using System.Threading;
+using Singularity.Collections;
 
 namespace Singularity
 {
     internal class DisposeList
     {
         private Action<object> Action { get; }
-        private List<object> Objects { get; }
+        private SinglyLinkedListNode<object> _root;
 
         public DisposeList(Action<object> action)
         {
             Action = action;
-            Objects = new List<object>(4);
+            _root = SinglyLinkedListNode<object>.Empty;
         }
 
         public void Invoke()
         {
-            lock (Objects)
+            SinglyLinkedListNode<object> root = _root;
+            while (!ReferenceEquals(root, SinglyLinkedListNode<object>.Empty))
             {
-                foreach (object obj in Objects)
-                {
-                    Action(obj);
-                }
+                Action(root.Value);
+                root = root.Next;
             }
         }
 
         public void Add(object obj)
         {
-            lock (Objects)
+            SinglyLinkedListNode<object> initialValue, computedValue;
+            do
             {
-                Objects.Add(obj);
+                initialValue = _root;
+                computedValue = new SinglyLinkedListNode<object>(_root, obj);
             }
+            while (initialValue != Interlocked.CompareExchange(ref _root, computedValue, initialValue));
         }
     }
 }
