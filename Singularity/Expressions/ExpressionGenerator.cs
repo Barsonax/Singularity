@@ -19,7 +19,7 @@ namespace Singularity.Expressions
             var parameterExpressionVisitor = new ParameterExpressionVisitor(dependency.Children);
             expression = parameterExpressionVisitor.Visit(expression);
 
-            if (dependency.Binding.NeedsDispose || settings.AutoDispose && typeof(IDisposable).IsAssignableFrom(expression.Type))
+            if (dependency.Binding.NeedsDispose == Dispose.Always || settings.AutoDispose && dependency.Binding.NeedsDispose != Dispose.Never && typeof(IDisposable).IsAssignableFrom(expression.Type))
             {
                 MethodInfo method = Scoped.AddDisposableMethod.MakeGenericMethod(expression.Type);
                 expression = Expression.Call(ScopeParameter, method, expression);

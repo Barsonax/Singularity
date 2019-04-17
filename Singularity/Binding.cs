@@ -13,10 +13,10 @@ namespace Singularity
         public Expression? Expression { get; }
 
         public Lifetime Lifetime { get; }
-        public bool NeedsDispose { get; }
+        public Dispose NeedsDispose { get; }
         public Action<object>? Finalizer { get; }
 
-        public Binding(BindingMetadata bindingMetadata, Expression? expression, Lifetime lifetime, Action<object>? finalizer, bool needsDispose)
+        public Binding(BindingMetadata bindingMetadata, Expression? expression, Lifetime lifetime, Action<object>? finalizer, Dispose needsDispose)
         {
             BindingMetadata = bindingMetadata ?? throw new ArgumentNullException(nameof(bindingMetadata));
             Lifetime = lifetime;

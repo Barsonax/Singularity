@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Linq.Expressions;
-using Singularity.Exceptions;
 
 namespace Singularity.Bindings
 {
@@ -10,28 +9,15 @@ namespace Singularity.Bindings
     public class WeaklyTypedConfiguredBinding
     {
         internal Expression Expression { get; }
-        internal Lifetime Lifetime { get; set; }
+        public Lifetime Lifetime { get; internal set; }
         internal Action<object>? Finalizer { get; set; }
         private protected readonly WeaklyTypedBinding WeaklyTypedBinding;
-        public bool NeedsDispose { get; internal set; }
+        public Dispose NeedsDispose { get; internal set; }
 
         internal WeaklyTypedConfiguredBinding(WeaklyTypedBinding weaklyTypedBinding, Expression expression)
         {
             WeaklyTypedBinding = weaklyTypedBinding;
             Expression = expression;
-            Lifetime = Lifetime.Transient;
-        }
-
-        /// <summary>
-        /// Sets the lifetime of the instance(s)
-        /// </summary>
-        /// <param name="lifetime"></param>
-        /// <returns></returns>
-        public WeaklyTypedConfiguredBinding With(Lifetime lifetime)
-        {
-            if (!EnumMetadata<Lifetime>.IsValidValue(lifetime)) throw new InvalidLifetimeException(lifetime);
-            Lifetime = lifetime;
-            return this;
         }
 
         /// <summary>
@@ -43,16 +29,6 @@ namespace Singularity.Bindings
         {
             Finalizer = onDeathAction;
             return this;
-        }
-    }
-
-    public static class BindingExtensions
-    {
-        public static T WithDispose<T>(this T binding)
-            where T : WeaklyTypedConfiguredBinding
-        {
-            binding.NeedsDispose = true;
-            return binding;
         }
     }
 }

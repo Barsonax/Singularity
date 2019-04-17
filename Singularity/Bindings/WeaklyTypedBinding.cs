@@ -36,7 +36,7 @@ namespace Singularity.Bindings
         /// </summary>
         public Action<object>? Finalizer => WeaklyTypedConfiguredBinding?.Finalizer;
 
-        public bool NeedsDispose => WeaklyTypedConfiguredBinding?.NeedsDispose ?? false;
+        public Dispose NeedsDispose => WeaklyTypedConfiguredBinding?.NeedsDispose ?? Dispose.Default;
 
         private protected WeaklyTypedConfiguredBinding? WeaklyTypedConfiguredBinding { get; set; }
 

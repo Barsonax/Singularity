@@ -29,7 +29,8 @@ namespace Singularity.TestClasses.Benchmark
             {
                 //var controller = scope.ServiceProvider.GetService(typeof(IDisposable));
                 var controller = scope.ServiceProvider.GetService(typeof(TestController1));
-                //var foo = scope.ServiceProvider.GetService<Expression<Func<IDisposable>>>();
+                
+                var foo = scope.ServiceProvider.GetService<Expression<Func<TestController1>>>();
             }
         }
 
@@ -85,11 +86,12 @@ namespace Singularity.TestClasses.Benchmark
 
             Register(config);
 
-            config.Register<Container>().Inject(() => this._container);
+            config.Register<Container>().Inject(() => this._container).With(Dispose.Never);
             config.Register<IServiceProvider, SingularityServiceProvider>();
             config.Register<IServiceScopeFactory, SingularityServiceScopeFactory>();
 
-            return new Container(config);
+            //return new Container(config);
+            return new Container(config, new SingularitySettings() {AutoDispose = true});
         }
 
         public Container NewContainerFromCachedConfig()
@@ -155,9 +157,9 @@ namespace Singularity.TestClasses.Benchmark
 
             config.Register<IDisposable, Disposable>().With(Lifetime.PerScope);
 
-            config.Register<TestController1, TestController1>().WithDispose();
-            config.Register<TestController2, TestController2>().WithDispose();
-            config.Register<TestController3, TestController3>().WithDispose();
+            config.Register<TestController1, TestController1>();
+            config.Register<TestController2, TestController2>();
+            config.Register<TestController3, TestController3>();
             config.Register<IRepositoryTransient1, RepositoryTransient1>();
             config.Register<IRepositoryTransient2, RepositoryTransient2>();
             config.Register<IRepositoryTransient3, RepositoryTransient3>();
