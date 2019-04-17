@@ -4,14 +4,14 @@ using Xunit;
 
 namespace Singularity.Test.Injection
 {
-    public class Disposing
+    public class FinalizerTests
     {
         [Fact]
         public void GetInstance_PerContainerLifetime_IsDisposed()
         {
             //ARRANGE
             var config = new BindingConfig();
-            config.Register<IDisposable, Disposable>().With(Lifetime.PerContainer).OnDeath(x => x.Dispose());
+            config.Register<IDisposable, Disposable>().With(Lifetime.PerContainer).WithFinalizer(x => x.Dispose());
 
             var container = new Container(config);
 
@@ -31,7 +31,7 @@ namespace Singularity.Test.Injection
         {
             //ARRANGE
             var config = new BindingConfig();
-            config.Register<IDisposable, Disposable>().OnDeath(x => x.Dispose());
+            config.Register<IDisposable, Disposable>().WithFinalizer(x => x.Dispose());
 
             var container = new Container(config);
 
@@ -51,7 +51,7 @@ namespace Singularity.Test.Injection
         {
             //ARRANGE
             var config = new BindingConfig();
-            config.Register<IDisposable, Disposable>().OnDeath(x => x.Dispose());
+            config.Register<IDisposable, Disposable>().WithFinalizer(x => x.Dispose());
             config.Decorate<IDisposable, DisposableDecorator>();
 
             var container = new Container(config);
@@ -73,7 +73,7 @@ namespace Singularity.Test.Injection
         {
             //ARRANGE
             var config = new BindingConfig();
-            config.Register<IDisposable, Disposable>().With(Lifetime.PerContainer).OnDeath(x => x.Dispose());
+            config.Register<IDisposable, Disposable>().With(Lifetime.PerContainer).WithFinalizer(x => x.Dispose());
             var nestedConfig = new BindingConfig();
 
             var container = new Container(config);
@@ -101,7 +101,7 @@ namespace Singularity.Test.Injection
         {
             //ARRANGE
             var config = new BindingConfig();
-            config.Register<IDisposable, Disposable>().OnDeath(x => x.Dispose());
+            config.Register<IDisposable, Disposable>().WithFinalizer(x => x.Dispose());
             var nestedConfig = new BindingConfig();
 
             var container = new Container(config);

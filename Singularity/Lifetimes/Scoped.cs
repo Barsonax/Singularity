@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
 using Singularity.Collections;
@@ -11,15 +10,17 @@ namespace Singularity
     /// </summary>
     public sealed class Scoped : IContainer
     {
-        internal static readonly MethodInfo AddMethod = typeof(Scoped).GetRuntimeMethods().FirstOrDefault(x => x.Name == nameof(AddDisposable));
-        internal static readonly MethodInfo GetOrAddScopedInstanceMethod = typeof(Scoped).GetRuntimeMethods().FirstOrDefault(x => x.Name == nameof(GetOrAddScopedInstance));
-        private Dictionary<Binding, DisposeList<object>> DisposeList { get; } = new Dictionary<Binding, DisposeList<object>>();
+        internal static readonly MethodInfo AddDisposableMethod = typeof(Scoped).GetRuntimeMethods().Single(x => x.Name == nameof(AddDisposable));
+        internal static readonly MethodInfo AddFinalizerMethod = typeof(Scoped).GetRuntimeMethods().Single(x => x.Name == nameof(AddFinalizer));
+        internal static readonly MethodInfo GetOrAddScopedInstanceMethod = typeof(Scoped).GetRuntimeMethods().Single(x => x.Name == nameof(GetOrAddScopedInstance));
+        private ThreadSafeDictionary<Binding, ActionList<object>> Finalizers { get; } = new ThreadSafeDictionary<Binding, ActionList<object>>();
+        private ActionList<IDisposable> Disposables { get; } = new ActionList<IDisposable>(x => x.Dispose());
         private ThreadSafeDictionary<Type, object> ScopedInstances { get; } = new ThreadSafeDictionary<Type, object>();
-        public readonly Container Container;
+        private readonly Container _container;
 
         internal Scoped(Container container)
         {
-            Container = container;
+            _container = container;
         }
 
         /// <summary>
@@ -39,7 +40,7 @@ namespace Singularity
         /// <returns></returns>
         public object GetInstance(Type type)
         {
-            return Container.GetInstance(type, this);
+            return _container.GetInstance(type, this);
         }
 
         /// <summary>
@@ -48,7 +49,7 @@ namespace Singularity
         /// <param name="instance"></param>
         public void MethodInject(object instance)
         {
-            Container.MethodInject(instance, this);
+            _container.MethodInject(instance, this);
         }
 
         internal T GetOrAddScopedInstance<T>(Func<Scoped, T> factory, Type key)
@@ -67,15 +68,29 @@ namespace Singularity
             }
         }
 
-        internal T AddDisposable<T>(T obj, Binding binding)
+        internal T AddDisposable<T>(T obj)
+            where T : IDisposable
         {
-            DisposeList<object> list;
-            lock (DisposeList)
+            Disposables.Add(obj);
+            return obj;
+        }
+
+        internal T AddFinalizer<T>(T obj, Binding binding)
+        {
+            ActionList<object> list = Finalizers.Search(binding);
+            if (list != null)
             {
-                if (!DisposeList.TryGetValue(binding, out list))
+                list.Add(obj);
+                return obj;
+            }
+
+            lock (Finalizers)
+            {
+                list = Finalizers.Search(binding);
+                if (list == null)
                 {
-                    list = new DisposeList<object>(binding.OnDeathAction!);
-                    DisposeList.Add(binding, list);
+                    list = new ActionList<object>(binding.Finalizer);
+                    Finalizers.Add(binding, list);
                 }
             }
             list.Add(obj!);
@@ -87,12 +102,11 @@ namespace Singularity
         /// </summary>
         public void Dispose()
         {
-            lock (DisposeList)
+            Disposables.Invoke();
+
+            foreach (ActionList<object> objectActionList in Finalizers)
             {
-                foreach (DisposeList<object> objectActionList in DisposeList.Values)
-                {
-                    objectActionList.Invoke();
-                }
+                objectActionList.Invoke();
             }
         }
     }

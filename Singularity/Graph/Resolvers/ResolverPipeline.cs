@@ -17,9 +17,11 @@ namespace Singularity.Graph.Resolvers
         private readonly IResolverPipeline? _parentPipeline;
         private readonly Scoped _containerScope;
         private readonly ExpressionGenerator _expressionGenerator = new ExpressionGenerator();
+        private readonly SingularitySettings _settings;
 
-        public ResolverPipeline(Dictionary<Type, Dependency> dependencies, IDependencyResolver[] resolvers, Scoped containerScope, IResolverPipeline? parentPipeline)
+        public ResolverPipeline(Dictionary<Type, Dependency> dependencies, IDependencyResolver[] resolvers, Scoped containerScope, SingularitySettings settings, IResolverPipeline? parentPipeline)
         {
+            _settings = settings ?? throw new ArgumentNullException(nameof(settings));
             _resolvers = resolvers;
             _parentPipeline = parentPipeline;
             SyncRoot = parentPipeline?.SyncRoot ?? new object();
@@ -125,7 +127,7 @@ namespace Singularity.Graph.Resolvers
                     {
                         GenerateExpression(nestedDependency.Default);
                     }
-                    dependency.Expression = _expressionGenerator.GenerateDependencyExpression(dependency, _containerScope);
+                    dependency.Expression = _expressionGenerator.GenerateDependencyExpression(dependency, _containerScope, _settings);
                 }
             }
         }

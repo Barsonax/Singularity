@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Linq.Expressions;
 using Microsoft.Extensions.DependencyInjection;
-using Singularity.Bindings;
 
 namespace Singularity.Microsoft.DependencyInjection
 {
@@ -15,7 +14,7 @@ namespace Singularity.Microsoft.DependencyInjection
             config.Register<IServiceProvider, SingularityServiceProvider>();
             config.Register<IServiceScopeFactory, SingularityServiceScopeFactory>();
 
-            container = new Container(config);
+            container = new Container(config, new SingularitySettings { AutoDispose = true });
 
             return new SingularityServiceProvider(container);
         }
@@ -32,28 +31,17 @@ namespace Singularity.Microsoft.DependencyInjection
         {
             if (registration.ImplementationFactory != null)
             {
-                Expression<Func<Scoped, object>> foo = scope => registration.ImplementationFactory.Invoke(new SingularityServiceProvider(scope.Container));
-                WeaklyTypedConfiguredBinding binding = config.Register(registration.ServiceType).Inject(foo).With(ConvertLifetime(registration.Lifetime));
-                if (typeof(IDisposable).IsAssignableFrom(registration.ImplementationType))
-                {
-                    binding.OnDeath(obj => ((IDisposable)obj).Dispose());
-                }
+                config.Register(registration.ServiceType)
+                    .Inject(Expression.Invoke(Expression.Constant(registration.ImplementationFactory), Expression.Parameter(typeof(IServiceProvider))))
+                    .With(ConvertLifetime(registration.Lifetime));
             }
             else if (registration.ImplementationInstance != null)
             {
-                WeaklyTypedConfiguredBinding binding = config.Register(registration.ServiceType).Inject(Expression.Constant(registration.ImplementationInstance));
-                if (typeof(IDisposable).IsAssignableFrom(registration.ImplementationType))
-                {
-                    binding.OnDeath(obj => ((IDisposable)obj).Dispose());
-                }
+                config.Register(registration.ServiceType).Inject(Expression.Constant(registration.ImplementationInstance));
             }
             else
             {
-                WeaklyTypedConfiguredBinding binding = config.Register(registration.ServiceType, registration.ImplementationType).With(ConvertLifetime(registration.Lifetime));
-                if (typeof(IDisposable).IsAssignableFrom(registration.ImplementationType))
-                {
-                    binding.OnDeath(obj => ((IDisposable)obj).Dispose());
-                }
+                config.Register(registration.ServiceType, registration.ImplementationType).With(ConvertLifetime(registration.Lifetime));
             }
         }
 

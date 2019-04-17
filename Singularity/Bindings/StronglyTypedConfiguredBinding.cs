@@ -32,9 +32,9 @@ namespace Singularity.Bindings
         /// </summary>
         /// <param name="onDeathAction"></param>
         /// <returns></returns>
-        public StronglyTypedConfiguredBinding<TDependency, TInstance> OnDeath(Action<TInstance> onDeathAction)
+        public StronglyTypedConfiguredBinding<TDependency, TInstance> WithFinalizer(Action<TInstance> onDeathAction)
         {
-            OnDeathAction = obj => onDeathAction((TInstance)obj);
+            Finalizer = obj => onDeathAction((TInstance)obj);
             return this;
         }
     }

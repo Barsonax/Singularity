@@ -13,18 +13,19 @@ namespace Singularity
         public Expression? Expression { get; }
 
         public Lifetime Lifetime { get; }
-        public Action<object>? OnDeathAction { get; }
+        public bool NeedsDispose { get; }
+        public Action<object>? Finalizer { get; }
 
-        public Binding(BindingMetadata bindingMetadata, Expression? expression, Lifetime lifetime, Action<object>? onDeath)
+        public Binding(BindingMetadata bindingMetadata, Expression? expression, Lifetime lifetime, Action<object>? finalizer, bool needsDispose)
         {
             BindingMetadata = bindingMetadata ?? throw new ArgumentNullException(nameof(bindingMetadata));
             Lifetime = lifetime;
             Expression = expression;
-
-            OnDeathAction = onDeath;
+            NeedsDispose = needsDispose;
+            Finalizer = finalizer;
         }
 
-        public Binding(WeaklyTypedBinding binding) : this(binding.BindingMetadata, binding.Expression, binding.Lifetime, binding.OnDeathAction)
+        public Binding(WeaklyTypedBinding binding) : this(binding.BindingMetadata, binding.Expression, binding.Lifetime, binding.Finalizer, binding.NeedsDispose)
         {
         }
     }

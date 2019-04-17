@@ -10,9 +10,6 @@ namespace Singularity.Microsoft.DependencyInjection.Test
         public void RegisterThroughServiceCollection()
         {
             ServiceCollection serviceCollection = new ServiceCollection();
-            serviceCollection.AddTransient<TestController1>();
-            serviceCollection.AddTransient<TestController2>();
-            serviceCollection.AddTransient<TestController3>();
             serviceCollection.AddTransient<IRepositoryTransient1, RepositoryTransient1>();
             serviceCollection.AddTransient<IRepositoryTransient2, RepositoryTransient2>();
             serviceCollection.AddTransient<IRepositoryTransient3, RepositoryTransient3>();

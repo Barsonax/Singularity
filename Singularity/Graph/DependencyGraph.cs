@@ -11,7 +11,7 @@ namespace Singularity.Graph
     {
         private readonly IResolverPipeline _resolverPipeline;
 
-        public DependencyGraph(ReadOnlyCollection<ReadonlyRegistration> registrations, Scoped scope, DependencyGraph? parentDependencyGraph = null)
+        public DependencyGraph(ReadOnlyCollection<ReadonlyRegistration> registrations, Scoped scope, SingularitySettings settings, DependencyGraph? parentDependencyGraph = null)
         {
             var dependencies = new Dictionary<Type, Dependency>(registrations.Count);
             foreach (ReadonlyRegistration registration in registrations)
@@ -19,7 +19,7 @@ namespace Singularity.Graph
                 dependencies.Add(registration.DependencyType, new Dependency(registration));
             }
             var resolvers = new IDependencyResolver[] { new EnumerableDependencyResolver(), new ExpressionDependencyResolver(), new LazyDependencyResolver(), new FactoryDependencyResolver(), new ConcreteDependencyResolver(), new OpenGenericResolver() };
-            _resolverPipeline = new ResolverPipeline(dependencies, resolvers, scope, parentDependencyGraph?._resolverPipeline);
+            _resolverPipeline = new ResolverPipeline(dependencies, resolvers, scope, settings, parentDependencyGraph?._resolverPipeline);
         }
 
         public Expression? GetResolvedExpression(Type type)

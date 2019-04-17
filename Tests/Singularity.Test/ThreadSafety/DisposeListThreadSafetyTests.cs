@@ -10,7 +10,7 @@ namespace Singularity.Test.ThreadSafety
         [Fact]
         public void DisposeList_Add()
         {
-            var list = new DisposeList<TrackableDisposable>(obj => obj.Dispose());
+            var list = new ActionList<TrackableDisposable>(obj => obj.Dispose());
             var trackers = new List<DisposeTracker>();
 
             var tester = new ThreadSafetyTester<TrackableDisposable>(() =>
