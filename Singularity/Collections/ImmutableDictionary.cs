@@ -1,11 +1,10 @@
-﻿using System;
-using System.Collections;
+﻿using System.Collections;
 using System.Collections.Generic;
 using System.Runtime.CompilerServices;
 
 namespace Singularity.Collections
 {
-    internal sealed class ImmutableDictionary<TKey, TValue>
+    internal sealed class ImmutableDictionary<TKey, TValue> : IEnumerable<TValue>
         where TKey : class
     {
         public static readonly ImmutableDictionary<TKey, TValue> Empty = new ImmutableDictionary<TKey, TValue>();
@@ -118,6 +117,38 @@ namespace Singularity.Collections
         {
             int bucketIndex = keyValue.HashCode & (this.Buckets.Length - 1);
             this.Buckets[bucketIndex] = this.Buckets[bucketIndex].Add(in keyValue);
+        }
+
+        public IEnumerator<TValue> GetEnumerator()
+        {
+            foreach (ImmutableAvlNode<TKey, TValue> avlNode in Buckets)
+            {
+                if (avlNode.IsEmpty) continue;
+                ImmutableAvlNode<TKey, TValue> current = avlNode;
+                var stack = new Stack<ImmutableAvlNode<TKey, TValue>>();
+
+                while (true)
+                {
+                    yield return current.KeyValue.Value;
+
+                    for (int i = 0; i < current.Duplicates.Items.Length; i++)
+                    {
+                        yield return current.Duplicates.Items[i].Value;
+                    }
+
+                    if (!current.Left.IsEmpty)
+                        stack.Push(current.Left);
+                    if (!current.Right.IsEmpty)
+                        stack.Push(current.Right);
+                    if (stack.Count == 0) break;
+                    current = stack.Pop();
+                }
+            }
+        }
+
+        IEnumerator IEnumerable.GetEnumerator()
+        {
+            return GetEnumerator();
         }
     }
 }

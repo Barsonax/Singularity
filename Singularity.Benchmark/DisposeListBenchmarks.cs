@@ -9,16 +9,16 @@ namespace Singularity.Benchmark
         [Params(1, 3, 10, 100, 1000)]
         public int N { get; set; }
 
-        private DisposeList<object> _disposeList;
+        private ActionList<object> actionList;
 
         [GlobalSetup]
         public void Setup()
         {
-            _disposeList = new DisposeList<object>(obj => Nothing());
+            actionList = new ActionList<object>(obj => Nothing());
 
             for (var i = 0; i < N; i++)
             {
-                _disposeList.Add(new object());
+                actionList.Add(new object());
             }
         }
 
@@ -27,13 +27,13 @@ namespace Singularity.Benchmark
         [Benchmark]
         public void DisposeList_Invoke()
         {
-            _disposeList.Invoke();
+            actionList.Invoke();
         }
 
         [Benchmark]
         public void DisposeList_Add()
         {
-            var disposeList = new DisposeList<object>(obj => Nothing());
+            var disposeList = new ActionList<object>(obj => Nothing());
 
             for (var i = 0; i < N; i++)
             {

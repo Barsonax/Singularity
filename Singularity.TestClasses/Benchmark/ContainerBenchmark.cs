@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Linq.Expressions;
 using Microsoft.Extensions.DependencyInjection;
+using Singularity.Bindings;
 using Singularity.Microsoft.DependencyInjection;
 using Singularity.TestClasses.TestClasses;
 
@@ -154,9 +155,9 @@ namespace Singularity.TestClasses.Benchmark
 
             config.Register<IDisposable, Disposable>().With(Lifetime.PerScope);
 
-            config.Register<TestController1, TestController1>().OnDeath(x => x.Dispose());
-            config.Register<TestController2, TestController2>().OnDeath(x => x.Dispose());
-            config.Register<TestController3, TestController3>().OnDeath(x => x.Dispose());
+            config.Register<TestController1, TestController1>().WithDispose();
+            config.Register<TestController2, TestController2>().WithDispose();
+            config.Register<TestController3, TestController3>().WithDispose();
             config.Register<IRepositoryTransient1, RepositoryTransient1>();
             config.Register<IRepositoryTransient2, RepositoryTransient2>();
             config.Register<IRepositoryTransient3, RepositoryTransient3>();

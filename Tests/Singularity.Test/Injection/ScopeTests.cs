@@ -11,7 +11,7 @@ namespace Singularity.Test.Injection
         {
             //ARRANGE
             var config = new BindingConfig();
-            config.Register<IDisposable, Disposable>().With(Lifetime.PerScope).OnDeath(x => x.Dispose());
+            config.Register<IDisposable, Disposable>().With(Lifetime.PerScope).WithFinalizer(x => x.Dispose());
 
             var container = new Container(config);
 
@@ -33,7 +33,7 @@ namespace Singularity.Test.Injection
         {
             //ARRANGE
             var config = new BindingConfig();
-            config.Register<IDisposable, Disposable>().With(Lifetime.PerScope).OnDeath(x => x.Dispose());
+            config.Register<IDisposable, Disposable>().With(Lifetime.PerScope).WithFinalizer(x => x.Dispose());
 
             var container = new Container(config);
 

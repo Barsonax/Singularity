@@ -34,7 +34,9 @@ namespace Singularity.Bindings
         /// <summary>
         /// A action that is executed when the <see cref="Scoped"/> is disposed. This usually happens when the <see cref="Container"/> is disposed.
         /// </summary>
-        public Action<object>? OnDeathAction => WeaklyTypedConfiguredBinding?.OnDeathAction;
+        public Action<object>? Finalizer => WeaklyTypedConfiguredBinding?.Finalizer;
+
+        public bool NeedsDispose => WeaklyTypedConfiguredBinding?.NeedsDispose ?? false;
 
         private protected WeaklyTypedConfiguredBinding? WeaklyTypedConfiguredBinding { get; set; }
 
@@ -46,7 +48,7 @@ namespace Singularity.Bindings
                 var enumerableType = dependencyType.GenericTypeArguments[0];
                 throw new EnumerableRegistrationException($"don't register {enumerableType} as IEnumerable directly. Instead register them as you would normally.");
             }
-            BindingMetadata = new BindingMetadata(dependencyType ,callerFilePath, callerLineNumber, module);
+            BindingMetadata = new BindingMetadata(dependencyType, callerFilePath, callerLineNumber, module);
         }
 
         /// <summary>

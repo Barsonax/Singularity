@@ -13,15 +13,21 @@ namespace Singularity.Expressions
         public static ParameterExpression ScopeParameter = Expression.Parameter(typeof(Scoped));
         internal static readonly MethodInfo CreateScopedExpressionMethod = typeof(ExpressionGenerator).GetRuntimeMethods().FirstOrDefault(x => x.Name == nameof(CreateScopedExpression));
 
-        public Expression GenerateDependencyExpression(ResolvedDependency dependency, Scoped containerScope)
+        public Expression GenerateDependencyExpression(ResolvedDependency dependency, Scoped containerScope, SingularitySettings settings)
         {
             Expression expression = dependency.Binding.Expression! is LambdaExpression lambdaExpression ? lambdaExpression.Body : dependency.Binding.Expression;
             var parameterExpressionVisitor = new ParameterExpressionVisitor(dependency.Children);
             expression = parameterExpressionVisitor.Visit(expression);
 
-            if (dependency.Binding.OnDeathAction != null)
+            if (dependency.Binding.NeedsDispose || settings.AutoDispose && typeof(IDisposable).IsAssignableFrom(expression.Type))
             {
-                var method = Scoped.AddMethod.MakeGenericMethod(expression.Type);
+                MethodInfo method = Scoped.AddDisposableMethod.MakeGenericMethod(expression.Type);
+                expression = Expression.Call(ScopeParameter, method, expression);
+            }
+
+            if (dependency.Binding.Finalizer != null)
+            {
+                MethodInfo method = Scoped.AddFinalizerMethod.MakeGenericMethod(expression.Type);
                 expression = Expression.Call(ScopeParameter, method, expression, Expression.Constant(dependency.Binding));
             }
 
@@ -61,7 +67,7 @@ namespace Singularity.Expressions
                 case Lifetime.PerScope:
                     //var scopedFactory = (Func<Scoped, object>)Expression.Lambda(expression, ScopeParameter).CompileFast();
                     //var factory = new InstanceFactory(dependency.Registration.DependencyType, scopedFactory);
-                    var method = CreateScopedExpressionMethod.MakeGenericMethod(expression.Type);
+                    MethodInfo method = CreateScopedExpressionMethod.MakeGenericMethod(expression.Type);
                     expression = (Expression)method.Invoke(null, new object[] { dependency, expression });
                     //expression = Expression.Call(ScopeParameter, method, Expression.Lambda(expression, ScopeParameter), Expression.Constant(dependency.Registration.DependencyType));
                     return expression;

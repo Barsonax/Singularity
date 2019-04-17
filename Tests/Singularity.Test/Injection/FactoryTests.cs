@@ -51,7 +51,7 @@ namespace Singularity.Test.Injection
         {
             //ARRANGE
             var config = new BindingConfig();
-            config.Register<IPlugin, Plugin1>().OnDeath(x => x.Dispose());
+            config.Register<IPlugin, Plugin1>().WithFinalizer(x => x.Dispose());
             var container = new Container(config);
 
             //ACT
@@ -90,7 +90,7 @@ namespace Singularity.Test.Injection
         {
             //ARRANGE
             var config = new BindingConfig();
-            config.Register<IPlugin, Plugin1>().OnDeath(x => x.Dispose());
+            config.Register<IPlugin, Plugin1>().WithFinalizer(x => x.Dispose());
             var container = new Container(config);
 
             //ACT

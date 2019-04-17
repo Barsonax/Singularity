@@ -4,12 +4,12 @@ using Singularity.Collections;
 
 namespace Singularity
 {
-    internal class DisposeList<T>
+    internal class ActionList<T>
     {
         private Action<T> Action { get; }
         private SinglyLinkedListNode<T> _root;
 
-        public DisposeList(Action<T> action)
+        public ActionList(Action<T> action)
         {
             Action = action;
             _root = SinglyLinkedListNode<T>.Empty;

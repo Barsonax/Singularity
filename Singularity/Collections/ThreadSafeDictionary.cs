@@ -1,4 +1,6 @@
-﻿using System.Runtime.CompilerServices;
+﻿using System.Collections;
+using System.Collections.Generic;
+using System.Runtime.CompilerServices;
 using System.Threading;
 
 namespace Singularity.Collections
@@ -9,7 +11,7 @@ namespace Singularity.Collections
     /// </summary>
     /// <typeparam name="TKey"></typeparam>
     /// <typeparam name="TValue"></typeparam>
-    internal class ThreadSafeDictionary<TKey, TValue>
+    internal class ThreadSafeDictionary<TKey, TValue> : IEnumerable<TValue>
         where TKey : class
     {
         public int Count => _immutableDictionary.Count;
@@ -36,6 +38,16 @@ namespace Singularity.Collections
         public TValue Search(TKey key)
         {
             return _immutableDictionary.Get(key);
+        }
+
+        public IEnumerator<TValue> GetEnumerator()
+        {
+            return _immutableDictionary.GetEnumerator();
+        }
+
+        IEnumerator IEnumerable.GetEnumerator()
+        {
+            return GetEnumerator();
         }
     }
 }

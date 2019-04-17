@@ -11,8 +11,9 @@ namespace Singularity.Bindings
     {
         internal Expression Expression { get; }
         internal Lifetime Lifetime { get; set; }
-        internal Action<object>? OnDeathAction { get; set; }
+        internal Action<object>? Finalizer { get; set; }
         private protected readonly WeaklyTypedBinding WeaklyTypedBinding;
+        public bool NeedsDispose { get; internal set; }
 
         internal WeaklyTypedConfiguredBinding(WeaklyTypedBinding weaklyTypedBinding, Expression expression)
         {
@@ -38,10 +39,20 @@ namespace Singularity.Bindings
         /// </summary>
         /// <param name="onDeathAction"></param>
         /// <returns></returns>
-        public WeaklyTypedConfiguredBinding OnDeath(Action<object> onDeathAction)
+        public WeaklyTypedConfiguredBinding WithFinalizer(Action<object> onDeathAction)
         {
-            OnDeathAction = onDeathAction;
+            Finalizer = onDeathAction;
             return this;
+        }
+    }
+
+    public static class BindingExtensions
+    {
+        public static T WithDispose<T>(this T binding)
+            where T : WeaklyTypedConfiguredBinding
+        {
+            binding.NeedsDispose = true;
+            return binding;
         }
     }
 }

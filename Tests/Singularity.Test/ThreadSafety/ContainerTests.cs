@@ -29,7 +29,7 @@ namespace Singularity.Test.ThreadSafety
             var disposeCount = 0;
             foreach ((Type abstractType, Type concreteType) registration in registrations)
             {
-                config.Register(registration.abstractType, registration.concreteType).OnDeath(obj => disposeCount++);
+                config.Register(registration.abstractType, registration.concreteType).WithFinalizer(obj => disposeCount++);
             }
 
             disposeCount = 0;
