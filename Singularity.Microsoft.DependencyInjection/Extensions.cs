@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Linq.Expressions;
 using Microsoft.Extensions.DependencyInjection;
-using Singularity.Bindings;
 
 namespace Singularity.Microsoft.DependencyInjection
 {

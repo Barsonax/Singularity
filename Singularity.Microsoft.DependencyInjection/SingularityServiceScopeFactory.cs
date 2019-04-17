@@ -1,20 +1,19 @@
-﻿using System;
-using Microsoft.Extensions.DependencyInjection;
+﻿using Microsoft.Extensions.DependencyInjection;
 
 namespace Singularity.Microsoft.DependencyInjection
 {
     public class SingularityServiceScopeFactory : IServiceScopeFactory
     {
-        private readonly SingularityServiceProvider _container;
+        private readonly Container _container;
 
-        public SingularityServiceScopeFactory(SingularityServiceProvider container)
+        public SingularityServiceScopeFactory(Container container)
         {
-            _container = container ?? throw new ArgumentNullException(nameof(container));
+            _container = container;
         }
 
         public IServiceScope CreateScope()
         {
-            return new SingularityServiceScope(_container);
+            return new SingularityServiceScope(_container.BeginScope());
         }
     }
 }
