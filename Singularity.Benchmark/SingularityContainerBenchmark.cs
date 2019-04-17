@@ -18,10 +18,16 @@ namespace Singularity.Benchmark
         }
 
         [Benchmark]
-        public ISingleton1 Singleton()
+        public void AspNetCore()
         {
-            return _containerBenchmark.Singleton();
+            _containerBenchmark.AspNetCore();
         }
+
+        //[Benchmark]
+        //public ISingleton1 Singleton()
+        //{
+        //    return _containerBenchmark.Singleton();
+        //}
 
         //[Benchmark]
         //public ITransient1 Transient()

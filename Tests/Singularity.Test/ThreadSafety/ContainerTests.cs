@@ -34,13 +34,13 @@ namespace Singularity.Test.ThreadSafety
 
             disposeCount = 0;
             var container = new Container(config);
-            var tester = new ThreadSafetyTester<(Type abstractType, Type concreteType)>();
+            var tester = new ThreadSafetyTester<(Type abstractType, Type concreteType)>(() => registrations);
 
             tester.Test(testCase =>
             {
                 object concreteType = container.GetInstance(testCase.abstractType);
                 Assert.Equal(testCase.concreteType, concreteType.GetType());
-            }, registrations);
+            });
 
             container.Dispose();
             Assert.Equal(180, disposeCount);

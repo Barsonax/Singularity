@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
+using Singularity.Collections;
 
 namespace Singularity
 {
@@ -10,15 +11,12 @@ namespace Singularity
     /// </summary>
     public sealed class Scoped : IContainer
     {
-        internal static readonly MethodInfo GenericAddMethod = typeof(Scoped).GetRuntimeMethods().FirstOrDefault(x => x.Name == nameof(AddDisposable));
-        internal static readonly MethodInfo GenericGetorAddScopedInstanceMethod = typeof(Scoped).GetRuntimeMethods().FirstOrDefault(x => x.Name == nameof(GetorAddScopedInstance));
-        private readonly object _locker = new object();
-        private Dictionary<Binding, DisposeList> DisposeList { get; } = new Dictionary<Binding, DisposeList>();
-        private Dictionary<Type, object> ScopedInstances { get; } = new Dictionary<Type, object>();
-
-        internal Scoped() { }
-
+        internal static readonly MethodInfo AddMethod = typeof(Scoped).GetRuntimeMethods().FirstOrDefault(x => x.Name == nameof(AddDisposable));
+        internal static readonly MethodInfo GetOrAddScopedInstanceMethod = typeof(Scoped).GetRuntimeMethods().FirstOrDefault(x => x.Name == nameof(GetOrAddScopedInstance));
+        private Dictionary<Binding, DisposeList<object>> DisposeList { get; } = new Dictionary<Binding, DisposeList<object>>();
+        private ThreadSafeDictionary<Type, object> ScopedInstances { get; } = new ThreadSafeDictionary<Type, object>();
         public readonly Container Container;
+
         internal Scoped(Container container)
         {
             Container = container;
@@ -53,29 +51,30 @@ namespace Singularity
             Container.MethodInject(instance, this);
         }
 
-
-        internal T GetorAddScopedInstance<T>(Type key, Func<Scoped, object> factory)
+        internal T GetOrAddScopedInstance<T>(Func<Scoped, T> factory, Type key)
         {
+            T instance = (T)ScopedInstances.Search(key);
+            if (instance != null) return instance;
+
             lock (ScopedInstances)
             {
-                if (!ScopedInstances.TryGetValue(key, out object instance))
-                {
-                    instance = factory(this);
-                    ScopedInstances.Add(key, instance);
-                }
+                instance = (T)ScopedInstances.Search(key);
+                if (instance != null) return instance;
+                instance = factory(this);
+                ScopedInstances.Add(key, instance);
 
-                return (T)instance;
+                return instance;
             }
         }
 
         internal T AddDisposable<T>(T obj, Binding binding)
         {
-            DisposeList list;
-            lock (_locker)
+            DisposeList<object> list;
+            lock (DisposeList)
             {
                 if (!DisposeList.TryGetValue(binding, out list))
                 {
-                    list = new DisposeList(binding.OnDeathAction!);
+                    list = new DisposeList<object>(binding.OnDeathAction!);
                     DisposeList.Add(binding, list);
                 }
             }
@@ -88,9 +87,9 @@ namespace Singularity
         /// </summary>
         public void Dispose()
         {
-            lock (_locker)
+            lock (DisposeList)
             {
-                foreach (DisposeList objectActionList in DisposeList.Values)
+                foreach (DisposeList<object> objectActionList in DisposeList.Values)
                 {
                     objectActionList.Invoke();
                 }

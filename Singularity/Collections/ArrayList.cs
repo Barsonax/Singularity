@@ -2,7 +2,6 @@
 {
     internal class ArrayList<T>
     {
-        public static readonly ArrayList<T> Empty = new ArrayList<T>();
         public T[] Array { get; private set; }
 
         public ArrayList()

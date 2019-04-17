@@ -63,6 +63,12 @@ namespace Singularity.Test.Benchmark
         }
 
         [Fact]
+        public void AspNetCore()
+        {
+            _containerBenchmark.AspNetCore();
+        }
+
+        [Fact]
         public void Complex()
         {
             IComplex1 value = _containerBenchmark.Complex();

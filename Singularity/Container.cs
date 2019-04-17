@@ -24,7 +24,7 @@ namespace Singularity
         private readonly DependencyGraph _dependencyGraph;
         private readonly ThreadSafeDictionary<Type, Action<Scoped, object>> _injectionCache = new ThreadSafeDictionary<Type, Action<Scoped, object>>();
         private readonly ThreadSafeDictionary<Type, Func<Scoped, object>> _getInstanceCache = new ThreadSafeDictionary<Type, Func<Scoped, object>>();
-        private readonly Scoped _containerScope = new Scoped();
+        private readonly Scoped _containerScope;
 
         /// <summary>
         /// Creates a new container using all the bindings that are in the provided modules
@@ -39,12 +39,14 @@ namespace Singularity
         public Container(BindingConfig bindings)
         {
             if (bindings == null) throw new ArgumentNullException(nameof(bindings));
+            _containerScope = new Scoped(this);
             _dependencyGraph = new DependencyGraph(bindings.GetDependencies(), _containerScope);
         }
 
         private Container(BindingConfig bindings, Container parentContainer)
         {
             if (bindings == null) throw new ArgumentNullException(nameof(bindings));
+            _containerScope = new Scoped(this);
             _dependencyGraph = new DependencyGraph(bindings.GetDependencies(), _containerScope, parentContainer._dependencyGraph);
         }
 

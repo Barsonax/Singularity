@@ -1,6 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Linq.Expressions;
+using Microsoft.Extensions.DependencyInjection;
+using Singularity.Microsoft.DependencyInjection;
 using Singularity.TestClasses.TestClasses;
 
 namespace Singularity.TestClasses.Benchmark
@@ -15,6 +18,18 @@ namespace Singularity.TestClasses.Benchmark
             _container = NewContainer();
             _cachedBindingConfig = new BindingConfig();
             Register(_cachedBindingConfig);
+        }
+
+        public void AspNetCore()
+        {
+            var factory = (IServiceScopeFactory)_container.GetInstance(typeof(IServiceScopeFactory));
+
+            using (var scope = factory.CreateScope())
+            {
+                //var controller = scope.ServiceProvider.GetService(typeof(IDisposable));
+                var controller = scope.ServiceProvider.GetService(typeof(TestController1));
+                //var foo = scope.ServiceProvider.GetService<Expression<Func<IDisposable>>>();
+            }
         }
 
         public ISingleton1 Singleton()
@@ -69,6 +84,10 @@ namespace Singularity.TestClasses.Benchmark
 
             Register(config);
 
+            config.Register<Container>().Inject(() => this._container);
+            config.Register<IServiceProvider, SingularityServiceProvider>();
+            config.Register<IServiceScopeFactory, SingularityServiceScopeFactory>();
+
             return new Container(config);
         }
 
@@ -104,6 +123,7 @@ namespace Singularity.TestClasses.Benchmark
             config.Register<IDummyEight, DummyEight>();
             config.Register<IDummyNine, DummyNine>();
             config.Register<IDummyTen, DummyTen>();
+            config.Register<IDisposable, Disposable>().With(Lifetime.PerScope);
 
             config.Register<ISingleton1, Singleton1>().With(Lifetime.PerContainer);
             config.Register<ISingleton2, Singleton2>().With(Lifetime.PerContainer);
@@ -132,7 +152,15 @@ namespace Singularity.TestClasses.Benchmark
             config.Register<ISimpleAdapter, SimpleAdapterFour>();
             config.Register<ISimpleAdapter, SimpleAdapterFive>();
 
-            config.Register<IDisposable, Disposable>().OnDeath(x => x.Dispose());
+            config.Register<IDisposable, Disposable>().With(Lifetime.PerScope);
+
+            config.Register<TestController1, TestController1>().OnDeath(x => x.Dispose());
+            config.Register<TestController2, TestController2>().OnDeath(x => x.Dispose());
+            config.Register<TestController3, TestController3>().OnDeath(x => x.Dispose());
+            config.Register<IRepositoryTransient1, RepositoryTransient1>();
+            config.Register<IRepositoryTransient2, RepositoryTransient2>();
+            config.Register<IRepositoryTransient3, RepositoryTransient3>();
+            config.Register<IScopedService, ScopedService>().With(Lifetime.PerScope);
         }
     }
 }
