@@ -8,7 +8,7 @@ namespace Singularity.Microsoft.DependencyInjection
     {
         public static IServiceProvider CreateServiceProvider(this BindingConfig config)
         {
-            Container container = null;
+            Container? container = null;
             // ReSharper disable once AccessToModifiedClosure
             config.Register<Container>().Inject(() => container).With(Dispose.Never);
             config.Register<IServiceProvider, SingularityServiceProvider>();

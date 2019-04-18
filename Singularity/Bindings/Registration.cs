@@ -19,7 +19,7 @@ namespace Singularity.Bindings
         {
             foreach (WeaklyTypedBinding weaklyTypedBinding in Bindings)
             {
-                if (weaklyTypedBinding.Expression == null && DecoratorBindings.Count == 0)
+                if (weaklyTypedBinding.Expression == null && DecoratorBindings!.Count == 0)
                     throw new BindingConfigException($"The binding at {weaklyTypedBinding.BindingMetadata.StringRepresentation()} does not have a expression");
                 if (DecoratorBindings != null)
                 {

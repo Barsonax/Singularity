@@ -23,6 +23,10 @@ namespace Singularity
             {
                 return Expression.Default(type);
             }
+            else if(constructor == null)
+            {
+                throw new NotSupportedException();
+            }
             ParameterInfo[] parameters = constructor.GetParameters();
             if (parameters.Length == 0) return Expression.New(constructor);
             var parameterExpressions = new Expression[parameters.Length];

@@ -97,14 +97,14 @@ namespace Singularity.Collections
                 {
                     FillBucket(current.KeyValue);
 
-                    for (int i = 0; i < current.Duplicates.Items.Length; i++)
+                    for (var i = 0; i < current.Duplicates.Items.Length; i++)
                     {
                         FillBucket(current.Duplicates.Items[i]);
                     }
 
-                    if (!current.Left.IsEmpty)
+                    if (!current.Left!.IsEmpty)
                         stack.Push(current.Left);
-                    if (!current.Right.IsEmpty)
+                    if (!current.Right!.IsEmpty)
                         stack.Push(current.Right);
                     if (stack.Count == 0) break;
                     current = stack.Pop();
@@ -131,14 +131,14 @@ namespace Singularity.Collections
                 {
                     yield return current.KeyValue.Value;
 
-                    for (int i = 0; i < current.Duplicates.Items.Length; i++)
+                    for (var i = 0; i < current.Duplicates.Items.Length; i++)
                     {
                         yield return current.Duplicates.Items[i].Value;
                     }
 
-                    if (!current.Left.IsEmpty)
+                    if (!current.Left!.IsEmpty)
                         stack.Push(current.Left);
-                    if (!current.Right.IsEmpty)
+                    if (!current.Right!.IsEmpty)
                         stack.Push(current.Right);
                     if (stack.Count == 0) break;
                     current = stack.Pop();
