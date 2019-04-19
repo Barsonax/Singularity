@@ -1,0 +1,14 @@
+resources:
+    containers:
+    - container: dotnet
+        image: mcr.microsoft.com/dotnet/core/sdk:2.2
+
+container: dotnet
+
+steps:
+- task: PowerShell@2
+  displayName: 'PowerShell Script'
+  inputs:
+    targetType: filePath
+    filePath: ./build.ps1
+    arguments: 'Pack Push -ApiKey foo'
