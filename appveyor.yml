@@ -1,9 +1,0 @@
-image: Visual Studio 2019 Preview
-environment:
-  codegov_token:
-    secure: HdCtITC0uUqTr/C3OSs4M1Ao79R8UULQtiRUqSrGuQpmqrZXPfNGz+s0uibvyz49
-  nuget_token:
-    secure: csIJIcTOAQ930rX3eOmufGO46xPDHZxrRpjCyU5xEQz3EwWx7+1Ed4pUE0prQyqY
-build_script:
-- ps: Invoke-Expression ".\build.ps1 Pack Push -ApiKey $env:nuget_token"
-test: off
