@@ -7,4 +7,6 @@ steps:
   inputs:
     targetType: filePath
     filePath: ./build.ps1
-    arguments: 'Pack Push -ApiKey ${nuget_token}'
+    arguments: 'Pack Push -ApiKey $env:NugetToken'
+  env:
+    NugetToken: $(nuget_token)
