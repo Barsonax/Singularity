@@ -90,9 +90,9 @@ class Build : NukeBuild
         {
             DotNetNuGetPush(s => s
             .SetApiKey(ApiKey)
-            .SetSource("https://www.nuget.org")
             .CombineWith(
-                ArtifactsDirectory.GlobFiles("*.nupkg").NotEmpty(), (cs, nupkgFile) => cs
+                ArtifactsDirectory.GlobFiles("*.nupkg").NotEmpty(), (cs, nupkgFile) => nupkgFile.ToString().EndsWith(".symbols") ? cs
+                .SetSource("https://nuget.smbsrc.net/") : cs.SetSource("https://www.nuget.org")
             .SetTargetPath(nupkgFile)), degreeOfParallelism: 10);
         });
 }
