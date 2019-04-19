@@ -27,14 +27,14 @@ namespace Singularity.Graph.Resolvers
                     foreach (ResolvedDependency resolvedDependency in dependency.ResolvedDependencies.Array)
                     {
                         graph.ResolveDependency(resolvedDependency);
-                        expressions.Add(resolvedDependency.Expression);
+                        expressions.Add(resolvedDependency.Expression!);
                     }
 
                     var expressionDependency = new Dependency(type, expressions, Lifetime.Transient);
                     var method = GenericCreateLambdaMethod.MakeGenericMethod(dependencyType);
-                    for (int i = 0; i < expressionDependency.ResolvedDependencies.Array.Length; i++)
+                    for (var i = 0; i < expressionDependency.ResolvedDependencies.Array.Length; i++)
                     {
-                        Expression expression = (Expression)method.Invoke(null, new object[] { expressions[i] });
+                        var expression = (Expression)method.Invoke(null, new object[] { expressions[i] });
                         expressionDependency.ResolvedDependencies.Array[i].Expression = expression;
                         expressionDependency.ResolvedDependencies.Array[i].InstanceFactory = scoped => expression;
                     }

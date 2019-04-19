@@ -8,8 +8,8 @@ namespace Singularity.Expressions
     internal sealed class DecoratorExpressionVisitor : ExpressionVisitor
     {
         private readonly Dependency[] _dependencies;
-        private Type _instanceType;
-        public Expression PreviousDecorator;
+        private readonly Type _instanceType;
+        public Expression? PreviousDecorator;
 
         public DecoratorExpressionVisitor(Dependency[] dependencies, Type instanceType)
         {
@@ -21,12 +21,12 @@ namespace Singularity.Expressions
         {
             if (node.Type == _instanceType)
             {
-                return PreviousDecorator;
+                return PreviousDecorator ?? throw new InvalidOperationException($"You should assign {nameof(PreviousDecorator)} first");
             }
             else
             {
-                var decoratorDependency = _dependencies.First(x => x.Registration.DependencyType == node.Type);
-                return decoratorDependency.Default.Expression;
+                Dependency decoratorDependency = _dependencies.First(x => x.Registration.DependencyType == node.Type);
+                return decoratorDependency.Default.Expression!;
             }
         }
     }

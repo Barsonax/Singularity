@@ -37,7 +37,8 @@ namespace Singularity
         /// Creates a new container with the provided bindings.
         /// </summary>
         /// <param name="bindings"></param>
-        public Container(BindingConfig bindings, SingularitySettings options = null)
+        /// <param name="options"></param>
+        public Container(BindingConfig bindings, SingularitySettings? options = null)
         {
             if (bindings == null) throw new ArgumentNullException(nameof(bindings));
             _options = options ?? SingularitySettings.Default;

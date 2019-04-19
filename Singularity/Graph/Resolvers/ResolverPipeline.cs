@@ -123,7 +123,7 @@ namespace Singularity.Graph.Resolvers
                 if (dependency.ResolveError != null) throw dependency.ResolveError;
                 if (dependency.Expression == null)
                 {
-                    foreach (var nestedDependency in dependency.Children)
+                    foreach (var nestedDependency in dependency.Children!)
                     {
                         GenerateExpression(nestedDependency.Default);
                     }

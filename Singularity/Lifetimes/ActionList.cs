@@ -5,6 +5,7 @@ using Singularity.Collections;
 namespace Singularity
 {
     internal class ActionList<T>
+        where T : class
     {
         private Action<T> Action { get; }
         private SinglyLinkedListNode<T> _root;
@@ -20,8 +21,8 @@ namespace Singularity
             SinglyLinkedListNode<T> root = _root;
             while (!ReferenceEquals(root, SinglyLinkedListNode<T>.Empty))
             {
-                Action(root.Value);
-                root = root.Next;
+                Action(root.Value!);
+                root = root.Next!;
             }
         }
 

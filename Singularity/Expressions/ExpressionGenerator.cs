@@ -16,7 +16,7 @@ namespace Singularity.Expressions
         public Expression GenerateDependencyExpression(ResolvedDependency dependency, Scoped containerScope, SingularitySettings settings)
         {
             Expression expression = dependency.Binding.Expression! is LambdaExpression lambdaExpression ? lambdaExpression.Body : dependency.Binding.Expression;
-            var parameterExpressionVisitor = new ParameterExpressionVisitor(dependency.Children);
+            var parameterExpressionVisitor = new ParameterExpressionVisitor(dependency.Children!);
             expression = parameterExpressionVisitor.Visit(expression);
 
             if (dependency.Binding.NeedsDispose == Dispose.Always || settings.AutoDispose && dependency.Binding.NeedsDispose != Dispose.Never && typeof(IDisposable).IsAssignableFrom(expression.Type))
@@ -39,7 +39,7 @@ namespace Singularity.Expressions
 
                 if (dependency.Registration.Decorators.Count > 0)
                 {
-                    var decoratorExpressionVisitor = new DecoratorExpressionVisitor(dependency.Children, instanceParameter.Type);
+                    var decoratorExpressionVisitor = new DecoratorExpressionVisitor(dependency.Children!, instanceParameter.Type);
                     decoratorExpressionVisitor.PreviousDecorator = instanceParameter;
                     foreach (Expression decorator in dependency.Registration.Decorators)
                     {

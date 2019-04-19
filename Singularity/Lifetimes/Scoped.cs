@@ -59,8 +59,9 @@ namespace Singularity
         }
 
         internal T GetOrAddScopedInstance<T>(Func<Scoped, T> factory, Type key)
+            where T : class
         {
-            T instance = (T)ScopedInstances.Search(key);
+            var instance = (T)ScopedInstances.Search(key);
             if (instance != null) return instance;
 
             lock (ScopedInstances)
@@ -75,13 +76,14 @@ namespace Singularity
         }
 
         internal T AddDisposable<T>(T obj)
-            where T : IDisposable
+            where T : class, IDisposable
         {
             Disposables.Add(obj);
             return obj;
         }
 
         internal T AddFinalizer<T>(T obj, Binding binding)
+            where T : class
         {
             ActionList<object> list = Finalizers.Search(binding);
             if (list != null)
@@ -95,7 +97,7 @@ namespace Singularity
                 list = Finalizers.Search(binding);
                 if (list == null)
                 {
-                    list = new ActionList<object>(binding.Finalizer);
+                    list = new ActionList<object>(binding.Finalizer!);
                     Finalizers.Add(binding, list);
                 }
             }
