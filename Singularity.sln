@@ -124,7 +124,6 @@ Global
 		{631020B5-A29B-40D3-86C1-BB63C67900F4}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{631020B5-A29B-40D3-86C1-BB63C67900F4}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{631020B5-A29B-40D3-86C1-BB63C67900F4}.z_CI_config|Any CPU.ActiveCfg = Release|Any CPU
-		{631020B5-A29B-40D3-86C1-BB63C67900F4}.z_CI_config|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
