@@ -51,7 +51,7 @@ namespace Singularity.Graph
         public Dependency[]? Children { get; set; }
         public Expression? Expression { get; set; }
         public Func<Scoped, object>? InstanceFactory { get; set; }
-        public Exception ResolveError { get; set; }
+        public Exception? ResolveError { get; set; }
 
         public ResolvedDependency(ReadonlyRegistration registration, Binding binding)
         {

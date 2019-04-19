@@ -9,7 +9,7 @@ namespace Singularity.Microsoft.DependencyInjection.Test
         [Fact]
         public void RegisterThroughServiceCollection()
         {
-            ServiceCollection serviceCollection = new ServiceCollection();
+            var serviceCollection = new ServiceCollection();
             serviceCollection.AddTransient<IRepositoryTransient1, RepositoryTransient1>();
             serviceCollection.AddTransient<IRepositoryTransient2, RepositoryTransient2>();
             serviceCollection.AddTransient<IRepositoryTransient3, RepositoryTransient3>();

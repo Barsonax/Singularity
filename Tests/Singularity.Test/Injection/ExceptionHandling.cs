@@ -17,7 +17,7 @@ namespace Singularity.Test.Injection
             var container = new Container(config);
             var e = Assert.Throws<SingularityAggregateException>(() =>
             {
-                TestService12WithMixedConcreteDependency value = container.GetInstance<TestService12WithMixedConcreteDependency>();
+                var value = container.GetInstance<TestService12WithMixedConcreteDependency>();
             });
 
             Assert.Single(e.InnerExceptions);

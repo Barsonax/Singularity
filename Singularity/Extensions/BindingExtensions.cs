@@ -15,6 +15,7 @@ namespace Singularity
         /// <summary>
         /// Sets the lifetime of the instance(s)
         /// </summary>
+        /// <param name="binding"></param>
         /// <param name="lifetime"></param>
         /// <returns></returns>
         public static T With<T>(this T binding, Lifetime lifetime)

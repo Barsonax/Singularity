@@ -1,6 +1,7 @@
 ﻿namespace Singularity.Collections
 {
-    public sealed class SinglyLinkedListNode<T>
+    internal sealed class SinglyLinkedListNode<T>
+        where T : class
     {
         public static readonly SinglyLinkedListNode<T> Empty = new SinglyLinkedListNode<T>();
         public readonly T Value;

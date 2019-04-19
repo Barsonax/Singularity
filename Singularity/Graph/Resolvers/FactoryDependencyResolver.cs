@@ -20,7 +20,7 @@ namespace Singularity.Graph.Resolvers
                 }
 
                 var factoryDependency = new Dependency(type, expressions, Lifetime.Transient);
-                for (int i = 0; i < factoryDependency.ResolvedDependencies.Array.Length; i++)
+                for (var i = 0; i < factoryDependency.ResolvedDependencies.Array.Length; i++)
                 {
                     factoryDependency.ResolvedDependencies.Array[i].Expression = expressions[i];
                 }
