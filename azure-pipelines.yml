@@ -1,4 +1,7 @@
 steps:
+- task: UseDotNet@2
+  inputs:
+    version: '3.0.0'
 - task: PowerShell@2
   displayName: 'PowerShell Script'
   inputs:
