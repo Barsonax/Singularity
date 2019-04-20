@@ -9,11 +9,13 @@ using Nuke.Common.Tooling;
 using Nuke.Common.Tools.DotNet;
 using Nuke.Common.Tools.DotCover;
 using Nuke.Common.Tools.GitVersion;
+using Nuke.Common.Tools.ReportGenerator;
 using Nuke.Common.Utilities;
 using static Nuke.Common.IO.FileSystemTasks;
 using static Nuke.Common.IO.PathConstruction;
 using static Nuke.Common.Tools.DotNet.DotNetTasks;
 using static Nuke.Common.Tools.DotCover.DotCoverTasks;
+using static Nuke.Common.Tools.ReportGenerator.ReportGeneratorTasks;
 
 [CheckBuildProjectConfigurations]
 [UnsetVisualStudioEnvironmentVariables]
@@ -84,12 +86,25 @@ class Build : NukeBuild
         var testdlls = GlobFiles(BuildOutput / "netcoreapp2.0", "*.Test.dll").Join(" ");
         var targetArgs = $"vstest {testdlls}";
         var dotnetPath = ToolPathResolver.GetPathExecutable("dotnet");
+        var coverageSnapshot = CoverageDirectory / "coverage.dcvr";
+        var coverageXml = CoverageDirectory / "coverage.xml";
+        var coverageReport = CoverageDirectory / "CoverageReport";
+
         DotCoverCover(c => c
              .SetTargetExecutable(dotnetPath)
              .SetTargetWorkingDirectory(RootDirectory)
              .SetTargetArguments(targetArgs)
              .SetFilters("+:Singularity*;-:Class=Singularity.FastExpressionCompiler*;-:*Test*")
-             .SetOutputFile(CoverageDirectory / $"coverage.dcvr"));
+             .SetOutputFile(coverageSnapshot));
+
+        DotCoverReport(c => c
+            .SetSource(coverageSnapshot)
+            .SetOutputFile(coverageXml)
+            .SetReportType(DotCoverReportType.DetailedXml));
+
+        ReportGenerator(c => c
+            .SetReports(coverageXml)
+            .SetTargetDirectory(coverageReport));
     });
 
     private string SuroundWithQuotes(string input)
