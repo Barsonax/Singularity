@@ -1,5 +1,5 @@
 # Singularity
-![Discord](https://img.shields.io/discord/569232642105540608.svg)
+[![Discord](https://img.shields.io/discord/569232642105540608.svg)](https://discord.gg/9x9J3y)
 
 Singularity is a ioc container that focuses on the following things
 - Very high performance. The first time you use a dependency it will be compiled to a delegate and cached in a dictionary. When that dependency is requested again all it then retrieves the delegate from the dictionary and invokes it. This means that performance in Singularity is measured in nanoseconds as opposed to microseconds like in other containers. This makes it feasible to use singularity in applications where performance matters such as games. 
