@@ -7,7 +7,7 @@ steps:
   inputs:
     targetType: filePath
     filePath: ./build.ps1
-    arguments: 'Pack Coverage Push -ApiKey $env:NugetToken'
+    arguments: 'Pack Coverage Push -ApiKey $env:NugetToken --CoberturaReport'
   env:
     NugetToken: $(nuget_token)
 - task: PublishBuildArtifacts@1

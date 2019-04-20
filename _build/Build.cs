@@ -26,6 +26,8 @@ class Build : NukeBuild
     readonly Configuration Configuration = CiConfiguration.CiConfig;
 
     [Parameter] readonly string ApiKey;
+    [Parameter] readonly bool CoberturaReport;
+
     [Solution] readonly Solution Solution;
     [GitRepository] readonly GitRepository GitRepository;
     [GitVersion] readonly GitVersion GitVersion;
@@ -103,14 +105,19 @@ class Build : NukeBuild
             .SetOutputFile(coverageXml)
             .SetReportType(DotCoverReportType.DetailedXml));
 
-        ReportGenerator(c => c
-            .SetReports(coverageXml)
-            .SetTargetDirectory(coverageReport));
-
-        ReportGenerator(c => c
-            .SetReports(coverageXml)
-            .SetTargetDirectory(CoverageDirectory)
-            .SetReportTypes(Nuke.Common.Tools.ReportGenerator.ReportTypes.Cobertura));
+        if (CoberturaReport)
+        {
+            ReportGenerator(c => c
+                .SetReports(coverageXml)
+                .SetTargetDirectory(CoverageDirectory)
+                .SetReportTypes(Nuke.Common.Tools.ReportGenerator.ReportTypes.Cobertura));
+        }
+        else
+        {
+            ReportGenerator(c => c
+                .SetReports(coverageXml)
+                .SetTargetDirectory(coverageReport));
+        }
     });
 
     Target Pack => _ => _
