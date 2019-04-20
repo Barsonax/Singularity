@@ -46,7 +46,7 @@ More info about `Singularity` can be found on the documentation website which ca
 ### Build status
 | Branch | Status | Coverage |
 |-------------|--------|-----|
-| master      | [![Build Status](https://dev.azure.com/Barsonax/Singularity/_apis/build/status/Singularity-CI?branchName=master)](https://dev.azure.com/Barsonax/Singularity/_build/latest?definitionId=7&branchName=master) | [![codecov](https://codecov.io/gh/Barsonax/Singularity/branch/master/graph/badge.svg)](https://codecov.io/gh/Barsonax/Singularity) |
+| master      | [![Build Status](https://dev.azure.com/Barsonax/Singularity/_apis/build/status/Singularity-CI?branchName=master)](https://dev.azure.com/Barsonax/Singularity/_build/latest?definitionId=7&branchName=master) | ![coverage](https://img.shields.io/azure-devops/coverage/Barsonax/Singularity/7/master.svg) |
 
 [![Build History](https://buildstats.info/azurepipelines/chart/Barsonax/Singularity/7)](https://dev.azure.com/Barsonax/Singularity/_build?definitionId=7)
 

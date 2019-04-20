@@ -1,14 +1,21 @@
 using System.Collections.Generic;
+using System.IO;
+using System.Linq;
 using Nuke.Common;
 using Nuke.Common.Execution;
 using Nuke.Common.Git;
 using Nuke.Common.ProjectModel;
 using Nuke.Common.Tooling;
 using Nuke.Common.Tools.DotNet;
+using Nuke.Common.Tools.DotCover;
 using Nuke.Common.Tools.GitVersion;
+using Nuke.Common.Tools.ReportGenerator;
+using Nuke.Common.Utilities;
 using static Nuke.Common.IO.FileSystemTasks;
 using static Nuke.Common.IO.PathConstruction;
 using static Nuke.Common.Tools.DotNet.DotNetTasks;
+using static Nuke.Common.Tools.DotCover.DotCoverTasks;
+using static Nuke.Common.Tools.ReportGenerator.ReportGeneratorTasks;
 
 [CheckBuildProjectConfigurations]
 [UnsetVisualStudioEnvironmentVariables]
@@ -19,12 +26,16 @@ class Build : NukeBuild
     readonly Configuration Configuration = CiConfiguration.CiConfig;
 
     [Parameter] readonly string ApiKey;
+    [Parameter] readonly bool CoberturaReport;
+
     [Solution] readonly Solution Solution;
     [GitRepository] readonly GitRepository GitRepository;
     [GitVersion] readonly GitVersion GitVersion;
 
     AbsolutePath BuildOutput => RootDirectory / "BuildOutput";
     AbsolutePath ArtifactsDirectory => RootDirectory / "artifacts";
+
+    AbsolutePath CoverageDirectory => RootDirectory / "coverage";
 
     private Dictionary<string, object> NoWarns = new Dictionary<string, object> { { "NoWarn", "NU1701" }, };
 
@@ -70,6 +81,45 @@ class Build : NukeBuild
             .EnableNoBuild());
         });
 
+    Target Coverage => _ => _
+        .DependsOn(Compile)
+        .Executes(() =>
+    {
+        var testdlls = GlobFiles(BuildOutput / "netcoreapp2.0", "*.Test.dll").Join(" ");
+        var targetArgs = $"vstest {testdlls} /logger:trx;LogFileName=testresults.trx";
+        var dotnetPath = ToolPathResolver.GetPathExecutable("dotnet");
+        var coverageSnapshot = CoverageDirectory / "coverage.dcvr";
+        var coverageXml = CoverageDirectory / "coverage.xml";
+        var coverageReport = CoverageDirectory / "CoverageReport";
+        var coberturaReport = CoverageDirectory / "cobertura_coverage.xml";
+
+        DotCoverCover(c => c
+             .SetTargetExecutable(dotnetPath)
+             .SetTargetWorkingDirectory(RootDirectory)
+             .SetTargetArguments(targetArgs)
+             .SetFilters("+:Singularity*;-:Class=Singularity.FastExpressionCompiler*;-:*Test*")
+             .SetOutputFile(coverageSnapshot));
+
+        DotCoverReport(c => c
+            .SetSource(coverageSnapshot)
+            .SetOutputFile(coverageXml)
+            .SetReportType(DotCoverReportType.DetailedXml));
+
+        if (CoberturaReport)
+        {
+            ReportGenerator(c => c
+                .SetReports(coverageXml)
+                .SetTargetDirectory(CoverageDirectory)
+                .SetReportTypes(Nuke.Common.Tools.ReportGenerator.ReportTypes.Cobertura));
+        }
+        else
+        {
+            ReportGenerator(c => c
+                .SetReports(coverageXml)
+                .SetTargetDirectory(coverageReport));
+        }
+    });
+
     Target Pack => _ => _
         .DependsOn(Compile)
         .Executes(() =>
@@ -84,6 +134,8 @@ class Build : NukeBuild
 
     Target Push => _ => _
         .Requires(() => ApiKey)
+        .After(Test)
+        .After(Coverage)
         .OnlyWhenDynamic(() => GitRepository.Branch == "master")
         .After(Pack)
         .Executes(() =>
@@ -91,9 +143,8 @@ class Build : NukeBuild
             DotNetNuGetPush(s => s
             .SetApiKey(ApiKey)
             .CombineWith(
-                ArtifactsDirectory.GlobFiles("*.nupkg").NotEmpty(), (cs, nupkgFile) =>             
+                ArtifactsDirectory.GlobFiles("*.nupkg").NotEmpty(), (cs, nupkgFile) =>
                     (nupkgFile.ToString().EndsWith(".symbols.nupkg") ? cs.SetSource("https://nuget.smbsrc.net/") : cs.SetSource("https://www.nuget.org"))
-                    
                     .SetTargetPath(nupkgFile)
                 ), degreeOfParallelism: 10);
         });

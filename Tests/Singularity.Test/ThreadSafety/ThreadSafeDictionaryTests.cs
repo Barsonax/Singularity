@@ -12,7 +12,7 @@ namespace Singularity.Test.ThreadSafety
         {
             var testCases = new List<(ReferenceInt input, object output)>();
 
-            for (var i = 0; i < 1000; i++)
+            for (var i = 0; i < 100; i++)
             {
                 testCases.Add((i, new object()));
             }
@@ -28,7 +28,7 @@ namespace Singularity.Test.ThreadSafety
                 Assert.Equal(testCase.expectedOutput, output);
             });
 
-            Assert.Equal(testCases.Count * tester.TaskCount ,dic.Count);
+            Assert.Equal(testCases.Count * tester.TaskCount, dic.Count);
         }
     }
 }

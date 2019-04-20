@@ -7,6 +7,21 @@ steps:
   inputs:
     targetType: filePath
     filePath: ./build.ps1
-    arguments: 'Pack Push -ApiKey $env:NugetToken'
+    arguments: 'Pack Coverage Push -ApiKey $env:NugetToken --CoberturaReport'
   env:
     NugetToken: $(nuget_token)
+- task: PublishBuildArtifacts@1
+  inputs:
+    PathtoPublish: '$(Build.SourcesDirectory)/Artifacts'
+    ArtifactName: 'artifacts'
+- task: PublishTestResults@2
+  inputs:
+    testResultsFormat: VSTest
+    testResultsFiles: '*.trx'
+    searchFolder: '$(Build.SourcesDirectory)/TestResults'
+- task: PublishCodeCoverageResults@1
+  displayName: 'Publish code coverage'
+  inputs:
+    codeCoverageTool: Cobertura
+    summaryFileLocation: '$(Build.SourcesDirectory)/coverage/Cobertura.xml'
+    reportDirectory: '$(Build.SourcesDirectory)/coverage'
