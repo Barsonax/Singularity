@@ -89,6 +89,7 @@ class Build : NukeBuild
         var coverageSnapshot = CoverageDirectory / "coverage.dcvr";
         var coverageXml = CoverageDirectory / "coverage.xml";
         var coverageReport = CoverageDirectory / "CoverageReport";
+        var coberturaReport = CoverageDirectory / "cobertura_coverage.xml";
 
         DotCoverCover(c => c
              .SetTargetExecutable(dotnetPath)
@@ -105,6 +106,11 @@ class Build : NukeBuild
         ReportGenerator(c => c
             .SetReports(coverageXml)
             .SetTargetDirectory(coverageReport));
+            
+        ReportGenerator(c => c
+            .SetReports(coverageXml)
+            .SetTargetDirectory(coberturaReport)
+            .SetReportTypes(Nuke.Common.Tools.ReportGenerator.ReportTypes.Cobertura));
     });
 
     private string SuroundWithQuotes(string input)
