@@ -1,5 +1,5 @@
 # Singularity
-[![Discord](https://img.shields.io/discord/569232642105540608.svg)](https://discord.gg/9x9J3y) [![NuGet Badge](https://buildstats.info/nuget/Singularity)](https://www.nuget.org/packages/Singularity/) [![Build Status](https://dev.azure.com/Barsonax/Singularity/_apis/build/status/Singularity-CI?branchName=master)](https://dev.azure.com/Barsonax/Singularity/_build/latest?definitionId=7&branchName=master) ![coverage](https://img.shields.io/azure-devops/coverage/Barsonax/Singularity/7/master.svg)
+[![Discord](https://img.shields.io/discord/569232642105540608.svg)](https://discord.gg/9x9J3y) [![NuGet Badge](https://buildstats.info/nuget/Singularity)](https://www.nuget.org/packages/Singularity/) [![Build Status](https://dev.azure.com/Barsonax/Singularity/_apis/build/status/Singularity-CI?branchName=master)](https://dev.azure.com/Barsonax/Singularity/_build/latest?definitionId=7&branchName=master) ![Azure DevOps tests (branch)](https://img.shields.io/azure-devops/tests/Barsonax/Singularity/7/master.svg) ![coverage](https://img.shields.io/azure-devops/coverage/Barsonax/Singularity/7/master.svg)
 
 Singularity is a ioc container that focuses on the following things
 - Very high performance. The first time you use a dependency it will be compiled to a delegate and cached in a dictionary. When that dependency is requested again all it then retrieves the delegate from the dictionary and invokes it. This means that performance in Singularity is measured in nanoseconds as opposed to microseconds like in other containers. This makes it feasible to use singularity in applications where performance matters such as games. 
@@ -43,7 +43,7 @@ Advanced scenarios such as open generics are also supported.
 More info about `Singularity` can be found on the documentation website which can be found [here](http://www.the-photographing-programmer.com/Singularity/).
 
 ## Other
-
+![GitHub repo size](https://img.shields.io/github/repo-size/Barsonax/Singularity.svg)
 
 ### Build status
 [![Build History](https://buildstats.info/azurepipelines/chart/Barsonax/Singularity/7?branch=master)](https://dev.azure.com/Barsonax/Singularity/_build?definitionId=7)
