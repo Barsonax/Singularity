@@ -13,6 +13,7 @@ using Nuke.Common.Utilities;
 using static Nuke.Common.IO.FileSystemTasks;
 using static Nuke.Common.IO.PathConstruction;
 using static Nuke.Common.Tools.DotNet.DotNetTasks;
+using static Nuke.Common.Tools.DotCover.DotCoverTasks;
 
 [CheckBuildProjectConfigurations]
 [UnsetVisualStudioEnvironmentVariables]
@@ -77,16 +78,18 @@ class Build : NukeBuild
         });
 
     Target Coverage => _ => _
-        .DependsOn(Compile)
+        //.DependsOn(Compile)
         .Executes(() =>
     {
-        var openCover = ToolResolver.GetPathTool("OpenCover.Console.exe");
-        var dotnetPath = SuroundWithQuotes(ToolPathResolver.GetPathExecutable("dotnet"));
-        var filter = SuroundWithQuotes("+[Singularity*]* -[Singularity*.Test]*");
         var testdlls = GlobFiles(BuildOutput / "netcoreapp2.0", "*.Test.dll").Join(" ");
-        var targetArgs = SuroundWithQuotes($" vstest {testdlls}");
-        var output = SuroundWithQuotes(CoverageDirectory / " test.coverage.xml");
-        openCover($"-register:user -target:{dotnetPath} -targetargs:{targetArgs} -filter:{filter} -output:{output} -oldStyle -returntargetcode -hideskipped:Filter");
+        var targetArgs = $"vstest {testdlls}";
+        var dotnetPath = ToolPathResolver.GetPathExecutable("dotnet");
+        DotCoverCover(c => c
+             .SetTargetExecutable(dotnetPath)
+             .SetTargetWorkingDirectory(RootDirectory)
+             .SetTargetArguments(targetArgs)
+             .SetFilters("+:Singularity*;-:Class=Singularity.FastExpressionCompiler*;-:*Test*")
+             .SetOutputFile(CoverageDirectory / $"coverage.dcvr"));
     });
 
     private string SuroundWithQuotes(string input)
