@@ -1,4 +1,6 @@
 # Singularity
+![Discord](https://img.shields.io/discord/569232642105540608.svg)
+
 Singularity is a ioc container that focuses on the following things
 - Very high performance. The first time you use a dependency it will be compiled to a delegate and cached in a dictionary. When that dependency is requested again all it then retrieves the delegate from the dictionary and invokes it. This means that performance in Singularity is measured in nanoseconds as opposed to microseconds like in other containers. This makes it feasible to use singularity in applications where performance matters such as games. 
 - No magic. Singularity has been designed in such a way that it won't hide too much from you. For instance `Dispose` wont be automagically called but instead you can configure Singularity to do so through the `OnDeath` method. This way you can always find out who is calling your methods.
@@ -48,7 +50,7 @@ More info about `Singularity` can be found on the documentation website which ca
 |-------------|--------|-----|
 | master      | [![Build Status](https://dev.azure.com/Barsonax/Singularity/_apis/build/status/Singularity-CI?branchName=master)](https://dev.azure.com/Barsonax/Singularity/_build/latest?definitionId=7&branchName=master) | ![coverage](https://img.shields.io/azure-devops/coverage/Barsonax/Singularity/7/master.svg) |
 
-[![Build History](https://buildstats.info/azurepipelines/chart/Barsonax/Singularity/7)](https://dev.azure.com/Barsonax/Singularity/_build?definitionId=7)
+[![Build History](https://buildstats.info/azurepipelines/chart/Barsonax/Singularity/7?branch=master)](https://dev.azure.com/Barsonax/Singularity/_build?definitionId=7)
 
 ### Nuget
 
