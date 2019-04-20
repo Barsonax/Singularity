@@ -80,7 +80,7 @@ class Build : NukeBuild
         });
 
     Target Coverage => _ => _
-        //.DependsOn(Compile)
+        .DependsOn(Compile)
         .Executes(() =>
     {
         var testdlls = GlobFiles(BuildOutput / "netcoreapp2.0", "*.Test.dll").Join(" ");
@@ -106,7 +106,7 @@ class Build : NukeBuild
         ReportGenerator(c => c
             .SetReports(coverageXml)
             .SetTargetDirectory(coverageReport));
-            
+
         ReportGenerator(c => c
             .SetReports(coverageXml)
             .SetTargetDirectory(coberturaReport)
