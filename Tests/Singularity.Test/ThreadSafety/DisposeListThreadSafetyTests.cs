@@ -18,7 +18,7 @@ namespace Singularity.Test.ThreadSafety
                 var tracker = new DisposeTracker();
                 var cases = new List<TrackableDisposable>();
                 trackers.Add(tracker);
-                for (var i = 0; i < 1000; i++)
+                for (var i = 0; i < 100; i++)
                 {
                     cases.Add(new TrackableDisposable(tracker));
                 }
@@ -34,7 +34,7 @@ namespace Singularity.Test.ThreadSafety
             list.Invoke();
             foreach (DisposeTracker tracker in trackers)
             {
-                Assert.Equal(1000, tracker.DisposeCount);
+                Assert.Equal(100, tracker.DisposeCount);
             }
         }
 
@@ -49,7 +49,7 @@ namespace Singularity.Test.ThreadSafety
 
             public void Dispose()
             {
-                if(IsDisposed) throw new InvalidOperationException("Is already disposed!");
+                if (IsDisposed) throw new InvalidOperationException("Is already disposed!");
                 IsDisposed = true;
                 Interlocked.Increment(ref _tracker.DisposeCount);
             }
