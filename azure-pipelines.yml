@@ -12,7 +12,9 @@ steps:
     NugetToken: $(nuget_token)
 - task: PublishTestResults@2
   inputs:
-    testResultsFiles: 'TestResults/*.trx'
+    testResultsFormat: VSTest
+    testResultsFiles: '*.trx'
+    searchFolder: '$(Build.SourcesDirectory)/TestResults'
 - task: PublishCodeCoverageResults@1
   displayName: 'Publish code coverage'
   inputs:
