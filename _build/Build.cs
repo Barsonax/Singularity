@@ -84,7 +84,7 @@ class Build : NukeBuild
         .Executes(() =>
     {
         var testdlls = GlobFiles(BuildOutput / "netcoreapp2.0", "*.Test.dll").Join(" ");
-        var targetArgs = $"vstest {testdlls}";
+        var targetArgs = $"vstest {testdlls} /logger:trx;LogFileName=testresults.trx";
         var dotnetPath = ToolPathResolver.GetPathExecutable("dotnet");
         var coverageSnapshot = CoverageDirectory / "coverage.dcvr";
         var coverageXml = CoverageDirectory / "coverage.xml";

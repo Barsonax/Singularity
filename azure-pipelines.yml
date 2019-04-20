@@ -10,7 +10,9 @@ steps:
     arguments: 'Pack Coverage Push -ApiKey $env:NugetToken'
   env:
     NugetToken: $(nuget_token)
-
+- task: PublishTestResults@2
+  inputs:
+    testResultsFiles: 'TestResults/*.trx'
 - task: PublishCodeCoverageResults@1
   displayName: 'Publish code coverage'
   inputs:
