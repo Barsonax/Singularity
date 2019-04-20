@@ -10,6 +10,10 @@ steps:
     arguments: 'Pack Coverage Push -ApiKey $env:NugetToken'
   env:
     NugetToken: $(nuget_token)
+- task: PublishBuildArtifacts@1
+  inputs:
+    PathtoPublish: '$(Build.SourcesDirectory)/Artifacts'
+    ArtifactName: 'artifacts'
 - task: PublishTestResults@2
   inputs:
     testResultsFormat: VSTest
