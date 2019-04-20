@@ -109,14 +109,9 @@ class Build : NukeBuild
 
         ReportGenerator(c => c
             .SetReports(coverageXml)
-            .SetTargetDirectory(coberturaReport)
+            .SetTargetDirectory(CoverageDirectory)
             .SetReportTypes(Nuke.Common.Tools.ReportGenerator.ReportTypes.Cobertura));
     });
-
-    private string SuroundWithQuotes(string input)
-    {
-        return "\"" + input + "\"";
-    }
 
     Target Pack => _ => _
         .DependsOn(Compile)
@@ -132,6 +127,8 @@ class Build : NukeBuild
 
     Target Push => _ => _
         .Requires(() => ApiKey)
+        .After(Test)
+        .After(Coverage)
         .OnlyWhenDynamic(() => GitRepository.Branch == "master")
         .After(Pack)
         .Executes(() =>
