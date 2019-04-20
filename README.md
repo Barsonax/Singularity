@@ -43,7 +43,7 @@ Advanced scenarios such as open generics are also supported.
 More info about `Singularity` can be found on the documentation website which can be found [here](http://www.the-photographing-programmer.com/Singularity/).
 
 ## Other
-![GitHub repo size](https://img.shields.io/github/repo-size/Barsonax/Singularity.svg)
+![GitHub repo size](https://img.shields.io/github/repo-size/Barsonax/Singularity.svg) ![GitHub code size in bytes](https://img.shields.io/github/languages/code-size/barsonax/singularity.svg)
 
 ### Build status
 [![Build History](https://buildstats.info/azurepipelines/chart/Barsonax/Singularity/7?branch=master)](https://dev.azure.com/Barsonax/Singularity/_build?definitionId=7)
