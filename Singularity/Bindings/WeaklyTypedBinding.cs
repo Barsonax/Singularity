@@ -48,7 +48,7 @@ namespace Singularity.Bindings
                 var enumerableType = dependencyType.GenericTypeArguments[0];
                 throw new EnumerableRegistrationException($"don't register {enumerableType} as IEnumerable directly. Instead register them as you would normally.");
             }
-            BindingMetadata = new BindingMetadata(dependencyType, callerFilePath, callerLineNumber, module);
+            BindingMetadata = new BindingMetadata(new[] { dependencyType }, callerFilePath, callerLineNumber, module);
         }
 
         /// <summary>

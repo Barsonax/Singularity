@@ -8,22 +8,24 @@ namespace Singularity.Bindings
     {
         public Type DependencyType { get; }
         public List<WeaklyTypedBinding> Bindings { get; } = new List<WeaklyTypedBinding>();
-        public List<WeaklyTypedDecoratorBinding> DecoratorBindings { get; } = new List<WeaklyTypedDecoratorBinding>();
 
         public Registration(Type dependencyType)
         {
             DependencyType = dependencyType ?? throw new ArgumentNullException(nameof(dependencyType));
         }
 
-        internal void Verify()
+        internal void Verify(List<WeaklyTypedDecoratorBinding>? decorators)
         {
             foreach (WeaklyTypedBinding weaklyTypedBinding in Bindings)
             {
-                if (weaklyTypedBinding.Expression == null && DecoratorBindings!.Count == 0)
-                    throw new BindingConfigException($"The binding at {weaklyTypedBinding.BindingMetadata.StringRepresentation()} does not have a expression");
-                if (DecoratorBindings != null)
+                if (weaklyTypedBinding.Expression == null && (decorators == null || decorators!.Count == 0))
                 {
-                    foreach (WeaklyTypedDecoratorBinding weaklyTypedDecoratorBinding in DecoratorBindings)
+                    throw new BindingConfigException($"The binding at {weaklyTypedBinding.BindingMetadata.StringRepresentation()} does not have a expression");
+                }
+
+                if (decorators != null)
+                {
+                    foreach (WeaklyTypedDecoratorBinding weaklyTypedDecoratorBinding in decorators)
                     {
                         if (weaklyTypedDecoratorBinding.Expression == null)
                             throw new BindingConfigException($"The decorator for {DependencyType} does not have a expression");

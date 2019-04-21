@@ -8,22 +8,19 @@ namespace Singularity.Bindings
 {
     internal class ReadonlyRegistration
     {
-        public Type DependencyType { get; }
+        public Type[] DependencyTypes { get; }
         public ReadOnlyCollection<Binding> Bindings { get; }
-        public ReadOnlyCollection<Expression> Decorators { get; }
 
-        public ReadonlyRegistration(Type dependencyType, IEnumerable<Binding> bindings, IEnumerable<Expression> decorators)
+        public ReadonlyRegistration(Type[] dependencyTypes, IEnumerable<Binding> bindings)
         {
-            DependencyType = dependencyType;
+            DependencyTypes = dependencyTypes;
             Bindings = new ReadOnlyCollection<Binding>(bindings.ToArray());
-            Decorators = new ReadOnlyCollection<Expression>(decorators.ToArray());
         }
 
-        public ReadonlyRegistration(Type dependencyType, Binding binding, IEnumerable<Expression> decorators)
+        public ReadonlyRegistration(Type[] dependencyTypes, Binding binding)
         {
-            DependencyType = dependencyType;
+            DependencyTypes = dependencyTypes;
             Bindings = new ReadOnlyCollection<Binding>(new[] { binding });
-            Decorators = new ReadOnlyCollection<Expression>(decorators.ToArray());
         }
     }
 }

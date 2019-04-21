@@ -15,13 +15,10 @@ namespace Singularity.Test.Injection
             var config = new BindingConfig();
 
             var container = new Container(config);
-            var e = Assert.Throws<SingularityAggregateException>(() =>
+            var e = Assert.Throws<DependencyNotFoundException>(() =>
             {
                 var value = container.GetInstance<TestService12WithMixedConcreteDependency>();
             });
-
-            Assert.Single(e.InnerExceptions);
-            Assert.IsType<DependencyNotFoundException>(e.InnerExceptions.First());
         }
 
         [Fact]

@@ -9,36 +9,29 @@ namespace Singularity.Graph.Resolvers
 {
     internal class EnumerableDependencyResolver : IDependencyResolver
     {
-        public IEnumerable<Dependency>? Resolve(IResolverPipeline graph, Type type)
+        public Dependency? Resolve(IResolverPipeline graph, Type type)
         {
             if (type.IsGenericType)
             {
                 Type definition = type.GetGenericTypeDefinition();
                 if (definition == typeof(IEnumerable<>) || definition == typeof(IReadOnlyCollection<>) || definition == typeof(IReadOnlyList<>))
                 {
-                    Dependency? childDependency = graph.TryGetDependency(type.GenericTypeArguments[0]);
+                    Type enumerableElementType = type.GenericTypeArguments[0];
+                    Dependency? childDependency = graph.TryGetDependency(enumerableElementType);
                     ResolvedDependency[] dependencies = childDependency?.ResolvedDependencies.Array ?? new ResolvedDependency[0];
-                    foreach (ResolvedDependency dependency in dependencies)
-                    {
-                        graph.ResolveDependency(dependency);
-                    }
 
-                    Func<Scoped, object>[] instanceFactories = dependencies.Select(x => x.InstanceFactory!).ToArray();
+                    Func<Scoped, object>[] instanceFactories = dependencies.Select(x => graph.ResolveDependency(enumerableElementType, x).Factory).ToArray();
 
                     Type instanceFactoryListType = typeof(InstanceFactoryList<>).MakeGenericType(type.GenericTypeArguments);
                     Expression expression = Expression.New(instanceFactoryListType.AutoResolveConstructor(), ExpressionGenerator.ScopeParameter, Expression.Constant(instanceFactories));
 
-                    Type enumerableType = typeof(IEnumerable<>).MakeGenericType(type.GenericTypeArguments[0]);
-                    Type collectionType = typeof(IReadOnlyCollection<>).MakeGenericType(type.GenericTypeArguments[0]);
-                    Type listType = typeof(IReadOnlyList<>).MakeGenericType(type.GenericTypeArguments[0]);
+                    Type enumerableType = typeof(IEnumerable<>).MakeGenericType(enumerableElementType);
+                    Type collectionType = typeof(IReadOnlyCollection<>).MakeGenericType(enumerableElementType);
+                    Type listType = typeof(IReadOnlyList<>).MakeGenericType(enumerableElementType);
 
-                    IEnumerable<Dependency> collectionDependencies = new[] { enumerableType, collectionType, listType }.Select(t => new Dependency(t, expression, Lifetime.Transient)).ToArray();
-                    foreach (Dependency collectionDependency in collectionDependencies)
-                    {
-                        collectionDependency.Default.Expression = expression;
-                    }
+                    var collectionDependency = new Dependency(new[] { enumerableType, collectionType, listType }, expression, Lifetime.Transient);
 
-                    return collectionDependencies;
+                    return collectionDependency;
                 }
             }
             return null;

@@ -152,6 +152,6 @@ namespace Singularity
             return new WeaklyTypedDecoratorBindingBatch(new ReadOnlyCollection<WeaklyTypedDecoratorBinding>(bindings));
         }
 
-        internal ReadOnlyCollection<ReadonlyRegistration> GetDependencies() => _registrations.GetDependencies();
+        internal ReadOnlyBindingConfig GetDependencies() => _registrations.GetDependencies();
     }
 }

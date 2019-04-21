@@ -1,17 +1,19 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.Linq;
 using System.Linq.Expressions;
 using Singularity.Exceptions;
 using Singularity.Expressions;
-using Singularity.FastExpressionCompiler;
 
 namespace Singularity.Graph.Resolvers
 {
     internal class ResolverPipeline : IResolverPipeline
     {
+        private static readonly ReadOnlyCollection<Expression> EmptyDecorators = new ReadOnlyCollection<Expression>(new Expression[0]);
         IReadOnlyDictionary<Type, Dependency> IResolverPipeline.Dependencies => Dependencies;
         private Dictionary<Type, Dependency> Dependencies { get; }
+        private ReadOnlyDictionary<Type, ReadOnlyCollection<Expression>> Decorators { get; }
         public object SyncRoot { get; }
         private readonly IDependencyResolver[] _resolvers;
         private readonly IResolverPipeline? _parentPipeline;
@@ -19,14 +21,15 @@ namespace Singularity.Graph.Resolvers
         private readonly ExpressionGenerator _expressionGenerator = new ExpressionGenerator();
         private readonly SingularitySettings _settings;
 
-        public ResolverPipeline(Dictionary<Type, Dependency> dependencies, IDependencyResolver[] resolvers, Scoped containerScope, SingularitySettings settings, IResolverPipeline? parentPipeline)
+        public ResolverPipeline(Dictionary<Type, Dependency> dependencies, ReadOnlyDictionary<Type, ReadOnlyCollection<Expression>> decorators, IDependencyResolver[] resolvers, Scoped containerScope, SingularitySettings settings, IResolverPipeline? parentPipeline)
         {
             _settings = settings ?? throw new ArgumentNullException(nameof(settings));
-            _resolvers = resolvers;
+            _resolvers = resolvers ?? throw new ArgumentNullException(nameof(resolvers));
             _parentPipeline = parentPipeline;
             SyncRoot = parentPipeline?.SyncRoot ?? new object();
-            _containerScope = containerScope;
-            Dependencies = dependencies;
+            _containerScope = containerScope ?? throw new ArgumentNullException(nameof(containerScope));
+            Dependencies = dependencies ?? throw new ArgumentNullException(nameof(dependencies));
+            Decorators = decorators ?? throw new ArgumentNullException(nameof(decorators));
 
             if (parentPipeline != null)
             {
@@ -42,12 +45,12 @@ namespace Singularity.Graph.Resolvers
 
                 foreach (IDependencyResolver dependencyResolver in _resolvers)
                 {
-                    IEnumerable<Dependency>? resolvedDependencies = dependencyResolver.Resolve(this, type);
-                    if (resolvedDependencies != null)
+                    Dependency? resolvedDependency = dependencyResolver.Resolve(this, type);
+                    if (resolvedDependency != null)
                     {
-                        foreach (Dependency resolvedDependency in resolvedDependencies)
+                        foreach (Type registrationDependencyType in resolvedDependency.Registration.DependencyTypes)
                         {
-                            Dependencies.Add(resolvedDependency.Registration.DependencyType, resolvedDependency);
+                            Dependencies.Add(registrationDependencyType, resolvedDependency);
                         }
                         return TryGetDependency(type);
                     }
@@ -64,84 +67,68 @@ namespace Singularity.Graph.Resolvers
             return dependency;
         }
 
-        public void ResolveDependency(ResolvedDependency dependency)
+        public InstanceFactory ResolveDependency(Type type, ResolvedDependency dependency) => ResolveDependency(type, dependency, new CircularDependencyDetector());
+
+        private InstanceFactory ResolveDependency(Type type, ResolvedDependency dependency, CircularDependencyDetector circularDependencyDetector)
         {
-            FindChildDependencies(dependency);
-            GenerateExpression(dependency);
-            GenerateInstanceFactory(dependency);
+            circularDependencyDetector.Enter(type);
+            GenerateBaseExpression(dependency, circularDependencyDetector);
+            InstanceFactory factory = GenerateInstanceFactory(type, dependency, circularDependencyDetector);
+            circularDependencyDetector.Leave(type);
+            return factory;
         }
 
-        private void FindChildDependencies(ResolvedDependency dependency, HashSet<ResolvedDependency>? visitedDependencies = null)
+        private void GenerateBaseExpression(ResolvedDependency dependency, CircularDependencyDetector circularDependencyDetector)
         {
-            lock (dependency)
+            if (dependency.BaseExpression == null)
             {
-                if (dependency.Children == null)
+                lock (dependency)
                 {
-                    if (visitedDependencies != null && visitedDependencies.Contains(dependency))
+                    if (dependency.BaseExpression == null)
                     {
-                        var error = new CircularDependencyException(visitedDependencies.Select(x => x.Binding.Expression?.Type).Concat(new[] { dependency.Binding.Expression?.Type }).ToArray());
-                        dependency.ResolveError = error;
-                        throw error;
+                        ParameterExpression[] parameters = dependency.Binding.Expression.GetParameterExpressions().Where(x => x.Type != ExpressionGenerator.ScopeParameter.Type).ToArray();
+                        var factories = new InstanceFactory[parameters.Length];
+                        for (var i = 0; i < parameters.Length; i++)
+                        {
+                            ParameterExpression parameter = parameters[i];
+                            ResolvedDependency child = GetDependency(parameter.Type).Default;
+                            factories[i] = ResolveDependency(parameter.Type, child, circularDependencyDetector);
+                        }
+
+                        if (dependency.ResolveError != null) throw dependency.ResolveError;
+                        dependency.BaseExpression = _expressionGenerator.GenerateBaseExpression(dependency, factories, _containerScope, _settings);
                     }
-                    if (visitedDependencies == null) visitedDependencies = new HashSet<ResolvedDependency>();
-                    visitedDependencies.Add(dependency);
-
-                    Dependency[] dependencies = FindChilds(dependency);
-                    foreach (Dependency nestedDependency in dependencies)
-                    {
-                        FindChildDependencies(nestedDependency.Default, visitedDependencies);
-                        visitedDependencies.Remove(nestedDependency.Default);
-                    }
-                    dependency.Children = dependencies;
-                }
-            }
-
-            Dependency[] FindChilds(ResolvedDependency parent)
-            {
-                if (parent.Binding.Expression == null) return new Dependency[0];
-                var resolvedDependencies = new List<Dependency>();
-                if (parent.Binding.Expression.GetParameterExpressions().Where(x => x.Type != ExpressionGenerator.ScopeParameter.Type)
-                    .TryExecute(parameter => { resolvedDependencies.Add(GetDependency(parameter.Type)); }, out IList<Exception> dependencyExceptions))
-                {
-                    throw new SingularityAggregateException($"Could not find all dependencies for {parent.Binding.BindingMetadata.StringRepresentation()}", dependencyExceptions);
-                }
-
-                if (parent.Registration.Decorators.GetParameterExpressions().Where(x => x.Type != ExpressionGenerator.ScopeParameter.Type && x.Type != parent.Registration.DependencyType)
-                    .TryExecute(parameter => { resolvedDependencies.Add(GetDependency(parameter.Type)); }, out IList<Exception> decoratorExceptions))
-                {
-                    throw new SingularityAggregateException($"Could not find all decorator dependencies for {parent.Binding.BindingMetadata.StringRepresentation()}", decoratorExceptions);
-                }
-
-                return resolvedDependencies.ToArray();
-            }
-        }
-
-        private void GenerateExpression(ResolvedDependency dependency)
-        {
-            lock (dependency)
-            {
-                if (dependency.ResolveError != null) throw dependency.ResolveError;
-                if (dependency.Expression == null)
-                {
-                    foreach (var nestedDependency in dependency.Children!)
-                    {
-                        GenerateExpression(nestedDependency.Default);
-                    }
-                    dependency.Expression = _expressionGenerator.GenerateDependencyExpression(dependency, _containerScope, _settings);
                 }
             }
         }
 
-        private void GenerateInstanceFactory(ResolvedDependency dependency)
+        private InstanceFactory GenerateInstanceFactory(Type type, ResolvedDependency dependency, CircularDependencyDetector circularDependencyDetector)
         {
             lock (dependency)
             {
-                if (dependency.ResolveError != null) throw dependency.ResolveError;
-                if (dependency.InstanceFactory == null)
+                if (!dependency.TryGetInstanceFactory(type, out InstanceFactory factory))
                 {
-                    dependency.InstanceFactory = (Func<Scoped, object>)Expression.Lambda(dependency.Expression, ExpressionGenerator.ScopeParameter).CompileFast();
+                    ReadOnlyCollection<Expression> decorators = FindDecorators(type);
+                    ParameterExpression[] parameters = decorators.GetParameterExpressions().Where(x => x.Type != ExpressionGenerator.ScopeParameter.Type && x.Type != type).ToArray();
+                    var childFactories = new InstanceFactory[parameters.Length];
+                    for (var i = 0; i < parameters.Length; i++)
+                    {
+                        ParameterExpression parameter = parameters[i];
+                        ResolvedDependency child = GetDependency(parameter.Type).Default;
+                        childFactories[i] = ResolveDependency(parameter.Type, child, circularDependencyDetector);
+                    }
+
+                    Expression expression = _expressionGenerator.ApplyDecorators(type, dependency, childFactories, decorators, _containerScope);
+                    factory = new InstanceFactory(type, expression);
+                    dependency.Factories.Add(factory);
                 }
+                return factory;
             }
+        }
+
+        private ReadOnlyCollection<Expression> FindDecorators(Type type)
+        {
+            return Decorators.TryGetValue(type, out ReadOnlyCollection<Expression> decorators) ? decorators : EmptyDecorators;
         }
 
         private static void CheckChildBindings(IResolverPipeline parentDependencyGraph, Dictionary<Type, Dependency> bindings, object syncRoot)
@@ -150,21 +137,21 @@ namespace Singularity.Graph.Resolvers
             {
                 foreach (Dependency childBinding in bindings.Values)
                 {
-                    if (parentDependencyGraph.Dependencies.TryGetValue(childBinding.Registration.DependencyType, out Dependency _)
-                    )
+                    foreach (Type type in childBinding.Registration.DependencyTypes)
                     {
-                        throw new RegistrationAlreadyExistsException(
-                            $"Dependency {childBinding.Registration.DependencyType} was already registered in the parent graph!");
-                    }
-                    else if (childBinding.Registration.DependencyType.IsGenericType)
-                    {
-                        if (parentDependencyGraph.Dependencies.TryGetValue(
-                            childBinding.Registration.DependencyType.GetGenericTypeDefinition(), out Dependency _))
+                        if (parentDependencyGraph.Dependencies.TryGetValue(type, out Dependency _))
                         {
-                            throw new RegistrationAlreadyExistsException(
-                                $"Dependency {childBinding.Registration.DependencyType} was already registered as a open generic in the parent graph!");
+                            throw new RegistrationAlreadyExistsException($"Dependency {type} was already registered in the parent graph!");
+                        }
+                        else if (type.IsGenericType)
+                        {
+                            if (parentDependencyGraph.Dependencies.TryGetValue(type.GetGenericTypeDefinition(), out Dependency _))
+                            {
+                                throw new RegistrationAlreadyExistsException($"Dependency {type} was already registered as a open generic in the parent graph!");
+                            }
                         }
                     }
+
                 }
             }
         }

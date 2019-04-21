@@ -13,8 +13,9 @@ namespace Singularity.Collections
     internal class RegistrationStore : IReadOnlyCollection<Registration>
     {
         public bool Locked => _readonlyBindings != null;
-        private ReadOnlyCollection<ReadonlyRegistration>? _readonlyBindings;
+        private ReadOnlyBindingConfig? _readonlyBindings;
         public Dictionary<Type, Registration> Registrations { get; } = new Dictionary<Type, Registration>();
+        public Dictionary<Type, List<WeaklyTypedDecoratorBinding>> Decorators { get; } = new Dictionary<Type, List<WeaklyTypedDecoratorBinding>>();
         public int Count => Registrations.Count;
         internal IModule? CurrentModule;
 
@@ -27,8 +28,8 @@ namespace Singularity.Collections
 
             ParameterExpression[] parameters = decorator.Expression.GetParameterExpressions();
             if (parameters.All(x => x.Type != dependencyType)) throw new InvalidExpressionArgumentsException($"Cannot decorate {dependencyType} since the expression to create {decoratorType} does not have a parameter for {dependencyType}");
-            Registration registration = GetOrCreateRegistration(dependencyType);
-            registration.DecoratorBindings.Add(decorator);
+            List<WeaklyTypedDecoratorBinding> decorators = GetOrCreateDecorator(dependencyType);
+            decorators.Add(decorator);
             return decorator;
         }
 
@@ -41,21 +42,34 @@ namespace Singularity.Collections
             return binding;
         }
 
-        public ReadOnlyCollection<ReadonlyRegistration> GetDependencies()
+        public ReadOnlyBindingConfig GetDependencies()
         {
             if (_readonlyBindings == null)
             {
-                var readonlyRegistrations = new ReadonlyRegistration[Registrations.Count];
+                var registrations = new ReadonlyRegistration[Registrations.Count];
                 var count = 0;
                 foreach (Registration registration in Registrations.Values)
                 {
-                    registration.Verify();
+                    if (Decorators.TryGetValue(registration.DependencyType, out List<WeaklyTypedDecoratorBinding> decorators))
+                    {
+                        registration.Verify(decorators);
+                    }
+                    else
+                    {
+                        registration.Verify(null);
+                    }
 
-                    readonlyRegistrations[count] = new ReadonlyRegistration(registration.DependencyType, registration.Bindings.Select(x => new Binding(x)), registration.DecoratorBindings.Select(x => x.Expression));
+                    registrations[count] = new ReadonlyRegistration(new[] { registration.DependencyType }, registration.Bindings.Select(x => new Binding(x)));
                     count++;
                 }
 
-                _readonlyBindings = new ReadOnlyCollection<ReadonlyRegistration>(readonlyRegistrations);
+                var readonlyRegistrations = new ReadOnlyCollection<ReadonlyRegistration>(registrations);
+                var readonlyDecorators = new Dictionary<Type, ReadOnlyCollection<Expression>>(Decorators.Count);
+                foreach (KeyValuePair<Type, List<WeaklyTypedDecoratorBinding>> keyValuePair in Decorators)
+                {
+                    readonlyDecorators.Add(keyValuePair.Key, new ReadOnlyCollection<Expression>(keyValuePair.Value.Select(x => x.Expression).ToArray()));
+                }
+                _readonlyBindings = new ReadOnlyBindingConfig(readonlyRegistrations, new ReadOnlyDictionary<Type, ReadOnlyCollection<Expression>>(readonlyDecorators));
             }
             return _readonlyBindings!;
         }
@@ -79,6 +93,17 @@ namespace Singularity.Collections
             }
 
             return registration;
+        }
+
+        private List<WeaklyTypedDecoratorBinding> GetOrCreateDecorator(Type type)
+        {
+            if (!Decorators.TryGetValue(type, out List<WeaklyTypedDecoratorBinding> list))
+            {
+                list = new List<WeaklyTypedDecoratorBinding>();
+                Decorators.Add(type, list);
+            }
+
+            return list;
         }
     }
 }

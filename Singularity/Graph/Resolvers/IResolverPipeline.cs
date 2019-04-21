@@ -7,7 +7,7 @@ namespace Singularity.Graph.Resolvers
     {
         Dependency? TryGetDependency(Type type);
         Dependency GetDependency(Type type);
-        void ResolveDependency(ResolvedDependency dependency);
+        InstanceFactory ResolveDependency(Type type, ResolvedDependency dependency);
         IReadOnlyDictionary<Type, Dependency> Dependencies { get; }
         object SyncRoot { get; }
     }
