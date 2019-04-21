@@ -8,7 +8,7 @@ namespace Singularity.Bindings
     /// <summary>
     /// Represents a weakly typed decorator registration
     /// </summary>
-    public class WeaklyTypedDecoratorBinding
+    public sealed class WeaklyTypedDecoratorBinding
     {
         /// <summary>
         /// The dependency type this decorator is used for.

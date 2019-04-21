@@ -11,7 +11,7 @@ namespace Singularity
 
         static EnumMetadata()
         {
-            var values = Enum.GetValues(typeof(T)).OfType<T>().ToArray();
+            T[] values = Enum.GetValues(typeof(T)).OfType<T>().ToArray();
             Values = new ReadOnlyCollection<T>(values);
         }
 

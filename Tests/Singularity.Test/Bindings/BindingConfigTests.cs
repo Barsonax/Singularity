@@ -127,7 +127,7 @@ namespace Singularity.Test.Bindings
         public void Register_InvalidLifetime_StronglyTyped()
         {
             var config = new BindingConfig();
-            Assert.Throws<InvalidLifetimeException>(() =>
+            Assert.Throws<InvalidEnumValue<Lifetime>>(() =>
             {
                 config.Register<ITestService10, TestService10>().With((Lifetime)234234);
             });
@@ -137,9 +137,29 @@ namespace Singularity.Test.Bindings
         public void Register_InvalidLifetime_WeaklyTyped()
         {
             var config = new BindingConfig();
-            Assert.Throws<InvalidLifetimeException>(() =>
+            Assert.Throws<InvalidEnumValue<Lifetime>>(() =>
             {
                 config.Register(typeof(ITestService10), typeof(TestService10)).With((Lifetime)234234);
+            });
+        }
+
+        [Fact]
+        public void Register_InvalidDisposeBehavior_StronglyTyped()
+        {
+            var config = new BindingConfig();
+            Assert.Throws<InvalidEnumValue<DisposeBehavior>>(() =>
+            {
+                config.Register<ITestService10, TestService10>().With((DisposeBehavior)234234);
+            });
+        }
+
+        [Fact]
+        public void Register_InvalidDisposeBehavior_WeaklyTyped()
+        {
+            var config = new BindingConfig();
+            Assert.Throws<InvalidEnumValue<DisposeBehavior>>(() =>
+            {
+                config.Register(typeof(ITestService10), typeof(TestService10)).With((DisposeBehavior)234234);
             });
         }
 

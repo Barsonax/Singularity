@@ -10,7 +10,7 @@ namespace Singularity.Microsoft.DependencyInjection
         {
             Container? container = null;
             // ReSharper disable once AccessToModifiedClosure
-            config.Register<Container>().Inject(() => container).With(Dispose.Never);
+            config.Register<Container>().Inject(() => container).With(DisposeBehavior.Never);
             config.Register<IServiceProvider, SingularityServiceProvider>();
             config.Register<IServiceScopeFactory, SingularityServiceScopeFactory>();
 

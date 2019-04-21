@@ -7,11 +7,13 @@ namespace Singularity.Bindings
     /// Represents a strongly typed binding registration for <typeparamref name="TDependency"/>.
     /// </summary>
     /// <typeparam name="TDependency"></typeparam>
-	public sealed class StronglyTypedBinding<TDependency> : WeaklyTypedBinding
+	public sealed class StronglyTypedBinding<TDependency>
     {
-        internal StronglyTypedBinding(string callerFilePath, int callerLineNumber, IModule? module) : base(typeof(TDependency), callerFilePath, callerLineNumber, module)
-        {
+        private readonly WeaklyTypedBinding _weaklyTypedBinding;
 
+        internal StronglyTypedBinding(WeaklyTypedBinding weaklyTypedBinding)
+        {
+            _weaklyTypedBinding = weaklyTypedBinding;
         }
 
         /// <summary>
@@ -101,9 +103,9 @@ namespace Singularity.Bindings
         internal StronglyTypedConfiguredBinding<TDependency, TInstance> Inject<TInstance>(Expression expression)
             where TInstance : class, TDependency
         {
-            var configuredBinding = new StronglyTypedConfiguredBinding<TDependency, TInstance>(this ,expression);
-            WeaklyTypedConfiguredBinding = configuredBinding;
-            return configuredBinding;
+            var configuredBinding = _weaklyTypedBinding.Inject(expression);
+            _weaklyTypedBinding.WeaklyTypedConfiguredBinding = configuredBinding;
+            return new StronglyTypedConfiguredBinding<TDependency, TInstance>(configuredBinding);
         }
     }
 }

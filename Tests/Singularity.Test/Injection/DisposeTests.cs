@@ -12,7 +12,7 @@ namespace Singularity.Test.Injection
         {
             //ARRANGE
             var config = new BindingConfig();
-            config.Register<IDisposable, Disposable>().With(Lifetime.PerContainer).With(Dispose.Always);
+            config.Register<IDisposable, Disposable>().With(Lifetime.PerContainer).With(DisposeBehavior.Always);
 
             var container = new Container(config);
 
@@ -69,7 +69,7 @@ namespace Singularity.Test.Injection
         {
             //ARRANGE
             var config = new BindingConfig();
-            config.Register<IDisposable, Disposable>().With(Dispose.Always);
+            config.Register<IDisposable, Disposable>().With(DisposeBehavior.Always);
 
             var container = new Container(config);
 
@@ -89,7 +89,7 @@ namespace Singularity.Test.Injection
         {
             //ARRANGE
             var config = new BindingConfig();
-            config.Register<IDisposable, Disposable>().With(Dispose.Always);
+            config.Register<IDisposable, Disposable>().With(DisposeBehavior.Always);
             config.Decorate<IDisposable, DisposableDecorator>();
 
             var container = new Container(config);
@@ -111,7 +111,7 @@ namespace Singularity.Test.Injection
         {
             //ARRANGE
             var config = new BindingConfig();
-            config.Register<IDisposable, Disposable>().With(Lifetime.PerContainer).With(Dispose.Always);
+            config.Register<IDisposable, Disposable>().With(Lifetime.PerContainer).With(DisposeBehavior.Always);
             var nestedConfig = new BindingConfig();
 
             var container = new Container(config);
@@ -139,7 +139,7 @@ namespace Singularity.Test.Injection
         {
             //ARRANGE
             var config = new BindingConfig();
-            config.Register<IDisposable, Disposable>().With(Dispose.Always);
+            config.Register<IDisposable, Disposable>().With(DisposeBehavior.Always);
             var nestedConfig = new BindingConfig();
 
             var container = new Container(config);

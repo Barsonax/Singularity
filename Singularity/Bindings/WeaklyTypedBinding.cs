@@ -9,7 +9,7 @@ namespace Singularity.Bindings
     /// <summary>
     /// Represents a weakly typed registration
     /// </summary>
-    public class WeaklyTypedBinding
+    public sealed class WeaklyTypedBinding
     {
         /// <summary>
         /// The metadata of this binding.
@@ -36,9 +36,9 @@ namespace Singularity.Bindings
         /// </summary>
         public Action<object>? Finalizer => WeaklyTypedConfiguredBinding?.Finalizer;
 
-        public Dispose NeedsDispose => WeaklyTypedConfiguredBinding?.NeedsDispose ?? Dispose.Default;
+        public DisposeBehavior NeedsDispose => WeaklyTypedConfiguredBinding?.DisposeBehavior ?? DisposeBehavior.Default;
 
-        private protected WeaklyTypedConfiguredBinding? WeaklyTypedConfiguredBinding { get; set; }
+        internal WeaklyTypedConfiguredBinding? WeaklyTypedConfiguredBinding { get; set; }
 
         internal WeaklyTypedBinding(Type dependencyType, string callerFilePath, int callerLineNumber, IModule? module)
         {

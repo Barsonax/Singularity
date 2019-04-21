@@ -1,6 +1,6 @@
 ﻿namespace Singularity
 {
-    public enum Dispose
+    public enum DisposeBehavior
     {
         Default,
         Never,

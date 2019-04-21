@@ -1,16 +1,29 @@
-﻿using System.Linq.Expressions;
+﻿using System;
+using System.Linq.Expressions;
 
 namespace Singularity.Bindings
 {
     /// <summary>
     /// Represents a strongly typed registration
     /// </summary>
-    public sealed class StronglyTypedDecoratorBinding<TDependency> : WeaklyTypedDecoratorBinding
+    public sealed class StronglyTypedDecoratorBinding<TDependency>
         where TDependency : class
     {
-        internal StronglyTypedDecoratorBinding(Expression expression) : base(typeof(TDependency), expression)
-        {
+        private WeaklyTypedDecoratorBinding _weaklyTypedDecoratorBinding { get; }
 
+        /// <summary>
+        /// The dependency type this decorator is used for.
+        /// </summary>
+        public Type DependencyType => _weaklyTypedDecoratorBinding.DependencyType;
+
+        /// <summary>
+        /// A expression to create the decorator.
+        /// </summary>
+        public Expression Expression => _weaklyTypedDecoratorBinding.Expression;
+
+        internal StronglyTypedDecoratorBinding(WeaklyTypedDecoratorBinding weaklyTypedDecoratorBinding)
+        {
+            _weaklyTypedDecoratorBinding = weaklyTypedDecoratorBinding;
         }
     }
 }

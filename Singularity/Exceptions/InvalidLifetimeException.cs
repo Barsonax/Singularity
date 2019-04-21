@@ -4,15 +4,16 @@ using System.Runtime.Serialization;
 namespace Singularity.Exceptions
 {
     [Serializable]
-    public class InvalidLifetimeException : SingularityException
+    public class InvalidEnumValue<T> : SingularityException
+        where T : struct, Enum
     {
-        internal InvalidLifetimeException(Lifetime lifetime, Exception? inner = null) : base(GetMessage(lifetime), inner)
+        internal InvalidEnumValue(T enumValue, Exception? inner = null) : base(GetMessage(enumValue), inner)
         {
         }
 
-        private static string GetMessage(Lifetime lifetime)
+        private static string GetMessage(T enumValue)
         {
-            return $"{lifetime} is a invalid value, valid values are: {string.Join(", ", EnumMetadata<Lifetime>.Values)}";
+            return $"{enumValue} is a invalid value, valid values are: {string.Join(", ", EnumMetadata<T>.Values)}";
         }
 
         /// <summary>
@@ -20,7 +21,7 @@ namespace Singularity.Exceptions
         /// </summary>
         /// <param name="info"></param>
         /// <param name="context"></param>
-        protected InvalidLifetimeException(SerializationInfo info, StreamingContext context) : base(info, context)
+        protected InvalidEnumValue(SerializationInfo info, StreamingContext context) : base(info, context)
         {
         }
     }
