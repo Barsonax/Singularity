@@ -31,6 +31,13 @@ namespace Singularity.Expressions
                 expression = Expression.Call(ScopeParameter, method, expression, Expression.Constant(dependency.Binding));
             }
 
+            expression = ApplyDecorators(dependency, expression);
+
+            return ApplyCaching(dependency, containerScope, expression);
+        }
+
+        private static Expression ApplyDecorators(ResolvedDependency dependency, Expression expression)
+        {
             if (dependency.Registration.Decorators.Count > 0)
             {
                 var body = new List<Expression>();
@@ -49,38 +56,42 @@ namespace Singularity.Expressions
 
                         decoratorExpressionVisitor.PreviousDecorator = decoratorExpression;
                     }
+
                     body.Add(decoratorExpressionVisitor.PreviousDecorator);
                 }
 
                 if (body.Last().Type == typeof(void)) body.Add(instanceParameter);
-                expression = body.Count == 1 ? expression : Expression.Block(new[] { instanceParameter }, body);
+                expression = body.Count == 1 ? expression : Expression.Block(new[] {instanceParameter}, body);
             }
 
+            return expression;
+        }
+
+        private static Expression ApplyCaching(ResolvedDependency dependency, Scoped containerScope, Expression expression)
+        {
             switch (dependency.Binding.Lifetime)
             {
                 case Lifetime.Transient:
                     return expression;
                 case Lifetime.PerContainer:
-                    object singletonInstance = ((Func<Scoped, object>)Expression.Lambda(expression, ScopeParameter).CompileFast())(containerScope);
+                    object singletonInstance =
+                        ((Func<Scoped, object>) Expression.Lambda(expression, ScopeParameter).CompileFast())(containerScope);
                     dependency.InstanceFactory = scope => singletonInstance;
                     return Expression.Constant(singletonInstance, dependency.Registration.DependencyType);
                 case Lifetime.PerScope:
-                    //var scopedFactory = (Func<Scoped, object>)Expression.Lambda(expression, ScopeParameter).CompileFast();
-                    //var factory = new InstanceFactory(dependency.Registration.DependencyType, scopedFactory);
                     MethodInfo method = CreateScopedExpressionMethod.MakeGenericMethod(expression.Type);
-                    expression = (Expression)method.Invoke(null, new object[] { dependency, expression });
-                    //expression = Expression.Call(ScopeParameter, method, Expression.Lambda(expression, ScopeParameter), Expression.Constant(dependency.Registration.DependencyType));
+                    expression = (Expression) method.Invoke(null, new object[] {expression});
                     return expression;
                 default:
                     throw new ArgumentOutOfRangeException();
             }
         }
 
-        public static Expression CreateScopedExpression<T>(ResolvedDependency dependency, Expression expression)
+        public static Expression CreateScopedExpression<T>(Expression expression)
         {
             var factory = (Func<Scoped, T>)Expression.Lambda(expression, ScopeParameter).CompileFast();
-            MethodInfo method = Scoped.GetOrAddScopedInstanceMethod.MakeGenericMethod(dependency.Registration.DependencyType);
-            return Expression.Call(ScopeParameter, method, Expression.Constant(factory), Expression.Constant(dependency.Registration.DependencyType));
+            MethodInfo method = Scoped.GetOrAddScopedInstanceMethod.MakeGenericMethod(expression.Type);
+            return Expression.Call(ScopeParameter, method, Expression.Constant(factory), Expression.Constant(expression.Type));
         }
     }
 
