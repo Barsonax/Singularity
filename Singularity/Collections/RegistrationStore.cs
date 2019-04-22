@@ -33,11 +33,12 @@ namespace Singularity.Collections
             return decorator;
         }
 
-        public WeaklyTypedBinding CreateBinding(Type dependencyType, string callerFilePath, int callerLineNumber)
+        public WeaklyTypedBinding CreateBinding(Type[] dependencyTypes, string callerFilePath, int callerLineNumber)
         {
             if (Locked) throw new BindingConfigException("This config is locked and cannot be modified anymore!");
-            Registration registration = GetOrCreateRegistration(dependencyType);
-            var binding = new WeaklyTypedBinding(dependencyType, callerFilePath, callerLineNumber, CurrentModule);
+            Registration registration = GetOrCreateRegistration(dependencyTypes);
+
+            var binding = new WeaklyTypedBinding(dependencyTypes, callerFilePath, callerLineNumber, CurrentModule);
             registration.Bindings.Add(binding);
             return binding;
         }
@@ -46,20 +47,24 @@ namespace Singularity.Collections
         {
             if (_readonlyBindings == null)
             {
-                var registrations = new ReadonlyRegistration[Registrations.Count];
+                var uniqueRegistrations = Registrations.Values.Distinct().ToArray();
+                var registrations = new ReadonlyRegistration[uniqueRegistrations.Length];
                 var count = 0;
-                foreach (Registration registration in Registrations.Values)
+                foreach (Registration registration in uniqueRegistrations)
                 {
-                    if (Decorators.TryGetValue(registration.DependencyType, out List<WeaklyTypedDecoratorBinding> decorators))
+                    foreach (Type registrationDependencyType in registration.DependencyTypes)
                     {
-                        registration.Verify(decorators);
-                    }
-                    else
-                    {
-                        registration.Verify(null);
+                        if (Decorators.TryGetValue(registrationDependencyType, out List<WeaklyTypedDecoratorBinding> decorators))
+                        {
+                            registration.Verify(decorators);
+                        }
+                        else
+                        {
+                            registration.Verify(null);
+                        }
                     }
 
-                    registrations[count] = new ReadonlyRegistration(new[] { registration.DependencyType }, registration.Bindings.Select(x => new Binding(x)));
+                    registrations[count] = new ReadonlyRegistration(registration.DependencyTypes, registration.Bindings.Select(x => new Binding(x)));
                     count++;
                 }
 
@@ -84,11 +89,24 @@ namespace Singularity.Collections
             return GetEnumerator();
         }
 
-        private Registration GetOrCreateRegistration(Type type)
+        private Registration GetOrCreateRegistration(Type[] types)
         {
-            if (!Registrations.TryGetValue(type, out Registration registration))
+            Registration registration;
+            foreach (Type type in types)
             {
-                registration = new Registration(type);
+                if (Registrations.TryGetValue(type, out registration))
+                {
+                    if (!types.CollectionsAreEqual(registration.DependencyTypes))
+                    {
+                        throw new RegistrationCollisionException(registration.DependencyTypes, types);
+                    }
+
+                    return registration;
+                }
+            }
+            registration = new Registration(types);
+            foreach (Type type in types)
+            {
                 Registrations.Add(type, registration);
             }
 

@@ -45,6 +45,7 @@ namespace Singularity.Test.Exceptions
             Add(new InvalidEnumValue<DisposeBehavior>(DisposeBehavior.Always, inner));
             Add(new NoConstructorException(message, inner));
             Add(new RegistrationAlreadyExistsException(message, inner));
+            Add(new RegistrationCollisionException(new[] { typeof(int), typeof(float) }, new[] { typeof(float) }, inner));
             Add(new SingularityException(message, inner));
             Add(new SingularityAggregateException(message, new[] { inner }));
             Add(new TypeNotAssignableException(message, inner));

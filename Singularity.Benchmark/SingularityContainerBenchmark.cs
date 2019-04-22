@@ -23,29 +23,29 @@ namespace Singularity.Benchmark
             _containerBenchmark.AspNetCore();
         }
 
-        //[Benchmark]
-        //public ISingleton1 Singleton()
-        //{
-        //    return _containerBenchmark.Singleton();
-        //}
+        [Benchmark]
+        public ISingleton1 Singleton()
+        {
+            return _containerBenchmark.Singleton();
+        }
 
-        //[Benchmark]
-        //public ITransient1 Transient()
-        //{
-        //    return _containerBenchmark.Transient();
-        //}
+        [Benchmark]
+        public ITransient1 Transient()
+        {
+            return _containerBenchmark.Transient();
+        }
 
-        //[Benchmark]
-        //public ICombined1 Combined()
-        //{
-        //    return _containerBenchmark.Combined();
-        //}
+        [Benchmark]
+        public ICombined1 Combined()
+        {
+            return _containerBenchmark.Combined();
+        }
 
-        //[Benchmark]
-        //public IComplex1 Complex()
-        //{
-        //    return _containerBenchmark.Complex();
-        //}
+        [Benchmark]
+        public IComplex1 Complex()
+        {
+            return _containerBenchmark.Complex();
+        }
 
         //[Benchmark]
         //public ISimpleAdapter[] MultiEnumerate()

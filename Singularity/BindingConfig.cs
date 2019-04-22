@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.ObjectModel;
+using System.Data;
 using System.Linq.Expressions;
 using System.Runtime.CompilerServices;
 using Singularity.Bindings;
@@ -24,19 +25,40 @@ namespace Singularity
         /// <returns></returns>
         public StronglyTypedBinding<TDependency> Register<TDependency>([CallerFilePath]string callerFilePath = "", [CallerLineNumber] int callerLineNumber = -1)
         {
-            return new StronglyTypedBinding<TDependency>(_registrations.CreateBinding(typeof(TDependency), callerFilePath, callerLineNumber));
+            return new StronglyTypedBinding<TDependency>(_registrations.CreateBinding(new[] { typeof(TDependency) }, callerFilePath, callerLineNumber));
         }
 
         /// <summary>
         /// Registers a new strongly typed dependency and auto resolves a expression to create it.
         /// </summary>
-        /// <typeparam name="TDependency"></typeparam>
+        /// <typeparam name="TDependency1"></typeparam>
         /// <typeparam name="TInstance"></typeparam>
         /// <returns></returns>
-        public StronglyTypedConfiguredBinding<TDependency, TInstance> Register<TDependency, TInstance>([CallerFilePath]string callerFilePath = "", [CallerLineNumber] int callerLineNumber = -1)
-            where TInstance : class, TDependency
+        public StronglyTypedConfiguredBinding<TDependency1, TInstance> Register<TDependency1, TInstance>([CallerFilePath]string callerFilePath = "", [CallerLineNumber] int callerLineNumber = -1)
+            where TInstance : class, TDependency1
         {
-            StronglyTypedBinding<TDependency> binding = Register<TDependency>(callerFilePath, callerLineNumber);
+            var binding = new StronglyTypedBinding<TDependency1>(Register(typeof(TDependency1), callerFilePath, callerLineNumber));
+            return binding.Inject<TInstance>(AutoResolveConstructorExpressionCache<TInstance>.Expression);
+        }
+
+        public StronglyTypedConfiguredBinding<TDependency1, TInstance> Register<TDependency1, TDependency2, TInstance>([CallerFilePath]string callerFilePath = "", [CallerLineNumber] int callerLineNumber = -1)
+            where TInstance : class, TDependency1, TDependency2
+        {
+            var binding = new StronglyTypedBinding<TDependency1>(Register(new[] { typeof(TDependency1), typeof(TDependency2) }, callerFilePath, callerLineNumber));
+            return binding.Inject<TInstance>(AutoResolveConstructorExpressionCache<TInstance>.Expression);
+        }
+
+        public StronglyTypedConfiguredBinding<TDependency1, TInstance> Register<TDependency1, TDependency2, TDependency3, TInstance>([CallerFilePath]string callerFilePath = "", [CallerLineNumber] int callerLineNumber = -1)
+            where TInstance : class, TDependency1, TDependency2, TDependency3
+        {
+            var binding = new StronglyTypedBinding<TDependency1>(Register(new[] { typeof(TDependency1), typeof(TDependency2), typeof(TDependency3) }, callerFilePath, callerLineNumber));
+            return binding.Inject<TInstance>(AutoResolveConstructorExpressionCache<TInstance>.Expression);
+        }
+
+        public StronglyTypedConfiguredBinding<TDependency1, TInstance> Register<TDependency1, TDependency2, TDependency3, TDependency4, TInstance>([CallerFilePath]string callerFilePath = "", [CallerLineNumber] int callerLineNumber = -1)
+            where TInstance : class, TDependency1, TDependency2, TDependency3, TDependency4
+        {
+            var binding = new StronglyTypedBinding<TDependency1>(Register(new[] { typeof(TDependency1), typeof(TDependency2), typeof(TDependency3), typeof(TDependency4) }, callerFilePath, callerLineNumber));
             return binding.Inject<TInstance>(AutoResolveConstructorExpressionCache<TInstance>.Expression);
         }
 
@@ -49,7 +71,19 @@ namespace Singularity
         public WeaklyTypedBinding Register(Type dependencyType, [CallerFilePath]string callerFilePath = "", [CallerLineNumber] int callerLineNumber = -1)
 #pragma warning restore 1573
         {
-            return _registrations.CreateBinding(dependencyType, callerFilePath, callerLineNumber);
+            return _registrations.CreateBinding(new[] { dependencyType }, callerFilePath, callerLineNumber);
+        }
+
+        /// <summary>
+        /// Begins configuring a weakly typed binding for <paramref name="dependencyType"/>
+        /// </summary>
+        /// <param name="dependencyTypes"></param>
+        /// <returns></returns>
+#pragma warning disable 1573
+        public WeaklyTypedBinding Register(Type[] dependencyTypes, [CallerFilePath]string callerFilePath = "", [CallerLineNumber] int callerLineNumber = -1)
+#pragma warning restore 1573
+        {
+            return _registrations.CreateBinding(dependencyTypes, callerFilePath, callerLineNumber);
         }
 
         /// <summary>
@@ -62,27 +96,61 @@ namespace Singularity
         public WeaklyTypedConfiguredBinding Register(Type dependencyType, Type instanceType, [CallerFilePath]string callerFilePath = "", [CallerLineNumber] int callerLineNumber = -1)
 #pragma warning restore 1573
         {
+            CheckType(dependencyType, instanceType);
+            WeaklyTypedBinding binding = Register(dependencyType, callerFilePath, callerLineNumber);
+            Expression expression = AutoResolveExpression(instanceType);
+            return binding.Inject(expression);
+        }
+
+        /// <summary>
+        /// Registers a new weakly typed dependency and auto resolves a expression to create it.
+        /// </summary>
+        /// <param name="dependencyTypes"></param>
+        /// <param name="instanceType"></param>
+        /// <returns></returns>
+#pragma warning disable 1573
+        public WeaklyTypedConfiguredBinding Register(Type[] dependencyTypes, Type instanceType, [CallerFilePath]string callerFilePath = "", [CallerLineNumber] int callerLineNumber = -1)
+#pragma warning restore 1573
+        {
+            CheckTypes(dependencyTypes, instanceType);
+            WeaklyTypedBinding binding = Register(dependencyTypes, callerFilePath, callerLineNumber);
+            Expression expression = AutoResolveExpression(instanceType);
+            return binding.Inject(expression);
+        }
+
+        private void CheckTypes(Type[] dependencyTypes, Type instanceType)
+        {
+            foreach (Type dependencyType in dependencyTypes)
+            {
+                CheckType(dependencyType, instanceType);
+            }
+        }
+
+        private void CheckType(Type dependencyType, Type instanceType)
+        {
             if (dependencyType.ContainsGenericParameters)
             {
-
+                if (!instanceType.ContainsGenericParameters || instanceType.GenericTypeArguments.Length != dependencyType.GenericTypeArguments.Length)
+                {
+                    throw new TypeNotAssignableException($"Open generic type {dependencyType} is not implemented by {instanceType}");
+                }
             }
             else
             {
                 if (!dependencyType.IsAssignableFrom(instanceType)) throw new TypeNotAssignableException($"{dependencyType} is not implemented by {instanceType}");
             }
+        }
 
-            WeaklyTypedBinding binding = Register(dependencyType, callerFilePath, callerLineNumber);
-
-            Expression expression;
-            if (dependencyType.ContainsGenericParameters && instanceType.ContainsGenericParameters)
+        private Expression AutoResolveExpression(Type instanceType)
+        {
+            if (instanceType.ContainsGenericParameters)
             {
-                expression = new OpenGenericTypeExpression(instanceType);
+                return new OpenGenericTypeExpression(instanceType);
             }
             else
             {
-                expression = instanceType.AutoResolveConstructorExpression();
+                return instanceType.AutoResolveConstructorExpression();
             }
-            return binding.Inject(expression);
         }
 
         /// <summary>

@@ -6,12 +6,12 @@ namespace Singularity.Bindings
 {
     internal class Registration
     {
-        public Type DependencyType { get; }
+        public Type[] DependencyTypes { get; }
         public List<WeaklyTypedBinding> Bindings { get; } = new List<WeaklyTypedBinding>();
 
-        public Registration(Type dependencyType)
+        public Registration(Type[] dependencyTypes)
         {
-            DependencyType = dependencyType ?? throw new ArgumentNullException(nameof(dependencyType));
+            DependencyTypes = dependencyTypes ?? throw new ArgumentNullException(nameof(dependencyTypes));
         }
 
         internal void Verify(List<WeaklyTypedDecoratorBinding>? decorators)
@@ -28,7 +28,7 @@ namespace Singularity.Bindings
                     foreach (WeaklyTypedDecoratorBinding weaklyTypedDecoratorBinding in decorators)
                     {
                         if (weaklyTypedDecoratorBinding.Expression == null)
-                            throw new BindingConfigException($"The decorator for {DependencyType} does not have a expression");
+                            throw new BindingConfigException($"The decorator for {DependencyTypes} does not have a expression");
                     }
                 }
             }

@@ -17,11 +17,6 @@ namespace Singularity.Bindings
         public BindingMetadata BindingMetadata { get; }
 
         /// <summary>
-        /// The type of the dependency this binding is defined for, usually a interface.
-        /// </summary>
-        public Type DependencyType { get; }
-
-        /// <summary>
         /// A expression that is used to create the instance
         /// </summary>
         public Expression? Expression => WeaklyTypedConfiguredBinding?.Expression;
@@ -40,15 +35,18 @@ namespace Singularity.Bindings
 
         internal WeaklyTypedConfiguredBinding? WeaklyTypedConfiguredBinding { get; set; }
 
-        internal WeaklyTypedBinding(Type dependencyType, string callerFilePath, int callerLineNumber, IModule? module)
+        internal WeaklyTypedBinding(Type[] dependencyTypes, string callerFilePath, int callerLineNumber, IModule? module)
         {
-            DependencyType = dependencyType ?? throw new ArgumentNullException(nameof(dependencyType));
-            if (dependencyType.IsGenericType && dependencyType.GetGenericTypeDefinition() == typeof(IEnumerable<>))
+            foreach (var dependencyType in dependencyTypes)
             {
-                var enumerableType = dependencyType.GenericTypeArguments[0];
-                throw new EnumerableRegistrationException($"don't register {enumerableType} as IEnumerable directly. Instead register them as you would normally.");
+                if (dependencyType.IsGenericType && dependencyType.GetGenericTypeDefinition() == typeof(IEnumerable<>))
+                {
+                    var enumerableType = dependencyType.GenericTypeArguments[0];
+                    throw new EnumerableRegistrationException($"don't register {enumerableType} as IEnumerable directly. Instead register them as you would normally.");
+                }
             }
-            BindingMetadata = new BindingMetadata(new[] { dependencyType }, callerFilePath, callerLineNumber, module);
+
+            BindingMetadata = new BindingMetadata(dependencyTypes, callerFilePath, callerLineNumber, module);
         }
 
         /// <summary>
