@@ -1,6 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Text;
 
 namespace Singularity.TestClasses.TestClasses
 {
@@ -10,6 +8,15 @@ namespace Singularity.TestClasses.TestClasses
 
     public interface IService1 { }
     public interface IService2 { }
+
+    public class Service2Decorator : IService2
+    {
+        public readonly IService2 Service;
+        public Service2Decorator(IService2 service)
+        {
+            Service = service ?? throw new ArgumentNullException(nameof(service));
+        }
+    }
     public interface IService3 { }
 
 }
