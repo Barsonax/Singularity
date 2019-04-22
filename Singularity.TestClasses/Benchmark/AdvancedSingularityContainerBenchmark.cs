@@ -1,20 +1,18 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Linq.Expressions;
 using Microsoft.Extensions.DependencyInjection;
-using Singularity.Bindings;
 using Singularity.Microsoft.DependencyInjection;
 using Singularity.TestClasses.TestClasses;
 
 namespace Singularity.TestClasses.Benchmark
 {
-    public class ContainerBenchmark
+    public class AdvancedSingularityContainerBenchmark
     {
         private Container _container;
         private BindingConfig _cachedBindingConfig;
 
-        public ContainerBenchmark()
+        public AdvancedSingularityContainerBenchmark()
         {
             _container = NewContainer();
             _cachedBindingConfig = new BindingConfig();
@@ -29,26 +27,6 @@ namespace Singularity.TestClasses.Benchmark
             {
                 var controller = scope.ServiceProvider.GetService(typeof(TestController1));
             }
-        }
-
-        public ISingleton1 Singleton()
-        {
-            return (ISingleton1)_container.GetInstance(typeof(ISingleton1));
-        }
-
-        public ITransient1 Transient()
-        {
-            return (ITransient1)_container.GetInstance(typeof(ITransient1));
-        }
-
-        public ICombined1 Combined()
-        {
-            return (ICombined1)_container.GetInstance(typeof(ICombined1));
-        }
-
-        public IComplex1 Complex()
-        {
-            return (IComplex1)_container.GetInstance(typeof(IComplex1));
         }
 
         public IEnumerable<ISimpleAdapter> Multi()
@@ -87,8 +65,7 @@ namespace Singularity.TestClasses.Benchmark
             config.Register<IServiceProvider, SingularityServiceProvider>();
             config.Register<IServiceScopeFactory, SingularityServiceScopeFactory>();
 
-            //return new Container(config);
-            return new Container(config, new SingularitySettings() {AutoDispose = true});
+            return new Container(config, new SingularitySettings { AutoDispose = true });
         }
 
         public Container NewContainerFromCachedConfig()

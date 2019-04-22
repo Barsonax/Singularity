@@ -14,10 +14,10 @@ namespace Singularity.Benchmark
                     .With(Runtime.Core)
                     .WithIterationTime(TimeInterval.FromMilliseconds(500)));
 
-            //Add(
-            //    Job.LegacyJitX64
-            //        .With(Runtime.Clr)
-            //        .WithIterationTime(TimeInterval.FromMilliseconds(500)));
+            Add(
+                Job.LegacyJitX64
+                    .With(Runtime.Clr)
+                    .WithIterationTime(TimeInterval.FromMilliseconds(500)));
         }
     }
 }

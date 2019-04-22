@@ -8,7 +8,7 @@ namespace Singularity.Benchmark
         static void Main()
         {
             //BenchmarkRunner.Run<ImmutableDictionaryBenchmarks>();
-            BenchmarkRunner.Run<SingularityContainerBenchmark>();
+            BenchmarkRunner.Run<SimpleContainerBenchmark>();
             //BenchmarkRunner.Run<DisposeListBenchmarks>();
             Console.ReadKey();
         }
