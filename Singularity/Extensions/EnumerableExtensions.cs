@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.Linq;
 
 namespace Singularity
 {
@@ -25,5 +26,20 @@ namespace Singularity
 
 			return exceptions != null;
 		}
-	}
+
+        public static bool CollectionsAreEqual<T>(this IReadOnlyList<T> list1, IReadOnlyList<T> list2)
+        {
+            return list1.Count == list2.Count && CollectionsAreEqualInternal(list1, list2);
+        }
+
+        public static bool CollectionsAreEqual<T>(this IEnumerable<T> collection1, IEnumerable<T> collection2)
+        {
+            return CollectionsAreEqualInternal(collection1, collection2);
+        }
+
+        private static bool CollectionsAreEqualInternal<T>(this IEnumerable<T> collection1, IEnumerable<T> collection2)
+        {
+            return collection1.OrderBy(i => i).SequenceEqual(collection2.OrderBy(i => i));
+        }
+    }
 }

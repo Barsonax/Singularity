@@ -2,12 +2,13 @@
 using System.Collections.Generic;
 using System.Linq.Expressions;
 using System.Reflection;
+using Singularity.Bindings;
 
 namespace Singularity.Graph.Resolvers
 {
     internal class LazyDependencyResolver : IDependencyResolver
     {
-        public IEnumerable<Dependency>? Resolve(IResolverPipeline graph, Type type)
+        public Dependency? Resolve(IResolverPipeline graph, Type type)
         {
             if (type.IsGenericType && type.GetGenericTypeDefinition() == typeof(Lazy<>))
             {
@@ -19,18 +20,16 @@ namespace Singularity.Graph.Resolvers
                 ConstructorInfo constructor = lazyType.GetConstructor(new[] { funcType });
                 foreach (ResolvedDependency resolvedDependency in factoryDependency.ResolvedDependencies.Array)
                 {
-                    graph.ResolveDependency(resolvedDependency);
-                    expressions.Add(Expression.New(constructor, resolvedDependency.Expression));
+                    expressions.Add(Expression.New(constructor, graph.ResolveDependency(lazyType, resolvedDependency).Expression));
                 }
 
-                var lazyDependency = new Dependency(type, expressions, Lifetime.Transient);
+                var lazyDependency = new Dependency(new[] { type }, expressions, Lifetime.Transient);
                 for (var i = 0; i < lazyDependency.ResolvedDependencies.Array.Length; i++)
                 {
-                    lazyDependency.ResolvedDependencies.Array[i].Expression = expressions[i];
+                    lazyDependency.ResolvedDependencies.Array[i].Factories.Add(new InstanceFactory(type, expressions[i]));
                 }
-                return new[] { lazyDependency };
+                return lazyDependency;
             }
-
             return null;
         }
     }

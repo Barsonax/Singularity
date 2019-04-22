@@ -13,11 +13,11 @@ namespace Singularity.Graph.Resolvers
             GenericCreateLambdaMethod = typeof(ExpressionDependencyResolver).GetMethod(nameof(CreateLambda));
         }
 
-        public IEnumerable<Dependency>? Resolve(IResolverPipeline graph, Type type)
+        public Dependency? Resolve(IResolverPipeline graph, Type type)
         {
             if (type.IsGenericType && type.GetGenericTypeDefinition() == typeof(Expression<>) && type.GenericTypeArguments.Length == 1)
             {
-                var funcType = type.GenericTypeArguments[0];
+                Type funcType = type.GenericTypeArguments[0];
                 if (funcType.GetGenericTypeDefinition() == typeof(Func<>) && funcType.GenericTypeArguments.Length == 1)
                 {
                     Type dependencyType = funcType.GenericTypeArguments[0];
@@ -26,19 +26,18 @@ namespace Singularity.Graph.Resolvers
                     var expressions = new List<Expression>();
                     foreach (ResolvedDependency resolvedDependency in dependency.ResolvedDependencies.Array)
                     {
-                        graph.ResolveDependency(resolvedDependency);
-                        expressions.Add(resolvedDependency.Expression!);
+                        expressions.Add(graph.ResolveDependency(dependencyType, resolvedDependency).Expression);
                     }
 
-                    var expressionDependency = new Dependency(type, expressions, Lifetime.Transient);
-                    var method = GenericCreateLambdaMethod.MakeGenericMethod(dependencyType);
+                    var expressionDependency = new Dependency(new[] { type }, expressions, Lifetime.Transient);
+                    MethodInfo method = GenericCreateLambdaMethod.MakeGenericMethod(dependencyType);
                     for (var i = 0; i < expressionDependency.ResolvedDependencies.Array.Length; i++)
                     {
                         var expression = (Expression)method.Invoke(null, new object[] { expressions[i] });
-                        expressionDependency.ResolvedDependencies.Array[i].Expression = expression;
-                        expressionDependency.ResolvedDependencies.Array[i].InstanceFactory = scoped => expression;
+                        var factory = new InstanceFactory(type, expression, scoped => expression);
+                        expressionDependency.ResolvedDependencies.Array[i].Factories.Add(factory);
                     }
-                    return new[] { expressionDependency };
+                    return expressionDependency;
                 }
             }
             return null;

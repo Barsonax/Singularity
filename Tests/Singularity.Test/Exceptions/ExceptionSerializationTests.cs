@@ -41,9 +41,11 @@ namespace Singularity.Test.Exceptions
             Add(new EnumerableRegistrationException(message, inner));
             Add(new InterfaceExpectedException(message, inner));
             Add(new InvalidExpressionArgumentsException(message, inner));
-            Add(new InvalidLifetimeException(Lifetime.PerContainer, inner));
+            Add(new InvalidEnumValue<Lifetime>(Lifetime.PerContainer, inner));
+            Add(new InvalidEnumValue<DisposeBehavior>(DisposeBehavior.Always, inner));
             Add(new NoConstructorException(message, inner));
             Add(new RegistrationAlreadyExistsException(message, inner));
+            Add(new RegistrationCollisionException(new[] { typeof(int), typeof(float) }, new[] { typeof(float) }, inner));
             Add(new SingularityException(message, inner));
             Add(new SingularityAggregateException(message, new[] { inner }));
             Add(new TypeNotAssignableException(message, inner));

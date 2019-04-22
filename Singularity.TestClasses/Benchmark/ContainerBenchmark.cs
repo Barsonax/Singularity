@@ -83,7 +83,7 @@ namespace Singularity.TestClasses.Benchmark
 
             Register(config);
 
-            config.Register<Container>().Inject(() => this._container).With(Dispose.Never);
+            config.Register<Container>().Inject(() => this._container).With(DisposeBehavior.Never);
             config.Register<IServiceProvider, SingularityServiceProvider>();
             config.Register<IServiceScopeFactory, SingularityServiceScopeFactory>();
 

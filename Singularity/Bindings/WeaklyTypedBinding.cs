@@ -9,17 +9,12 @@ namespace Singularity.Bindings
     /// <summary>
     /// Represents a weakly typed registration
     /// </summary>
-    public class WeaklyTypedBinding
+    public sealed class WeaklyTypedBinding
     {
         /// <summary>
         /// The metadata of this binding.
         /// </summary>
         public BindingMetadata BindingMetadata { get; }
-
-        /// <summary>
-        /// The type of the dependency this binding is defined for, usually a interface.
-        /// </summary>
-        public Type DependencyType { get; }
 
         /// <summary>
         /// A expression that is used to create the instance
@@ -36,19 +31,22 @@ namespace Singularity.Bindings
         /// </summary>
         public Action<object>? Finalizer => WeaklyTypedConfiguredBinding?.Finalizer;
 
-        public Dispose NeedsDispose => WeaklyTypedConfiguredBinding?.NeedsDispose ?? Dispose.Default;
+        public DisposeBehavior NeedsDispose => WeaklyTypedConfiguredBinding?.DisposeBehavior ?? DisposeBehavior.Default;
 
-        private protected WeaklyTypedConfiguredBinding? WeaklyTypedConfiguredBinding { get; set; }
+        internal WeaklyTypedConfiguredBinding? WeaklyTypedConfiguredBinding { get; set; }
 
-        internal WeaklyTypedBinding(Type dependencyType, string callerFilePath, int callerLineNumber, IModule? module)
+        internal WeaklyTypedBinding(Type[] dependencyTypes, string callerFilePath, int callerLineNumber, IModule? module)
         {
-            DependencyType = dependencyType ?? throw new ArgumentNullException(nameof(dependencyType));
-            if (dependencyType.IsGenericType && dependencyType.GetGenericTypeDefinition() == typeof(IEnumerable<>))
+            foreach (var dependencyType in dependencyTypes)
             {
-                var enumerableType = dependencyType.GenericTypeArguments[0];
-                throw new EnumerableRegistrationException($"don't register {enumerableType} as IEnumerable directly. Instead register them as you would normally.");
+                if (dependencyType.IsGenericType && dependencyType.GetGenericTypeDefinition() == typeof(IEnumerable<>))
+                {
+                    var enumerableType = dependencyType.GenericTypeArguments[0];
+                    throw new EnumerableRegistrationException($"don't register {enumerableType} as IEnumerable directly. Instead register them as you would normally.");
+                }
             }
-            BindingMetadata = new BindingMetadata(dependencyType, callerFilePath, callerLineNumber, module);
+
+            BindingMetadata = new BindingMetadata(dependencyTypes, callerFilePath, callerLineNumber, module);
         }
 
         /// <summary>

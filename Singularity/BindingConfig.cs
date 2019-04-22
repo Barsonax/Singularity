@@ -1,11 +1,10 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Collections.ObjectModel;
-using System.Linq;
+using System.Data;
 using System.Linq.Expressions;
-using System.Reflection;
 using System.Runtime.CompilerServices;
 using Singularity.Bindings;
+using Singularity.Collections;
 using Singularity.Exceptions;
 using Singularity.Expressions;
 
@@ -16,13 +15,8 @@ namespace Singularity
     /// </summary>
     public sealed class BindingConfig
     {
-        /// <summary>
-        /// If true then this config is locked and may not be modified.
-        /// </summary>
-        public bool Locked => _readonlyBindings != null;
-        internal IModule? CurrentModule;
-        private readonly Dictionary<Type, Registration> _registrations = new Dictionary<Type, Registration>();
-        private ReadOnlyCollection<ReadonlyRegistration>? _readonlyBindings;
+        internal IModule? CurrentModule { set => _registrations.CurrentModule = value; }
+        private readonly RegistrationStore _registrations = new RegistrationStore();
 
         /// <summary>
         /// Begins configuring a strongly typed binding for <typeparamref name="TDependency"/>
@@ -31,21 +25,40 @@ namespace Singularity
         /// <returns></returns>
         public StronglyTypedBinding<TDependency> Register<TDependency>([CallerFilePath]string callerFilePath = "", [CallerLineNumber] int callerLineNumber = -1)
         {
-            if (Locked) throw new BindingConfigException("This config is locked and cannot be modified anymore!");
-            return CreateBinding<TDependency>(callerFilePath, callerLineNumber);
+            return new StronglyTypedBinding<TDependency>(_registrations.CreateBinding(new[] { typeof(TDependency) }, callerFilePath, callerLineNumber));
         }
 
         /// <summary>
         /// Registers a new strongly typed dependency and auto resolves a expression to create it.
         /// </summary>
-        /// <typeparam name="TDependency"></typeparam>
+        /// <typeparam name="TDependency1"></typeparam>
         /// <typeparam name="TInstance"></typeparam>
         /// <returns></returns>
-        public StronglyTypedConfiguredBinding<TDependency, TInstance> Register<TDependency, TInstance>([CallerFilePath]string callerFilePath = "", [CallerLineNumber] int callerLineNumber = -1)
-            where TInstance : class, TDependency
+        public StronglyTypedConfiguredBinding<TDependency1, TInstance> Register<TDependency1, TInstance>([CallerFilePath]string callerFilePath = "", [CallerLineNumber] int callerLineNumber = -1)
+            where TInstance : class, TDependency1
         {
-            if (Locked) throw new BindingConfigException("This config is locked and cannot be modified anymore!");
-            StronglyTypedBinding<TDependency> binding = Register<TDependency>(callerFilePath, callerLineNumber);
+            var binding = new StronglyTypedBinding<TDependency1>(Register(typeof(TDependency1), callerFilePath, callerLineNumber));
+            return binding.Inject<TInstance>(AutoResolveConstructorExpressionCache<TInstance>.Expression);
+        }
+
+        public StronglyTypedConfiguredBinding<TDependency1, TInstance> Register<TDependency1, TDependency2, TInstance>([CallerFilePath]string callerFilePath = "", [CallerLineNumber] int callerLineNumber = -1)
+            where TInstance : class, TDependency1, TDependency2
+        {
+            var binding = new StronglyTypedBinding<TDependency1>(Register(new[] { typeof(TDependency1), typeof(TDependency2) }, callerFilePath, callerLineNumber));
+            return binding.Inject<TInstance>(AutoResolveConstructorExpressionCache<TInstance>.Expression);
+        }
+
+        public StronglyTypedConfiguredBinding<TDependency1, TInstance> Register<TDependency1, TDependency2, TDependency3, TInstance>([CallerFilePath]string callerFilePath = "", [CallerLineNumber] int callerLineNumber = -1)
+            where TInstance : class, TDependency1, TDependency2, TDependency3
+        {
+            var binding = new StronglyTypedBinding<TDependency1>(Register(new[] { typeof(TDependency1), typeof(TDependency2), typeof(TDependency3) }, callerFilePath, callerLineNumber));
+            return binding.Inject<TInstance>(AutoResolveConstructorExpressionCache<TInstance>.Expression);
+        }
+
+        public StronglyTypedConfiguredBinding<TDependency1, TInstance> Register<TDependency1, TDependency2, TDependency3, TDependency4, TInstance>([CallerFilePath]string callerFilePath = "", [CallerLineNumber] int callerLineNumber = -1)
+            where TInstance : class, TDependency1, TDependency2, TDependency3, TDependency4
+        {
+            var binding = new StronglyTypedBinding<TDependency1>(Register(new[] { typeof(TDependency1), typeof(TDependency2), typeof(TDependency3), typeof(TDependency4) }, callerFilePath, callerLineNumber));
             return binding.Inject<TInstance>(AutoResolveConstructorExpressionCache<TInstance>.Expression);
         }
 
@@ -58,8 +71,19 @@ namespace Singularity
         public WeaklyTypedBinding Register(Type dependencyType, [CallerFilePath]string callerFilePath = "", [CallerLineNumber] int callerLineNumber = -1)
 #pragma warning restore 1573
         {
-            if (Locked) throw new BindingConfigException("This config is locked and cannot be modified anymore!");
-            return CreateBinding(dependencyType, callerFilePath, callerLineNumber);
+            return _registrations.CreateBinding(new[] { dependencyType }, callerFilePath, callerLineNumber);
+        }
+
+        /// <summary>
+        /// Begins configuring a weakly typed binding for <paramref name="dependencyType"/>
+        /// </summary>
+        /// <param name="dependencyTypes"></param>
+        /// <returns></returns>
+#pragma warning disable 1573
+        public WeaklyTypedBinding Register(Type[] dependencyTypes, [CallerFilePath]string callerFilePath = "", [CallerLineNumber] int callerLineNumber = -1)
+#pragma warning restore 1573
+        {
+            return _registrations.CreateBinding(dependencyTypes, callerFilePath, callerLineNumber);
         }
 
         /// <summary>
@@ -72,28 +96,61 @@ namespace Singularity
         public WeaklyTypedConfiguredBinding Register(Type dependencyType, Type instanceType, [CallerFilePath]string callerFilePath = "", [CallerLineNumber] int callerLineNumber = -1)
 #pragma warning restore 1573
         {
-            if (Locked) throw new BindingConfigException("This config is locked and cannot be modified anymore!");
+            CheckType(dependencyType, instanceType);
+            WeaklyTypedBinding binding = Register(dependencyType, callerFilePath, callerLineNumber);
+            Expression expression = AutoResolveExpression(instanceType);
+            return binding.Inject(expression);
+        }
+
+        /// <summary>
+        /// Registers a new weakly typed dependency and auto resolves a expression to create it.
+        /// </summary>
+        /// <param name="dependencyTypes"></param>
+        /// <param name="instanceType"></param>
+        /// <returns></returns>
+#pragma warning disable 1573
+        public WeaklyTypedConfiguredBinding Register(Type[] dependencyTypes, Type instanceType, [CallerFilePath]string callerFilePath = "", [CallerLineNumber] int callerLineNumber = -1)
+#pragma warning restore 1573
+        {
+            CheckTypes(dependencyTypes, instanceType);
+            WeaklyTypedBinding binding = Register(dependencyTypes, callerFilePath, callerLineNumber);
+            Expression expression = AutoResolveExpression(instanceType);
+            return binding.Inject(expression);
+        }
+
+        private void CheckTypes(Type[] dependencyTypes, Type instanceType)
+        {
+            foreach (Type dependencyType in dependencyTypes)
+            {
+                CheckType(dependencyType, instanceType);
+            }
+        }
+
+        private void CheckType(Type dependencyType, Type instanceType)
+        {
             if (dependencyType.ContainsGenericParameters)
             {
-
+                if (!instanceType.ContainsGenericParameters || instanceType.GenericTypeArguments.Length != dependencyType.GenericTypeArguments.Length)
+                {
+                    throw new TypeNotAssignableException($"Open generic type {dependencyType} is not implemented by {instanceType}");
+                }
             }
             else
             {
                 if (!dependencyType.IsAssignableFrom(instanceType)) throw new TypeNotAssignableException($"{dependencyType} is not implemented by {instanceType}");
             }
+        }
 
-            WeaklyTypedBinding binding = Register(dependencyType, callerFilePath, callerLineNumber);
-
-            Expression expression;
-            if (dependencyType.ContainsGenericParameters && instanceType.ContainsGenericParameters)
+        private Expression AutoResolveExpression(Type instanceType)
+        {
+            if (instanceType.ContainsGenericParameters)
             {
-                expression = new OpenGenericTypeExpression(instanceType);
+                return new OpenGenericTypeExpression(instanceType);
             }
             else
             {
-                expression = instanceType.AutoResolveConstructorExpression();
+                return instanceType.AutoResolveConstructorExpression();
             }
-            return binding.Inject(expression);
         }
 
         /// <summary>
@@ -106,7 +163,6 @@ namespace Singularity
         public WeaklyTypedBindingBatch Register(Type dependencyType, Type[] instanceTypes, [CallerFilePath] string callerFilePath = "", [CallerLineNumber] int callerLineNumber = -1)
 #pragma warning restore 1573
         {
-            if (Locked) throw new BindingConfigException("This config is locked and cannot be modified anymore!");
             var bindings = new WeaklyTypedConfiguredBinding[instanceTypes.Length];
             for (var index = 0; index < instanceTypes.Length; index++)
             {
@@ -128,15 +184,7 @@ namespace Singularity
             where TDependency : class
             where TDecorator : TDependency
         {
-            if (Locked) throw new BindingConfigException("This config is locked and cannot be modified anymore!");
-
-            var decorator = new StronglyTypedDecoratorBinding<TDependency>(AutoResolveConstructorExpressionCache<TDecorator>.Expression);
-
-            ParameterExpression[] parameters = decorator.Expression.GetParameterExpressions();
-            if (parameters.All(x => x.Type != typeof(TDependency))) throw new InvalidExpressionArgumentsException($"Cannot decorate {typeof(TDependency)} since the expression to create {typeof(TDecorator)} does not have a parameter for {typeof(TDependency)}");
-            Registration registration = GetOrCreateRegistration(typeof(TDependency));
-            registration.DecoratorBindings.Add(decorator);
-            return decorator;
+            return new StronglyTypedDecoratorBinding<TDependency>(_registrations.CreateDecorator(typeof(TDependency), typeof(TDecorator)));
         }
 
         /// <summary>
@@ -149,18 +197,7 @@ namespace Singularity
         /// <returns></returns>
         public WeaklyTypedDecoratorBinding Decorate(Type dependencyType, Type decoratorType, [CallerFilePath]string callerFilePath = "", [CallerLineNumber] int callerLineNumber = -1)
         {
-            if (Locked) throw new BindingConfigException("This config is locked and cannot be modified anymore!");
-
-            TypeInfo typeInfo = decoratorType.GetTypeInfo();
-            if (!dependencyType.GetTypeInfo().IsAssignableFrom(typeInfo)) throw new TypeNotAssignableException($"{dependencyType} is not implemented by {decoratorType}");
-
-            var decorator = new WeaklyTypedDecoratorBinding(dependencyType, decoratorType.AutoResolveConstructorExpression());
-
-            ParameterExpression[] parameters = decorator.Expression.GetParameterExpressions();
-            if (parameters.All(x => x.Type != dependencyType)) throw new InvalidExpressionArgumentsException($"Cannot decorate {dependencyType} since the expression to create {decoratorType} does not have a parameter for {dependencyType}");
-            Registration registration = GetOrCreateRegistration(dependencyType);
-            registration.DecoratorBindings.Add(decorator);
-            return decorator;
+            return _registrations.CreateDecorator(dependencyType, decoratorType);
         }
 
         /// <summary>
@@ -173,8 +210,6 @@ namespace Singularity
         /// <returns></returns>
         public WeaklyTypedDecoratorBindingBatch Decorate(Type dependencyType, Type[] decoratorTypes, [CallerFilePath]string callerFilePath = "", [CallerLineNumber] int callerLineNumber = -1)
         {
-            if (Locked) throw new BindingConfigException("This config is locked and cannot be modified anymore!");
-
             var bindings = new WeaklyTypedDecoratorBinding[decoratorTypes.Length];
             for (var index = 0; index < decoratorTypes.Length; index++)
             {
@@ -185,50 +220,6 @@ namespace Singularity
             return new WeaklyTypedDecoratorBindingBatch(new ReadOnlyCollection<WeaklyTypedDecoratorBinding>(bindings));
         }
 
-        internal ReadOnlyCollection<ReadonlyRegistration> GetDependencies()
-        {
-            if (_readonlyBindings == null)
-            {
-                var readonlyRegistrations = new ReadonlyRegistration[_registrations.Count];
-                var count = 0;
-                foreach (var registration in _registrations.Values)
-                {
-                    registration.Verify();
-
-                    readonlyRegistrations[count] = new ReadonlyRegistration(registration.DependencyType, registration.Bindings.Select(x => new Binding(x)), registration.DecoratorBindings.Select(x => x.Expression));
-                    count++;
-                }
-
-                _readonlyBindings = new ReadOnlyCollection<ReadonlyRegistration>(readonlyRegistrations);
-            }
-            return _readonlyBindings!;
-        }
-
-        private Registration GetOrCreateRegistration(Type type)
-        {
-            if (!_registrations.TryGetValue(type, out Registration registration))
-            {
-                registration = new Registration(type);
-                _registrations.Add(type, registration);
-            }
-
-            return registration;
-        }
-
-        private StronglyTypedBinding<TDependency> CreateBinding<TDependency>(string callerFilePath, int callerLineNumber)
-        {
-            Registration registration = GetOrCreateRegistration(typeof(TDependency));
-            var binding = new StronglyTypedBinding<TDependency>(callerFilePath, callerLineNumber, CurrentModule);
-            registration.Bindings.Add(binding);
-            return binding;
-        }
-
-        private WeaklyTypedBinding CreateBinding(Type dependencyType, string callerFilePath, int callerLineNumber)
-        {
-            Registration registration = GetOrCreateRegistration(dependencyType);
-            var binding = new WeaklyTypedBinding(dependencyType, callerFilePath, callerLineNumber, CurrentModule);
-            registration.Bindings.Add(binding);
-            return binding;
-        }
+        internal ReadOnlyBindingConfig GetDependencies() => _registrations.GetDependencies();
     }
 }

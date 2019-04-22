@@ -7,7 +7,7 @@ namespace Singularity.Graph.Resolvers
 {
     internal class OpenGenericResolver : IDependencyResolver
     {
-        public IEnumerable<Dependency>? Resolve(IResolverPipeline graph, Type type)
+        public Dependency? Resolve(IResolverPipeline graph, Type type)
         {
             if (type.IsGenericType && !type.ContainsGenericParameters)
             {
@@ -20,9 +20,9 @@ namespace Singularity.Graph.Resolvers
                     Type closedGenericType = openGenericType.MakeGenericType(type.GenericTypeArguments);
                     Expression newExpression = closedGenericType.AutoResolveConstructorExpression();
 
-                    var dependency = new Dependency(type, newExpression, openGenericDependency.Binding.Lifetime);
+                    var dependency = new Dependency(new[] { type }, newExpression, openGenericDependency.Binding.Lifetime);
 
-                    return new[] { dependency };
+                    return dependency;
                 }
             }
 

@@ -7,13 +7,13 @@ namespace Singularity.Expressions
 {
     internal sealed class DecoratorExpressionVisitor : ExpressionVisitor
     {
-        private readonly Dependency[] _dependencies;
+        private readonly InstanceFactory[] _factories;
         private readonly Type _instanceType;
         public Expression? PreviousDecorator;
 
-        public DecoratorExpressionVisitor(Dependency[] dependencies, Type instanceType)
+        public DecoratorExpressionVisitor(InstanceFactory[] factories, Type instanceType)
         {
-            _dependencies = dependencies;
+            _factories = factories;
             _instanceType = instanceType;
         }
 
@@ -25,8 +25,8 @@ namespace Singularity.Expressions
             }
             else
             {
-                Dependency decoratorDependency = _dependencies.First(x => x.Registration.DependencyType == node.Type);
-                return decoratorDependency.Default.Expression!;
+                InstanceFactory factory = _factories.First(x => x.DependencyType == node.Type);
+                return factory.Expression!;
             }
         }
     }

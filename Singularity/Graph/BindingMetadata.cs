@@ -31,9 +31,9 @@ namespace Singularity.Graph
         /// <summary>
         /// The dependency type
         /// </summary>
-        public Type DependencyType { get; }
+        public Type[] DependencyType { get; }
 
-        internal BindingMetadata(Type dependencyType, string creatorFilePath, int creatorLineNumber, IModule? module)
+        internal BindingMetadata(Type[] dependencyType, string creatorFilePath, int creatorLineNumber, IModule? module)
         {
             DependencyType = dependencyType;
             ModuleType = module?.GetType();
@@ -41,7 +41,7 @@ namespace Singularity.Graph
             CreatorLineNumber = creatorLineNumber;
         }
 
-        internal BindingMetadata(Type type)
+        internal BindingMetadata(Type[] type)
         {
             Generated = true;
             DependencyType = type;

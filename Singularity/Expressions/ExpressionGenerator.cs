@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.Linq;
 using System.Linq.Expressions;
 using System.Reflection;
@@ -13,13 +14,13 @@ namespace Singularity.Expressions
         public static ParameterExpression ScopeParameter = Expression.Parameter(typeof(Scoped));
         internal static readonly MethodInfo CreateScopedExpressionMethod = typeof(ExpressionGenerator).GetRuntimeMethods().FirstOrDefault(x => x.Name == nameof(CreateScopedExpression));
 
-        public Expression GenerateDependencyExpression(ResolvedDependency dependency, Scoped containerScope, SingularitySettings settings)
+        public Expression GenerateBaseExpression(ResolvedDependency dependency, InstanceFactory[] children, Scoped containerScope, SingularitySettings settings)
         {
             Expression expression = dependency.Binding.Expression! is LambdaExpression lambdaExpression ? lambdaExpression.Body : dependency.Binding.Expression;
-            var parameterExpressionVisitor = new ParameterExpressionVisitor(dependency.Children!);
+            var parameterExpressionVisitor = new ParameterExpressionVisitor(children!);
             expression = parameterExpressionVisitor.Visit(expression);
 
-            if (dependency.Binding.NeedsDispose == Dispose.Always || settings.AutoDispose && dependency.Binding.NeedsDispose != Dispose.Never && typeof(IDisposable).IsAssignableFrom(expression.Type))
+            if (dependency.Binding.NeedsDispose == DisposeBehavior.Always || settings.AutoDispose && dependency.Binding.NeedsDispose != DisposeBehavior.Never && typeof(IDisposable).IsAssignableFrom(expression.Type))
             {
                 MethodInfo method = Scoped.AddDisposableMethod.MakeGenericMethod(expression.Type);
                 expression = Expression.Call(ScopeParameter, method, expression);
@@ -31,68 +32,62 @@ namespace Singularity.Expressions
                 expression = Expression.Call(ScopeParameter, method, expression, Expression.Constant(dependency.Binding));
             }
 
-            if (dependency.Registration.Decorators.Count > 0)
+            return ApplyCaching(dependency.Binding.Lifetime, containerScope, expression);
+        }
+
+        public Expression ApplyDecorators(Type dependencyType, ResolvedDependency dependency, InstanceFactory[] children, ReadOnlyCollection<Expression> decorators, Scoped containerScope)
+        {
+            Expression expression = dependency.BaseExpression;
+            if (decorators.Count > 0)
             {
                 var body = new List<Expression>();
-                ParameterExpression instanceParameter = Expression.Variable(dependency.Registration.DependencyType, $"{expression.Type} instance");
-                body.Add(Expression.Assign(instanceParameter, Expression.Convert(expression, dependency.Registration.DependencyType)));
+                ParameterExpression instanceParameter = Expression.Variable(dependencyType, $"{dependencyType} instance");
+                body.Add(Expression.Assign(instanceParameter, Expression.Convert(expression, dependencyType)));
 
-                if (dependency.Registration.Decorators.Count > 0)
+                var decoratorExpressionVisitor = new DecoratorExpressionVisitor(children!, instanceParameter.Type);
+                decoratorExpressionVisitor.PreviousDecorator = instanceParameter;
+                foreach (Expression decorator in decorators)
                 {
-                    var decoratorExpressionVisitor = new DecoratorExpressionVisitor(dependency.Children!, instanceParameter.Type);
-                    decoratorExpressionVisitor.PreviousDecorator = instanceParameter;
-                    foreach (Expression decorator in dependency.Registration.Decorators)
-                    {
-                        Expression decoratorExpression = decorator;
+                    Expression decoratorExpression = decorator;
 
-                        decoratorExpression = decoratorExpressionVisitor.Visit(decoratorExpression);
+                    decoratorExpression = decoratorExpressionVisitor.Visit(decoratorExpression);
 
-                        decoratorExpressionVisitor.PreviousDecorator = decoratorExpression;
-                    }
-                    body.Add(decoratorExpressionVisitor.PreviousDecorator);
+                    decoratorExpressionVisitor.PreviousDecorator = decoratorExpression;
                 }
+
+                body.Add(decoratorExpressionVisitor.PreviousDecorator);
 
                 if (body.Last().Type == typeof(void)) body.Add(instanceParameter);
                 expression = body.Count == 1 ? expression : Expression.Block(new[] { instanceParameter }, body);
+                expression = ApplyCaching(dependency.Binding.Lifetime, containerScope, expression);
             }
 
-            switch (dependency.Binding.Lifetime)
+            return expression;
+        }
+
+        private static Expression ApplyCaching(Lifetime lifetime, Scoped containerScope, Expression expression)
+        {
+            switch (lifetime)
             {
                 case Lifetime.Transient:
                     return expression;
                 case Lifetime.PerContainer:
                     object singletonInstance = ((Func<Scoped, object>)Expression.Lambda(expression, ScopeParameter).CompileFast())(containerScope);
-                    dependency.InstanceFactory = scope => singletonInstance;
-                    return Expression.Constant(singletonInstance, dependency.Registration.DependencyType);
+                    return Expression.Constant(singletonInstance, expression.Type);
                 case Lifetime.PerScope:
-                    //var scopedFactory = (Func<Scoped, object>)Expression.Lambda(expression, ScopeParameter).CompileFast();
-                    //var factory = new InstanceFactory(dependency.Registration.DependencyType, scopedFactory);
                     MethodInfo method = CreateScopedExpressionMethod.MakeGenericMethod(expression.Type);
-                    expression = (Expression)method.Invoke(null, new object[] { dependency, expression });
-                    //expression = Expression.Call(ScopeParameter, method, Expression.Lambda(expression, ScopeParameter), Expression.Constant(dependency.Registration.DependencyType));
+                    expression = (Expression)method.Invoke(null, new object[] { expression });
                     return expression;
                 default:
                     throw new ArgumentOutOfRangeException();
             }
         }
 
-        public static Expression CreateScopedExpression<T>(ResolvedDependency dependency, Expression expression)
+        public static Expression CreateScopedExpression<T>(Expression expression)
         {
             var factory = (Func<Scoped, T>)Expression.Lambda(expression, ScopeParameter).CompileFast();
-            MethodInfo method = Scoped.GetOrAddScopedInstanceMethod.MakeGenericMethod(dependency.Registration.DependencyType);
-            return Expression.Call(ScopeParameter, method, Expression.Constant(factory), Expression.Constant(dependency.Registration.DependencyType));
-        }
-    }
-
-    public readonly struct InstanceFactory
-    {
-        public Type Type { get; }
-        public Func<Scoped, object> Factory { get; }
-
-        public InstanceFactory(Type type, Func<Scoped, object> factory)
-        {
-            Type = type;
-            Factory = factory;
+            MethodInfo method = Scoped.GetOrAddScopedInstanceMethod.MakeGenericMethod(expression.Type);
+            return Expression.Call(ScopeParameter, method, Expression.Constant(factory), Expression.Constant(expression.Type));
         }
     }
 }

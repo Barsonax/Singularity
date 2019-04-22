@@ -6,25 +6,26 @@ namespace Singularity.Graph.Resolvers
 {
     internal class FactoryDependencyResolver : IDependencyResolver
     {
-        public IEnumerable<Dependency>? Resolve(IResolverPipeline graph, Type type)
+        public Dependency? Resolve(IResolverPipeline graph, Type type)
         {
             if (type.IsGenericType && type.GetGenericTypeDefinition() == typeof(Func<>))
             {
-                Dependency dependency = graph.GetDependency(type.GenericTypeArguments[0]);
+                Type dependencyType = type.GenericTypeArguments[0];
+                Dependency dependency = graph.GetDependency(dependencyType);
 
                 var expressions = new List<Expression>();
                 foreach (ResolvedDependency resolvedDependency in dependency.ResolvedDependencies.Array)
                 {
-                    graph.ResolveDependency(resolvedDependency);
-                    expressions.Add(Expression.Lambda(resolvedDependency.Expression));
+                    InstanceFactory factory = graph.ResolveDependency(dependencyType, resolvedDependency);
+                    expressions.Add(Expression.Lambda(factory.Expression));
                 }
 
-                var factoryDependency = new Dependency(type, expressions, Lifetime.Transient);
+                var factoryDependency = new Dependency(new []{ type }, expressions, Lifetime.Transient);
                 for (var i = 0; i < factoryDependency.ResolvedDependencies.Array.Length; i++)
                 {
-                    factoryDependency.ResolvedDependencies.Array[i].Expression = expressions[i];
+                    factoryDependency.ResolvedDependencies.Array[i].BaseExpression = expressions[i];
                 }
-                return new[] { factoryDependency };
+                return factoryDependency;
             }
 
             return null;

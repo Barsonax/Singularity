@@ -1,9 +1,13 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
+using System.Drawing;
 using System.Linq;
 using System.Linq.Expressions;
 using Singularity.Bindings;
 using Singularity.Collections;
+using Singularity.Expressions;
+using Singularity.FastExpressionCompiler;
 
 namespace Singularity.Graph
 {
@@ -19,26 +23,25 @@ namespace Singularity.Graph
             ResolvedDependencies = new ArrayList<ResolvedDependency>();
             foreach (Binding binding in registration.Bindings)
             {
-                ResolvedDependencies.Add(new ResolvedDependency(registration, binding));
+                ResolvedDependencies.Add(new ResolvedDependency(registration.DependencyTypes, binding));
             }
 
             Default = ResolvedDependencies.Array.LastOrDefault();
         }
 
-        public Dependency(Type type, Lifetime lifetime) :
-            this(new ReadonlyRegistration(type, new Binding(new BindingMetadata(type), type.AutoResolveConstructorExpression(), lifetime, null, Dispose.Default), new Expression[0]))
+        //public Dependency(Type[] type, Lifetime lifetime) :
+        //    this(new ReadonlyRegistration(type, new Binding(new BindingMetadata(type), type.AutoResolveConstructorExpression(), lifetime, null, DisposeBehavior.Default)))
+        //{
+
+        //}
+
+        public Dependency(Type[] type, Expression expression, Lifetime lifetime) : this(new ReadonlyRegistration(type, new Binding(new BindingMetadata(type), expression, lifetime, null, DisposeBehavior.Default)))
         {
 
         }
 
-        public Dependency(Type type, Expression expression, Lifetime lifetime) :
-            this(new ReadonlyRegistration(type, new Binding(new BindingMetadata(type), expression, lifetime, null, Dispose.Default), new Expression[0]))
-        {
-
-        }
-
-        public Dependency(Type type, IEnumerable<Expression> expressions, Lifetime lifetime) :
-            this(new ReadonlyRegistration(type, expressions.Select(expression => new Binding(new BindingMetadata(type), expression, lifetime, null, Dispose.Default)), new Expression[0]))
+        public Dependency(Type[] type, IEnumerable<Expression> expressions, Lifetime lifetime) :
+            this(new ReadonlyRegistration(type, expressions.Select(expression => new Binding(new BindingMetadata(type), expression, lifetime, null, DisposeBehavior.Default))))
         {
 
         }
@@ -46,17 +49,39 @@ namespace Singularity.Graph
 
     internal sealed class ResolvedDependency
     {
-        public ReadonlyRegistration Registration { get; }
+        public Type[] DependencyTypes { get; }
         public Binding Binding { get; }
-        public Dependency[]? Children { get; set; }
-        public Expression? Expression { get; set; }
-        public Func<Scoped, object>? InstanceFactory { get; set; }
+        public Expression? BaseExpression { get; set; }
         public Exception? ResolveError { get; set; }
+        public ArrayList<InstanceFactory> Factories { get; } = new ArrayList<InstanceFactory>();
 
-        public ResolvedDependency(ReadonlyRegistration registration, Binding binding)
+        public bool TryGetInstanceFactory(Type type, out InstanceFactory factory)
         {
-            Registration = registration;
+            factory = Factories.Array.FirstOrDefault(x => x.DependencyType == type);
+            return factory != null;
+        }
+
+
+        public ResolvedDependency(Type[] dependencyTypes, Binding binding)
+        {
+            DependencyTypes = dependencyTypes;
             Binding = binding;
+        }
+    }
+
+    internal sealed class InstanceFactory
+    {
+        public Type DependencyType { get; }
+        public Expression Expression { get; }
+
+        private Func<Scoped, object>? _factory;
+        public Func<Scoped, object> Factory => _factory ??= (Func<Scoped, object>)Expression.Lambda(Expression, ExpressionGenerator.ScopeParameter).CompileFast();
+
+        public InstanceFactory(Type dependencyType, Expression expression, Func<Scoped, object>? factory = null)
+        {
+            DependencyType = dependencyType;
+            Expression = expression;
+            _factory = factory;
         }
     }
 }

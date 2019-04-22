@@ -1,18 +1,18 @@
 ﻿using System;
-using System.Linq.Expressions;
-using Singularity.Exceptions;
 
 namespace Singularity.Bindings
 {
     /// <summary>
     /// Needed for fluent API. <see cref="StronglyTypedBinding{TDependency}"/> for more info.
     /// </summary>
-    public sealed class StronglyTypedConfiguredBinding<TDependency, TInstance> : WeaklyTypedConfiguredBinding
+    public sealed class StronglyTypedConfiguredBinding<TDependency, TInstance>
         where TInstance : class
     {
-        internal StronglyTypedConfiguredBinding(WeaklyTypedBinding weaklyTypedBinding, Expression expression) : base(weaklyTypedBinding, expression)
-        {
+        private WeaklyTypedConfiguredBinding _weaklyTypedConfiguredBinding;
 
+        internal StronglyTypedConfiguredBinding(WeaklyTypedConfiguredBinding weaklyTypedConfiguredBinding)
+        {
+            _weaklyTypedConfiguredBinding = weaklyTypedConfiguredBinding;
         }
 
         /// <summary>
@@ -22,7 +22,19 @@ namespace Singularity.Bindings
         /// <returns></returns>
         public StronglyTypedConfiguredBinding<TDependency, TInstance> WithFinalizer(Action<TInstance> onDeathAction)
         {
-            Finalizer = obj => onDeathAction((TInstance)obj);
+            _weaklyTypedConfiguredBinding.Finalizer = obj => onDeathAction((TInstance)obj);
+            return this;
+        }
+
+        public StronglyTypedConfiguredBinding<TDependency, TInstance> With(DisposeBehavior disposeBehavior)
+        {
+            _weaklyTypedConfiguredBinding.DisposeBehavior = disposeBehavior;
+            return this;
+        }
+
+        public StronglyTypedConfiguredBinding<TDependency, TInstance> With(Lifetime lifetime)
+        {
+            _weaklyTypedConfiguredBinding.Lifetime = lifetime;
             return this;
         }
     }

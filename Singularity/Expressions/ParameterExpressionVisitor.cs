@@ -6,17 +6,18 @@ namespace Singularity.Expressions
 {
     internal sealed class ParameterExpressionVisitor : ExpressionVisitor
     {
-        private readonly Dependency[] _dependencies;
-        public ParameterExpressionVisitor(Dependency[] dependencies)
+        private readonly InstanceFactory[] _factories;
+        public ParameterExpressionVisitor(InstanceFactory[] factories)
         {
-            _dependencies = dependencies;
+            _factories = factories;
         }
 
         protected override Expression VisitParameter(ParameterExpression node)
         {
-            var nestedDependency = _dependencies.First(x => x.Registration.DependencyType == node.Type);
+            if (node.Type == typeof(Scoped)) return ExpressionGenerator.ScopeParameter;
+            InstanceFactory factory = _factories.First(x => x.DependencyType == node.Type);
 
-            return nestedDependency.Default.Expression!;
+            return factory.Expression!;
         }
     }
 }

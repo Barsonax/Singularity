@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Singularity.Exceptions;
+using System;
 using System.Linq.Expressions;
 
 namespace Singularity.Bindings
@@ -6,13 +7,33 @@ namespace Singularity.Bindings
     /// <summary>
     /// Needed for fluent API. <see cref="WeaklyTypedBinding"/> for more info.
     /// </summary>
-    public class WeaklyTypedConfiguredBinding
+    public sealed class WeaklyTypedConfiguredBinding
     {
         internal Expression Expression { get; }
-        public Lifetime Lifetime { get; internal set; }
+
+        private Lifetime lifetime;
+        public Lifetime Lifetime
+        {
+            get => lifetime;
+            internal set
+            {
+                if (!EnumMetadata<Lifetime>.IsValidValue(value)) throw new InvalidEnumValue<Lifetime>(value);
+                lifetime = value;
+            }
+        }
+
+        private DisposeBehavior disposeBehavior;
+        public DisposeBehavior DisposeBehavior
+        {
+            get => disposeBehavior;
+            internal set
+            {
+                if (!EnumMetadata<DisposeBehavior>.IsValidValue(value)) throw new InvalidEnumValue<DisposeBehavior>(value);
+                disposeBehavior = value;
+            }
+        }
         internal Action<object>? Finalizer { get; set; }
         private protected readonly WeaklyTypedBinding WeaklyTypedBinding;
-        public Dispose NeedsDispose { get; internal set; }
 
         internal WeaklyTypedConfiguredBinding(WeaklyTypedBinding weaklyTypedBinding, Expression expression)
         {
@@ -28,6 +49,18 @@ namespace Singularity.Bindings
         public WeaklyTypedConfiguredBinding WithFinalizer(Action<object> onDeathAction)
         {
             Finalizer = onDeathAction;
+            return this;
+        }
+
+        public WeaklyTypedConfiguredBinding With(DisposeBehavior disposeBehavior)
+        {
+            DisposeBehavior = disposeBehavior;
+            return this;
+        }
+
+        public WeaklyTypedConfiguredBinding With(Lifetime lifetime)
+        {
+            Lifetime = lifetime;
             return this;
         }
     }
