@@ -8,6 +8,19 @@ namespace Singularity
 {
 	internal static class ExpressionExtensions
 	{
+        public static Type GetReturnType(this Expression expression)
+        {
+            switch (expression)
+            {
+                case BlockExpression blockExpression:
+                    return blockExpression.Result.GetReturnType();
+                case LambdaExpression lambdaExpression:
+                    return lambdaExpression.ReturnType;
+                default:
+                    return expression.Type;
+            }
+        }
+
         public static IEnumerable<ParameterExpression> GetParameterExpressions(this IEnumerable<Expression> expressions)
         {
             return expressions.SelectMany(x => x.GetParameterExpressions());
@@ -35,6 +48,8 @@ namespace Singularity
                     return blockExpression.Variables.Where(x => x.NodeType != ExpressionType.RuntimeVariables).ToArray();
 				case MethodCallExpression methodCallExpression:
 					return methodCallExpression.Arguments.OfType<ParameterExpression>().ToArray();
+                case InvocationExpression invocationExpression:
+                    return invocationExpression.Arguments.OfType<ParameterExpression>().ToArray();
                 default:
 					throw new NotSupportedException($"The expression of type {expression.GetType()} is not supported");
 			}

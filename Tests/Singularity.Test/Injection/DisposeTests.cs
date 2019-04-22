@@ -1,5 +1,6 @@
 ﻿using System;
 using Singularity.Bindings;
+using Singularity.Test.ThreadSafety;
 using Singularity.TestClasses.TestClasses;
 using Xunit;
 
@@ -91,7 +92,6 @@ namespace Singularity.Test.Injection
             var config = new BindingConfig();
             config.Register<IDisposable, Disposable>().With(DisposeBehavior.Always);
             config.Decorate<IDisposable, DisposableDecorator>();
-
             var container = new Container(config);
 
             //ACT

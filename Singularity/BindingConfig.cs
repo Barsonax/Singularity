@@ -96,7 +96,7 @@ namespace Singularity
         public WeaklyTypedConfiguredBinding Register(Type dependencyType, Type instanceType, [CallerFilePath]string callerFilePath = "", [CallerLineNumber] int callerLineNumber = -1)
 #pragma warning restore 1573
         {
-            CheckType(dependencyType, instanceType);
+            dependencyType.CheckInstanceTypeIsAssignable(instanceType);
             WeaklyTypedBinding binding = Register(dependencyType, callerFilePath, callerLineNumber);
             Expression expression = AutoResolveExpression(instanceType);
             return binding.Inject(expression);
@@ -112,33 +112,10 @@ namespace Singularity
         public WeaklyTypedConfiguredBinding Register(Type[] dependencyTypes, Type instanceType, [CallerFilePath]string callerFilePath = "", [CallerLineNumber] int callerLineNumber = -1)
 #pragma warning restore 1573
         {
-            CheckTypes(dependencyTypes, instanceType);
+            dependencyTypes.CheckInstanceTypeIsAssignable(instanceType);
             WeaklyTypedBinding binding = Register(dependencyTypes, callerFilePath, callerLineNumber);
             Expression expression = AutoResolveExpression(instanceType);
             return binding.Inject(expression);
-        }
-
-        private void CheckTypes(Type[] dependencyTypes, Type instanceType)
-        {
-            foreach (Type dependencyType in dependencyTypes)
-            {
-                CheckType(dependencyType, instanceType);
-            }
-        }
-
-        private void CheckType(Type dependencyType, Type instanceType)
-        {
-            if (dependencyType.ContainsGenericParameters)
-            {
-                if (!instanceType.ContainsGenericParameters || instanceType.GenericTypeArguments.Length != dependencyType.GenericTypeArguments.Length)
-                {
-                    throw new TypeNotAssignableException($"Open generic type {dependencyType} is not implemented by {instanceType}");
-                }
-            }
-            else
-            {
-                if (!dependencyType.IsAssignableFrom(instanceType)) throw new TypeNotAssignableException($"{dependencyType} is not implemented by {instanceType}");
-            }
         }
 
         private Expression AutoResolveExpression(Type instanceType)
