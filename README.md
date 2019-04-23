@@ -3,7 +3,7 @@
 
 Singularity is a ioc container that focuses on the following things
 - Performance, Singularity is one of the fastest if not the fastest dependency injection container out there. Don't believe me? Check out my [benchmarks](#Benchmarks) or if you want a second opinion check out the benchmarks that Daniel Palme made [here](https://github.com/danielpalme/IocPerformance).
-- `Dispose` wont be automatically called by default, instead you can configure Singularity to do so through the `With(DisposeBehavior)` method or tell singularity to automatically call `Dispose` by simply changing the settings. Is calling Dispose not enough and you want to invoke your own custom logic? The `WithFinalizer(Action<TInstance>)` method might be of help here.
+- Not invasive. For instance `Dispose` wont be automatically called by default, instead you can configure Singularity to do so through the `With(DisposeBehavior)` method or tell singularity to automatically call `Dispose` by simply changing the settings. Is calling Dispose not enough and you want to invoke your own custom logic? The `WithFinalizer(Action<TInstance>)` method might be of help here.
 - Clear error messages and fail fast to point you in the right direction as fast as possible.
 
 ## Getting started
