@@ -51,6 +51,30 @@ namespace Singularity
             if (constructors.Length > 1) throw new CannotAutoResolveConstructorException($"Found {constructors.Length} suitable constructors for type {type}. Please specify the constructor explicitly.");
             return constructors.FirstOrDefault();
         }
+
+
+        public static void CheckInstanceTypeIsAssignable(this Type[] dependencyTypes, Type instanceType)
+        {
+            foreach (Type dependencyType in dependencyTypes)
+            {
+                CheckInstanceTypeIsAssignable(dependencyType, instanceType);
+            }
+        }
+
+        public static void CheckInstanceTypeIsAssignable(this Type dependencyType, Type instanceType)
+        {
+            if (dependencyType.ContainsGenericParameters)
+            {
+                if (!instanceType.ContainsGenericParameters || instanceType.GenericTypeArguments.Length != dependencyType.GenericTypeArguments.Length)
+                {
+                    throw new TypeNotAssignableException($"Open generic type {dependencyType} is not implemented by {instanceType}");
+                }
+            }
+            else
+            {
+                if (!dependencyType.IsAssignableFrom(instanceType)) throw new TypeNotAssignableException($"{dependencyType} is not implemented by {instanceType}");
+            }
+        }
     }
 
     /// <summary>

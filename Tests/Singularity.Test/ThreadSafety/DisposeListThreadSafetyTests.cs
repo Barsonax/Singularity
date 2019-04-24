@@ -1,6 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Threading;
+﻿using System.Collections.Generic;
+using Singularity.TestClasses.TestClasses;
 using Xunit;
 
 namespace Singularity.Test.ThreadSafety
@@ -11,13 +10,17 @@ namespace Singularity.Test.ThreadSafety
         public void DisposeList_Add()
         {
             var list = new ActionList<TrackableDisposable>(obj => obj.Dispose());
-            var trackers = new List<DisposeTracker>();
+            var trackers = new List<Tracker>();
 
             var tester = new ThreadSafetyTester<TrackableDisposable>(() =>
             {
-                var tracker = new DisposeTracker();
+                var tracker = new Tracker();
                 var cases = new List<TrackableDisposable>();
-                trackers.Add(tracker);
+                lock (trackers)
+                {
+                    trackers.Add(tracker);
+                }
+
                 for (var i = 0; i < 100; i++)
                 {
                     cases.Add(new TrackableDisposable(tracker));
@@ -32,32 +35,10 @@ namespace Singularity.Test.ThreadSafety
             });
 
             list.Invoke();
-            foreach (DisposeTracker tracker in trackers)
+            foreach (Tracker tracker in trackers)
             {
                 Assert.Equal(100, tracker.DisposeCount);
             }
-        }
-
-        public class TrackableDisposable
-        {
-            private readonly DisposeTracker _tracker;
-            public bool IsDisposed { get; private set; }
-            public TrackableDisposable(DisposeTracker tracker)
-            {
-                _tracker = tracker;
-            }
-
-            public void Dispose()
-            {
-                if (IsDisposed) throw new InvalidOperationException("Is already disposed!");
-                IsDisposed = true;
-                Interlocked.Increment(ref _tracker.DisposeCount);
-            }
-        }
-
-        public class DisposeTracker
-        {
-            public int DisposeCount;
         }
     }
 }

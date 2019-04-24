@@ -31,20 +31,20 @@ namespace Singularity.Graph
         /// <summary>
         /// The dependency type
         /// </summary>
-        public Type[] DependencyType { get; }
+        public Type[] DependencyTypes { get; }
 
-        internal BindingMetadata(Type[] dependencyType, string creatorFilePath, int creatorLineNumber, IModule? module)
+        internal BindingMetadata(Type[] dependencyTypes, string creatorFilePath, int creatorLineNumber, IModule? module)
         {
-            DependencyType = dependencyType;
+            DependencyTypes = dependencyTypes;
             ModuleType = module?.GetType();
             CreatorFilePath = creatorFilePath;
             CreatorLineNumber = creatorLineNumber;
         }
 
-        internal BindingMetadata(Type[] type)
+        internal BindingMetadata(Type[] types)
         {
             Generated = true;
-            DependencyType = type;
+            DependencyTypes = types;
             CreatorFilePath = string.Empty;
             CreatorLineNumber = -1;
         }
@@ -53,7 +53,7 @@ namespace Singularity.Graph
         {
             if (Generated)
             {
-                return $"dynamically generated binding {DependencyType}";
+                return $"dynamically generated binding {DependencyTypes}";
             }
             return ModuleType == null ?
                 $"registered binding in {CreatorFilePath} at line {CreatorLineNumber}" :

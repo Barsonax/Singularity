@@ -37,11 +37,11 @@ namespace Singularity.Bindings
 
         internal WeaklyTypedBinding(Type[] dependencyTypes, string callerFilePath, int callerLineNumber, IModule? module)
         {
-            foreach (var dependencyType in dependencyTypes)
+            foreach (Type dependencyType in dependencyTypes)
             {
                 if (dependencyType.IsGenericType && dependencyType.GetGenericTypeDefinition() == typeof(IEnumerable<>))
                 {
-                    var enumerableType = dependencyType.GenericTypeArguments[0];
+                    Type enumerableType = dependencyType.GenericTypeArguments[0];
                     throw new EnumerableRegistrationException($"don't register {enumerableType} as IEnumerable directly. Instead register them as you would normally.");
                 }
             }
@@ -56,6 +56,7 @@ namespace Singularity.Bindings
         /// <returns></returns>
         public WeaklyTypedConfiguredBinding Inject(Expression expression)
         {
+            BindingMetadata.DependencyTypes.CheckInstanceTypeIsAssignable(expression.GetReturnType());
             WeaklyTypedConfiguredBinding = new WeaklyTypedConfiguredBinding(this, expression);
             return WeaklyTypedConfiguredBinding;
         }

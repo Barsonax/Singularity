@@ -31,8 +31,12 @@ namespace Singularity.Microsoft.DependencyInjection
         {
             if (registration.ImplementationFactory != null)
             {
+                ParameterExpression serviceProviderParameter = Expression.Parameter(typeof(IServiceProvider));
                 config.Register(registration.ServiceType)
-                    .Inject(Expression.Invoke(Expression.Constant(registration.ImplementationFactory), Expression.Parameter(typeof(IServiceProvider))))
+                    .Inject(Expression.Lambda(
+                            Expression.Convert(
+                                    Expression.Invoke(
+                                        Expression.Constant(registration.ImplementationFactory), serviceProviderParameter), registration.ServiceType), serviceProviderParameter))
                     .With(ConvertLifetime(registration.Lifetime));
             }
             else if (registration.ImplementationInstance != null)

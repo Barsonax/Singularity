@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-
-namespace Singularity.TestClasses.TestClasses
+﻿namespace Singularity.TestClasses.TestClasses
 {
     public class ReferenceInt
     {
@@ -17,9 +13,9 @@ namespace Singularity.TestClasses.TestClasses
             return Value.ToString();
         }
 
-        public static implicit operator ReferenceInt(int value)
+        public override int GetHashCode()
         {
-            return new ReferenceInt(value);
+            return Value;
         }
     }
 }

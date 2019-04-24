@@ -144,6 +144,24 @@ namespace Singularity.Test.Injection
         }
 
         [Fact]
+        public void MethodInject_Scoped_InjectsCorrectDependencies()
+        {
+            //ARRANGE
+            var config = new BindingConfig();
+            config.Register<ITestService10, TestService10>();
+
+            var container = new Container(config);
+            var instance = new MethodInjectionClass();
+
+            //ACT
+            Scoped scope = container.BeginScope();
+            scope.MethodInject(instance);
+
+            //ASSERT
+            Assert.IsType<TestService10>(instance.TestService10);
+        }
+
+        [Fact]
         public void MethodInjectAll_InjectsCorrectDependencies()
         {
             //ARRANGE

@@ -9,11 +9,6 @@
             Array = new T[0];
         }
 
-        public ArrayList(T obj)
-        {
-            Array = new[] { obj };
-        }
-
         public void Add(T obj)
         {
             var newArray = new T[Array.Length + 1];

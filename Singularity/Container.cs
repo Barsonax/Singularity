@@ -114,7 +114,7 @@ namespace Singularity
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         internal object GetInstance(Type type, Scoped scope)
         {
-            Func<Scoped, object> func = _getInstanceCache.Search(type);
+            Func<Scoped, object> func = _getInstanceCache.Get(type);
             if (func == null)
             {
                 func = _dependencyGraph.GetResolvedFactory(type)!;
@@ -135,7 +135,7 @@ namespace Singularity
         internal void MethodInject(object instance, Scoped scope)
         {
             Type type = instance.GetType();
-            Action<Scoped, object> action = _injectionCache.Search(type);
+            Action<Scoped, object> action = _injectionCache.Get(type);
             if (action == null)
             {
                 action = GenerateMethodInjector(type);

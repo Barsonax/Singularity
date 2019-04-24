@@ -10,13 +10,12 @@ using Singularity.Exceptions;
 
 namespace Singularity.Collections
 {
-    internal class RegistrationStore : IReadOnlyCollection<Registration>
+    internal class RegistrationStore
     {
         public bool Locked => _readonlyBindings != null;
         private ReadOnlyBindingConfig? _readonlyBindings;
         public Dictionary<Type, Registration> Registrations { get; } = new Dictionary<Type, Registration>();
         public Dictionary<Type, List<WeaklyTypedDecoratorBinding>> Decorators { get; } = new Dictionary<Type, List<WeaklyTypedDecoratorBinding>>();
-        public int Count => Registrations.Count;
         internal IModule? CurrentModule;
 
         public WeaklyTypedDecoratorBinding CreateDecorator(Type dependencyType, Type decoratorType)
@@ -77,16 +76,6 @@ namespace Singularity.Collections
                 _readonlyBindings = new ReadOnlyBindingConfig(readonlyRegistrations, new ReadOnlyDictionary<Type, ReadOnlyCollection<Expression>>(readonlyDecorators));
             }
             return _readonlyBindings!;
-        }
-
-        public IEnumerator<Registration> GetEnumerator()
-        {
-            return Registrations.Values.GetEnumerator();
-        }
-
-        IEnumerator IEnumerable.GetEnumerator()
-        {
-            return GetEnumerator();
         }
 
         private Registration GetOrCreateRegistration(Type[] types)

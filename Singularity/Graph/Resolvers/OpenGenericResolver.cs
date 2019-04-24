@@ -16,7 +16,7 @@ namespace Singularity.Graph.Resolvers
                 if (genericDependency != null)
                 {
                     ResolvedDependency openGenericDependency = genericDependency.Default;
-                    Type openGenericType = ((OpenGenericTypeExpression)openGenericDependency.Binding.Expression!).OpenGenericType;
+                    Type openGenericType = ((OpenGenericTypeExpression)openGenericDependency.Binding.Expression!).Type;
                     Type closedGenericType = openGenericType.MakeGenericType(type.GenericTypeArguments);
                     Expression newExpression = closedGenericType.AutoResolveConstructorExpression();
 
