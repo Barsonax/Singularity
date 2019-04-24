@@ -20,7 +20,7 @@ namespace Singularity.Collections
         {
             if (IsEmpty)
             {
-                return new ImmutableAvlNode<TKey, TValue>(in keyValue, this, this);
+                return new ImmutableAvlNode<TKey, TValue>(in keyValue, ImmutableList<KeyValue<TKey, TValue>>.Utils.Empty, this, this);
             }
 
             if (keyValue.HashCode > KeyValue.HashCode)
@@ -52,7 +52,7 @@ namespace Singularity.Collections
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        private ImmutableAvlNode(in KeyValue<TKey, TValue> keyValue, ImmutableAvlNode<TKey, TValue> left, ImmutableAvlNode<TKey, TValue> right)
+        private ImmutableAvlNode(in KeyValue<TKey, TValue> keyValue, in ImmutableList<KeyValue<TKey, TValue>> duplicates, ImmutableAvlNode<TKey, TValue> left, ImmutableAvlNode<TKey, TValue> right)
         {
             int balance = left.Height - right.Height;
 
@@ -65,7 +65,8 @@ namespace Singularity.Collections
 
                 // Rotate left
                 KeyValue = right.KeyValue;
-                Left = new ImmutableAvlNode<TKey, TValue>(in keyValue, left, right.Left!);
+                Duplicates = right.Duplicates;
+                Left = new ImmutableAvlNode<TKey, TValue>(in keyValue, in duplicates, left, right.Left!);
                 Right = right.Right;
             }
             else if (balance == 2)
@@ -77,66 +78,39 @@ namespace Singularity.Collections
 
                 // Rotate right
                 KeyValue = left.KeyValue;
-                Right = new ImmutableAvlNode<TKey, TValue>(in keyValue, left.Right!, right);
+                Duplicates = left.Duplicates;
+                Right = new ImmutableAvlNode<TKey, TValue>(in keyValue, in duplicates, left.Right!, right);
                 Left = left.Left;
             }
             else
             {
                 KeyValue = keyValue;
+                Duplicates = duplicates;
                 Left = left;
                 Right = right;
             }
 
             Height = 1 + Math.Max(Left!.Height, Right!.Height);
-
-            Duplicates = ImmutableList<KeyValue<TKey, TValue>>.Utils.Empty;
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         private static ImmutableAvlNode<TKey, TValue> AddToLeftBranch(ImmutableAvlNode<TKey, TValue> tree, in KeyValue<TKey, TValue> keyValue)
         {
-            return new ImmutableAvlNode<TKey, TValue>(in tree.KeyValue, tree.Left!.Add(in keyValue), tree.Right!);
+            return new ImmutableAvlNode<TKey, TValue>(in tree.KeyValue, in tree.Duplicates, tree.Left!.Add(in keyValue), tree.Right!);
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         private static ImmutableAvlNode<TKey, TValue> AddToRightBranch(ImmutableAvlNode<TKey, TValue> tree, in KeyValue<TKey, TValue> keyValue)
         {
-            return new ImmutableAvlNode<TKey, TValue>(in tree.KeyValue, tree.Left!, tree.Right!.Add(in keyValue));
+            return new ImmutableAvlNode<TKey, TValue>(in tree.KeyValue, in tree.Duplicates, tree.Left!, tree.Right!.Add(in keyValue));
         }
-
-        //public IEnumerable<KeyValue<TKey, TValue>> InOrder()
-        //{
-        //    return InOrderNonRecursive(this);
-        //}
-
-        //private static IEnumerable<KeyValue<TKey, TValue>> InOrderNonRecursive(ImmutableAvlNode<TKey, TValue> avlNode)
-        //{
-        //    if (avlNode.IsEmpty) yield break;
-        //    var stack = new Stack<ImmutableAvlNode<TKey, TValue>>();
-        //    while (!avlNode.IsEmpty)
-        //    {
-        //        yield return avlNode.KeyValue;
-
-        //        for (int i = 0; i < avlNode.Duplicates.Items.Length; i++)
-        //        {
-        //            yield return avlNode.Duplicates.Items[i];
-        //        }
-
-        //        if (!avlNode.Left.IsEmpty)
-        //            stack.Push(avlNode.Left);
-        //        if (!avlNode.Right.IsEmpty)
-        //            stack.Push(avlNode.Right);
-        //        if (stack.Count == 0) yield break;
-        //        avlNode = stack.Pop();
-        //    }
-        //}
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         private static ImmutableAvlNode<TKey, TValue> RotateLeft(ImmutableAvlNode<TKey, TValue> left)
         {
             return new ImmutableAvlNode<TKey, TValue>(
-                in left.Right!.KeyValue,
-                new ImmutableAvlNode<TKey, TValue>(in left.KeyValue, left.Right.Left!, left.Left!),
+                in left.Right!.KeyValue, in left.Right!.Duplicates,
+                new ImmutableAvlNode<TKey, TValue>(in left.KeyValue, in left.Duplicates, left.Right.Left!, left.Left!),
                 left.Right.Right!);
         }
 
@@ -144,9 +118,9 @@ namespace Singularity.Collections
         private static ImmutableAvlNode<TKey, TValue> RotateRight(ImmutableAvlNode<TKey, TValue> right)
         {
             return new ImmutableAvlNode<TKey, TValue>(
-                in right.Left!.KeyValue,
+                in right.Left!.KeyValue, in right.Left!.Duplicates,
                 right.Left.Left!,
-                new ImmutableAvlNode<TKey, TValue>(in right.KeyValue, right.Left.Right!, right.Right!));
+                new ImmutableAvlNode<TKey, TValue>(in right.KeyValue, in right.Duplicates, right.Left.Right!, right.Right!));
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]

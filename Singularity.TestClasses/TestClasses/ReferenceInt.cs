@@ -21,5 +21,10 @@ namespace Singularity.TestClasses.TestClasses
         {
             return new ReferenceInt(value);
         }
+
+        public override int GetHashCode()
+        {
+            return Value;
+        }
     }
 }

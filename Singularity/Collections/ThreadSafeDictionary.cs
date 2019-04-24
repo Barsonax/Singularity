@@ -7,15 +7,15 @@ namespace Singularity.Collections
 {
     /// <summary>
     /// A thread safe and lock free dictionary.
-    /// Uses <see cref="ImmutableDictionary{TKey,TValue}"/> under the hood
+    /// Uses <see cref="ImmutableAvlDictionary{TKey,TValue}"/> under the hood
     /// </summary>
     /// <typeparam name="TKey"></typeparam>
     /// <typeparam name="TValue"></typeparam>
     internal class ThreadSafeDictionary<TKey, TValue> : IEnumerable<TValue>
         where TKey : class
     {
-        public int Count => _immutableDictionary.Count;
-        internal ImmutableDictionary<TKey, TValue> _immutableDictionary = ImmutableDictionary<TKey, TValue>.Empty;
+        public int Count => ImmutableAvlDictionary.Count;
+        internal ImmutableAvlDictionary<TKey, TValue> ImmutableAvlDictionary = ImmutableAvlDictionary<TKey, TValue>.Empty;
 
         /// <summary>
         /// Adds a key to the dictionary.
@@ -25,24 +25,24 @@ namespace Singularity.Collections
         /// <param name="value"></param>
         public void Add(TKey key, TValue value)
         {
-            ImmutableDictionary<TKey, TValue> initialValue, computedValue;
+            ImmutableAvlDictionary<TKey, TValue> initialValue, computedValue;
             do
             {
-                initialValue = _immutableDictionary;
-                computedValue = _immutableDictionary.Add(key, value);
+                initialValue = ImmutableAvlDictionary;
+                computedValue = ImmutableAvlDictionary.Add(key, value);
             }
-            while (initialValue != Interlocked.CompareExchange(ref _immutableDictionary, computedValue, initialValue));
+            while (initialValue != Interlocked.CompareExchange(ref ImmutableAvlDictionary, computedValue, initialValue));
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public TValue Search(TKey key)
+        public TValue Get(TKey key)
         {
-            return _immutableDictionary.Get(key);
+            return ImmutableAvlDictionary.Get(key);
         }
 
         public IEnumerator<TValue> GetEnumerator()
         {
-            return _immutableDictionary.GetEnumerator();
+            return ImmutableAvlDictionary.GetEnumerator();
         }
 
         IEnumerator IEnumerable.GetEnumerator()

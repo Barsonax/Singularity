@@ -12,8 +12,6 @@ namespace Singularity
         {
             switch (expression)
             {
-                case BlockExpression blockExpression:
-                    return blockExpression.Result.GetReturnType();
                 case LambdaExpression lambdaExpression:
                     return lambdaExpression.ReturnType;
                 default:
@@ -28,10 +26,7 @@ namespace Singularity
 
         public static ParameterExpression[] GetParameterExpressions(this Expression expression)
 		{
-            if (expression == null)
-            {
-                throw new ArgumentNullException(nameof(expression));
-            }
+            if (expression == null) throw new ArgumentNullException(nameof(expression));
 
             switch (expression)
 			{

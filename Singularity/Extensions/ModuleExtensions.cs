@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 
 namespace Singularity
 {
@@ -6,7 +7,8 @@ namespace Singularity
 	{
 		internal static BindingConfig ToBindings(this IEnumerable<IModule> modules)
 		{
-			var config = new BindingConfig();
+            if (modules == null) throw new ArgumentNullException(nameof(modules));
+            var config = new BindingConfig();
 			foreach (IModule module in modules)
 			{
 				config.CurrentModule = module;

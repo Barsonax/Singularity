@@ -1,26 +1,29 @@
-﻿using System.Collections;
+﻿using System;
+using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using System.Runtime.CompilerServices;
 
 namespace Singularity.Collections
 {
-    internal sealed class ImmutableDictionary<TKey, TValue> : IEnumerable<TValue>
+    internal sealed class ImmutableAvlDictionary<TKey, TValue> : IEnumerable<TValue>
         where TKey : class
     {
-        public static readonly ImmutableDictionary<TKey, TValue> Empty = new ImmutableDictionary<TKey, TValue>();
+        public static readonly ImmutableAvlDictionary<TKey, TValue> Empty = new ImmutableAvlDictionary<TKey, TValue>();
         public readonly int Count;
         public readonly ImmutableAvlNode<TKey, TValue>[] Buckets;
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public ImmutableDictionary<TKey, TValue> Add(TKey key, TValue value)
+        public ImmutableAvlDictionary<TKey, TValue> Add(TKey key, TValue value)
         {
-            return new ImmutableDictionary<TKey, TValue>(this, new KeyValue<TKey, TValue>(key, value));
+            //Adding keys in this exact order that hash to 484 356 868 996 228 612 seems to break the dictionary if they end up in the same bucket
+           return new ImmutableAvlDictionary<TKey, TValue>(this, new KeyValue<TKey, TValue>(key, value));
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         internal TValue Get(TKey key)
         {
-            int hashCode = RuntimeHelpers.GetHashCode(key);
+            int hashCode = HashHelpers.GetHashCode(key);
             int bucketIndex = hashCode & (Buckets.Length - 1);
             ImmutableAvlNode<TKey, TValue> avlNode = Buckets[bucketIndex];
 
@@ -51,7 +54,7 @@ namespace Singularity.Collections
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        private ImmutableDictionary(ImmutableDictionary<TKey, TValue> previous, in KeyValue<TKey, TValue> keyValue)
+        private ImmutableAvlDictionary(ImmutableAvlDictionary<TKey, TValue> previous, in KeyValue<TKey, TValue> keyValue)
         {
             this.Count = previous.Count + 1;
             if (previous.Count >= previous.Buckets.Length)
@@ -72,7 +75,7 @@ namespace Singularity.Collections
             this.Buckets[bucketIndex] = this.Buckets[bucketIndex].Add(in keyValue);
         }
 
-        private ImmutableDictionary()
+        private ImmutableAvlDictionary()
         {
             this.Buckets = new ImmutableAvlNode<TKey, TValue>[2];
             this.Buckets[0] = ImmutableAvlNode<TKey, TValue>.Empty;
@@ -80,7 +83,7 @@ namespace Singularity.Collections
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        private void AddExistingValues(ImmutableDictionary<TKey, TValue> previous)
+        private void AddExistingValues(ImmutableAvlDictionary<TKey, TValue> previous)
         {
             for (var i = 0; i < this.Buckets.Length; i++)
             {

@@ -16,7 +16,7 @@ namespace Singularity.Test.ThreadSafety
             {
                 var tracker = new Tracker();
                 var cases = new List<TrackableDisposable>();
-                lock (tracker)
+                lock (trackers)
                 {
                     trackers.Add(tracker);
                 }

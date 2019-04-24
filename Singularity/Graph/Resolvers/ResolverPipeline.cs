@@ -102,6 +102,7 @@ namespace Singularity.Graph.Resolvers
             }
         }
 
+
         private InstanceFactory GenerateInstanceFactory(Type type, ResolvedDependency dependency, CircularDependencyDetector circularDependencyDetector)
         {
             lock (dependency)
