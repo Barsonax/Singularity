@@ -29,19 +29,13 @@ namespace Singularity.Graph
             Default = ResolvedDependencies.Array.LastOrDefault();
         }
 
-        //public Dependency(Type[] type, Lifetime lifetime) :
-        //    this(new ReadonlyRegistration(type, new Binding(new BindingMetadata(type), type.AutoResolveConstructorExpression(), lifetime, null, DisposeBehavior.Default)))
-        //{
-
-        //}
-
         public Dependency(Type[] type, Expression expression, Lifetime lifetime) : this(new ReadonlyRegistration(type, new Binding(new BindingMetadata(type), expression, lifetime, null, DisposeBehavior.Default)))
         {
 
         }
 
         public Dependency(Type[] type, IEnumerable<Expression> expressions, Lifetime lifetime) :
-            this(new ReadonlyRegistration(type, expressions.Select(expression => new Binding(new BindingMetadata(type), expression, lifetime, null, DisposeBehavior.Default))))
+            this(new ReadonlyRegistration(type, new ReadOnlyBindingCollection(expressions.Select(expression => new Binding(new BindingMetadata(type), expression, lifetime, null, DisposeBehavior.Default)))))
         {
 
         }

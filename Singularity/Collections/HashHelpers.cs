@@ -7,7 +7,6 @@ namespace Singularity.Collections
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static int GetHashCode(object item)
         {
-            //return item.GetHashCode();
             return RuntimeHelpers.GetHashCode(item);
         }
     }

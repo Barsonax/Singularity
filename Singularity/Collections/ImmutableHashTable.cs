@@ -23,14 +23,13 @@ namespace Singularity.Collections
             int hashCode = HashHelpers.GetHashCode(key);
             int bucketIndex = hashCode & (Buckets.Length - 1);
 
-            SinglyLinkedListNode<HashedKeyValue<TKey, TValue>> current = Buckets[bucketIndex];
+            SinglyLinkedListNode<HashedKeyValue<TKey, TValue>>? current = Buckets[bucketIndex];
 
-            do
+            while (current != null)
             {
                 if (ReferenceEquals(current.Value.Key, key)) return current.Value.Value;
                 current = current.Next;
             }
-            while (!ReferenceEquals(current, SinglyLinkedListNode<HashedKeyValue<TKey, TValue>>.Empty));
 
             return default!;
         }
@@ -42,8 +41,15 @@ namespace Singularity.Collections
             if (previous.Count >= previous.Buckets.Length)
             {
                 this.Buckets = new SinglyLinkedListNode<HashedKeyValue<TKey, TValue>>[previous.Buckets.Length * 2];
-                this.AddExistingValues(previous);
-
+                foreach (SinglyLinkedListNode<HashedKeyValue<TKey, TValue>> t in previous.Buckets)
+                {
+                    SinglyLinkedListNode<HashedKeyValue<TKey, TValue>>? current = t;
+                    while (current != null)
+                    {
+                        FillBucket(in current.Value);
+                        current = current.Next;
+                    }
+                }
             }
             else
             {
@@ -58,25 +64,6 @@ namespace Singularity.Collections
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        private void AddExistingValues(ImmutableHashTable<TKey, TValue> previous)
-        {
-            for (var i = 0; i < Buckets.Length; i++)
-            {
-                Buckets[i] = SinglyLinkedListNode<HashedKeyValue<TKey, TValue>>.Empty;
-            }
-
-            for (var i = 0; i < previous.Buckets.Length; i++)
-            {
-                SinglyLinkedListNode<HashedKeyValue<TKey, TValue>> current = previous.Buckets[i];
-                while (!ReferenceEquals(current, SinglyLinkedListNode<HashedKeyValue<TKey, TValue>>.Empty))
-                {
-                    FillBucket(in current.Value);
-                    current = current.Next;
-                }
-            }
-        }
-
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         private void FillBucket(in HashedKeyValue<TKey, TValue> hashedKeyValue)
         {
             int bucketIndex = hashedKeyValue.HashCode & (this.Buckets.Length - 1);
@@ -86,16 +73,14 @@ namespace Singularity.Collections
         private ImmutableHashTable()
         {
             this.Buckets = new SinglyLinkedListNode<HashedKeyValue<TKey, TValue>>[2];
-            this.Buckets[0] = SinglyLinkedListNode<HashedKeyValue<TKey, TValue>>.Empty;
-            this.Buckets[1] = SinglyLinkedListNode<HashedKeyValue<TKey, TValue>>.Empty;
         }
 
         public IEnumerator<TValue> GetEnumerator()
         {
             foreach (SinglyLinkedListNode<HashedKeyValue<TKey, TValue>> bucket in Buckets)
             {
-                SinglyLinkedListNode<HashedKeyValue<TKey, TValue>> current = bucket;
-                while (!ReferenceEquals(current, SinglyLinkedListNode<HashedKeyValue<TKey, TValue>>.Empty))
+                SinglyLinkedListNode<HashedKeyValue<TKey, TValue>>? current = bucket;
+                while (current != null)
                 {
                     yield return current.Value.Value;
                     current = current.Next;

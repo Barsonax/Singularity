@@ -18,6 +18,11 @@ namespace Singularity.Benchmark
         [GlobalSetup]
         public void Setup()
         {
+            _mapping = new ReferenceInt[N];
+            for (int i = 0; i < _mapping.Length; i++)
+            {
+                _mapping[i] = new ReferenceInt(i);
+            }
             _hashTable = ImmutableHashTable<ReferenceInt, int>.Empty;
             for (var i = 0; i < N; i++)
             {
@@ -25,14 +30,14 @@ namespace Singularity.Benchmark
             }
         }
 
-        [Benchmark]
-        public void ImmutableHashTable_Get()
-        {
-            for (var i = 0; i < N; i++)
-            {
-                _hashTable.Get(_mapping[i]);
-            }
-        }
+        //[Benchmark]
+        //public void ImmutableHashTable_Get()
+        //{
+        //    for (var i = 0; i < N; i++)
+        //    {
+        //        _hashTable.Get(_mapping[i]);
+        //    }
+        //}
 
         [Benchmark]
         public void ImmutableHashTable_Add()

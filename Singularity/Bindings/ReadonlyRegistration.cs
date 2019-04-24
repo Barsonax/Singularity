@@ -1,26 +1,23 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Collections.ObjectModel;
-using System.Linq;
-using System.Linq.Expressions;
+using Singularity.Collections;
 
 namespace Singularity.Bindings
 {
     internal class ReadonlyRegistration
     {
         public Type[] DependencyTypes { get; }
-        public ReadOnlyCollection<Binding> Bindings { get; }
+        public ReadOnlyBindingCollection Bindings { get; }
 
-        public ReadonlyRegistration(Type[] dependencyTypes, IEnumerable<Binding> bindings)
+        public ReadonlyRegistration(Type[] dependencyTypes, ReadOnlyBindingCollection bindings)
         {
             DependencyTypes = dependencyTypes;
-            Bindings = new ReadOnlyCollection<Binding>(bindings.ToArray());
+            Bindings = bindings;
         }
 
         public ReadonlyRegistration(Type[] dependencyTypes, Binding binding)
         {
             DependencyTypes = dependencyTypes;
-            Bindings = new ReadOnlyCollection<Binding>(new[] { binding });
+            Bindings = new ReadOnlyBindingCollection(new SinglyLinkedListNode<Binding>(null, binding));
         }
     }
 }

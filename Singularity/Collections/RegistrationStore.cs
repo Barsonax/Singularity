@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Collections;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
@@ -38,7 +37,7 @@ namespace Singularity.Collections
             Registration registration = GetOrCreateRegistration(dependencyTypes);
 
             var binding = new WeaklyTypedBinding(dependencyTypes, callerFilePath, callerLineNumber, CurrentModule);
-            registration.Bindings.Add(binding);
+            registration.Bindings = new SinglyLinkedListNode<WeaklyTypedBinding>(registration.Bindings, binding);
             return binding;
         }
 
@@ -46,7 +45,7 @@ namespace Singularity.Collections
         {
             if (_readonlyBindings == null)
             {
-                var uniqueRegistrations = Registrations.Values.Distinct().ToArray();
+                Registration[] uniqueRegistrations = Registrations.Values.Distinct().ToArray();
                 var registrations = new ReadonlyRegistration[uniqueRegistrations.Length];
                 var count = 0;
                 foreach (Registration registration in uniqueRegistrations)
@@ -63,7 +62,7 @@ namespace Singularity.Collections
                         }
                     }
 
-                    registrations[count] = new ReadonlyRegistration(registration.DependencyTypes, registration.Bindings.Select(x => new Binding(x)));
+                    registrations[count] = new ReadonlyRegistration(registration.DependencyTypes, new ReadOnlyBindingCollection(registration.Bindings.Select(x => new Binding(x))));
                     count++;
                 }
 

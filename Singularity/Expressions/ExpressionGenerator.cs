@@ -72,7 +72,7 @@ namespace Singularity.Expressions
                 case Lifetime.Transient:
                     return expression;
                 case Lifetime.PerContainer:
-                    object singletonInstance = ((Func<Scoped, object>)Expression.Lambda(expression, ScopeParameter).CompileFast())(containerScope);
+                    object singletonInstance = GetSingleton(containerScope, expression);
                     return Expression.Constant(singletonInstance, expression.Type);
                 case Lifetime.PerScope:
                     MethodInfo method = CreateScopedExpressionMethod.MakeGenericMethod(expression.Type);
@@ -80,6 +80,26 @@ namespace Singularity.Expressions
                     return expression;
                 default:
                     throw new ArgumentOutOfRangeException();
+            }
+        }
+
+        private static object GetSingleton(Scoped containerScope, Expression expression)
+        {
+            switch (expression)
+            {
+                case ConstantExpression constantExpression:
+                    return constantExpression.Value;
+                case NewExpression newExpression:
+                    if (newExpression.Arguments.Count == 0)
+                    {
+                        return newExpression.Constructor.Invoke(null);
+                    }
+                    else
+                    {
+                        return ((Func<Scoped, object>)Expression.Lambda(expression, ScopeParameter).CompileFast())(containerScope);
+                    }
+                default:
+                    return ((Func<Scoped, object>)Expression.Lambda(expression, ScopeParameter).CompileFast())(containerScope);
             }
         }
 

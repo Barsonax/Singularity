@@ -67,10 +67,10 @@ namespace Singularity.Test.Bindings
             ReadOnlyCollection<ReadonlyRegistration> registrations = config.GetDependencies().Registrations;
 
             //ASSERT
-            ReadonlyRegistration registration = Assert.Single(registrations);
-            Assert.Equal(typeof(Plugin1), registration.Bindings[0].Expression!.Type);
-            Assert.Equal(typeof(Plugin2), registration.Bindings[1].Expression!.Type);
-            Assert.Equal(typeof(Plugin3), registration.Bindings[2].Expression!.Type);
+            Binding[] bindings = Assert.Single(registrations).Bindings.ToArray();
+            Assert.Equal(typeof(Plugin1), bindings[0].Expression!.Type);
+            Assert.Equal(typeof(Plugin2), bindings[1].Expression!.Type);
+            Assert.Equal(typeof(Plugin3), bindings[2].Expression!.Type);
         }
 
         [Fact]
@@ -89,10 +89,10 @@ namespace Singularity.Test.Bindings
             ReadOnlyCollection<ReadonlyRegistration> registrations = config.GetDependencies().Registrations;
 
             //ASSERT
-            ReadonlyRegistration registration = Assert.Single(registrations);
-            Assert.Equal(typeof(Plugin1), registration.Bindings[0].Expression!.Type);
-            Assert.Equal(typeof(Plugin2), registration.Bindings[1].Expression!.Type);
-            Assert.Equal(typeof(Plugin3), registration.Bindings[2].Expression!.Type);
+            Binding[] bindings = Assert.Single(registrations).Bindings.ToArray();
+            Assert.Equal(typeof(Plugin1), bindings[0].Expression!.Type);
+            Assert.Equal(typeof(Plugin2), bindings[1].Expression!.Type);
+            Assert.Equal(typeof(Plugin3), bindings[2].Expression!.Type);
             Assert.True(registrations[0].Bindings.All(x => x.Lifetime == Lifetime.PerContainer));
         }
 
@@ -116,10 +116,10 @@ namespace Singularity.Test.Bindings
             var readOnlyBindingConfig = config.GetDependencies();
 
             //ASSERT
-            ReadonlyRegistration registration = Assert.Single(readOnlyBindingConfig.Registrations);
-            Assert.Equal(typeof(Plugin1), registration.Bindings[0].Expression!.Type);
-            Assert.Equal(typeof(Plugin2), registration.Bindings[1].Expression!.Type);
-            Assert.Equal(typeof(Plugin3), registration.Bindings[2].Expression!.Type);
+            Binding[] bindings = Assert.Single(readOnlyBindingConfig.Registrations).Bindings.ToArray();
+            Assert.Equal(typeof(Plugin1), bindings[0].Expression!.Type);
+            Assert.Equal(typeof(Plugin2), bindings[1].Expression!.Type);
+            Assert.Equal(typeof(Plugin3), bindings[2].Expression!.Type);
 
             ReadOnlyCollection<Expression> decorators = Assert.Single(readOnlyBindingConfig.Decorators.Values);
 

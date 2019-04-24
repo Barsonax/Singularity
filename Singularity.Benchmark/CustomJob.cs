@@ -12,12 +12,12 @@ namespace Singularity.Benchmark
             Add(
                 Job.RyuJitX64
                     .With(Runtime.Core)
-                    .WithIterationTime(TimeInterval.FromMilliseconds(1000)));
+                    .WithIterationTime(TimeInterval.FromMilliseconds(150)));
 
             Add(
                 Job.LegacyJitX64
                     .With(Runtime.Clr)
-                    .WithIterationTime(TimeInterval.FromMilliseconds(1000)));
+                    .WithIterationTime(TimeInterval.FromMilliseconds(150)));
         }
     }
 }

@@ -13,13 +13,12 @@ namespace Singularity
         public ActionList(Action<T> action)
         {
             Action = action;
-            _root = SinglyLinkedListNode<T>.Empty;
         }
 
         public void Invoke()
         {
-            SinglyLinkedListNode<T> root = _root;
-            while (!ReferenceEquals(root, SinglyLinkedListNode<T>.Empty))
+            SinglyLinkedListNode<T>? root = _root;
+            while (root != null)
             {
                 Action(root.Value!);
                 root = root.Next!;
@@ -28,7 +27,7 @@ namespace Singularity
 
         public void Add(T obj)
         {
-            SinglyLinkedListNode<T> initialValue, computedValue;
+            SinglyLinkedListNode<T>? initialValue, computedValue;
             do
             {
                 initialValue = _root;
