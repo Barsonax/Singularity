@@ -23,62 +23,62 @@ namespace Singularity.Benchmark
             _benchmark.AspNetCore();
         }
 
-        [Benchmark]
-        public ISimpleAdapter[] MultiEnumerate()
-        {
-            foreach (ISimpleAdapter obj in _benchmark.Multi())
-            {
-            }
+        //[Benchmark]
+        //public ISimpleAdapter[] MultiEnumerate()
+        //{
+        //    foreach (ISimpleAdapter obj in _benchmark.Multi())
+        //    {
+        //    }
 
-            return null;
-        }
+        //    return null;
+        //}
 
-        [Benchmark]
-        public void MultiNoEnumeration()
-        {
-            var foo = _benchmark.Multi();
-        }
+        //[Benchmark]
+        //public void MultiNoEnumeration()
+        //{
+        //    var foo = _benchmark.Multi();
+        //}
 
-        [Benchmark]
-        public IDisposable Disposable()
-        {
-            return _benchmark.Disposable();
-        }
+        //[Benchmark]
+        //public IDisposable Disposable()
+        //{
+        //    return _benchmark.Disposable();
+        //}
 
-        [Benchmark]
-        public void Register()
-        {
-            _benchmark.Register();
-        }
+        //[Benchmark]
+        //public void Register()
+        //{
+        //    _benchmark.Register();
+        //}
 
-        [Benchmark]
-        public void RegisterAndEnumerate()
-        {
-            _benchmark.RegisterAndEnumerate();
-        }
+        //[Benchmark]
+        //public void RegisterAndEnumerate()
+        //{
+        //    _benchmark.RegisterAndEnumerate();
+        //}
 
-        [Benchmark]
-        public Container NewContainer()
-        {
-            return _benchmark.NewContainer();
-        }
+        //[Benchmark]
+        //public Container NewContainer()
+        //{
+        //    return _benchmark.NewContainer();
+        //}
 
-        [Benchmark]
-        public Container NewContainerFromCachedConfig()
-        {
-            return _benchmark.NewContainerFromCachedConfig();
-        }
+        //[Benchmark]
+        //public Container NewContainerFromCachedConfig()
+        //{
+        //    return _benchmark.NewContainerFromCachedConfig();
+        //}
 
-        [Benchmark]
-        public IComplex1 NewContainerAndResolve()
-        {
-            return _benchmark.NewContainerAndResolve();
-        }
+        //[Benchmark]
+        //public IComplex1 NewContainerAndResolve()
+        //{
+        //    return _benchmark.NewContainerAndResolve();
+        //}
 
-        [Benchmark]
-        public Container NewNestedContainer()
-        {
-            return _benchmark.NewNestedContainer();
-        }
+        //[Benchmark]
+        //public Container NewNestedContainer()
+        //{
+        //    return _benchmark.NewNestedContainer();
+        //}
     }
 }

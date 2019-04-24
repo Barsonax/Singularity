@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.Linq.Expressions;
 using Singularity.Collections;
 using Singularity.TestClasses.TestClasses;
 using Xunit;
@@ -14,7 +15,7 @@ namespace Singularity.Test.ThreadSafety
 
             for (var i = 0; i < 100; i++)
             {
-                testCases.Add((i, new object()));
+                testCases.Add((new ReferenceInt(i), new object()));
             }
 
             var dic = new ThreadSafeDictionary<ReferenceInt, object>();

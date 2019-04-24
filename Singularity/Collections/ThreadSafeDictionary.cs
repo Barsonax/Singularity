@@ -15,7 +15,7 @@ namespace Singularity.Collections
         where TKey : class
     {
         public int Count => ImmutableAvlDictionary.Count;
-        internal ImmutableAvlDictionary<TKey, TValue> ImmutableAvlDictionary = ImmutableAvlDictionary<TKey, TValue>.Empty;
+        internal ImmutableHashTable<TKey, TValue> ImmutableAvlDictionary = ImmutableHashTable<TKey, TValue>.Empty;
 
         /// <summary>
         /// Adds a key to the dictionary.
@@ -25,7 +25,7 @@ namespace Singularity.Collections
         /// <param name="value"></param>
         public void Add(TKey key, TValue value)
         {
-            ImmutableAvlDictionary<TKey, TValue> initialValue, computedValue;
+            ImmutableHashTable<TKey, TValue> initialValue, computedValue;
             do
             {
                 initialValue = ImmutableAvlDictionary;

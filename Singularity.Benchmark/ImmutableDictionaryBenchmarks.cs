@@ -1,4 +1,5 @@
-﻿using BenchmarkDotNet.Attributes;
+﻿using System;
+using BenchmarkDotNet.Attributes;
 using Singularity.Collections;
 using Singularity.TestClasses.TestClasses;
 
@@ -11,34 +12,35 @@ namespace Singularity.Benchmark
         [Params(1, 3, 10, 100, 1000)]
         public int N { get; set; }
 
-        private ImmutableAvlDictionary<ReferenceInt, int> avlDictionary;
+        private ImmutableHashTable<ReferenceInt, int> _hashTable;
+        private ReferenceInt[] _mapping;
 
         [GlobalSetup]
         public void Setup()
         {
-            avlDictionary = ImmutableAvlDictionary<ReferenceInt, int>.Empty;
+            _hashTable = ImmutableHashTable<ReferenceInt, int>.Empty;
             for (var i = 0; i < N; i++)
             {
-                avlDictionary = avlDictionary.Add(i, i);
+                _hashTable = _hashTable.Add(_mapping[i], i);
             }
         }
 
         [Benchmark]
-        public void LookupDic()
+        public void ImmutableHashTable_Get()
         {
             for (var i = 0; i < N; i++)
             {
-                avlDictionary.Get(i);
+                _hashTable.Get(_mapping[i]);
             }
         }
 
         [Benchmark]
-        public void ImmutableDictionary_Add()
+        public void ImmutableHashTable_Add()
         {
-            ImmutableAvlDictionary<ReferenceInt, int> avlDictionary = ImmutableAvlDictionary<ReferenceInt, int>.Empty;
+            ImmutableHashTable<ReferenceInt, int> hashTable = ImmutableHashTable<ReferenceInt, int>.Empty;
             for (var i = 0; i < N; i++)
             {
-                avlDictionary = avlDictionary.Add(i, i);
+                hashTable = hashTable.Add(_mapping[i], i);
             }
         }
     }

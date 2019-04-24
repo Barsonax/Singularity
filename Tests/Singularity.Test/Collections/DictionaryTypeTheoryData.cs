@@ -11,11 +11,11 @@ namespace Singularity.Test.Collections
         public DictionaryTypeTheoryData()
         {
             var typeMappings = new List<(Type type, ReferenceInt value)>();
-            typeMappings.Add((typeof(ITestService10), 0));
-            typeMappings.Add((typeof(ITestService11), 1));
-            typeMappings.Add((typeof(ITestService12), 2));
+            typeMappings.Add((typeof(ITestService10), new ReferenceInt(0)));
+            typeMappings.Add((typeof(ITestService11), new ReferenceInt(1)));
+            typeMappings.Add((typeof(ITestService12), new ReferenceInt(2)));
 
-            typeMappings.Add((typeof(ITestService20), 4));
+            typeMappings.Add((typeof(ITestService20), new ReferenceInt(4)));
 
             IEnumerable<IEnumerable<(Type type, ReferenceInt value)>> permutations = typeMappings.GetPermutations();
 

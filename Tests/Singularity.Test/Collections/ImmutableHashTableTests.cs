@@ -8,13 +8,13 @@ using Xunit;
 
 namespace Singularity.Test.Collections
 {
-    public class ImmutableDictionaryTests
+    public class ImmutableHashTableTests
     {
         [Theory]
         [ClassData(typeof(DictionaryTypeTheoryData))]
         public void SearchType(IEnumerable<(Type key, ReferenceInt value)> testValues)
         {
-            ImmutableAvlDictionary<Type, ReferenceInt> avlDictionary = ImmutableAvlDictionary<Type, ReferenceInt>.Empty;
+            ImmutableHashTable<Type, ReferenceInt> avlDictionary = ImmutableHashTable<Type, ReferenceInt>.Empty;
 
             foreach ((Type key, ReferenceInt value) in testValues)
             {
@@ -31,7 +31,7 @@ namespace Singularity.Test.Collections
         [ClassData(typeof(DictionaryTestsTheoryData))]
         public void SearchReferenceInt(IEnumerable<(ReferenceInt key, ReferenceInt value)> testValues)
         {
-            ImmutableAvlDictionary<ReferenceInt, ReferenceInt> avlDictionary = ImmutableAvlDictionary<ReferenceInt, ReferenceInt>.Empty;
+            ImmutableHashTable<ReferenceInt, ReferenceInt> avlDictionary = ImmutableHashTable<ReferenceInt, ReferenceInt>.Empty;
 
             foreach ((ReferenceInt key, ReferenceInt value) in testValues)
             {
@@ -48,7 +48,7 @@ namespace Singularity.Test.Collections
         [ClassData(typeof(DictionaryTestsTheoryData))]
         public void EnumerateGeneric(IEnumerable<(ReferenceInt key, ReferenceInt value)> testValues)
         {
-            ImmutableAvlDictionary<ReferenceInt, ReferenceInt> avlDictionary = ImmutableAvlDictionary<ReferenceInt, ReferenceInt>.Empty;
+            ImmutableHashTable<ReferenceInt, ReferenceInt> avlDictionary = ImmutableHashTable<ReferenceInt, ReferenceInt>.Empty;
 
             foreach ((ReferenceInt key, ReferenceInt value) in testValues)
             {
@@ -64,7 +64,7 @@ namespace Singularity.Test.Collections
         [ClassData(typeof(DictionaryTestsTheoryData))]
         public void Enumerate(IEnumerable<(ReferenceInt key, ReferenceInt value)> testValues)
         {
-            ImmutableAvlDictionary<ReferenceInt, ReferenceInt> avlDictionary = ImmutableAvlDictionary<ReferenceInt, ReferenceInt>.Empty;
+            ImmutableHashTable<ReferenceInt, ReferenceInt> avlDictionary = ImmutableHashTable<ReferenceInt, ReferenceInt>.Empty;
 
             foreach ((ReferenceInt key, ReferenceInt value) in testValues)
             {
