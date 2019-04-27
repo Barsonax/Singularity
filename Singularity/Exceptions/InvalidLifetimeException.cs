@@ -3,6 +3,10 @@ using System.Runtime.Serialization;
 
 namespace Singularity.Exceptions
 {
+    /// <summary>
+    /// Exception for when a incorrect enum value is passed.
+    /// </summary>
+    /// <typeparam name="T"></typeparam>
     [Serializable]
     public class InvalidEnumValue<T> : SingularityException
         where T : struct, Enum

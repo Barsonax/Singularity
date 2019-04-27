@@ -67,7 +67,7 @@ namespace Singularity.Collections
         private void FillBucket(in HashedKeyValue<TKey, TValue> hashedKeyValue)
         {
             int bucketIndex = hashedKeyValue.HashCode & (this.Buckets.Length - 1);
-            this.Buckets[bucketIndex] = new SinglyLinkedListNode<HashedKeyValue<TKey, TValue>>(this.Buckets[bucketIndex], in hashedKeyValue);
+            this.Buckets[bucketIndex] = this.Buckets[bucketIndex].Add(in hashedKeyValue);
         }
 
         private ImmutableHashTable()

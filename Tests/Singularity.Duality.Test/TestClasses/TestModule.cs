@@ -2,7 +2,7 @@
 {
 	public class TestModule : IModule
 	{
-		public void Register(BindingConfig config)
+		public void Register(ContainerBuilder config)
 		{
 			config.Register<IModule, TestModule>();
 		}

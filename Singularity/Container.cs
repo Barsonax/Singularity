@@ -21,6 +21,7 @@ namespace Singularity
         /// Is the container disposed or not?
         /// </summary>
 		public bool IsDisposed { get; private set; }
+        internal RegistrationStore Registrations { get; }
         private readonly DependencyGraph _dependencyGraph;
         private readonly ThreadSafeDictionary<Type, Action<Scoped, object>> _injectionCache = new ThreadSafeDictionary<Type, Action<Scoped, object>>();
         private readonly ThreadSafeDictionary<Type, Func<Scoped, object>> _getInstanceCache = new ThreadSafeDictionary<Type, Func<Scoped, object>>();
@@ -31,40 +32,45 @@ namespace Singularity
         /// Creates a new container using all the bindings that are in the provided modules
         /// </summary>
         /// <param name="modules"></param>
-		public Container(IEnumerable<IModule> modules) : this(modules.ToBindings()) { }
+        /// <param name="options"></param>
+        public Container(IEnumerable<IModule> modules, SingularitySettings? options = null) : this(ToBuilder(modules), options) {}
 
         /// <summary>
-        /// Creates a new container with the provided bindings.
+        /// Creates a new container using the provided builder.
         /// </summary>
-        /// <param name="bindings"></param>
+        /// <param name="builder"></param>
         /// <param name="options"></param>
-        public Container(BindingConfig bindings, SingularitySettings? options = null)
+        public Container(Action<ContainerBuilder>? builder = null, SingularitySettings? options = null)
         {
-            if (bindings == null) throw new ArgumentNullException(nameof(bindings));
+            var context = new ContainerBuilder(this);
+            builder?.Invoke(context);
             _options = options ?? SingularitySettings.Default;
             _containerScope = new Scoped(this);
-            _dependencyGraph = new DependencyGraph(bindings.GetDependencies(), _containerScope, _options);
+            Registrations = context.Registrations;
+            _dependencyGraph = new DependencyGraph(context.Registrations, _containerScope, _options);
         }
 
-        private Container(BindingConfig bindings, Container parentContainer)
+        private Container(Container parentContainer, Action<ContainerBuilder>? builder)
         {
-            if (bindings == null) throw new ArgumentNullException(nameof(bindings));
+            var context = new ContainerBuilder(this);
+            builder?.Invoke(context);
             _options = parentContainer._options;
             _containerScope = new Scoped(this);
-            _dependencyGraph = new DependencyGraph(bindings.GetDependencies(), _containerScope, _options, parentContainer._dependencyGraph);
+            Registrations = context.Registrations;
+            _dependencyGraph = new DependencyGraph(context.Registrations, _containerScope, _options, parentContainer._dependencyGraph);
         }
 
         /// <summary>
         /// Creates a new nested container using all the bindings that are in the provided modules
         /// </summary>
         /// <param name="modules"></param>
-        public Container GetNestedContainer(IEnumerable<IModule> modules) => GetNestedContainer(modules.ToBindings());
+        public Container GetNestedContainer(IEnumerable<IModule> modules) => GetNestedContainer(ToBuilder(modules));
 
         /// <summary>
         /// Creates a new nested container with the provided bindings.
         /// </summary>
-        /// <param name="bindings"></param>
-        public Container GetNestedContainer(BindingConfig bindings) => new Container(bindings, this);
+        /// <param name="builder"></param>
+        public Container GetNestedContainer(Action<ContainerBuilder>? builder = null) => new Container(this, builder);
 
         /// <summary>
         /// Starts a new scope
@@ -90,24 +96,14 @@ namespace Singularity
             }
         }
 
-        /// <summary>
-        /// Resolves a instance for the given dependency type
-        /// </summary>
-        /// <typeparam name="T">The type of the dependency</typeparam>
-        /// <exception cref="DependencyNotFoundException">If the dependency is not configured</exception>
-        /// <returns></returns>
+        /// <inheritdoc />
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public T GetInstance<T>() where T : class => GetInstance<T>(_containerScope);
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         internal T GetInstance<T>(Scoped scope) where T : class => (T)GetInstance(typeof(T), scope);
 
-        /// <summary>
-        /// Resolves a instance for the given dependency type
-        /// </summary>
-        /// <param name="type">The type of the dependency</param>
-        /// <exception cref="DependencyNotFoundException">If the dependency is not configured</exception>
-        /// <returns></returns>
+        /// <inheritdoc />
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public object GetInstance(Type type) => GetInstance(type, _containerScope);
 
@@ -123,11 +119,7 @@ namespace Singularity
             return func(scope);
         }
 
-        /// <summary>
-        /// Injects dependencies by calling all methods marked with <see cref="InjectAttribute"/> on the <paramref name="instance"/>.
-        /// </summary>
-        /// <param name="instance"></param>
-        /// <exception cref="DependencyNotFoundException">If the method had parameters that couldn't be resolved</exception>
+        /// <inheritdoc />
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public void MethodInject(object instance) => MethodInject(instance, _containerScope);
 
@@ -178,6 +170,19 @@ namespace Singularity
         {
             _containerScope?.Dispose();
             IsDisposed = true;
+        }
+
+        private static Action<ContainerBuilder> ToBuilder(IEnumerable<IModule> modules)
+        {
+            if (modules == null) throw new ArgumentNullException(nameof(modules));
+            return builder =>
+            {
+                foreach (IModule module in modules)
+                {
+                    builder.Registrations.CurrentModule = module;
+                    module.Register(builder);
+                }
+            };
         }
     }
 }

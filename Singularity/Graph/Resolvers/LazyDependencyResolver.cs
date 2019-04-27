@@ -8,29 +8,24 @@ namespace Singularity.Graph.Resolvers
 {
     internal class LazyDependencyResolver : IDependencyResolver
     {
-        public Dependency? Resolve(IResolverPipeline graph, Type type)
+        public IEnumerable<Binding> Resolve(IResolverPipeline graph, Type type)
         {
             if (type.IsGenericType && type.GetGenericTypeDefinition() == typeof(Lazy<>))
             {
                 Type funcType = typeof(Func<>).MakeGenericType(type.GenericTypeArguments[0]);
                 Type lazyType = typeof(Lazy<>).MakeGenericType(type.GenericTypeArguments[0]);
-                Dependency factoryDependency = graph.GetDependency(funcType);
+                Registration factoryDependency = graph.GetDependency(funcType);
 
-                var expressions = new List<Expression>();
                 ConstructorInfo constructor = lazyType.GetConstructor(new[] { funcType });
-                foreach (ResolvedDependency resolvedDependency in factoryDependency.ResolvedDependencies.Array)
-                {
-                    expressions.Add(Expression.New(constructor, graph.ResolveDependency(lazyType, resolvedDependency).Expression));
-                }
 
-                var lazyDependency = new Dependency(new[] { type }, expressions, Lifetime.Transient);
-                for (var i = 0; i < lazyDependency.ResolvedDependencies.Array.Length; i++)
+                foreach (Binding binding in factoryDependency.Bindings)
                 {
-                    lazyDependency.ResolvedDependencies.Array[i].Factories.Add(new InstanceFactory(type, expressions[i]));
+                    NewExpression baseExpression = Expression.New(constructor, graph.ResolveDependency(lazyType, binding).Expression);
+                    var newBinding = new Binding(new BindingMetadata(type), baseExpression);
+                    newBinding.Factories.Add(new InstanceFactory(type, baseExpression));
+                    yield return newBinding;
                 }
-                return lazyDependency;
             }
-            return null;
         }
     }
 }

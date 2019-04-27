@@ -1,41 +1,25 @@
 ﻿using System;
-using System.Collections.Generic;
 using Singularity.Collections;
-using Singularity.Exceptions;
 
 namespace Singularity.Bindings
 {
     internal class Registration
     {
-        public Type[] DependencyTypes { get; }
-        public SinglyLinkedListNode<WeaklyTypedBinding>? Bindings { get; set; }
+        public Type DependencyType { get; }
+        public ArrayList<Binding> Bindings { get; }
+        public Binding Default { get; private set; }
 
-        public Registration(Type[] dependencyTypes)
+        public Registration(Type dependencyType, Binding binding)
         {
-            DependencyTypes = dependencyTypes ?? throw new ArgumentNullException(nameof(dependencyTypes));
+            DependencyType = dependencyType;
+            Default = binding;
+            Bindings = new ArrayList<Binding>(new[] { binding });
         }
 
-        internal void Verify(List<WeaklyTypedDecoratorBinding>? decorators)
+        public void AddBinding(Binding binding)
         {
-            SinglyLinkedListNode<WeaklyTypedBinding>? currentBinding = Bindings;
-            while (currentBinding != null)
-            {
-                if (currentBinding.Value.Expression == null && (decorators == null || decorators!.Count == 0))
-                {
-                    throw new BindingConfigException($"The binding at {currentBinding.Value.BindingMetadata.StringRepresentation()} does not have a expression");
-                }
-
-                if (decorators != null)
-                {
-                    foreach (WeaklyTypedDecoratorBinding weaklyTypedDecoratorBinding in decorators)
-                    {
-                        if (weaklyTypedDecoratorBinding.Expression == null)
-                            throw new BindingConfigException($"The decorator for {DependencyTypes} does not have a expression");
-                    }
-                }
-
-                currentBinding = currentBinding.Next;
-            }
+            Default = binding;
+            Bindings.Add(binding);
         }
     }
 }

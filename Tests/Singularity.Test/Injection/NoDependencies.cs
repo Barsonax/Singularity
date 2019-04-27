@@ -11,11 +11,11 @@ namespace Singularity.Test.Injection
         public void GetInstance_CorrectDependencyIsReturned()
         {
             //ARRANGE
-            var config = new BindingConfig();
-            config.Register<ITestService10, TestService10>();
-
-            var container = new Container(config);
-            Container nestedContainer = container.GetNestedContainer(new BindingConfig());
+            var container = new Container(builder =>
+            {
+                builder.Register<ITestService10, TestService10>();
+            });
+            Container nestedContainer = container.GetNestedContainer();
 
             //ACT
             var value = container.GetInstance<ITestService10>();
@@ -30,9 +30,6 @@ namespace Singularity.Test.Injection
         public void GetInstance_Module_CorrectDependencyIsReturned()
         {
             //ARRANGE
-            var config = new BindingConfig();
-            config.Register<ITestService10, TestService10>();
-
             var container = new Container(new[] { new TestModule1() });
 
             //ACT
@@ -46,9 +43,7 @@ namespace Singularity.Test.Injection
         public void GetInstance_GetDependencyByConcreteType_ReturnsCorrectDependency()
         {
             //ARRANGE
-            var config = new BindingConfig();
-
-            var container = new Container(config);
+            var container = new Container();
 
             //ACT
             var value = container.GetInstance<TestService10>();
@@ -61,10 +56,10 @@ namespace Singularity.Test.Injection
         public void GetInstance_ReturnsCorrectDependency()
         {
             //ARRANGE
-            var config = new BindingConfig();
-            config.Register<ITestService10, TestService10>();
-
-            var container = new Container(config);
+            var container = new Container(builder =>
+            {
+                builder.Register<ITestService10, TestService10>();
+            });
 
             //ACT
             var value = container.GetInstance<ITestService10>();
@@ -77,10 +72,10 @@ namespace Singularity.Test.Injection
         public void GetInstance_FuncWithMethodCall_ReturnsCorrectDependency()
         {
             //ARRANGE
-            var config = new BindingConfig();
-            config.Register<ITestService10>().Inject(() => CreateTestService());
-
-            var container = new Container(config);
+            var container = new Container(builder =>
+            {
+                builder.Register<ITestService10>(c => c.Inject(() => CreateTestService()));
+            });
 
             //ACT
             var value = container.GetInstance<ITestService10>();
@@ -93,14 +88,15 @@ namespace Singularity.Test.Injection
         public void GetInstance_FuncWithConstructorCall_ReturnsCorrectDependency()
         {
             //ARRANGE
-            var config = new BindingConfig();
-            config.Register<ITestService10>().Inject(() => new TestService10());
+            var container = new Container(builder =>
+            {
+                builder.Register<ITestService10>(c => c.Inject(() => new TestService10()));
+            });
 
             //ACT
-            var container = new Container(config);
+            var value = container.GetInstance<ITestService10>();
 
             //ASSERT
-            var value = container.GetInstance<ITestService10>();
             Assert.IsType<TestService10>(value);
         }
 
@@ -108,11 +104,11 @@ namespace Singularity.Test.Injection
         public void GetInstance_FuncWithDelegateCall_ReturnsCorrectDependency()
         {
             //ARRANGE
-            var config = new BindingConfig();
             Func<TestService10> func = () => new TestService10();
-            config.Register<ITestService10>().Inject(() => func.Invoke());
-
-            var container = new Container(config);
+            var container = new Container(builder =>
+            {
+                builder.Register<ITestService10>(c => c.Inject(() => func.Invoke()));
+            });
 
             //ACT
             var value = container.GetInstance<ITestService10>();
@@ -130,10 +126,10 @@ namespace Singularity.Test.Injection
         public void MethodInject_InjectsCorrectDependencies()
         {
             //ARRANGE
-            var config = new BindingConfig();
-            config.Register<ITestService10, TestService10>();
-
-            var container = new Container(config);
+            var container = new Container(builder =>
+            {
+                builder.Register<ITestService10, TestService10>();
+            });
             var instance = new MethodInjectionClass();
 
             //ACT
@@ -147,10 +143,10 @@ namespace Singularity.Test.Injection
         public void MethodInject_Scoped_InjectsCorrectDependencies()
         {
             //ARRANGE
-            var config = new BindingConfig();
-            config.Register<ITestService10, TestService10>();
-
-            var container = new Container(config);
+            var container = new Container(builder =>
+            {
+                builder.Register<ITestService10, TestService10>();
+            });
             var instance = new MethodInjectionClass();
 
             //ACT
@@ -165,10 +161,10 @@ namespace Singularity.Test.Injection
         public void MethodInjectAll_InjectsCorrectDependencies()
         {
             //ARRANGE
-            var config = new BindingConfig();
-            config.Register<ITestService10, TestService10>();
-
-            var container = new Container(config);
+            var container = new Container(builder =>
+            {
+                builder.Register<ITestService10, TestService10>();
+            });
 
             var instances = new List<MethodInjectionClass>();
             for (var i = 0; i < 10; i++)
@@ -190,10 +186,10 @@ namespace Singularity.Test.Injection
         public void GetInstance_PerContainerLifetime_ReturnsSameInstancePerCall()
         {
             //ARRANGE
-            var config = new BindingConfig();
-            config.Register<ITestService10, TestService10>().With(Lifetime.PerContainer);
-
-            var container = new Container(config);
+            var container = new Container(builder =>
+            {
+                builder.Register<ITestService10, TestService10>(c => c.With(Lifetime.PerContainer));
+            });
 
             //ACT
             var value1 = container.GetInstance<ITestService10>();
@@ -209,10 +205,10 @@ namespace Singularity.Test.Injection
         public void GetInstance_PerCallLifetime_ReturnsNewInstancePerCall()
         {
             //ARRANGE
-            var config = new BindingConfig();
-            config.Register<ITestService10, TestService10>();
-
-            var container = new Container(config);
+            var container = new Container(builder =>
+            {
+                builder.Register<ITestService10, TestService10>();
+            });
 
             //ACT
             var value1 = container.GetInstance<ITestService10>();

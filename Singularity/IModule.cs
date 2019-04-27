@@ -9,6 +9,6 @@
         /// Implement this method to register your dependencies
         /// </summary>
         /// <param name="config"></param>
-	    void Register(BindingConfig config);
+	    void Register(ContainerBuilder config);
     }
 }

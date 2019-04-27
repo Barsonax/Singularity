@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Collections.ObjectModel;
 using System.Linq;
 using System.Linq.Expressions;
 using System.Reflection;
@@ -14,31 +13,31 @@ namespace Singularity.Expressions
         public static ParameterExpression ScopeParameter = Expression.Parameter(typeof(Scoped));
         internal static readonly MethodInfo CreateScopedExpressionMethod = typeof(ExpressionGenerator).GetRuntimeMethods().FirstOrDefault(x => x.Name == nameof(CreateScopedExpression));
 
-        public Expression GenerateBaseExpression(ResolvedDependency dependency, InstanceFactory[] children, Scoped containerScope, SingularitySettings settings)
+        public Expression GenerateBaseExpression(Binding binding, InstanceFactory[] children, Scoped containerScope, SingularitySettings settings)
         {
-            Expression expression = dependency.Binding.Expression! is LambdaExpression lambdaExpression ? lambdaExpression.Body : dependency.Binding.Expression;
+            Expression expression = binding.Expression! is LambdaExpression lambdaExpression ? lambdaExpression.Body : binding.Expression;
             var parameterExpressionVisitor = new ParameterExpressionVisitor(children!);
             expression = parameterExpressionVisitor.Visit(expression);
 
-            if (dependency.Binding.NeedsDispose == DisposeBehavior.Always || settings.AutoDispose && dependency.Binding.NeedsDispose != DisposeBehavior.Never && typeof(IDisposable).IsAssignableFrom(expression.Type))
+            if (binding.NeedsDispose == DisposeBehavior.Always || settings.AutoDispose && binding.NeedsDispose != DisposeBehavior.Never && typeof(IDisposable).IsAssignableFrom(expression.Type))
             {
                 MethodInfo method = Scoped.AddDisposableMethod.MakeGenericMethod(expression.Type);
                 expression = Expression.Call(ScopeParameter, method, expression);
             }
 
-            if (dependency.Binding.Finalizer != null)
+            if (binding.Finalizer != null)
             {
                 MethodInfo method = Scoped.AddFinalizerMethod.MakeGenericMethod(expression.Type);
-                expression = Expression.Call(ScopeParameter, method, expression, Expression.Constant(dependency.Binding));
+                expression = Expression.Call(ScopeParameter, method, expression, Expression.Constant(binding));
             }
 
-            return ApplyCaching(dependency.Binding.Lifetime, containerScope, expression);
+            return ApplyCaching(binding.Lifetime, containerScope, expression);
         }
 
-        public Expression ApplyDecorators(Type dependencyType, ResolvedDependency dependency, InstanceFactory[] children, ReadOnlyCollection<Expression> decorators, Scoped containerScope)
+        public Expression ApplyDecorators(Type dependencyType, Binding binding, InstanceFactory[] children, Expression[] decorators, Scoped containerScope)
         {
-            Expression expression = dependency.BaseExpression;
-            if (decorators.Count > 0)
+            Expression expression = binding.BaseExpression ?? throw new ArgumentNullException("binding.BaseExpression");
+            if (decorators.Length > 0)
             {
                 var body = new List<Expression>();
                 ParameterExpression instanceParameter = Expression.Variable(dependencyType, $"{dependencyType} instance");
@@ -59,7 +58,7 @@ namespace Singularity.Expressions
 
                 if (body.Last().Type == typeof(void)) body.Add(instanceParameter);
                 expression = body.Count == 1 ? expression : Expression.Block(new[] { instanceParameter }, body);
-                expression = ApplyCaching(dependency.Binding.Lifetime, containerScope, expression);
+                expression = ApplyCaching(binding.Lifetime, containerScope, expression);
             }
 
             return expression;

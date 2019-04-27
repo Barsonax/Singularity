@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Linq.Expressions;
 using Microsoft.Extensions.DependencyInjection;
-using Singularity.Collections;
 using Singularity.TestClasses.TestClasses;
 using Xunit;
 
@@ -19,10 +18,11 @@ namespace Singularity.Microsoft.DependencyInjection.Test
             serviceCollection.AddTransient<ISingleton1, Singleton1>();
             serviceCollection.AddScoped<IScopedService, ScopedService>();
 
-            var config = new BindingConfig();
-            config.RegisterServices(serviceCollection);
-
-            IServiceProvider container = config.CreateServiceProvider();
+            var container = new Container(builder =>
+            {
+                builder.RegisterServices(serviceCollection);
+                builder.RegisterServiceProvider();
+            }, SingularitySettings.Microsoft).GetInstance<IServiceProvider>();
 
             var factory = (IServiceScopeFactory)container.GetService(typeof(IServiceScopeFactory));
 
@@ -38,13 +38,16 @@ namespace Singularity.Microsoft.DependencyInjection.Test
         public void ServiceProviderIsRegistered()
         {
             //ARRANGE
-            var config = new BindingConfig();
+            var container = new Container(builder =>
+            {
+                builder.RegisterServiceProvider();
+            });
 
             //ACT
-            IServiceProvider container = config.CreateServiceProvider();
+            IServiceProvider serviceProvider = container.GetInstance<IServiceProvider>();
 
             //ASSERT
-            Assert.IsType<SingularityServiceProvider>(container);
+            Assert.IsType<SingularityServiceProvider>(serviceProvider);
         }
 
         [Fact]
@@ -53,12 +56,14 @@ namespace Singularity.Microsoft.DependencyInjection.Test
             //ARRANGE
             var serviceCollection = new ServiceCollection();
             serviceCollection.AddTransient<IDisposable, TrackableDisposable>();
-            var config = new BindingConfig();
-            var tracker = new Tracker();
-            config.Register<ITracker>().Inject(() => tracker);
-            config.RegisterServices(serviceCollection);
 
-            var container = new Container(config, SingularitySettings.Microsoft);
+            var tracker = new Tracker();
+
+            var container = new Container(builder =>
+            {
+                builder.Register<ITracker>(c => c.Inject(() => tracker));
+                builder.RegisterServices(serviceCollection);
+            }, SingularitySettings.Microsoft);
 
             //ACT
             var instance = container.GetInstance<IDisposable>();
@@ -78,12 +83,13 @@ namespace Singularity.Microsoft.DependencyInjection.Test
             //ARRANGE
             var serviceCollection = new ServiceCollection();
             serviceCollection.AddScoped<IDisposable, TrackableDisposable>();
-            var config = new BindingConfig();
             var tracker = new Tracker();
-            config.Register<ITracker>().Inject(() => tracker);
-            config.RegisterServices(serviceCollection);
 
-            var container = new Container(config, SingularitySettings.Microsoft);
+            var container = new Container(builder =>
+            {
+                builder.Register<ITracker>(c => c.Inject(() => tracker));
+                builder.RegisterServices(serviceCollection);
+            }, SingularitySettings.Microsoft);
 
             //ACT
             int disposeCountBefore;
@@ -109,12 +115,14 @@ namespace Singularity.Microsoft.DependencyInjection.Test
             //ARRANGE
             var serviceCollection = new ServiceCollection();
             serviceCollection.AddSingleton<IDisposable, TrackableDisposable>();
-            var config = new BindingConfig();
-            var tracker = new Tracker();
-            config.Register<ITracker>().Inject(() => tracker);
-            config.RegisterServices(serviceCollection);
 
-            var container = new Container(config, SingularitySettings.Microsoft);
+            var tracker = new Tracker();
+
+            var container = new Container(builder =>
+            {
+                builder.Register<ITracker>(c => c.Inject(() => tracker));
+                builder.RegisterServices(serviceCollection);
+            }, SingularitySettings.Microsoft);
 
             //ACT
 
@@ -138,15 +146,13 @@ namespace Singularity.Microsoft.DependencyInjection.Test
             var serviceCollection = new ServiceCollection();
             var tracker = new Tracker();
             serviceCollection.AddTransient(typeof(IDisposable), s => new TrackableDisposable(tracker));
-            var config = new BindingConfig();
 
-            config.Register<ITracker>().Inject(() => tracker);
-            config.Register<IServiceProvider, SingularityServiceProvider>();
-            Container container = null;
-            config.Register<Container>().Inject(() => container).With(DisposeBehavior.Never);
-            config.RegisterServices(serviceCollection);
+            var container = new Container(builder =>
+            {
+                builder.RegisterServices(serviceCollection);
+                builder.RegisterServiceProvider();
 
-            container = new Container(config, SingularitySettings.Microsoft);
+            }, SingularitySettings.Microsoft);
 
             //ACT
             var instance = container.GetInstance<IDisposable>();

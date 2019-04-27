@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq.Expressions;
 using System.Reflection;
+using Singularity.Bindings;
 
 namespace Singularity.Graph.Resolvers
 {
@@ -13,7 +14,7 @@ namespace Singularity.Graph.Resolvers
             GenericCreateLambdaMethod = typeof(ExpressionDependencyResolver).GetMethod(nameof(CreateLambda));
         }
 
-        public Dependency? Resolve(IResolverPipeline graph, Type type)
+        public IEnumerable<Binding> Resolve(IResolverPipeline graph, Type type)
         {
             if (type.IsGenericType && type.GetGenericTypeDefinition() == typeof(Expression<>) && type.GenericTypeArguments.Length == 1)
             {
@@ -21,26 +22,22 @@ namespace Singularity.Graph.Resolvers
                 if (funcType.GetGenericTypeDefinition() == typeof(Func<>) && funcType.GenericTypeArguments.Length == 1)
                 {
                     Type dependencyType = funcType.GenericTypeArguments[0];
-                    Dependency dependency = graph.GetDependency(dependencyType);
+                    Registration registration = graph.GetDependency(dependencyType);
 
-                    var expressions = new List<Expression>();
-                    foreach (ResolvedDependency resolvedDependency in dependency.ResolvedDependencies.Array)
-                    {
-                        expressions.Add(graph.ResolveDependency(dependencyType, resolvedDependency).Expression);
-                    }
-
-                    var expressionDependency = new Dependency(new[] { type }, expressions, Lifetime.Transient);
                     MethodInfo method = GenericCreateLambdaMethod.MakeGenericMethod(dependencyType);
-                    for (var i = 0; i < expressionDependency.ResolvedDependencies.Array.Length; i++)
+
+                    foreach (Binding binding in registration.Bindings)
                     {
-                        var expression = (Expression)method.Invoke(null, new object[] { expressions[i] });
+                        Expression baseExpression = graph.ResolveDependency(dependencyType, binding).Expression;
+                        var newBinding = new Binding(new BindingMetadata(type), baseExpression);
+
+                        var expression = (Expression)method.Invoke(null, new object[] { baseExpression });
                         var factory = new InstanceFactory(type, expression, scoped => expression);
-                        expressionDependency.ResolvedDependencies.Array[i].Factories.Add(factory);
+                        newBinding.Factories.Add(factory);
+                        yield return newBinding;
                     }
-                    return expressionDependency;
                 }
             }
-            return null;
         }
 
         public static LambdaExpression CreateLambda<T>(Expression expression)

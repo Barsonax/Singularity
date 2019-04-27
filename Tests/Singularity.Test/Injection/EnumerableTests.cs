@@ -12,8 +12,7 @@ namespace Singularity.Test.Injection
         public void GetInstance_AsEnumerable_NoRegistration()
         {
             //ARRANGE
-            var config = new BindingConfig();
-            var container = new Container(config);
+            var container = new Container();
 
             //ACT
             var plugins = container.GetInstance<IEnumerable<IPlugin>>();
@@ -28,8 +27,7 @@ namespace Singularity.Test.Injection
         public void GetInstance_AsCollection_NoRegistration()
         {
             //ARRANGE
-            var config = new BindingConfig();
-            var container = new Container(config);
+            var container = new Container();
 
             //ACT
             var plugins = container.GetInstance<IReadOnlyCollection<IPlugin>>();
@@ -45,8 +43,7 @@ namespace Singularity.Test.Injection
         public void GetInstance_AsList_NoRegistration()
         {
             //ARRANGE
-            var config = new BindingConfig();
-            var container = new Container(config);
+            var container = new Container();
 
             //ACT
             var plugins = container.GetInstance<IReadOnlyList<IPlugin>>();
@@ -61,9 +58,10 @@ namespace Singularity.Test.Injection
         public void GetInstance_AsEnumerable_SingleRegistration()
         {
             //ARRANGE
-            var config = new BindingConfig();
-            config.Register<IPlugin, Plugin1>();
-            var container = new Container(config);
+            var container = new Container(builder =>
+            {
+                builder.Register<IPlugin, Plugin1>();
+            });
 
             //ACT
             var plugins = container.GetInstance<IEnumerable<IPlugin>>();
@@ -79,9 +77,10 @@ namespace Singularity.Test.Injection
         public void GetInstance_AsCollection_SingleRegistration()
         {
             //ARRANGE
-            var config = new BindingConfig();
-            config.Register<IPlugin, Plugin1>();
-            var container = new Container(config);
+            var container = new Container(builder =>
+            {
+                builder.Register<IPlugin, Plugin1>();
+            });
 
             //ACT
             var plugins = container.GetInstance<IReadOnlyCollection<IPlugin>>();
@@ -98,9 +97,10 @@ namespace Singularity.Test.Injection
         public void GetInstance_AsList_SingleRegistration()
         {
             //ARRANGE
-            var config = new BindingConfig();
-            config.Register<IPlugin, Plugin1>();
-            var container = new Container(config);
+            var container = new Container(builder =>
+            {
+                builder.Register<IPlugin, Plugin1>();
+            });
 
             //ACT
             var plugins = container.GetInstance<IReadOnlyList<IPlugin>>();
@@ -116,11 +116,12 @@ namespace Singularity.Test.Injection
         public void GetInstance_AsEnumerable_MultiRegistration()
         {
             //ARRANGE
-            var config = new BindingConfig();
-            config.Register<IPlugin, Plugin1>();
-            config.Register<IPlugin, Plugin2>();
-            config.Register<IPlugin, Plugin3>();
-            var container = new Container(config);
+            var container = new Container(builder =>
+            {
+                builder.Register<IPlugin, Plugin1>();
+                builder.Register<IPlugin, Plugin2>();
+                builder.Register<IPlugin, Plugin3>();
+            });
 
             //ACT
             var plugins = container.GetInstance<IEnumerable<IPlugin>>();
@@ -138,11 +139,14 @@ namespace Singularity.Test.Injection
         public void GetInstance_AsEnumerable_MultiRegistrationWithLifetimes()
         {
             //ARRANGE
-            var config = new BindingConfig();
-            config.Register<IPlugin, Plugin1>().With(Lifetime.PerContainer);
-            config.Register<IPlugin, Plugin2>();
-            config.Register<IPlugin, Plugin3>().With(Lifetime.PerContainer);
-            var container = new Container(config);
+            var container = new Container(builder =>
+            {
+                builder.Register<IPlugin, Plugin1>(c => c
+                    .With(Lifetime.PerContainer));
+                builder.Register<IPlugin, Plugin2>();
+                builder.Register<IPlugin, Plugin3>(c => c
+                    .With(Lifetime.PerContainer));
+            });
 
             //ACT
             var plugins = container.GetInstance<IEnumerable<IPlugin>>();
@@ -162,14 +166,15 @@ namespace Singularity.Test.Injection
         public void GetInstance_AsEnumerable_MultiBatchRegistration()
         {
             //ARRANGE
-            var config = new BindingConfig();
-            config.Register(typeof(IPlugin), new[]
+            var container = new Container(builder =>
             {
-                typeof(Plugin1),
-                typeof(Plugin2),
-                typeof(Plugin3)
+                builder.Register(typeof(IPlugin), new[]
+                {
+                    typeof(Plugin1),
+                    typeof(Plugin2),
+                    typeof(Plugin3)
+                });
             });
-            var container = new Container(config);
 
             //ACT
             var plugins = container.GetInstance<IEnumerable<IPlugin>>();
@@ -187,15 +192,16 @@ namespace Singularity.Test.Injection
         public void GetInstance_AsEnumerable_MultiBatchRegistrationWithDecorators()
         {
             //ARRANGE
-            var config = new BindingConfig();
-            config.Register(typeof(IPlugin), new[]
+            var container = new Container(builder =>
             {
-                typeof(Plugin1),
-                typeof(Plugin2),
-                typeof(Plugin3)
+                builder.Register(typeof(IPlugin), new[]
+                {
+                    typeof(Plugin1),
+                    typeof(Plugin2),
+                    typeof(Plugin3)
+                });
+                builder.Decorate<IPlugin, PluginLogger1>();
             });
-            config.Decorate<IPlugin, PluginLogger1>();
-            var container = new Container(config);
 
             //ACT
             var plugins = container.GetInstance<IEnumerable<IPlugin>>();
@@ -216,11 +222,12 @@ namespace Singularity.Test.Injection
         public void GetInstance_MultiRegistration()
         {
             //ARRANGE
-            var config = new BindingConfig();
-            config.Register<IPlugin, Plugin1>();
-            config.Register<IPlugin, Plugin2>();
-            config.Register<IPlugin, Plugin3>();
-            var container = new Container(config);
+            var container = new Container(builder =>
+            {
+                builder.Register<IPlugin, Plugin1>();
+                builder.Register<IPlugin, Plugin2>();
+                builder.Register<IPlugin, Plugin3>();
+            });
 
             //ACT
             var plugin = container.GetInstance<IPlugin>();
@@ -233,11 +240,12 @@ namespace Singularity.Test.Injection
         public void GetInstance_MultiRegistrationNestedType()
         {
             //ARRANGE
-            var config = new BindingConfig();
-            config.Register<IPlugin, Plugin1>();
-            config.Register<IPlugin, Plugin2>();
-            config.Register<IPlugin, Plugin3>();
-            var container = new Container(config);
+            var container = new Container(builder =>
+            {
+                builder.Register<IPlugin, Plugin1>();
+                builder.Register<IPlugin, Plugin2>();
+                builder.Register<IPlugin, Plugin3>();
+            });
 
             //ACT
             var plugins = container.GetInstance<PluginCollection>();

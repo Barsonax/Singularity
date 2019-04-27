@@ -8,7 +8,7 @@ namespace Singularity
         where T : class
     {
         private Action<T> Action { get; }
-        private SinglyLinkedListNode<T> _root;
+        private SinglyLinkedListNode<T>? _root;
 
         public ActionList(Action<T> action)
         {
@@ -31,7 +31,7 @@ namespace Singularity
             do
             {
                 initialValue = _root;
-                computedValue = new SinglyLinkedListNode<T>(_root, obj);
+                computedValue = _root.Add(obj);
             }
             while (initialValue != Interlocked.CompareExchange(ref _root, computedValue, initialValue));
         }

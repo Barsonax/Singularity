@@ -1,8 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using Xunit;
 
 namespace Singularity.Test
@@ -14,18 +11,8 @@ namespace Singularity.Test
         {
             Assert.Throws<ArgumentNullException>(() =>
             {
-                IEnumerable<IModule> modules = null;
-                var container = new Container(modules);
-            });
-        }
-
-        [Fact]
-        public void Container_NullBindings_Throws()
-        {
-            Assert.Throws<ArgumentNullException>(() =>
-            {
-                BindingConfig bindingConfig = null;
-                var container = new Container(bindingConfig);
+                IEnumerable<IModule>? modules = null;
+                var container = new Container(modules!);
             });
         }
     }

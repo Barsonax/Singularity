@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Singularity.Collections;
+using System;
 
 namespace Singularity.Graph
 {
@@ -31,9 +32,9 @@ namespace Singularity.Graph
         /// <summary>
         /// The dependency type
         /// </summary>
-        public Type[] DependencyTypes { get; }
+        public SinglyLinkedListNode<Type> DependencyTypes { get; }
 
-        internal BindingMetadata(Type[] dependencyTypes, string creatorFilePath, int creatorLineNumber, IModule? module)
+        internal BindingMetadata(SinglyLinkedListNode<Type> dependencyTypes, string creatorFilePath, int creatorLineNumber, IModule? module)
         {
             DependencyTypes = dependencyTypes;
             ModuleType = module?.GetType();
@@ -41,10 +42,18 @@ namespace Singularity.Graph
             CreatorLineNumber = creatorLineNumber;
         }
 
-        internal BindingMetadata(Type[] types)
+        internal BindingMetadata(SinglyLinkedListNode<Type> types)
         {
             Generated = true;
             DependencyTypes = types;
+            CreatorFilePath = string.Empty;
+            CreatorLineNumber = -1;
+        }
+
+        internal BindingMetadata(Type type)
+        {
+            Generated = true;
+            DependencyTypes = new SinglyLinkedListNode<Type>(type);
             CreatorFilePath = string.Empty;
             CreatorLineNumber = -1;
         }

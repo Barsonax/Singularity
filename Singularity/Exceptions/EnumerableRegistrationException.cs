@@ -3,6 +3,9 @@ using System.Runtime.Serialization;
 
 namespace Singularity.Exceptions
 {
+    /// <summary>
+    /// Exception for when a enumerable is registered incorrectly.
+    /// </summary>
     [Serializable]
     public class EnumerableRegistrationException : Exception
     {
