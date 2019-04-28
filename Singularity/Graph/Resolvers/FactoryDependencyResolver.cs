@@ -1,34 +1,30 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq.Expressions;
+using Singularity.Bindings;
 
 namespace Singularity.Graph.Resolvers
 {
     internal class FactoryDependencyResolver : IDependencyResolver
     {
-        public Dependency? Resolve(IResolverPipeline graph, Type type)
+        public IEnumerable<Binding> Resolve(IResolverPipeline graph, Type type)
         {
             if (type.IsGenericType && type.GetGenericTypeDefinition() == typeof(Func<>))
             {
                 Type dependencyType = type.GenericTypeArguments[0];
-                Dependency dependency = graph.GetDependency(dependencyType);
+                Registration dependency = graph.GetDependency(dependencyType);
 
-                var expressions = new List<Expression>();
-                foreach (ResolvedDependency resolvedDependency in dependency.ResolvedDependencies.Array)
+                foreach (Binding binding in dependency.Bindings)
                 {
-                    InstanceFactory factory = graph.ResolveDependency(dependencyType, resolvedDependency);
-                    expressions.Add(Expression.Lambda(factory.Expression));
-                }
+                    InstanceFactory factory = graph.ResolveDependency(dependencyType, binding);
+                    LambdaExpression baseExpression = Expression.Lambda(factory.Expression);
 
-                var factoryDependency = new Dependency(new []{ type }, expressions, Lifetime.Transient);
-                for (var i = 0; i < factoryDependency.ResolvedDependencies.Array.Length; i++)
-                {
-                    factoryDependency.ResolvedDependencies.Array[i].BaseExpression = expressions[i];
+                    yield return new Binding(new BindingMetadata(type), baseExpression)
+                    {
+                        BaseExpression = baseExpression
+                    };
                 }
-                return factoryDependency;
             }
-
-            return null;
         }
     }
 }

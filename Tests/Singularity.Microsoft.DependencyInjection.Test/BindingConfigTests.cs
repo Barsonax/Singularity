@@ -1,5 +1,4 @@
-﻿using System;
-using Microsoft.Extensions.DependencyInjection;
+﻿using Microsoft.Extensions.DependencyInjection;
 using Singularity.Bindings;
 using Singularity.Collections;
 using Singularity.TestClasses.TestClasses;
@@ -15,16 +14,17 @@ namespace Singularity.Microsoft.DependencyInjection.Test
             var serviceCollection = new ServiceCollection();
             serviceCollection.AddTransient<IRepositoryTransient1, RepositoryTransient1>();
 
-            var config = new BindingConfig();
-            config.RegisterServices(serviceCollection);
+            var container = new Container(builder =>
+            {
+                builder.RegisterServices(serviceCollection);
+            });
 
-            ReadOnlyBindingConfig readOnlyBindingConfig = config.GetDependencies();
+            RegistrationStore registrationStore = container.Registrations;
 
-            ReadonlyRegistration registration = Assert.Single(readOnlyBindingConfig.Registrations);
-            Assert.Empty(readOnlyBindingConfig.Decorators);
-            Type type = Assert.Single(registration.DependencyTypes);
+            Registration registration = Assert.Single(registrationStore.Registrations.Values);
+            Assert.Empty(registrationStore.Decorators);
             Binding binding = Assert.Single(registration.Bindings);
-            Assert.Equal(typeof(IRepositoryTransient1), type);
+            Assert.Equal(typeof(IRepositoryTransient1), registration.DependencyType);
             Assert.Equal(typeof(RepositoryTransient1), binding.Expression?.Type);
         }
     }

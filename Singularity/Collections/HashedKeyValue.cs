@@ -1,6 +1,4 @@
-﻿using System.Runtime.CompilerServices;
-
-namespace Singularity.Collections
+﻿namespace Singularity.Collections
 {
     internal readonly struct HashedKeyValue<TKey, TValue>
         where TKey : class

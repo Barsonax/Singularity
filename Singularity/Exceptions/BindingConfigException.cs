@@ -3,6 +3,9 @@ using System.Runtime.Serialization;
 
 namespace Singularity.Exceptions
 {
+    /// <summary>
+    /// Exception for when something is wrong with the bindings.
+    /// </summary>
     [Serializable]
     public class BindingConfigException : SingularityException
     {

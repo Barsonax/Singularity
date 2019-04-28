@@ -1,7 +1,5 @@
-﻿using System;
-using BenchmarkDotNet.Attributes;
+﻿using BenchmarkDotNet.Attributes;
 using Singularity.TestClasses.Benchmark;
-using Singularity.TestClasses.TestClasses;
 
 namespace Singularity.Benchmark
 {
@@ -45,16 +43,10 @@ namespace Singularity.Benchmark
         //    return _benchmark.Disposable();
         //}
 
-        [Benchmark]
-        public void Register()
-        {
-            _benchmark.Register();
-        }
-
         //[Benchmark]
-        //public void RegisterAndEnumerate()
+        //public void Register()
         //{
-        //    _benchmark.RegisterAndEnumerate();
+        //    _benchmark.Register();
         //}
 
         //[Benchmark]
@@ -69,11 +61,11 @@ namespace Singularity.Benchmark
         //    return _benchmark.NewContainerFromCachedConfig();
         //}
 
-        [Benchmark]
-        public IComplex1 NewContainerAndResolve()
-        {
-            return _benchmark.NewContainerAndResolve();
-        }
+        //[Benchmark]
+        //public IComplex1 NewContainerAndResolve()
+        //{
+        //    return _benchmark.NewContainerAndResolve();
+        //}
 
         //[Benchmark]
         //public Container NewNestedContainer()

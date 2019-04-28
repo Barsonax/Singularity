@@ -10,9 +10,10 @@ namespace Singularity.Test.Injection
         public void OpenGenericType()
         {
             //ARRANGE
-            var config = new BindingConfig();
-            config.Register(typeof(ISerializer<>), typeof(DefaultSerializer<>));
-            var container = new Container(config);
+            var container = new Container(builder =>
+            {
+                builder.Register(typeof(ISerializer<>), typeof(DefaultSerializer<>));
+            });
 
             //ACT
             var serializer = container.GetInstance<ISerializer<Special>>();
@@ -25,10 +26,11 @@ namespace Singularity.Test.Injection
         public void NestedOpenGenericType()
         {
             //ARRANGE
-            var config = new BindingConfig();
-            config.Register(typeof(ISerializer<>), typeof(DefaultSerializer<>));
-            config.Register(typeof(INestedSerializer<>), typeof(NestedSerializer<>));
-            var container = new Container(config);
+            var container = new Container(builder =>
+            {
+                builder.Register(typeof(ISerializer<>), typeof(DefaultSerializer<>));
+                builder.Register(typeof(INestedSerializer<>), typeof(NestedSerializer<>));
+            });
 
             //ACT
             var serializer = container.GetInstance<INestedSerializer<Special>>();
@@ -41,10 +43,11 @@ namespace Singularity.Test.Injection
         public void OpenGenericTypeOverride()
         {
             //ARRANGE
-            var config = new BindingConfig();
-            config.Register(typeof(ISerializer<>), typeof(DefaultSerializer<>));
-            config.Register<ISerializer<int>, IntSerializer>();
-            var container = new Container(config);
+            var container = new Container(builder =>
+            {
+                builder.Register(typeof(ISerializer<>), typeof(DefaultSerializer<>));
+                builder.Register<ISerializer<int>, IntSerializer>();
+            });
 
             //ACT
             var intSerializer = container.GetInstance<ISerializer<int>>();
@@ -59,11 +62,12 @@ namespace Singularity.Test.Injection
         public void NestedOpenGenericTypeOverride()
         {
             //ARRANGE
-            var config = new BindingConfig();
-            config.Register(typeof(ISerializer<>), typeof(DefaultSerializer<>));
-            config.Register(typeof(INestedSerializer<>), typeof(NestedSerializer<>));
-            config.Register<INestedSerializer<int>, NestedIntSerializer>();
-            var container = new Container(config);
+            var container = new Container(builder =>
+            {
+                builder.Register(typeof(ISerializer<>), typeof(DefaultSerializer<>));
+                builder.Register(typeof(INestedSerializer<>), typeof(NestedSerializer<>));
+                builder.Register<INestedSerializer<int>, NestedIntSerializer>();
+            });
 
             //ACT
             var nestedSerializer = container.GetInstance<INestedSerializer<Special>>();

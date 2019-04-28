@@ -10,10 +10,12 @@ namespace Singularity.Test.Injection
         public void BeginScope_GetInstance_DisposeScope()
         {
             //ARRANGE
-            var config = new BindingConfig();
-            config.Register<IDisposable, Disposable>().With(Lifetime.PerScope).WithFinalizer(x => x.Dispose());
-
-            var container = new Container(config);
+            var container = new Container(builder =>
+            {
+                builder.Register<IDisposable, Disposable>(c => c
+                    .With(Lifetime.PerScope)
+                    .WithFinalizer(x => x.Dispose()));
+            });
 
             //ACT
             Scoped scope = container.BeginScope();
@@ -32,10 +34,12 @@ namespace Singularity.Test.Injection
         public void BeginScope_GetInstance_AlwaysReturnsSameInstanceForTheSameScope()
         {
             //ARRANGE
-            var config = new BindingConfig();
-            config.Register<IDisposable, Disposable>().With(Lifetime.PerScope).WithFinalizer(x => x.Dispose());
-
-            var container = new Container(config);
+            var container = new Container(builder =>
+            {
+                builder.Register<IDisposable, Disposable>(c => c
+                    .With(Lifetime.PerScope)
+                    .WithFinalizer(x => x.Dispose()));
+            });
 
             //ACT
             Scoped scope1 = container.BeginScope();
@@ -57,11 +61,12 @@ namespace Singularity.Test.Injection
         public void BeginScope_GetInstance_Nested()
         {
             //ARRANGE
-            var config = new BindingConfig();
-            config.Register<ITestService10, TestService10>().With(Lifetime.PerScope);
-            config.Register<ITestService11, TestService11>();
-
-            var container = new Container(config);
+            var container = new Container(builder =>
+            {
+                builder.Register<ITestService10, TestService10>(c => c
+                    .With(Lifetime.PerScope));
+                builder.Register<ITestService11, TestService11>();
+            });
 
             //ACT
             Scoped scope1 = container.BeginScope();

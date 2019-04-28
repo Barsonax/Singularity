@@ -10,8 +10,6 @@ namespace Singularity.Test.ThreadSafety
         [Fact]
         public void GetInstance()
         {
-            var config = new BindingConfig();
-
             var registrations = new List<(Type abstractType, Type concreteType)>();
 
             registrations.Add((typeof(ITestService10), typeof(TestService10)));
@@ -27,13 +25,13 @@ namespace Singularity.Test.ThreadSafety
             registrations.Add((typeof(ITestService32), typeof(TestService32)));
 
             var disposeCount = 0;
-            foreach ((Type abstractType, Type concreteType) registration in registrations)
+            var container = new Container(builder =>
             {
-                config.Register(registration.abstractType, registration.concreteType).WithFinalizer(obj => disposeCount++);
-            }
-
-            disposeCount = 0;
-            var container = new Container(config);
+                foreach ((Type abstractType, Type concreteType) registration in registrations)
+                {
+                    builder.Register(registration.abstractType, registration.concreteType, c => c.WithFinalizer(obj => disposeCount++));
+                }
+            });
             var tester = new ThreadSafetyTester<(Type abstractType, Type concreteType)>(() => registrations);
 
             tester.Test(testCase =>

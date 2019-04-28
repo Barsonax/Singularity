@@ -1,6 +1,4 @@
 using System.Collections.Generic;
-using System.IO;
-using System.Linq;
 using Nuke.Common;
 using Nuke.Common.Execution;
 using Nuke.Common.Git;
@@ -85,13 +83,13 @@ class Build : NukeBuild
         .DependsOn(Compile)
         .Executes(() =>
     {
-        var testdlls = GlobFiles(BuildOutput / "netcoreapp2.0", "*.Test.dll").Join(" ");
-        var targetArgs = $"vstest {testdlls} /logger:trx;LogFileName=testresults.trx";
-        var dotnetPath = ToolPathResolver.GetPathExecutable("dotnet");
-        var coverageSnapshot = CoverageDirectory / "coverage.dcvr";
-        var coverageXml = CoverageDirectory / "coverage.xml";
-        var coverageReport = CoverageDirectory / "CoverageReport";
-        var coberturaReport = CoverageDirectory / "cobertura_coverage.xml";
+        string testdlls = GlobFiles(BuildOutput / "netcoreapp2.0", "*.Test.dll").Join(" ");
+        string targetArgs = $"vstest {testdlls} /logger:trx;LogFileName=testresults.trx";
+        string dotnetPath = ToolPathResolver.GetPathExecutable("dotnet");
+        AbsolutePath coverageSnapshot = CoverageDirectory / "coverage.dcvr";
+        AbsolutePath coverageXml = CoverageDirectory / "coverage.xml";
+        AbsolutePath coverageReport = CoverageDirectory / "CoverageReport";
+        AbsolutePath coberturaReport = CoverageDirectory / "cobertura_coverage.xml";
 
         DotCoverCover(c => c
              .SetTargetExecutable(dotnetPath)

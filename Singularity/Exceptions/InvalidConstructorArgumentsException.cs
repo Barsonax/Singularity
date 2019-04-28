@@ -3,6 +3,9 @@ using System.Runtime.Serialization;
 
 namespace Singularity.Exceptions
 {
+    /// <summary>
+    /// Exception for when the arguments of a exception are incorrect.
+    /// </summary>
     [Serializable]
     public class InvalidExpressionArgumentsException : SingularityException
     {

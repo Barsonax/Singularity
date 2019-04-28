@@ -3,6 +3,9 @@ using System.Runtime.Serialization;
 
 namespace Singularity.Exceptions
 {
+    /// <summary>
+    /// Exception for when a registration for the same type is registered in the child container.
+    /// </summary>
     [Serializable]
     public class RegistrationAlreadyExistsException : SingularityException
     {

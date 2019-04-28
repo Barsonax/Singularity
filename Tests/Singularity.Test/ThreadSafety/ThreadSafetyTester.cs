@@ -33,7 +33,7 @@ namespace Singularity.Test.ThreadSafety
                 tasks[i] = Task.Run(() =>
                 {
                     //Randomize the order to maximize the chance on threading issues.
-                    var testCases = Shuffle(_testCasesFactory.Invoke(), seed);
+                    TTestCase[] testCases = Shuffle(_testCasesFactory.Invoke(), seed);
 
                     Interlocked.Increment(ref threadsWaiting);
                     manualResetEvent.WaitOne();

@@ -3,6 +3,9 @@ using System.Runtime.Serialization;
 
 namespace Singularity.Exceptions
 {
+    /// <summary>
+    /// Exception for when no public constructor is available to be resolved.
+    /// </summary>
     [Serializable]
     public class NoConstructorException : SingularityException
     {

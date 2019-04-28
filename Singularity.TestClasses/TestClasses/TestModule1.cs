@@ -2,9 +2,9 @@
 {
 	public class TestModule1 : IModule
 	{
-		public void Register(BindingConfig bindingConfig)
+		public void Register(ContainerBuilder containerBuilder)
 		{
-			bindingConfig.Register<ITestService10, TestService10>();
+			containerBuilder.Register<ITestService10, TestService10>();
 		}
 	}
 }

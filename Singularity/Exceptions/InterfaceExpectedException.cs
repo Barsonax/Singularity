@@ -3,6 +3,9 @@ using System.Runtime.Serialization;
 
 namespace Singularity.Exceptions
 {
+    /// <summary>
+    /// Exception for when a type should be a interface but its not.
+    /// </summary>
     [Serializable]
     public class InterfaceExpectedException : SingularityException
     {

@@ -1,5 +1,6 @@
 ﻿using BenchmarkDotNet.Running;
 using System;
+using Singularity.TestClasses.Benchmark;
 
 namespace Singularity.Benchmark
 {
@@ -7,6 +8,12 @@ namespace Singularity.Benchmark
     {
         static void Main()
         {
+            AdvancedSingularityContainerBenchmark _benchmark = new AdvancedSingularityContainerBenchmark();
+
+            while (true)
+            {
+                _benchmark.Register();
+            }
             //BenchmarkRunner.Run<ImmutableDictionaryBenchmarks>();
             //BenchmarkRunner.Run<SimpleContainerBenchmark>();
             //BenchmarkRunner.Run()
