@@ -1,13 +1,12 @@
 ﻿using System;
 using System.Linq;
 using System.Linq.Expressions;
-using Singularity.Bindings;
 using Singularity.Collections;
 using Singularity.Exceptions;
 using Singularity.TestClasses.TestClasses;
 using Xunit;
 
-namespace Singularity.Test.Bindings
+namespace Singularity.Test.Registrations
 {
     public class BindingConfigTests
     {
@@ -215,7 +214,20 @@ namespace Singularity.Test.Bindings
         }
 
         [Fact]
-        public void ForInjectArity1()
+        public void Inject_WeaklyTyped()
+        {
+            var container = new Container(builder =>
+            {
+                builder.Register(typeof(object),c => c.Inject(Expression.Constant(new object())));
+            });
+
+            Registration registration = Assert.Single(container.Registrations.Registrations.Values);
+            Assert.Equal(typeof(object), registration.DependencyType);
+            Assert.Equal(typeof(object), registration.Bindings.Single().Expression?.Type);
+        }
+
+        [Fact]
+        public void Inject_StronglyTyped_Arity1()
         {
             var container = new Container(builder =>
             {
@@ -228,7 +240,7 @@ namespace Singularity.Test.Bindings
         }
 
         [Fact]
-        public void ForInjectArity2()
+        public void Inject_StronglyTyped_Arity2()
         {
             var container = new Container(builder =>
             {
@@ -241,7 +253,7 @@ namespace Singularity.Test.Bindings
         }
 
         [Fact]
-        public void ForInjectArity3()
+        public void Inject_StronglyTyped_Arity3()
         {
             var container = new Container(builder =>
             {
@@ -254,7 +266,7 @@ namespace Singularity.Test.Bindings
         }
 
         [Fact]
-        public void ForInjectArity4()
+        public void Inject_StronglyTyped_Arity4()
         {
             var container = new Container(builder =>
             {
@@ -267,7 +279,7 @@ namespace Singularity.Test.Bindings
         }
 
         [Fact]
-        public void ForInjectArity5()
+        public void Inject_StronglyTyped_Arity5()
         {
             var container = new Container(builder =>
             {
@@ -280,7 +292,7 @@ namespace Singularity.Test.Bindings
         }
 
         [Fact]
-        public void ForInjectArity6()
+        public void Inject_StronglyTyped_Arity6()
         {
             var container = new Container(builder =>
             {
@@ -293,7 +305,7 @@ namespace Singularity.Test.Bindings
         }
 
         [Fact]
-        public void ForInjectArity7()
+        public void Inject_StronglyTyped_Arity7()
         {
             var container = new Container(builder =>
             {
@@ -306,7 +318,7 @@ namespace Singularity.Test.Bindings
         }
 
         [Fact]
-        public void ForInjectArity8()
+        public void Inject_StronglyTyped_Arity8()
         {
             var container = new Container(builder =>
             {
