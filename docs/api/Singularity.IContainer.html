@@ -73,7 +73,8 @@
   
   <h1 id="Singularity_IContainer" data-uid="Singularity.IContainer" class="text-break">Interface IContainer
   </h1>
-  <div class="markdown level0 summary"></div>
+  <div class="markdown level0 summary"><p>Interface for a singularity container.</p>
+</div>
   <div class="markdown level0 conceptual"></div>
   <div class="inheritedMembers">
     <h5>Inherited Members</h5>
@@ -94,11 +95,12 @@
     <a href="https://github.com/Barsonax/Singularity/new/master/apiSpec/new?filename=Singularity_IContainer_GetInstance_System_Type_.md&amp;value=---%0Auid%3A%20Singularity.IContainer.GetInstance(System.Type)%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">Improve this Doc</a>
   </span>
   <span class="small pull-right mobile-hide">
-    <a href="https://github.com/Barsonax/Singularity/blob/master/Singularity/IContainer.cs/#L8">View Source</a>
+    <a href="https://github.com/Barsonax/Singularity/blob/master/Singularity/IContainer.cs/#L26">View Source</a>
   </span>
   <a id="Singularity_IContainer_GetInstance_" data-uid="Singularity.IContainer.GetInstance*"></a>
   <h4 id="Singularity_IContainer_GetInstance_System_Type_" data-uid="Singularity.IContainer.GetInstance(System.Type)">GetInstance(Type)</h4>
-  <div class="markdown level1 summary"></div>
+  <div class="markdown level1 summary"><p>Resolves a instance for the given dependency type</p>
+</div>
   <div class="markdown level1 conceptual"></div>
   <h5 class="decalaration">Declaration</h5>
   <div class="codewrapper">
@@ -117,7 +119,8 @@
       <tr>
         <td><span class="xref">System.Type</span></td>
         <td><span class="parametername">type</span></td>
-        <td></td>
+        <td><p>The type of the dependency</p>
+</td>
       </tr>
     </tbody>
   </table>
@@ -136,21 +139,37 @@
       </tr>
     </tbody>
   </table>
+  <h5 class="exceptions">Exceptions</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Condition</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><a class="xref" href="Singularity.Exceptions.DependencyNotFoundException.html">DependencyNotFoundException</a></td>
+        <td><p>If the dependency is not configured</p>
+</td>
+      </tr>
+    </tbody>
+  </table>
   <span class="small pull-right mobile-hide">
     <span class="divider">|</span>
     <a href="https://github.com/Barsonax/Singularity/new/master/apiSpec/new?filename=Singularity_IContainer_GetInstance__1.md&amp;value=---%0Auid%3A%20Singularity.IContainer.GetInstance%60%601%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">Improve this Doc</a>
   </span>
   <span class="small pull-right mobile-hide">
-    <a href="https://github.com/Barsonax/Singularity/blob/master/Singularity/IContainer.cs/#L7">View Source</a>
+    <a href="https://github.com/Barsonax/Singularity/blob/master/Singularity/IContainer.cs/#L18">View Source</a>
   </span>
   <a id="Singularity_IContainer_GetInstance_" data-uid="Singularity.IContainer.GetInstance*"></a>
   <h4 id="Singularity_IContainer_GetInstance__1" data-uid="Singularity.IContainer.GetInstance``1">GetInstance&lt;T&gt;()</h4>
-  <div class="markdown level1 summary"></div>
+  <div class="markdown level1 summary"><p>Resolves a instance for the given dependency type</p>
+</div>
   <div class="markdown level1 conceptual"></div>
   <h5 class="decalaration">Declaration</h5>
   <div class="codewrapper">
     <pre><code class="lang-csharp hljs">T GetInstance&lt;T&gt;()
-
     where T : class</code></pre>
   </div>
   <h5 class="returns">Returns</h5>
@@ -179,7 +198,24 @@
     <tbody>
       <tr>
         <td><span class="parametername">T</span></td>
-        <td></td>
+        <td><p>The type of the dependency</p>
+</td>
+      </tr>
+    </tbody>
+  </table>
+  <h5 class="exceptions">Exceptions</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Condition</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><a class="xref" href="Singularity.Exceptions.DependencyNotFoundException.html">DependencyNotFoundException</a></td>
+        <td><p>If the dependency is not configured</p>
+</td>
       </tr>
     </tbody>
   </table>
@@ -188,11 +224,12 @@
     <a href="https://github.com/Barsonax/Singularity/new/master/apiSpec/new?filename=Singularity_IContainer_MethodInject_System_Object_.md&amp;value=---%0Auid%3A%20Singularity.IContainer.MethodInject(System.Object)%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">Improve this Doc</a>
   </span>
   <span class="small pull-right mobile-hide">
-    <a href="https://github.com/Barsonax/Singularity/blob/master/Singularity/IContainer.cs/#L9">View Source</a>
+    <a href="https://github.com/Barsonax/Singularity/blob/master/Singularity/IContainer.cs/#L33">View Source</a>
   </span>
   <a id="Singularity_IContainer_MethodInject_" data-uid="Singularity.IContainer.MethodInject*"></a>
   <h4 id="Singularity_IContainer_MethodInject_System_Object_" data-uid="Singularity.IContainer.MethodInject(System.Object)">MethodInject(Object)</h4>
-  <div class="markdown level1 summary"></div>
+  <div class="markdown level1 summary"><p>Injects dependencies by calling all methods marked with <a class="xref" href="Singularity.Attributes.InjectAttribute.html">InjectAttribute</a> on the <code data-dev-comment-type="paramref" class="paramref">instance</code>.</p>
+</div>
   <div class="markdown level1 conceptual"></div>
   <h5 class="decalaration">Declaration</h5>
   <div class="codewrapper">
@@ -215,6 +252,22 @@
       </tr>
     </tbody>
   </table>
+  <h5 class="exceptions">Exceptions</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Condition</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><a class="xref" href="Singularity.Exceptions.DependencyNotFoundException.html">DependencyNotFoundException</a></td>
+        <td><p>If the method had parameters that couldn't be resolved</p>
+</td>
+      </tr>
+    </tbody>
+  </table>
 </article>
           </div>
           
@@ -226,7 +279,7 @@
                     <a href="https://github.com/Barsonax/Singularity/new/master/apiSpec/new?filename=Singularity_IContainer.md&amp;value=---%0Auid%3A%20Singularity.IContainer%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A" class="contribution-link">Improve this Doc</a>
                   </li>
                   <li>
-                    <a href="https://github.com/Barsonax/Singularity/blob/master/Singularity/IContainer.cs/#L5" class="contribution-link">View Source</a>
+                    <a href="https://github.com/Barsonax/Singularity/blob/master/Singularity/IContainer.cs/#L10" class="contribution-link">View Source</a>
                   </li>
                 </ul>
               </div>

@@ -5,10 +5,10 @@
   <head>
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
-    <title>Namespace Singularity.Bindings
+    <title>Class StronglyTypedDecoratorConfigurator&lt;TDependency, TDecorator&gt;
    </title>
     <meta name="viewport" content="width=device-width">
-    <meta name="title" content="Namespace Singularity.Bindings
+    <meta name="title" content="Class StronglyTypedDecoratorConfigurator&lt;TDependency, TDecorator&gt;
    ">
     <meta name="generator" content="docfx 2.41.0.0">
     
@@ -68,39 +68,69 @@
         </div>
         <div class="article row grid-right">
           <div class="col-md-10">
-            <article class="content wrap" id="_content" data-uid="Singularity.Bindings">
+            <article class="content wrap" id="_content" data-uid="Singularity.StronglyTypedDecoratorConfigurator`2">
   
-  <h1 id="Singularity_Bindings" data-uid="Singularity.Bindings" class="text-break">Namespace Singularity.Bindings
+  
+  <h1 id="Singularity_StronglyTypedDecoratorConfigurator_2" data-uid="Singularity.StronglyTypedDecoratorConfigurator`2" class="text-break">Class StronglyTypedDecoratorConfigurator&lt;TDependency, TDecorator&gt;
   </h1>
-  <div class="markdown level0 summary"></div>
+  <div class="markdown level0 summary"><p>A strongly typed configurator for registering new decorators.</p>
+</div>
   <div class="markdown level0 conceptual"></div>
-  <div class="markdown level0 remarks"></div>
-    <h3 id="classes">Classes
-  </h3>
-      <h4><a class="xref" href="Singularity.Bindings.StronglyTypedBinding-1.html">StronglyTypedBinding&lt;TDependency&gt;</a></h4>
-      <section><p>Represents a strongly typed binding registration for <code data-dev-comment-type="typeparamref" class="typeparamref">TDependency</code>.</p>
-</section>
-      <h4><a class="xref" href="Singularity.Bindings.StronglyTypedConfiguredBinding-2.html">StronglyTypedConfiguredBinding&lt;TDependency, TInstance&gt;</a></h4>
-      <section><p>Needed for fluent API. <a class="xref" href="Singularity.Bindings.StronglyTypedBinding-1.html">StronglyTypedBinding&lt;TDependency&gt;</a> for more info.</p>
-</section>
-      <h4><a class="xref" href="Singularity.Bindings.StronglyTypedDecoratorBinding-1.html">StronglyTypedDecoratorBinding&lt;TDependency&gt;</a></h4>
-      <section><p>Represents a strongly typed registration</p>
-</section>
-      <h4><a class="xref" href="Singularity.Bindings.WeaklyTypedBinding.html">WeaklyTypedBinding</a></h4>
-      <section><p>Represents a weakly typed registration</p>
-</section>
-      <h4><a class="xref" href="Singularity.Bindings.WeaklyTypedBindingBatch.html">WeaklyTypedBindingBatch</a></h4>
-      <section><p>Represents a batch of <a class="xref" href="Singularity.Bindings.WeaklyTypedConfiguredBinding.html">WeaklyTypedConfiguredBinding</a>s</p>
-</section>
-      <h4><a class="xref" href="Singularity.Bindings.WeaklyTypedConfiguredBinding.html">WeaklyTypedConfiguredBinding</a></h4>
-      <section><p>Needed for fluent API. <span class="xref">Singularity.Bindings.WeaklyTypedConfiguredBinding.WeaklyTypedBinding</span> for more info.</p>
-</section>
-      <h4><a class="xref" href="Singularity.Bindings.WeaklyTypedDecoratorBinding.html">WeaklyTypedDecoratorBinding</a></h4>
-      <section><p>Represents a weakly typed decorator registration</p>
-</section>
-      <h4><a class="xref" href="Singularity.Bindings.WeaklyTypedDecoratorBindingBatch.html">WeaklyTypedDecoratorBindingBatch</a></h4>
-      <section><p>Represents a batch of <a class="xref" href="Singularity.Bindings.WeaklyTypedDecoratorBinding.html">WeaklyTypedDecoratorBinding</a>s</p>
-</section>
+  <div class="inheritance">
+    <h5>Inheritance</h5>
+    <div class="level0"><span class="xref">System.Object</span></div>
+    <div class="level1"><span class="xref">StronglyTypedDecoratorConfigurator&lt;TDependency, TDecorator&gt;</span></div>
+  </div>
+  <div class="inheritedMembers">
+    <h5>Inherited Members</h5>
+    <div>
+      <span class="xref">System.Object.Equals(System.Object)</span>
+    </div>
+    <div>
+      <span class="xref">System.Object.Equals(System.Object, System.Object)</span>
+    </div>
+    <div>
+      <span class="xref">System.Object.GetHashCode()</span>
+    </div>
+    <div>
+      <span class="xref">System.Object.GetType()</span>
+    </div>
+    <div>
+      <span class="xref">System.Object.MemberwiseClone()</span>
+    </div>
+    <div>
+      <span class="xref">System.Object.ReferenceEquals(System.Object, System.Object)</span>
+    </div>
+    <div>
+      <span class="xref">System.Object.ToString()</span>
+    </div>
+  </div>
+  <h6><strong>Namespace</strong>: <a class="xref" href="Singularity.html">Singularity</a></h6>
+  <h6><strong>Assembly</strong>: Singularity.dll</h6>
+  <h5 id="Singularity_StronglyTypedDecoratorConfigurator_2_syntax">Syntax</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public class StronglyTypedDecoratorConfigurator&lt;TDependency, TDecorator&gt;
+    where TDependency : class where TDecorator : TDependency</code></pre>
+  </div>
+  <h5 class="typeParameters">Type Parameters</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Name</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><span class="parametername">TDependency</span></td>
+        <td></td>
+      </tr>
+      <tr>
+        <td><span class="parametername">TDecorator</span></td>
+        <td></td>
+      </tr>
+    </tbody>
+  </table>
 </article>
           </div>
           
@@ -108,6 +138,12 @@
             <div class="sideaffix">
               <div class="contribution">
                 <ul class="nav">
+                  <li>
+                    <a href="https://github.com/Barsonax/Singularity/new/master/apiSpec/new?filename=Singularity_StronglyTypedDecoratorConfigurator_2.md&amp;value=---%0Auid%3A%20Singularity.StronglyTypedDecoratorConfigurator%602%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A" class="contribution-link">Improve this Doc</a>
+                  </li>
+                  <li>
+                    <a href="https://github.com/Barsonax/Singularity/blob/master/Singularity/Registration/StronglyTypedDecoratorConfigurator.cs/#L11" class="contribution-link">View Source</a>
+                  </li>
                 </ul>
               </div>
               <nav class="bs-docs-sidebar hidden-print hidden-xs hidden-sm affix" id="affix">
