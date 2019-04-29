@@ -1,7 +1,7 @@
 ﻿using System;
 using Singularity.Collections;
 
-namespace Singularity.Bindings
+namespace Singularity
 {
     internal class Registration
     {

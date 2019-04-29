@@ -2,7 +2,6 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Linq.Expressions;
-using Singularity.Bindings;
 using Singularity.Collections;
 using Singularity.Expressions;
 

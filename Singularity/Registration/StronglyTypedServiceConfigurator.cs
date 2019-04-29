@@ -1,8 +1,8 @@
-﻿using Singularity.Collections;
-using Singularity.Graph;
-using System;
+﻿using System;
 using System.Linq.Expressions;
+using Singularity.Collections;
 using Singularity.Exceptions;
+using Singularity.Graph;
 
 namespace Singularity
 {
