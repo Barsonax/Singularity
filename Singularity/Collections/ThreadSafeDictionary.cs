@@ -7,7 +7,7 @@ namespace Singularity.Collections
 {
     /// <summary>
     /// A thread safe and lock free dictionary.
-    /// Uses <see cref="ImmutableAvlDictionary{TKey,TValue}"/> under the hood
+    /// Uses <see cref="ImmutableHashTable{TKey,TValue}"/> under the hood
     /// </summary>
     /// <typeparam name="TKey"></typeparam>
     /// <typeparam name="TValue"></typeparam>

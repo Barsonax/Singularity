@@ -10,10 +10,12 @@ namespace Singularity.Test.Injection
         public void GetInstance_PerContainerLifetime_IsDisposed()
         {
             //ARRANGE
-            var config = new BindingConfig();
-            config.Register<IDisposable, Disposable>().With(Lifetime.PerContainer).WithFinalizer(x => x.Dispose());
-
-            var container = new Container(config);
+            var container = new Container(builder =>
+            {
+                builder.Register<IDisposable, Disposable>(c => c
+                    .With(Lifetime.PerContainer)
+                    .WithFinalizer(x => x.Dispose()));
+            });
 
             //ACT
             var disposable = container.GetInstance<IDisposable>();
@@ -30,10 +32,11 @@ namespace Singularity.Test.Injection
         public void GetInstance_PerCallLifetime_IsDisposed()
         {
             //ARRANGE
-            var config = new BindingConfig();
-            config.Register<IDisposable, Disposable>().WithFinalizer(x => x.Dispose());
-
-            var container = new Container(config);
+            var container = new Container(builder =>
+            {
+                builder.Register<IDisposable, Disposable>(c => c
+                    .WithFinalizer(x => x.Dispose()));
+            });
 
             //ACT
             var disposable = container.GetInstance<IDisposable>();
@@ -50,11 +53,12 @@ namespace Singularity.Test.Injection
         public void GetInstance_Decorator_IsDisposed()
         {
             //ARRANGE
-            var config = new BindingConfig();
-            config.Register<IDisposable, Disposable>().WithFinalizer(x => x.Dispose());
-            config.Decorate<IDisposable, DisposableDecorator>();
-
-            var container = new Container(config);
+            var container = new Container(builder =>
+            {
+                builder.Register<IDisposable, Disposable>(c => c
+                    .WithFinalizer(x => x.Dispose()));
+                builder.Decorate<IDisposable, DisposableDecorator>();
+            });
 
             //ACT
             var disposable = container.GetInstance<IDisposable>();
@@ -72,12 +76,13 @@ namespace Singularity.Test.Injection
         public void GetInstance_PerContainerLifetime_IsDisposedInTopLevel()
         {
             //ARRANGE
-            var config = new BindingConfig();
-            config.Register<IDisposable, Disposable>().With(Lifetime.PerContainer).WithFinalizer(x => x.Dispose());
-            var nestedConfig = new BindingConfig();
-
-            var container = new Container(config);
-            Container nestedContainer = container.GetNestedContainer(nestedConfig);
+            var container = new Container(builder =>
+            {
+                builder.Register<IDisposable, Disposable>(c => c
+                    .With(Lifetime.PerContainer)
+                    .WithFinalizer(x => x.Dispose()));
+            });
+            Container nestedContainer = container.GetNestedContainer();
 
             //ACT
             var topLevelInstance = container.GetInstance<IDisposable>();
@@ -100,12 +105,12 @@ namespace Singularity.Test.Injection
         public void GetInstance_PerCallLifetime_IsDisposedInTopLevel()
         {
             //ARRANGE
-            var config = new BindingConfig();
-            config.Register<IDisposable, Disposable>().WithFinalizer(x => x.Dispose());
-            var nestedConfig = new BindingConfig();
-
-            var container = new Container(config);
-            Container nestedContainer = container.GetNestedContainer(nestedConfig);
+            var container = new Container(builder =>
+            {
+                builder.Register<IDisposable, Disposable>(c => c
+                    .WithFinalizer(x => x.Dispose()));
+            });
+            Container nestedContainer = container.GetNestedContainer();
 
             //ACT
             var topLevelInstance = container.GetInstance<IDisposable>();

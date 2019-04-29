@@ -4,22 +4,28 @@ using Microsoft.Extensions.DependencyInjection;
 
 namespace Singularity.Microsoft.DependencyInjection
 {
+    /// <summary>
+    /// Extensions for microsoft dependency injection.
+    /// </summary>
     public static class Extensions
     {
-        public static IServiceProvider CreateServiceProvider(this BindingConfig config)
+        /// <summary>
+        /// Registers the required services to support microsoft dependency injection.
+        /// </summary>
+        /// <param name="config"></param>
+        public static void RegisterServiceProvider(this ContainerBuilder config)
         {
-            Container? container = null;
-            // ReSharper disable once AccessToModifiedClosure
-            config.Register<Container>().Inject(() => container).With(DisposeBehavior.Never);
+            config.Register<Container>(c => c.Inject(() => config.Container).With(DisposeBehavior.Never));
             config.Register<IServiceProvider, SingularityServiceProvider>();
             config.Register<IServiceScopeFactory, SingularityServiceScopeFactory>();
-
-            container = new Container(config, new SingularitySettings { AutoDispose = true });
-
-            return new SingularityServiceProvider(container);
         }
 
-        public static void RegisterServices(this BindingConfig config, IServiceCollection serviceCollection)
+        /// <summary>
+        /// Registers all services that are container in the <see cref="IServiceCollection"/>.
+        /// </summary>
+        /// <param name="config"></param>
+        /// <param name="serviceCollection"></param>
+        public static void RegisterServices(this ContainerBuilder config, IServiceCollection serviceCollection)
         {
             foreach (ServiceDescriptor registration in serviceCollection)
             {
@@ -27,25 +33,30 @@ namespace Singularity.Microsoft.DependencyInjection
             }
         }
 
-        public static void RegisterService(this BindingConfig config, ServiceDescriptor registration)
+        /// <summary>
+        /// Registers the <see cref="ServiceDescriptor"/>
+        /// </summary>
+        /// <param name="config"></param>
+        /// <param name="registration"></param>
+        public static void RegisterService(this ContainerBuilder config, ServiceDescriptor registration)
         {
             if (registration.ImplementationFactory != null)
             {
                 ParameterExpression serviceProviderParameter = Expression.Parameter(typeof(IServiceProvider));
-                config.Register(registration.ServiceType)
-                    .Inject(Expression.Lambda(
+                config.Register(registration.ServiceType, c => c.Inject(
+                    Expression.Lambda(
                             Expression.Convert(
                                     Expression.Invoke(
-                                        Expression.Constant(registration.ImplementationFactory), serviceProviderParameter), registration.ServiceType), serviceProviderParameter))
-                    .With(ConvertLifetime(registration.Lifetime));
+                                        Expression.Constant(registration.ImplementationFactory), serviceProviderParameter), registration.ServiceType), serviceProviderParameter)) 
+                    .With(ConvertLifetime(registration.Lifetime)));
             }
             else if (registration.ImplementationInstance != null)
             {
-                config.Register(registration.ServiceType).Inject(Expression.Constant(registration.ImplementationInstance));
+                config.Register(registration.ServiceType, c => c.Inject(Expression.Constant(registration.ImplementationInstance)));
             }
             else
             {
-                config.Register(registration.ServiceType, registration.ImplementationType).With(ConvertLifetime(registration.Lifetime));
+                config.Register(registration.ServiceType, registration.ImplementationType, c => c.With(ConvertLifetime(registration.Lifetime)));
             }
         }
 

@@ -3,6 +3,9 @@ using System.Runtime.Serialization;
 
 namespace Singularity.Exceptions
 {
+    /// <summary>
+    /// Exception for when a constructor cannot be auto resolved.
+    /// </summary>
     [Serializable]
     public class CannotAutoResolveConstructorException : SingularityException
     {

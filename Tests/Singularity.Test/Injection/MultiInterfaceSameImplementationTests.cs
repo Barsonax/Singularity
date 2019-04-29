@@ -9,10 +9,11 @@ namespace Singularity.Test.Injection
         public void GetInstance_2Interfaces_ReturnsCorrectDependency()
         {
             //ARRANGE
-            var config = new BindingConfig();
-            config.Register<IService1, IService2, Implementation1>();
-
-            var container = new Container(config);
+            var container = new Container(builder =>
+            {
+                builder.Register<IService1, Implementation1>(c => c
+                    .As<IService2>());
+            });
 
             //ACT
             var value1 = container.GetInstance<IService1>();
@@ -32,10 +33,12 @@ namespace Singularity.Test.Injection
         public void GetInstance_3Interfaces_ReturnsCorrectDependency()
         {
             //ARRANGE
-            var config = new BindingConfig();
-            config.Register<IService1, IService2, IService3, Implementation1>();
-
-            var container = new Container(config);
+            var container = new Container(builder =>
+            {
+                builder.Register<IService1, Implementation1>(c => c
+                    .As<IService2>()
+                    .As<IService3>());
+            });
 
             //ACT
             var value1 = container.GetInstance<IService1>();
@@ -58,11 +61,13 @@ namespace Singularity.Test.Injection
         public void GetInstance_Decorators_ReturnsCorrectDependency()
         {
             //ARRANGE
-            var config = new BindingConfig();
-            config.Register<IService1, IService2, IService3, Implementation1>();
-            config.Decorate<IService2, Service2Decorator>();
-
-            var container = new Container(config);
+            var container = new Container(builder =>
+            {
+                builder.Register<IService1, Implementation1>(c => c
+                    .As<IService2>()
+                    .As<IService3>());
+                builder.Decorate<IService2, Service2Decorator>();
+            });
 
             //ACT
             var value1 = container.GetInstance<IService1>();
@@ -85,10 +90,12 @@ namespace Singularity.Test.Injection
         public void GetInstance_WeaklyTyped_ReturnsCorrectDependency()
         {
             //ARRANGE
-            var config = new BindingConfig();
-            config.Register(new[] { typeof(IService1), typeof(IService2), typeof(IService3) }, typeof(Implementation1));
-
-            var container = new Container(config);
+            var container = new Container(builder =>
+            {
+                builder.Register(typeof(IService1), typeof(Implementation1), c => c
+                    .As(typeof(IService2))
+                    .As(typeof(IService3)));
+            });
 
             //ACT
             var value1 = container.GetInstance<IService1>();
@@ -111,10 +118,14 @@ namespace Singularity.Test.Injection
         public void GetInstance_PerContainerLifetime_ReturnsCorrectDependency()
         {
             //ARRANGE
-            var config = new BindingConfig();
-            config.Register<IService1, IService2, IService3, Implementation1, Implementation1>().With(Lifetime.PerContainer);
-
-            var container = new Container(config);
+            var container = new Container(builder =>
+            {
+                builder.Register<IService1, Implementation1>(c => c
+                    .As<IService2>()
+                    .As<IService3>()
+                    .As<Implementation1>()
+                    .With(Lifetime.PerContainer));
+            });
 
             //ACT
             var value1 = container.GetInstance<IService1>();
@@ -137,10 +148,14 @@ namespace Singularity.Test.Injection
         public void GetInstance_WeaklyTyped_PerContainerLifetime_ReturnsCorrectDependency()
         {
             //ARRANGE
-            var config = new BindingConfig();
-            config.Register(new[] { typeof(IService1), typeof(IService2), typeof(IService3), typeof(Implementation1) }, typeof(Implementation1)).With(Lifetime.PerContainer);
-
-            var container = new Container(config);
+            var container = new Container(builder =>
+            {
+                builder.Register(typeof(IService1), typeof(Implementation1), c => c
+                    .As(typeof(IService2))
+                    .As(typeof(IService3))
+                    .As(typeof(Implementation1))
+                    .With(Lifetime.PerContainer));
+            });
 
             //ACT
             var value1 = container.GetInstance<IService1>();

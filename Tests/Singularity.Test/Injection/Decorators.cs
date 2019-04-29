@@ -9,11 +9,11 @@ namespace Singularity.Test.Injection
         public void GetInstance_Decorate_Simple()
         {
             //ARRANGE
-            var config = new BindingConfig();
-            config.Decorate<IComponent, Decorator1>();
-            config.Register<IComponent, Component>();
-
-            var container = new Container(config);
+            var container = new Container(builder =>
+            {
+                builder.Decorate<IComponent, Decorator1>();
+                builder.Register<IComponent, Component>();
+            });
 
             //ACT
             var value = container.GetInstance<IComponent>();
@@ -27,12 +27,12 @@ namespace Singularity.Test.Injection
         public void GetInstance_Decorate_Complex1()
         {
             //ARRANGE
-            var config = new BindingConfig();
-            config.Decorate<IComponent, Decorator1>();
-            config.Decorate<IComponent, Decorator2>();
-            config.Register<IComponent, Component>();
-
-            var container = new Container(config);
+            var container = new Container(builder =>
+            {
+                builder.Decorate<IComponent, Decorator1>();
+                builder.Decorate<IComponent, Decorator2>();
+                builder.Register<IComponent, Component>();
+            });
 
             //ACT
             var value = container.GetInstance<IComponent>();
@@ -47,12 +47,12 @@ namespace Singularity.Test.Injection
         public void GetInstance_Decorate_Complex2()
         {
             //ARRANGE
-            var config = new BindingConfig();
-            config.Decorate<ITestService11, TestService11_Decorator1>();
-            config.Register<ITestService10, TestService10>();
-            config.Register<ITestService11, TestService11>();
-
-            var container = new Container(config);
+            var container = new Container(builder =>
+            {
+                builder.Decorate<ITestService11, TestService11_Decorator1>();
+                builder.Register<ITestService10, TestService10>();
+                builder.Register<ITestService11, TestService11>();
+            });
 
             //ACT
             var value = container.GetInstance<ITestService11>();
@@ -67,13 +67,13 @@ namespace Singularity.Test.Injection
         public void GetInstance_Decorate_Complex3()
         {
             //ARRANGE
-            var config = new BindingConfig();
-            config.Decorate<ITestService11, TestService11_Decorator1>();
-            config.Decorate<ITestService11, TestService11_Decorator2>();
-            config.Register<ITestService10, TestService10>();
-            config.Register<ITestService11, TestService11>();
-
-            var container = new Container(config);
+            var container = new Container(builder =>
+            {
+                builder.Decorate<ITestService11, TestService11_Decorator1>();
+                builder.Decorate<ITestService11, TestService11_Decorator2>();
+                builder.Register<ITestService10, TestService10>();
+                builder.Register<ITestService11, TestService11>();
+            });
 
             //ACT
             var value = container.GetInstance<ITestService11>();

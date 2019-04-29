@@ -10,10 +10,11 @@ namespace Singularity.Test.Injection
         public void SimpleCircularDependency()
         {
             //ARRANGE
-            var config = new BindingConfig();
-            config.Register<ISimpleCircularDependency1, SimpleCircularDependency1>();
-            config.Register<ISimpleCircularDependency2, SimpleCircularDependency2>();
-            var container = new Container(config);
+            var container = new Container(builder =>
+            {
+                builder.Register<ISimpleCircularDependency1, SimpleCircularDependency1>();
+                builder.Register<ISimpleCircularDependency2, SimpleCircularDependency2>();
+            });
 
             //ACT
             //ASSERT
@@ -40,11 +41,12 @@ namespace Singularity.Test.Injection
         public void ComplexCircularDependency()
         {
             //ARRANGE
-            var config = new BindingConfig();
-            config.Register<IComplexCircularDependency1, ComplexCircularDependency1>();
-            config.Register<IComplexCircularDependency2, ComplexCircularDependency2>();
-            config.Register<IComplexCircularDependency3, ComplexCircularDependency3>();
-            var container = new Container(config);
+            var container = new Container(builder =>
+            {
+                builder.Register<IComplexCircularDependency1, ComplexCircularDependency1>();
+                builder.Register<IComplexCircularDependency2, ComplexCircularDependency2>();
+                builder.Register<IComplexCircularDependency3, ComplexCircularDependency3>();
+            });
 
             //ACT
             //ASSERT

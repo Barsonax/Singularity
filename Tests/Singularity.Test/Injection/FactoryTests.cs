@@ -12,9 +12,10 @@ namespace Singularity.Test.Injection
         public void GetInstance_AsFactory()
         {
             //ARRANGE
-            var config = new BindingConfig();
-            config.Register<IPlugin, Plugin1>();
-            var container = new Container(config);
+            var container = new Container(builder =>
+            {
+                builder.Register<IPlugin, Plugin1>();
+            });
 
             //ACT
             var factory = container.GetInstance<Func<IPlugin>>();
@@ -29,11 +30,12 @@ namespace Singularity.Test.Injection
         public void GetInstance_AsEnumerableFactory()
         {
             //ARRANGE
-            var config = new BindingConfig();
-            config.Register<IPlugin, Plugin1>();
-            config.Register<IPlugin, Plugin2>();
-            config.Register<IPlugin, Plugin3>();
-            var container = new Container(config);
+            var container = new Container(builder =>
+            {
+                builder.Register<IPlugin, Plugin1>();
+                builder.Register<IPlugin, Plugin2>();
+                builder.Register<IPlugin, Plugin3>();
+            });
 
             //ACT
             var factories = container.GetInstance<IReadOnlyList<Func<IPlugin>>>();
@@ -50,9 +52,11 @@ namespace Singularity.Test.Injection
         public void GetInstance_AsFactory_Dispose()
         {
             //ARRANGE
-            var config = new BindingConfig();
-            config.Register<IPlugin, Plugin1>().WithFinalizer(x => x.Dispose());
-            var container = new Container(config);
+            var container = new Container(builder =>
+            {
+                builder.Register<IPlugin, Plugin1>(c => c
+                    .WithFinalizer(x => x.Dispose()));
+            });
 
             //ACT
             var factory = container.GetInstance<Func<IPlugin>>();
@@ -72,9 +76,10 @@ namespace Singularity.Test.Injection
         public void GetInstance_Inject_AsFactory()
         {
             //ARRANGE
-            var config = new BindingConfig();
-            config.Register<IPlugin, Plugin1>();
-            var container = new Container(config);
+            var container = new Container(builder =>
+            {
+                builder.Register<IPlugin, Plugin1>();
+            });
 
             //ACT
             var factory = container.GetInstance<PluginFactory>();
@@ -89,9 +94,11 @@ namespace Singularity.Test.Injection
         public void GetInstance_Inject_AsFactory_Dispose()
         {
             //ARRANGE
-            var config = new BindingConfig();
-            config.Register<IPlugin, Plugin1>().WithFinalizer(x => x.Dispose());
-            var container = new Container(config);
+            var container = new Container(builder =>
+            {
+                builder.Register<IPlugin, Plugin1>(c => c
+                    .WithFinalizer(x => x.Dispose()));
+            });
 
             //ACT
             var factory = container.GetInstance<PluginFactory>();
