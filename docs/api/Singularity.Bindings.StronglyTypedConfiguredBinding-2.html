@@ -79,14 +79,10 @@
   <div class="inheritance">
     <h5>Inheritance</h5>
     <div class="level0"><span class="xref">System.Object</span></div>
-    <div class="level1"><a class="xref" href="Singularity.Bindings.WeaklyTypedConfiguredBinding.html">WeaklyTypedConfiguredBinding</a></div>
-    <div class="level2"><span class="xref">StronglyTypedConfiguredBinding&lt;TDependency, TInstance&gt;</span></div>
+    <div class="level1"><span class="xref">StronglyTypedConfiguredBinding&lt;TDependency, TInstance&gt;</span></div>
   </div>
   <div class="inheritedMembers">
     <h5>Inherited Members</h5>
-    <div>
-      <a class="xref" href="Singularity.Bindings.WeaklyTypedConfiguredBinding.html#Singularity_Bindings_WeaklyTypedConfiguredBinding_OnDeath_System_Action_System_Object__">WeaklyTypedConfiguredBinding.OnDeath(Action&lt;Object&gt;)</a>
-    </div>
     <div>
       <span class="xref">System.Object.Equals(System.Object)</span>
     </div>
@@ -113,7 +109,9 @@
   <h6><strong>Assembly</strong>: Singularity.dll</h6>
   <h5 id="Singularity_Bindings_StronglyTypedConfiguredBinding_2_syntax">Syntax</h5>
   <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">public sealed class StronglyTypedConfiguredBinding&lt;TDependency, TInstance&gt; : WeaklyTypedConfiguredBinding where TInstance : class</code></pre>
+    <pre><code class="lang-csharp hljs">public sealed class StronglyTypedConfiguredBinding&lt;TDependency, TInstance&gt;
+
+    where TInstance : class</code></pre>
   </div>
   <h5 class="typeParameters">Type Parameters</h5>
   <table class="table table-bordered table-striped table-condensed">
@@ -138,19 +136,18 @@
   </h3>
   <span class="small pull-right mobile-hide">
     <span class="divider">|</span>
-    <a href="https://github.com/Barsonax/Singularity/new/master/apiSpec/new?filename=Singularity_Bindings_StronglyTypedConfiguredBinding_2_OnDeath_System_Action__1__.md&amp;value=---%0Auid%3A%20Singularity.Bindings.StronglyTypedConfiguredBinding%602.OnDeath(System.Action%7B%601%7D)%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">Improve this Doc</a>
+    <a href="https://github.com/Barsonax/Singularity/new/master/apiSpec/new?filename=Singularity_Bindings_StronglyTypedConfiguredBinding_2_With_Singularity_DisposeBehavior_.md&amp;value=---%0Auid%3A%20Singularity.Bindings.StronglyTypedConfiguredBinding%602.With(Singularity.DisposeBehavior)%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">Improve this Doc</a>
   </span>
   <span class="small pull-right mobile-hide">
-    <a href="https://github.com/Barsonax/Singularity/blob/master/Singularity/Bindings/StronglyTypedConfiguredBinding.cs/#L35">View Source</a>
+    <a href="https://github.com/Barsonax/Singularity/blob/master/Singularity/Bindings/StronglyTypedConfiguredBinding.cs/#L29">View Source</a>
   </span>
-  <a id="Singularity_Bindings_StronglyTypedConfiguredBinding_2_OnDeath_" data-uid="Singularity.Bindings.StronglyTypedConfiguredBinding`2.OnDeath*"></a>
-  <h4 id="Singularity_Bindings_StronglyTypedConfiguredBinding_2_OnDeath_System_Action__1__" data-uid="Singularity.Bindings.StronglyTypedConfiguredBinding`2.OnDeath(System.Action{`1})">OnDeath(Action&lt;TInstance&gt;)</h4>
-  <div class="markdown level1 summary"><p>Sets the action that will be executed when the scope ends.</p>
-</div>
+  <a id="Singularity_Bindings_StronglyTypedConfiguredBinding_2_With_" data-uid="Singularity.Bindings.StronglyTypedConfiguredBinding`2.With*"></a>
+  <h4 id="Singularity_Bindings_StronglyTypedConfiguredBinding_2_With_Singularity_DisposeBehavior_" data-uid="Singularity.Bindings.StronglyTypedConfiguredBinding`2.With(Singularity.DisposeBehavior)">With(DisposeBehavior)</h4>
+  <div class="markdown level1 summary"></div>
   <div class="markdown level1 conceptual"></div>
   <h5 class="decalaration">Declaration</h5>
   <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">public StronglyTypedConfiguredBinding&lt;TDependency, TInstance&gt; OnDeath(Action&lt;TInstance&gt; onDeathAction)</code></pre>
+    <pre><code class="lang-csharp hljs">public StronglyTypedConfiguredBinding&lt;TDependency, TInstance&gt; With(DisposeBehavior disposeBehavior)</code></pre>
   </div>
   <h5 class="parameters">Parameters</h5>
   <table class="table table-bordered table-striped table-condensed">
@@ -163,8 +160,8 @@
     </thead>
     <tbody>
       <tr>
-        <td><span class="xref">System.Action</span>&lt;TInstance&gt;</td>
-        <td><span class="parametername">onDeathAction</span></td>
+        <td><a class="xref" href="Singularity.DisposeBehavior.html">DisposeBehavior</a></td>
+        <td><span class="parametername">disposeBehavior</span></td>
         <td></td>
       </tr>
     </tbody>
@@ -189,12 +186,11 @@
     <a href="https://github.com/Barsonax/Singularity/new/master/apiSpec/new?filename=Singularity_Bindings_StronglyTypedConfiguredBinding_2_With_Singularity_Lifetime_.md&amp;value=---%0Auid%3A%20Singularity.Bindings.StronglyTypedConfiguredBinding%602.With(Singularity.Lifetime)%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">Improve this Doc</a>
   </span>
   <span class="small pull-right mobile-hide">
-    <a href="https://github.com/Barsonax/Singularity/blob/master/Singularity/Bindings/StronglyTypedConfiguredBinding.cs/#L23">View Source</a>
+    <a href="https://github.com/Barsonax/Singularity/blob/master/Singularity/Bindings/StronglyTypedConfiguredBinding.cs/#L35">View Source</a>
   </span>
   <a id="Singularity_Bindings_StronglyTypedConfiguredBinding_2_With_" data-uid="Singularity.Bindings.StronglyTypedConfiguredBinding`2.With*"></a>
   <h4 id="Singularity_Bindings_StronglyTypedConfiguredBinding_2_With_Singularity_Lifetime_" data-uid="Singularity.Bindings.StronglyTypedConfiguredBinding`2.With(Singularity.Lifetime)">With(Lifetime)</h4>
-  <div class="markdown level1 summary"><p>Sets the lifetime of the instance(s)</p>
-</div>
+  <div class="markdown level1 summary"></div>
   <div class="markdown level1 conceptual"></div>
   <h5 class="decalaration">Declaration</h5>
   <div class="codewrapper">
@@ -232,6 +228,54 @@
       </tr>
     </tbody>
   </table>
+  <span class="small pull-right mobile-hide">
+    <span class="divider">|</span>
+    <a href="https://github.com/Barsonax/Singularity/new/master/apiSpec/new?filename=Singularity_Bindings_StronglyTypedConfiguredBinding_2_WithFinalizer_System_Action__1__.md&amp;value=---%0Auid%3A%20Singularity.Bindings.StronglyTypedConfiguredBinding%602.WithFinalizer(System.Action%7B%601%7D)%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">Improve this Doc</a>
+  </span>
+  <span class="small pull-right mobile-hide">
+    <a href="https://github.com/Barsonax/Singularity/blob/master/Singularity/Bindings/StronglyTypedConfiguredBinding.cs/#L23">View Source</a>
+  </span>
+  <a id="Singularity_Bindings_StronglyTypedConfiguredBinding_2_WithFinalizer_" data-uid="Singularity.Bindings.StronglyTypedConfiguredBinding`2.WithFinalizer*"></a>
+  <h4 id="Singularity_Bindings_StronglyTypedConfiguredBinding_2_WithFinalizer_System_Action__1__" data-uid="Singularity.Bindings.StronglyTypedConfiguredBinding`2.WithFinalizer(System.Action{`1})">WithFinalizer(Action&lt;TInstance&gt;)</h4>
+  <div class="markdown level1 summary"><p>Sets the action that will be executed when the scope ends.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+  <h5 class="decalaration">Declaration</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public StronglyTypedConfiguredBinding&lt;TDependency, TInstance&gt; WithFinalizer(Action&lt;TInstance&gt; onDeathAction)</code></pre>
+  </div>
+  <h5 class="parameters">Parameters</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Name</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><span class="xref">System.Action</span>&lt;TInstance&gt;</td>
+        <td><span class="parametername">onDeathAction</span></td>
+        <td></td>
+      </tr>
+    </tbody>
+  </table>
+  <h5 class="returns">Returns</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><a class="xref" href="Singularity.Bindings.StronglyTypedConfiguredBinding-2.html">StronglyTypedConfiguredBinding</a>&lt;TDependency, TInstance&gt;</td>
+        <td></td>
+      </tr>
+    </tbody>
+  </table>
 </article>
           </div>
           
@@ -243,7 +287,7 @@
                     <a href="https://github.com/Barsonax/Singularity/new/master/apiSpec/new?filename=Singularity_Bindings_StronglyTypedConfiguredBinding_2.md&amp;value=---%0Auid%3A%20Singularity.Bindings.StronglyTypedConfiguredBinding%602%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A" class="contribution-link">Improve this Doc</a>
                   </li>
                   <li>
-                    <a href="https://github.com/Barsonax/Singularity/blob/master/Singularity/Bindings/StronglyTypedConfiguredBinding.cs/#L10" class="contribution-link">View Source</a>
+                    <a href="https://github.com/Barsonax/Singularity/blob/master/Singularity/Bindings/StronglyTypedConfiguredBinding.cs/#L8" class="contribution-link">View Source</a>
                   </li>
                 </ul>
               </div>

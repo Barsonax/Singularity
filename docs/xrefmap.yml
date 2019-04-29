@@ -56,19 +56,6 @@ references:
   fullName.vb: Singularity.BindingConfig.Decorate(Of TDependency, TDecorator)(System.String, System.Int32)
   nameWithType: BindingConfig.Decorate<TDependency, TDecorator>(String, Int32)
   nameWithType.vb: BindingConfig.Decorate(Of TDependency, TDecorator)(String, Int32)
-- uid: Singularity.BindingConfig.Locked
-  name: Locked
-  href: api/Singularity.BindingConfig.html#Singularity_BindingConfig_Locked
-  commentId: P:Singularity.BindingConfig.Locked
-  fullName: Singularity.BindingConfig.Locked
-  nameWithType: BindingConfig.Locked
-- uid: Singularity.BindingConfig.Locked*
-  name: Locked
-  href: api/Singularity.BindingConfig.html#Singularity_BindingConfig_Locked_
-  commentId: Overload:Singularity.BindingConfig.Locked
-  isSpec: "True"
-  fullName: Singularity.BindingConfig.Locked
-  nameWithType: BindingConfig.Locked
 - uid: Singularity.BindingConfig.Register(System.Type,System.String,System.Int32)
   name: Register(Type, String, Int32)
   href: api/Singularity.BindingConfig.html#Singularity_BindingConfig_Register_System_Type_System_String_System_Int32_
@@ -90,6 +77,24 @@ references:
   fullName.vb: Singularity.BindingConfig.Register(System.Type, System.Type(), System.String, System.Int32)
   nameWithType: BindingConfig.Register(Type, Type[], String, Int32)
   nameWithType.vb: BindingConfig.Register(Type, Type(), String, Int32)
+- uid: Singularity.BindingConfig.Register(System.Type[],System.String,System.Int32)
+  name: Register(Type[], String, Int32)
+  href: api/Singularity.BindingConfig.html#Singularity_BindingConfig_Register_System_Type___System_String_System_Int32_
+  commentId: M:Singularity.BindingConfig.Register(System.Type[],System.String,System.Int32)
+  name.vb: Register(Type(), String, Int32)
+  fullName: Singularity.BindingConfig.Register(System.Type[], System.String, System.Int32)
+  fullName.vb: Singularity.BindingConfig.Register(System.Type(), System.String, System.Int32)
+  nameWithType: BindingConfig.Register(Type[], String, Int32)
+  nameWithType.vb: BindingConfig.Register(Type(), String, Int32)
+- uid: Singularity.BindingConfig.Register(System.Type[],System.Type,System.String,System.Int32)
+  name: Register(Type[], Type, String, Int32)
+  href: api/Singularity.BindingConfig.html#Singularity_BindingConfig_Register_System_Type___System_Type_System_String_System_Int32_
+  commentId: M:Singularity.BindingConfig.Register(System.Type[],System.Type,System.String,System.Int32)
+  name.vb: Register(Type(), Type, String, Int32)
+  fullName: Singularity.BindingConfig.Register(System.Type[], System.Type, System.String, System.Int32)
+  fullName.vb: Singularity.BindingConfig.Register(System.Type(), System.Type, System.String, System.Int32)
+  nameWithType: BindingConfig.Register(Type[], Type, String, Int32)
+  nameWithType.vb: BindingConfig.Register(Type(), Type, String, Int32)
 - uid: Singularity.BindingConfig.Register*
   name: Register
   href: api/Singularity.BindingConfig.html#Singularity_BindingConfig_Register_
@@ -107,14 +112,41 @@ references:
   nameWithType: BindingConfig.Register<TDependency>(String, Int32)
   nameWithType.vb: BindingConfig.Register(Of TDependency)(String, Int32)
 - uid: Singularity.BindingConfig.Register``2(System.String,System.Int32)
-  name: Register<TDependency, TInstance>(String, Int32)
+  name: Register<TDependency1, TInstance>(String, Int32)
   href: api/Singularity.BindingConfig.html#Singularity_BindingConfig_Register__2_System_String_System_Int32_
   commentId: M:Singularity.BindingConfig.Register``2(System.String,System.Int32)
-  name.vb: Register(Of TDependency, TInstance)(String, Int32)
-  fullName: Singularity.BindingConfig.Register<TDependency, TInstance>(System.String, System.Int32)
-  fullName.vb: Singularity.BindingConfig.Register(Of TDependency, TInstance)(System.String, System.Int32)
-  nameWithType: BindingConfig.Register<TDependency, TInstance>(String, Int32)
-  nameWithType.vb: BindingConfig.Register(Of TDependency, TInstance)(String, Int32)
+  name.vb: Register(Of TDependency1, TInstance)(String, Int32)
+  fullName: Singularity.BindingConfig.Register<TDependency1, TInstance>(System.String, System.Int32)
+  fullName.vb: Singularity.BindingConfig.Register(Of TDependency1, TInstance)(System.String, System.Int32)
+  nameWithType: BindingConfig.Register<TDependency1, TInstance>(String, Int32)
+  nameWithType.vb: BindingConfig.Register(Of TDependency1, TInstance)(String, Int32)
+- uid: Singularity.BindingConfig.Register``3(System.String,System.Int32)
+  name: Register<TDependency1, TDependency2, TInstance>(String, Int32)
+  href: api/Singularity.BindingConfig.html#Singularity_BindingConfig_Register__3_System_String_System_Int32_
+  commentId: M:Singularity.BindingConfig.Register``3(System.String,System.Int32)
+  name.vb: Register(Of TDependency1, TDependency2, TInstance)(String, Int32)
+  fullName: Singularity.BindingConfig.Register<TDependency1, TDependency2, TInstance>(System.String, System.Int32)
+  fullName.vb: Singularity.BindingConfig.Register(Of TDependency1, TDependency2, TInstance)(System.String, System.Int32)
+  nameWithType: BindingConfig.Register<TDependency1, TDependency2, TInstance>(String, Int32)
+  nameWithType.vb: BindingConfig.Register(Of TDependency1, TDependency2, TInstance)(String, Int32)
+- uid: Singularity.BindingConfig.Register``4(System.String,System.Int32)
+  name: Register<TDependency1, TDependency2, TDependency3, TInstance>(String, Int32)
+  href: api/Singularity.BindingConfig.html#Singularity_BindingConfig_Register__4_System_String_System_Int32_
+  commentId: M:Singularity.BindingConfig.Register``4(System.String,System.Int32)
+  name.vb: Register(Of TDependency1, TDependency2, TDependency3, TInstance)(String, Int32)
+  fullName: Singularity.BindingConfig.Register<TDependency1, TDependency2, TDependency3, TInstance>(System.String, System.Int32)
+  fullName.vb: Singularity.BindingConfig.Register(Of TDependency1, TDependency2, TDependency3, TInstance)(System.String, System.Int32)
+  nameWithType: BindingConfig.Register<TDependency1, TDependency2, TDependency3, TInstance>(String, Int32)
+  nameWithType.vb: BindingConfig.Register(Of TDependency1, TDependency2, TDependency3, TInstance)(String, Int32)
+- uid: Singularity.BindingConfig.Register``5(System.String,System.Int32)
+  name: Register<TDependency1, TDependency2, TDependency3, TDependency4, TInstance>(String, Int32)
+  href: api/Singularity.BindingConfig.html#Singularity_BindingConfig_Register__5_System_String_System_Int32_
+  commentId: M:Singularity.BindingConfig.Register``5(System.String,System.Int32)
+  name.vb: Register(Of TDependency1, TDependency2, TDependency3, TDependency4, TInstance)(String, Int32)
+  fullName: Singularity.BindingConfig.Register<TDependency1, TDependency2, TDependency3, TDependency4, TInstance>(System.String, System.Int32)
+  fullName.vb: Singularity.BindingConfig.Register(Of TDependency1, TDependency2, TDependency3, TDependency4, TInstance)(System.String, System.Int32)
+  nameWithType: BindingConfig.Register<TDependency1, TDependency2, TDependency3, TDependency4, TInstance>(String, Int32)
+  nameWithType.vb: BindingConfig.Register(Of TDependency1, TDependency2, TDependency3, TDependency4, TInstance)(String, Int32)
 - uid: Singularity.Bindings
   name: Singularity.Bindings
   href: api/Singularity.Bindings.html
@@ -229,24 +261,14 @@ references:
   fullName.vb: Singularity.Bindings.StronglyTypedConfiguredBinding(Of TDependency, TInstance)
   nameWithType: StronglyTypedConfiguredBinding<TDependency, TInstance>
   nameWithType.vb: StronglyTypedConfiguredBinding(Of TDependency, TInstance)
-- uid: Singularity.Bindings.StronglyTypedConfiguredBinding`2.OnDeath(System.Action{`1})
-  name: OnDeath(Action<TInstance>)
-  href: api/Singularity.Bindings.StronglyTypedConfiguredBinding-2.html#Singularity_Bindings_StronglyTypedConfiguredBinding_2_OnDeath_System_Action__1__
-  commentId: M:Singularity.Bindings.StronglyTypedConfiguredBinding`2.OnDeath(System.Action{`1})
-  name.vb: OnDeath(Action(Of TInstance))
-  fullName: Singularity.Bindings.StronglyTypedConfiguredBinding<TDependency, TInstance>.OnDeath(System.Action<TInstance>)
-  fullName.vb: Singularity.Bindings.StronglyTypedConfiguredBinding(Of TDependency, TInstance).OnDeath(System.Action(Of TInstance))
-  nameWithType: StronglyTypedConfiguredBinding<TDependency, TInstance>.OnDeath(Action<TInstance>)
-  nameWithType.vb: StronglyTypedConfiguredBinding(Of TDependency, TInstance).OnDeath(Action(Of TInstance))
-- uid: Singularity.Bindings.StronglyTypedConfiguredBinding`2.OnDeath*
-  name: OnDeath
-  href: api/Singularity.Bindings.StronglyTypedConfiguredBinding-2.html#Singularity_Bindings_StronglyTypedConfiguredBinding_2_OnDeath_
-  commentId: Overload:Singularity.Bindings.StronglyTypedConfiguredBinding`2.OnDeath
-  isSpec: "True"
-  fullName: Singularity.Bindings.StronglyTypedConfiguredBinding<TDependency, TInstance>.OnDeath
-  fullName.vb: Singularity.Bindings.StronglyTypedConfiguredBinding(Of TDependency, TInstance).OnDeath
-  nameWithType: StronglyTypedConfiguredBinding<TDependency, TInstance>.OnDeath
-  nameWithType.vb: StronglyTypedConfiguredBinding(Of TDependency, TInstance).OnDeath
+- uid: Singularity.Bindings.StronglyTypedConfiguredBinding`2.With(Singularity.DisposeBehavior)
+  name: With(DisposeBehavior)
+  href: api/Singularity.Bindings.StronglyTypedConfiguredBinding-2.html#Singularity_Bindings_StronglyTypedConfiguredBinding_2_With_Singularity_DisposeBehavior_
+  commentId: M:Singularity.Bindings.StronglyTypedConfiguredBinding`2.With(Singularity.DisposeBehavior)
+  fullName: Singularity.Bindings.StronglyTypedConfiguredBinding<TDependency, TInstance>.With(Singularity.DisposeBehavior)
+  fullName.vb: Singularity.Bindings.StronglyTypedConfiguredBinding(Of TDependency, TInstance).With(Singularity.DisposeBehavior)
+  nameWithType: StronglyTypedConfiguredBinding<TDependency, TInstance>.With(DisposeBehavior)
+  nameWithType.vb: StronglyTypedConfiguredBinding(Of TDependency, TInstance).With(DisposeBehavior)
 - uid: Singularity.Bindings.StronglyTypedConfiguredBinding`2.With(Singularity.Lifetime)
   name: With(Lifetime)
   href: api/Singularity.Bindings.StronglyTypedConfiguredBinding-2.html#Singularity_Bindings_StronglyTypedConfiguredBinding_2_With_Singularity_Lifetime_
@@ -264,6 +286,24 @@ references:
   fullName.vb: Singularity.Bindings.StronglyTypedConfiguredBinding(Of TDependency, TInstance).With
   nameWithType: StronglyTypedConfiguredBinding<TDependency, TInstance>.With
   nameWithType.vb: StronglyTypedConfiguredBinding(Of TDependency, TInstance).With
+- uid: Singularity.Bindings.StronglyTypedConfiguredBinding`2.WithFinalizer(System.Action{`1})
+  name: WithFinalizer(Action<TInstance>)
+  href: api/Singularity.Bindings.StronglyTypedConfiguredBinding-2.html#Singularity_Bindings_StronglyTypedConfiguredBinding_2_WithFinalizer_System_Action__1__
+  commentId: M:Singularity.Bindings.StronglyTypedConfiguredBinding`2.WithFinalizer(System.Action{`1})
+  name.vb: WithFinalizer(Action(Of TInstance))
+  fullName: Singularity.Bindings.StronglyTypedConfiguredBinding<TDependency, TInstance>.WithFinalizer(System.Action<TInstance>)
+  fullName.vb: Singularity.Bindings.StronglyTypedConfiguredBinding(Of TDependency, TInstance).WithFinalizer(System.Action(Of TInstance))
+  nameWithType: StronglyTypedConfiguredBinding<TDependency, TInstance>.WithFinalizer(Action<TInstance>)
+  nameWithType.vb: StronglyTypedConfiguredBinding(Of TDependency, TInstance).WithFinalizer(Action(Of TInstance))
+- uid: Singularity.Bindings.StronglyTypedConfiguredBinding`2.WithFinalizer*
+  name: WithFinalizer
+  href: api/Singularity.Bindings.StronglyTypedConfiguredBinding-2.html#Singularity_Bindings_StronglyTypedConfiguredBinding_2_WithFinalizer_
+  commentId: Overload:Singularity.Bindings.StronglyTypedConfiguredBinding`2.WithFinalizer
+  isSpec: "True"
+  fullName: Singularity.Bindings.StronglyTypedConfiguredBinding<TDependency, TInstance>.WithFinalizer
+  fullName.vb: Singularity.Bindings.StronglyTypedConfiguredBinding(Of TDependency, TInstance).WithFinalizer
+  nameWithType: StronglyTypedConfiguredBinding<TDependency, TInstance>.WithFinalizer
+  nameWithType.vb: StronglyTypedConfiguredBinding(Of TDependency, TInstance).WithFinalizer
 - uid: Singularity.Bindings.StronglyTypedDecoratorBinding`1
   name: StronglyTypedDecoratorBinding<TDependency>
   href: api/Singularity.Bindings.StronglyTypedDecoratorBinding-1.html
@@ -273,6 +313,40 @@ references:
   fullName.vb: Singularity.Bindings.StronglyTypedDecoratorBinding(Of TDependency)
   nameWithType: StronglyTypedDecoratorBinding<TDependency>
   nameWithType.vb: StronglyTypedDecoratorBinding(Of TDependency)
+- uid: Singularity.Bindings.StronglyTypedDecoratorBinding`1.DependencyType
+  name: DependencyType
+  href: api/Singularity.Bindings.StronglyTypedDecoratorBinding-1.html#Singularity_Bindings_StronglyTypedDecoratorBinding_1_DependencyType
+  commentId: P:Singularity.Bindings.StronglyTypedDecoratorBinding`1.DependencyType
+  fullName: Singularity.Bindings.StronglyTypedDecoratorBinding<TDependency>.DependencyType
+  fullName.vb: Singularity.Bindings.StronglyTypedDecoratorBinding(Of TDependency).DependencyType
+  nameWithType: StronglyTypedDecoratorBinding<TDependency>.DependencyType
+  nameWithType.vb: StronglyTypedDecoratorBinding(Of TDependency).DependencyType
+- uid: Singularity.Bindings.StronglyTypedDecoratorBinding`1.DependencyType*
+  name: DependencyType
+  href: api/Singularity.Bindings.StronglyTypedDecoratorBinding-1.html#Singularity_Bindings_StronglyTypedDecoratorBinding_1_DependencyType_
+  commentId: Overload:Singularity.Bindings.StronglyTypedDecoratorBinding`1.DependencyType
+  isSpec: "True"
+  fullName: Singularity.Bindings.StronglyTypedDecoratorBinding<TDependency>.DependencyType
+  fullName.vb: Singularity.Bindings.StronglyTypedDecoratorBinding(Of TDependency).DependencyType
+  nameWithType: StronglyTypedDecoratorBinding<TDependency>.DependencyType
+  nameWithType.vb: StronglyTypedDecoratorBinding(Of TDependency).DependencyType
+- uid: Singularity.Bindings.StronglyTypedDecoratorBinding`1.Expression
+  name: Expression
+  href: api/Singularity.Bindings.StronglyTypedDecoratorBinding-1.html#Singularity_Bindings_StronglyTypedDecoratorBinding_1_Expression
+  commentId: P:Singularity.Bindings.StronglyTypedDecoratorBinding`1.Expression
+  fullName: Singularity.Bindings.StronglyTypedDecoratorBinding<TDependency>.Expression
+  fullName.vb: Singularity.Bindings.StronglyTypedDecoratorBinding(Of TDependency).Expression
+  nameWithType: StronglyTypedDecoratorBinding<TDependency>.Expression
+  nameWithType.vb: StronglyTypedDecoratorBinding(Of TDependency).Expression
+- uid: Singularity.Bindings.StronglyTypedDecoratorBinding`1.Expression*
+  name: Expression
+  href: api/Singularity.Bindings.StronglyTypedDecoratorBinding-1.html#Singularity_Bindings_StronglyTypedDecoratorBinding_1_Expression_
+  commentId: Overload:Singularity.Bindings.StronglyTypedDecoratorBinding`1.Expression
+  isSpec: "True"
+  fullName: Singularity.Bindings.StronglyTypedDecoratorBinding<TDependency>.Expression
+  fullName.vb: Singularity.Bindings.StronglyTypedDecoratorBinding(Of TDependency).Expression
+  nameWithType: StronglyTypedDecoratorBinding<TDependency>.Expression
+  nameWithType.vb: StronglyTypedDecoratorBinding(Of TDependency).Expression
 - uid: Singularity.Bindings.WeaklyTypedBinding
   name: WeaklyTypedBinding
   href: api/Singularity.Bindings.WeaklyTypedBinding.html
@@ -292,19 +366,6 @@ references:
   isSpec: "True"
   fullName: Singularity.Bindings.WeaklyTypedBinding.BindingMetadata
   nameWithType: WeaklyTypedBinding.BindingMetadata
-- uid: Singularity.Bindings.WeaklyTypedBinding.DependencyType
-  name: DependencyType
-  href: api/Singularity.Bindings.WeaklyTypedBinding.html#Singularity_Bindings_WeaklyTypedBinding_DependencyType
-  commentId: P:Singularity.Bindings.WeaklyTypedBinding.DependencyType
-  fullName: Singularity.Bindings.WeaklyTypedBinding.DependencyType
-  nameWithType: WeaklyTypedBinding.DependencyType
-- uid: Singularity.Bindings.WeaklyTypedBinding.DependencyType*
-  name: DependencyType
-  href: api/Singularity.Bindings.WeaklyTypedBinding.html#Singularity_Bindings_WeaklyTypedBinding_DependencyType_
-  commentId: Overload:Singularity.Bindings.WeaklyTypedBinding.DependencyType
-  isSpec: "True"
-  fullName: Singularity.Bindings.WeaklyTypedBinding.DependencyType
-  nameWithType: WeaklyTypedBinding.DependencyType
 - uid: Singularity.Bindings.WeaklyTypedBinding.Expression
   name: Expression
   href: api/Singularity.Bindings.WeaklyTypedBinding.html#Singularity_Bindings_WeaklyTypedBinding_Expression
@@ -318,6 +379,19 @@ references:
   isSpec: "True"
   fullName: Singularity.Bindings.WeaklyTypedBinding.Expression
   nameWithType: WeaklyTypedBinding.Expression
+- uid: Singularity.Bindings.WeaklyTypedBinding.Finalizer
+  name: Finalizer
+  href: api/Singularity.Bindings.WeaklyTypedBinding.html#Singularity_Bindings_WeaklyTypedBinding_Finalizer
+  commentId: P:Singularity.Bindings.WeaklyTypedBinding.Finalizer
+  fullName: Singularity.Bindings.WeaklyTypedBinding.Finalizer
+  nameWithType: WeaklyTypedBinding.Finalizer
+- uid: Singularity.Bindings.WeaklyTypedBinding.Finalizer*
+  name: Finalizer
+  href: api/Singularity.Bindings.WeaklyTypedBinding.html#Singularity_Bindings_WeaklyTypedBinding_Finalizer_
+  commentId: Overload:Singularity.Bindings.WeaklyTypedBinding.Finalizer
+  isSpec: "True"
+  fullName: Singularity.Bindings.WeaklyTypedBinding.Finalizer
+  nameWithType: WeaklyTypedBinding.Finalizer
 - uid: Singularity.Bindings.WeaklyTypedBinding.Inject(System.Linq.Expressions.Expression)
   name: Inject(Expression)
   href: api/Singularity.Bindings.WeaklyTypedBinding.html#Singularity_Bindings_WeaklyTypedBinding_Inject_System_Linq_Expressions_Expression_
@@ -344,19 +418,19 @@ references:
   isSpec: "True"
   fullName: Singularity.Bindings.WeaklyTypedBinding.Lifetime
   nameWithType: WeaklyTypedBinding.Lifetime
-- uid: Singularity.Bindings.WeaklyTypedBinding.OnDeathAction
-  name: OnDeathAction
-  href: api/Singularity.Bindings.WeaklyTypedBinding.html#Singularity_Bindings_WeaklyTypedBinding_OnDeathAction
-  commentId: P:Singularity.Bindings.WeaklyTypedBinding.OnDeathAction
-  fullName: Singularity.Bindings.WeaklyTypedBinding.OnDeathAction
-  nameWithType: WeaklyTypedBinding.OnDeathAction
-- uid: Singularity.Bindings.WeaklyTypedBinding.OnDeathAction*
-  name: OnDeathAction
-  href: api/Singularity.Bindings.WeaklyTypedBinding.html#Singularity_Bindings_WeaklyTypedBinding_OnDeathAction_
-  commentId: Overload:Singularity.Bindings.WeaklyTypedBinding.OnDeathAction
+- uid: Singularity.Bindings.WeaklyTypedBinding.NeedsDispose
+  name: NeedsDispose
+  href: api/Singularity.Bindings.WeaklyTypedBinding.html#Singularity_Bindings_WeaklyTypedBinding_NeedsDispose
+  commentId: P:Singularity.Bindings.WeaklyTypedBinding.NeedsDispose
+  fullName: Singularity.Bindings.WeaklyTypedBinding.NeedsDispose
+  nameWithType: WeaklyTypedBinding.NeedsDispose
+- uid: Singularity.Bindings.WeaklyTypedBinding.NeedsDispose*
+  name: NeedsDispose
+  href: api/Singularity.Bindings.WeaklyTypedBinding.html#Singularity_Bindings_WeaklyTypedBinding_NeedsDispose_
+  commentId: Overload:Singularity.Bindings.WeaklyTypedBinding.NeedsDispose
   isSpec: "True"
-  fullName: Singularity.Bindings.WeaklyTypedBinding.OnDeathAction
-  nameWithType: WeaklyTypedBinding.OnDeathAction
+  fullName: Singularity.Bindings.WeaklyTypedBinding.NeedsDispose
+  nameWithType: WeaklyTypedBinding.NeedsDispose
 - uid: Singularity.Bindings.WeaklyTypedBindingBatch
   name: WeaklyTypedBindingBatch
   href: api/Singularity.Bindings.WeaklyTypedBindingBatch.html
@@ -382,22 +456,38 @@ references:
   commentId: T:Singularity.Bindings.WeaklyTypedConfiguredBinding
   fullName: Singularity.Bindings.WeaklyTypedConfiguredBinding
   nameWithType: WeaklyTypedConfiguredBinding
-- uid: Singularity.Bindings.WeaklyTypedConfiguredBinding.OnDeath(System.Action{System.Object})
-  name: OnDeath(Action<Object>)
-  href: api/Singularity.Bindings.WeaklyTypedConfiguredBinding.html#Singularity_Bindings_WeaklyTypedConfiguredBinding_OnDeath_System_Action_System_Object__
-  commentId: M:Singularity.Bindings.WeaklyTypedConfiguredBinding.OnDeath(System.Action{System.Object})
-  name.vb: OnDeath(Action(Of Object))
-  fullName: Singularity.Bindings.WeaklyTypedConfiguredBinding.OnDeath(System.Action<System.Object>)
-  fullName.vb: Singularity.Bindings.WeaklyTypedConfiguredBinding.OnDeath(System.Action(Of System.Object))
-  nameWithType: WeaklyTypedConfiguredBinding.OnDeath(Action<Object>)
-  nameWithType.vb: WeaklyTypedConfiguredBinding.OnDeath(Action(Of Object))
-- uid: Singularity.Bindings.WeaklyTypedConfiguredBinding.OnDeath*
-  name: OnDeath
-  href: api/Singularity.Bindings.WeaklyTypedConfiguredBinding.html#Singularity_Bindings_WeaklyTypedConfiguredBinding_OnDeath_
-  commentId: Overload:Singularity.Bindings.WeaklyTypedConfiguredBinding.OnDeath
+- uid: Singularity.Bindings.WeaklyTypedConfiguredBinding.DisposeBehavior
+  name: DisposeBehavior
+  href: api/Singularity.Bindings.WeaklyTypedConfiguredBinding.html#Singularity_Bindings_WeaklyTypedConfiguredBinding_DisposeBehavior
+  commentId: P:Singularity.Bindings.WeaklyTypedConfiguredBinding.DisposeBehavior
+  fullName: Singularity.Bindings.WeaklyTypedConfiguredBinding.DisposeBehavior
+  nameWithType: WeaklyTypedConfiguredBinding.DisposeBehavior
+- uid: Singularity.Bindings.WeaklyTypedConfiguredBinding.DisposeBehavior*
+  name: DisposeBehavior
+  href: api/Singularity.Bindings.WeaklyTypedConfiguredBinding.html#Singularity_Bindings_WeaklyTypedConfiguredBinding_DisposeBehavior_
+  commentId: Overload:Singularity.Bindings.WeaklyTypedConfiguredBinding.DisposeBehavior
   isSpec: "True"
-  fullName: Singularity.Bindings.WeaklyTypedConfiguredBinding.OnDeath
-  nameWithType: WeaklyTypedConfiguredBinding.OnDeath
+  fullName: Singularity.Bindings.WeaklyTypedConfiguredBinding.DisposeBehavior
+  nameWithType: WeaklyTypedConfiguredBinding.DisposeBehavior
+- uid: Singularity.Bindings.WeaklyTypedConfiguredBinding.Lifetime
+  name: Lifetime
+  href: api/Singularity.Bindings.WeaklyTypedConfiguredBinding.html#Singularity_Bindings_WeaklyTypedConfiguredBinding_Lifetime
+  commentId: P:Singularity.Bindings.WeaklyTypedConfiguredBinding.Lifetime
+  fullName: Singularity.Bindings.WeaklyTypedConfiguredBinding.Lifetime
+  nameWithType: WeaklyTypedConfiguredBinding.Lifetime
+- uid: Singularity.Bindings.WeaklyTypedConfiguredBinding.Lifetime*
+  name: Lifetime
+  href: api/Singularity.Bindings.WeaklyTypedConfiguredBinding.html#Singularity_Bindings_WeaklyTypedConfiguredBinding_Lifetime_
+  commentId: Overload:Singularity.Bindings.WeaklyTypedConfiguredBinding.Lifetime
+  isSpec: "True"
+  fullName: Singularity.Bindings.WeaklyTypedConfiguredBinding.Lifetime
+  nameWithType: WeaklyTypedConfiguredBinding.Lifetime
+- uid: Singularity.Bindings.WeaklyTypedConfiguredBinding.With(Singularity.DisposeBehavior)
+  name: With(DisposeBehavior)
+  href: api/Singularity.Bindings.WeaklyTypedConfiguredBinding.html#Singularity_Bindings_WeaklyTypedConfiguredBinding_With_Singularity_DisposeBehavior_
+  commentId: M:Singularity.Bindings.WeaklyTypedConfiguredBinding.With(Singularity.DisposeBehavior)
+  fullName: Singularity.Bindings.WeaklyTypedConfiguredBinding.With(Singularity.DisposeBehavior)
+  nameWithType: WeaklyTypedConfiguredBinding.With(DisposeBehavior)
 - uid: Singularity.Bindings.WeaklyTypedConfiguredBinding.With(Singularity.Lifetime)
   name: With(Lifetime)
   href: api/Singularity.Bindings.WeaklyTypedConfiguredBinding.html#Singularity_Bindings_WeaklyTypedConfiguredBinding_With_Singularity_Lifetime_
@@ -411,6 +501,22 @@ references:
   isSpec: "True"
   fullName: Singularity.Bindings.WeaklyTypedConfiguredBinding.With
   nameWithType: WeaklyTypedConfiguredBinding.With
+- uid: Singularity.Bindings.WeaklyTypedConfiguredBinding.WithFinalizer(System.Action{System.Object})
+  name: WithFinalizer(Action<Object>)
+  href: api/Singularity.Bindings.WeaklyTypedConfiguredBinding.html#Singularity_Bindings_WeaklyTypedConfiguredBinding_WithFinalizer_System_Action_System_Object__
+  commentId: M:Singularity.Bindings.WeaklyTypedConfiguredBinding.WithFinalizer(System.Action{System.Object})
+  name.vb: WithFinalizer(Action(Of Object))
+  fullName: Singularity.Bindings.WeaklyTypedConfiguredBinding.WithFinalizer(System.Action<System.Object>)
+  fullName.vb: Singularity.Bindings.WeaklyTypedConfiguredBinding.WithFinalizer(System.Action(Of System.Object))
+  nameWithType: WeaklyTypedConfiguredBinding.WithFinalizer(Action<Object>)
+  nameWithType.vb: WeaklyTypedConfiguredBinding.WithFinalizer(Action(Of Object))
+- uid: Singularity.Bindings.WeaklyTypedConfiguredBinding.WithFinalizer*
+  name: WithFinalizer
+  href: api/Singularity.Bindings.WeaklyTypedConfiguredBinding.html#Singularity_Bindings_WeaklyTypedConfiguredBinding_WithFinalizer_
+  commentId: Overload:Singularity.Bindings.WeaklyTypedConfiguredBinding.WithFinalizer
+  isSpec: "True"
+  fullName: Singularity.Bindings.WeaklyTypedConfiguredBinding.WithFinalizer
+  nameWithType: WeaklyTypedConfiguredBinding.WithFinalizer
 - uid: Singularity.Bindings.WeaklyTypedDecoratorBinding
   name: WeaklyTypedDecoratorBinding
   href: api/Singularity.Bindings.WeaklyTypedDecoratorBinding.html
@@ -455,12 +561,15 @@ references:
   commentId: T:Singularity.Container
   fullName: Singularity.Container
   nameWithType: Container
-- uid: Singularity.Container.#ctor(Singularity.BindingConfig)
-  name: Container(BindingConfig)
-  href: api/Singularity.Container.html#Singularity_Container__ctor_Singularity_BindingConfig_
-  commentId: M:Singularity.Container.#ctor(Singularity.BindingConfig)
-  fullName: Singularity.Container.Container(Singularity.BindingConfig)
-  nameWithType: Container.Container(BindingConfig)
+- uid: Singularity.Container.#ctor(Singularity.BindingConfig,System.Nullable{Singularity.SingularitySettings})
+  name: Container(BindingConfig, Nullable<SingularitySettings>)
+  href: api/Singularity.Container.html#Singularity_Container__ctor_Singularity_BindingConfig_System_Nullable_Singularity_SingularitySettings__
+  commentId: M:Singularity.Container.#ctor(Singularity.BindingConfig,System.Nullable{Singularity.SingularitySettings})
+  name.vb: Container(BindingConfig, Nullable(Of SingularitySettings))
+  fullName: Singularity.Container.Container(Singularity.BindingConfig, System.Nullable<Singularity.SingularitySettings>)
+  fullName.vb: Singularity.Container.Container(Singularity.BindingConfig, System.Nullable(Of Singularity.SingularitySettings))
+  nameWithType: Container.Container(BindingConfig, Nullable<SingularitySettings>)
+  nameWithType.vb: Container.Container(BindingConfig, Nullable(Of SingularitySettings))
 - uid: Singularity.Container.#ctor(System.Collections.Generic.IEnumerable{Singularity.IModule})
   name: Container(IEnumerable<IModule>)
   href: api/Singularity.Container.html#Singularity_Container__ctor_System_Collections_Generic_IEnumerable_Singularity_IModule__
@@ -589,6 +698,30 @@ references:
   fullName.vb: Singularity.Container.MethodInjectAll(Of T)(System.Collections.Generic.IEnumerable(Of T))
   nameWithType: Container.MethodInjectAll<T>(IEnumerable<T>)
   nameWithType.vb: Container.MethodInjectAll(Of T)(IEnumerable(Of T))
+- uid: Singularity.DisposeBehavior
+  name: DisposeBehavior
+  href: api/Singularity.DisposeBehavior.html
+  commentId: T:Singularity.DisposeBehavior
+  fullName: Singularity.DisposeBehavior
+  nameWithType: DisposeBehavior
+- uid: Singularity.DisposeBehavior.Always
+  name: Always
+  href: api/Singularity.DisposeBehavior.html#Singularity_DisposeBehavior_Always
+  commentId: F:Singularity.DisposeBehavior.Always
+  fullName: Singularity.DisposeBehavior.Always
+  nameWithType: DisposeBehavior.Always
+- uid: Singularity.DisposeBehavior.Default
+  name: Default
+  href: api/Singularity.DisposeBehavior.html#Singularity_DisposeBehavior_Default
+  commentId: F:Singularity.DisposeBehavior.Default
+  fullName: Singularity.DisposeBehavior.Default
+  nameWithType: DisposeBehavior.Default
+- uid: Singularity.DisposeBehavior.Never
+  name: Never
+  href: api/Singularity.DisposeBehavior.html#Singularity_DisposeBehavior_Never
+  commentId: F:Singularity.DisposeBehavior.Never
+  fullName: Singularity.DisposeBehavior.Never
+  nameWithType: DisposeBehavior.Never
 - uid: Singularity.Duality
   name: Singularity.Duality
   href: api/Singularity.Duality.html
@@ -908,6 +1041,32 @@ references:
   isSpec: "True"
   fullName: Singularity.Exceptions.InterfaceExpectedException.InterfaceExpectedException
   nameWithType: InterfaceExpectedException.InterfaceExpectedException
+- uid: Singularity.Exceptions.InvalidEnumValue`1
+  name: InvalidEnumValue<T>
+  href: api/Singularity.Exceptions.InvalidEnumValue-1.html
+  commentId: T:Singularity.Exceptions.InvalidEnumValue`1
+  name.vb: InvalidEnumValue(Of T)
+  fullName: Singularity.Exceptions.InvalidEnumValue<T>
+  fullName.vb: Singularity.Exceptions.InvalidEnumValue(Of T)
+  nameWithType: InvalidEnumValue<T>
+  nameWithType.vb: InvalidEnumValue(Of T)
+- uid: Singularity.Exceptions.InvalidEnumValue`1.#ctor(System.Runtime.Serialization.SerializationInfo,System.Runtime.Serialization.StreamingContext)
+  name: InvalidEnumValue(SerializationInfo, StreamingContext)
+  href: api/Singularity.Exceptions.InvalidEnumValue-1.html#Singularity_Exceptions_InvalidEnumValue_1__ctor_System_Runtime_Serialization_SerializationInfo_System_Runtime_Serialization_StreamingContext_
+  commentId: M:Singularity.Exceptions.InvalidEnumValue`1.#ctor(System.Runtime.Serialization.SerializationInfo,System.Runtime.Serialization.StreamingContext)
+  fullName: Singularity.Exceptions.InvalidEnumValue<T>.InvalidEnumValue(System.Runtime.Serialization.SerializationInfo, System.Runtime.Serialization.StreamingContext)
+  fullName.vb: Singularity.Exceptions.InvalidEnumValue(Of T).InvalidEnumValue(System.Runtime.Serialization.SerializationInfo, System.Runtime.Serialization.StreamingContext)
+  nameWithType: InvalidEnumValue<T>.InvalidEnumValue(SerializationInfo, StreamingContext)
+  nameWithType.vb: InvalidEnumValue(Of T).InvalidEnumValue(SerializationInfo, StreamingContext)
+- uid: Singularity.Exceptions.InvalidEnumValue`1.#ctor*
+  name: InvalidEnumValue
+  href: api/Singularity.Exceptions.InvalidEnumValue-1.html#Singularity_Exceptions_InvalidEnumValue_1__ctor_
+  commentId: Overload:Singularity.Exceptions.InvalidEnumValue`1.#ctor
+  isSpec: "True"
+  fullName: Singularity.Exceptions.InvalidEnumValue<T>.InvalidEnumValue
+  fullName.vb: Singularity.Exceptions.InvalidEnumValue(Of T).InvalidEnumValue
+  nameWithType: InvalidEnumValue<T>.InvalidEnumValue
+  nameWithType.vb: InvalidEnumValue(Of T).InvalidEnumValue
 - uid: Singularity.Exceptions.InvalidExpressionArgumentsException
   name: InvalidExpressionArgumentsException
   href: api/Singularity.Exceptions.InvalidExpressionArgumentsException.html
@@ -927,25 +1086,6 @@ references:
   isSpec: "True"
   fullName: Singularity.Exceptions.InvalidExpressionArgumentsException.InvalidExpressionArgumentsException
   nameWithType: InvalidExpressionArgumentsException.InvalidExpressionArgumentsException
-- uid: Singularity.Exceptions.InvalidLifetimeException
-  name: InvalidLifetimeException
-  href: api/Singularity.Exceptions.InvalidLifetimeException.html
-  commentId: T:Singularity.Exceptions.InvalidLifetimeException
-  fullName: Singularity.Exceptions.InvalidLifetimeException
-  nameWithType: InvalidLifetimeException
-- uid: Singularity.Exceptions.InvalidLifetimeException.#ctor(System.Runtime.Serialization.SerializationInfo,System.Runtime.Serialization.StreamingContext)
-  name: InvalidLifetimeException(SerializationInfo, StreamingContext)
-  href: api/Singularity.Exceptions.InvalidLifetimeException.html#Singularity_Exceptions_InvalidLifetimeException__ctor_System_Runtime_Serialization_SerializationInfo_System_Runtime_Serialization_StreamingContext_
-  commentId: M:Singularity.Exceptions.InvalidLifetimeException.#ctor(System.Runtime.Serialization.SerializationInfo,System.Runtime.Serialization.StreamingContext)
-  fullName: Singularity.Exceptions.InvalidLifetimeException.InvalidLifetimeException(System.Runtime.Serialization.SerializationInfo, System.Runtime.Serialization.StreamingContext)
-  nameWithType: InvalidLifetimeException.InvalidLifetimeException(SerializationInfo, StreamingContext)
-- uid: Singularity.Exceptions.InvalidLifetimeException.#ctor*
-  name: InvalidLifetimeException
-  href: api/Singularity.Exceptions.InvalidLifetimeException.html#Singularity_Exceptions_InvalidLifetimeException__ctor_
-  commentId: Overload:Singularity.Exceptions.InvalidLifetimeException.#ctor
-  isSpec: "True"
-  fullName: Singularity.Exceptions.InvalidLifetimeException.InvalidLifetimeException
-  nameWithType: InvalidLifetimeException.InvalidLifetimeException
 - uid: Singularity.Exceptions.NoConstructorException
   name: NoConstructorException
   href: api/Singularity.Exceptions.NoConstructorException.html
@@ -984,6 +1124,43 @@ references:
   isSpec: "True"
   fullName: Singularity.Exceptions.RegistrationAlreadyExistsException.RegistrationAlreadyExistsException
   nameWithType: RegistrationAlreadyExistsException.RegistrationAlreadyExistsException
+- uid: Singularity.Exceptions.RegistrationCollisionException
+  name: RegistrationCollisionException
+  href: api/Singularity.Exceptions.RegistrationCollisionException.html
+  commentId: T:Singularity.Exceptions.RegistrationCollisionException
+  fullName: Singularity.Exceptions.RegistrationCollisionException
+  nameWithType: RegistrationCollisionException
+- uid: Singularity.Exceptions.RegistrationCollisionException.#ctor(System.Runtime.Serialization.SerializationInfo,System.Runtime.Serialization.StreamingContext)
+  name: RegistrationCollisionException(SerializationInfo, StreamingContext)
+  href: api/Singularity.Exceptions.RegistrationCollisionException.html#Singularity_Exceptions_RegistrationCollisionException__ctor_System_Runtime_Serialization_SerializationInfo_System_Runtime_Serialization_StreamingContext_
+  commentId: M:Singularity.Exceptions.RegistrationCollisionException.#ctor(System.Runtime.Serialization.SerializationInfo,System.Runtime.Serialization.StreamingContext)
+  fullName: Singularity.Exceptions.RegistrationCollisionException.RegistrationCollisionException(System.Runtime.Serialization.SerializationInfo, System.Runtime.Serialization.StreamingContext)
+  nameWithType: RegistrationCollisionException.RegistrationCollisionException(SerializationInfo, StreamingContext)
+- uid: Singularity.Exceptions.RegistrationCollisionException.#ctor(System.Type[],System.Type[])
+  name: RegistrationCollisionException(Type[], Type[])
+  href: api/Singularity.Exceptions.RegistrationCollisionException.html#Singularity_Exceptions_RegistrationCollisionException__ctor_System_Type___System_Type___
+  commentId: M:Singularity.Exceptions.RegistrationCollisionException.#ctor(System.Type[],System.Type[])
+  name.vb: RegistrationCollisionException(Type(), Type())
+  fullName: Singularity.Exceptions.RegistrationCollisionException.RegistrationCollisionException(System.Type[], System.Type[])
+  fullName.vb: Singularity.Exceptions.RegistrationCollisionException.RegistrationCollisionException(System.Type(), System.Type())
+  nameWithType: RegistrationCollisionException.RegistrationCollisionException(Type[], Type[])
+  nameWithType.vb: RegistrationCollisionException.RegistrationCollisionException(Type(), Type())
+- uid: Singularity.Exceptions.RegistrationCollisionException.#ctor(System.Type[],System.Type[],System.Exception)
+  name: RegistrationCollisionException(Type[], Type[], Exception)
+  href: api/Singularity.Exceptions.RegistrationCollisionException.html#Singularity_Exceptions_RegistrationCollisionException__ctor_System_Type___System_Type___System_Exception_
+  commentId: M:Singularity.Exceptions.RegistrationCollisionException.#ctor(System.Type[],System.Type[],System.Exception)
+  name.vb: RegistrationCollisionException(Type(), Type(), Exception)
+  fullName: Singularity.Exceptions.RegistrationCollisionException.RegistrationCollisionException(System.Type[], System.Type[], System.Exception)
+  fullName.vb: Singularity.Exceptions.RegistrationCollisionException.RegistrationCollisionException(System.Type(), System.Type(), System.Exception)
+  nameWithType: RegistrationCollisionException.RegistrationCollisionException(Type[], Type[], Exception)
+  nameWithType.vb: RegistrationCollisionException.RegistrationCollisionException(Type(), Type(), Exception)
+- uid: Singularity.Exceptions.RegistrationCollisionException.#ctor*
+  name: RegistrationCollisionException
+  href: api/Singularity.Exceptions.RegistrationCollisionException.html#Singularity_Exceptions_RegistrationCollisionException__ctor_
+  commentId: Overload:Singularity.Exceptions.RegistrationCollisionException.#ctor
+  isSpec: "True"
+  fullName: Singularity.Exceptions.RegistrationCollisionException.RegistrationCollisionException
+  nameWithType: RegistrationCollisionException.RegistrationCollisionException
 - uid: Singularity.Exceptions.SingularityAggregateException
   name: SingularityAggregateException
   href: api/Singularity.Exceptions.SingularityAggregateException.html
@@ -1118,19 +1295,19 @@ references:
   isSpec: "True"
   fullName: Singularity.Graph.BindingMetadata.CreatorLineNumber
   nameWithType: BindingMetadata.CreatorLineNumber
-- uid: Singularity.Graph.BindingMetadata.DependencyType
-  name: DependencyType
-  href: api/Singularity.Graph.BindingMetadata.html#Singularity_Graph_BindingMetadata_DependencyType
-  commentId: P:Singularity.Graph.BindingMetadata.DependencyType
-  fullName: Singularity.Graph.BindingMetadata.DependencyType
-  nameWithType: BindingMetadata.DependencyType
-- uid: Singularity.Graph.BindingMetadata.DependencyType*
-  name: DependencyType
-  href: api/Singularity.Graph.BindingMetadata.html#Singularity_Graph_BindingMetadata_DependencyType_
-  commentId: Overload:Singularity.Graph.BindingMetadata.DependencyType
+- uid: Singularity.Graph.BindingMetadata.DependencyTypes
+  name: DependencyTypes
+  href: api/Singularity.Graph.BindingMetadata.html#Singularity_Graph_BindingMetadata_DependencyTypes
+  commentId: P:Singularity.Graph.BindingMetadata.DependencyTypes
+  fullName: Singularity.Graph.BindingMetadata.DependencyTypes
+  nameWithType: BindingMetadata.DependencyTypes
+- uid: Singularity.Graph.BindingMetadata.DependencyTypes*
+  name: DependencyTypes
+  href: api/Singularity.Graph.BindingMetadata.html#Singularity_Graph_BindingMetadata_DependencyTypes_
+  commentId: Overload:Singularity.Graph.BindingMetadata.DependencyTypes
   isSpec: "True"
-  fullName: Singularity.Graph.BindingMetadata.DependencyType
-  nameWithType: BindingMetadata.DependencyType
+  fullName: Singularity.Graph.BindingMetadata.DependencyTypes
+  nameWithType: BindingMetadata.DependencyTypes
 - uid: Singularity.Graph.BindingMetadata.Generated
   name: Generated
   href: api/Singularity.Graph.BindingMetadata.html#Singularity_Graph_BindingMetadata_Generated
@@ -1241,6 +1418,179 @@ references:
   commentId: F:Singularity.Lifetime.Transient
   fullName: Singularity.Lifetime.Transient
   nameWithType: Lifetime.Transient
+- uid: Singularity.Microsoft.DependencyInjection
+  name: Singularity.Microsoft.DependencyInjection
+  href: api/Singularity.Microsoft.DependencyInjection.html
+  commentId: N:Singularity.Microsoft.DependencyInjection
+  fullName: Singularity.Microsoft.DependencyInjection
+  nameWithType: Singularity.Microsoft.DependencyInjection
+- uid: Singularity.Microsoft.DependencyInjection.Extensions
+  name: Extensions
+  href: api/Singularity.Microsoft.DependencyInjection.Extensions.html
+  commentId: T:Singularity.Microsoft.DependencyInjection.Extensions
+  fullName: Singularity.Microsoft.DependencyInjection.Extensions
+  nameWithType: Extensions
+- uid: Singularity.Microsoft.DependencyInjection.Extensions.CreateServiceProvider(Singularity.BindingConfig)
+  name: CreateServiceProvider(BindingConfig)
+  href: api/Singularity.Microsoft.DependencyInjection.Extensions.html#Singularity_Microsoft_DependencyInjection_Extensions_CreateServiceProvider_Singularity_BindingConfig_
+  commentId: M:Singularity.Microsoft.DependencyInjection.Extensions.CreateServiceProvider(Singularity.BindingConfig)
+  fullName: Singularity.Microsoft.DependencyInjection.Extensions.CreateServiceProvider(Singularity.BindingConfig)
+  nameWithType: Extensions.CreateServiceProvider(BindingConfig)
+- uid: Singularity.Microsoft.DependencyInjection.Extensions.CreateServiceProvider*
+  name: CreateServiceProvider
+  href: api/Singularity.Microsoft.DependencyInjection.Extensions.html#Singularity_Microsoft_DependencyInjection_Extensions_CreateServiceProvider_
+  commentId: Overload:Singularity.Microsoft.DependencyInjection.Extensions.CreateServiceProvider
+  isSpec: "True"
+  fullName: Singularity.Microsoft.DependencyInjection.Extensions.CreateServiceProvider
+  nameWithType: Extensions.CreateServiceProvider
+- uid: Singularity.Microsoft.DependencyInjection.Extensions.RegisterService(Singularity.BindingConfig,Microsoft.Extensions.DependencyInjection.ServiceDescriptor)
+  name: RegisterService(BindingConfig, ServiceDescriptor)
+  href: api/Singularity.Microsoft.DependencyInjection.Extensions.html#Singularity_Microsoft_DependencyInjection_Extensions_RegisterService_Singularity_BindingConfig_Microsoft_Extensions_DependencyInjection_ServiceDescriptor_
+  commentId: M:Singularity.Microsoft.DependencyInjection.Extensions.RegisterService(Singularity.BindingConfig,Microsoft.Extensions.DependencyInjection.ServiceDescriptor)
+  fullName: Singularity.Microsoft.DependencyInjection.Extensions.RegisterService(Singularity.BindingConfig, Microsoft.Extensions.DependencyInjection.ServiceDescriptor)
+  nameWithType: Extensions.RegisterService(BindingConfig, ServiceDescriptor)
+- uid: Singularity.Microsoft.DependencyInjection.Extensions.RegisterService*
+  name: RegisterService
+  href: api/Singularity.Microsoft.DependencyInjection.Extensions.html#Singularity_Microsoft_DependencyInjection_Extensions_RegisterService_
+  commentId: Overload:Singularity.Microsoft.DependencyInjection.Extensions.RegisterService
+  isSpec: "True"
+  fullName: Singularity.Microsoft.DependencyInjection.Extensions.RegisterService
+  nameWithType: Extensions.RegisterService
+- uid: Singularity.Microsoft.DependencyInjection.Extensions.RegisterServices(Singularity.BindingConfig,Microsoft.Extensions.DependencyInjection.IServiceCollection)
+  name: RegisterServices(BindingConfig, IServiceCollection)
+  href: api/Singularity.Microsoft.DependencyInjection.Extensions.html#Singularity_Microsoft_DependencyInjection_Extensions_RegisterServices_Singularity_BindingConfig_Microsoft_Extensions_DependencyInjection_IServiceCollection_
+  commentId: M:Singularity.Microsoft.DependencyInjection.Extensions.RegisterServices(Singularity.BindingConfig,Microsoft.Extensions.DependencyInjection.IServiceCollection)
+  fullName: Singularity.Microsoft.DependencyInjection.Extensions.RegisterServices(Singularity.BindingConfig, Microsoft.Extensions.DependencyInjection.IServiceCollection)
+  nameWithType: Extensions.RegisterServices(BindingConfig, IServiceCollection)
+- uid: Singularity.Microsoft.DependencyInjection.Extensions.RegisterServices*
+  name: RegisterServices
+  href: api/Singularity.Microsoft.DependencyInjection.Extensions.html#Singularity_Microsoft_DependencyInjection_Extensions_RegisterServices_
+  commentId: Overload:Singularity.Microsoft.DependencyInjection.Extensions.RegisterServices
+  isSpec: "True"
+  fullName: Singularity.Microsoft.DependencyInjection.Extensions.RegisterServices
+  nameWithType: Extensions.RegisterServices
+- uid: Singularity.Microsoft.DependencyInjection.SingularityServiceProvider
+  name: SingularityServiceProvider
+  href: api/Singularity.Microsoft.DependencyInjection.SingularityServiceProvider.html
+  commentId: T:Singularity.Microsoft.DependencyInjection.SingularityServiceProvider
+  fullName: Singularity.Microsoft.DependencyInjection.SingularityServiceProvider
+  nameWithType: SingularityServiceProvider
+- uid: Singularity.Microsoft.DependencyInjection.SingularityServiceProvider.#ctor(Singularity.Container)
+  name: SingularityServiceProvider(Container)
+  href: api/Singularity.Microsoft.DependencyInjection.SingularityServiceProvider.html#Singularity_Microsoft_DependencyInjection_SingularityServiceProvider__ctor_Singularity_Container_
+  commentId: M:Singularity.Microsoft.DependencyInjection.SingularityServiceProvider.#ctor(Singularity.Container)
+  fullName: Singularity.Microsoft.DependencyInjection.SingularityServiceProvider.SingularityServiceProvider(Singularity.Container)
+  nameWithType: SingularityServiceProvider.SingularityServiceProvider(Container)
+- uid: Singularity.Microsoft.DependencyInjection.SingularityServiceProvider.#ctor*
+  name: SingularityServiceProvider
+  href: api/Singularity.Microsoft.DependencyInjection.SingularityServiceProvider.html#Singularity_Microsoft_DependencyInjection_SingularityServiceProvider__ctor_
+  commentId: Overload:Singularity.Microsoft.DependencyInjection.SingularityServiceProvider.#ctor
+  isSpec: "True"
+  fullName: Singularity.Microsoft.DependencyInjection.SingularityServiceProvider.SingularityServiceProvider
+  nameWithType: SingularityServiceProvider.SingularityServiceProvider
+- uid: Singularity.Microsoft.DependencyInjection.SingularityServiceProvider.GetService(System.Type)
+  name: GetService(Type)
+  href: api/Singularity.Microsoft.DependencyInjection.SingularityServiceProvider.html#Singularity_Microsoft_DependencyInjection_SingularityServiceProvider_GetService_System_Type_
+  commentId: M:Singularity.Microsoft.DependencyInjection.SingularityServiceProvider.GetService(System.Type)
+  fullName: Singularity.Microsoft.DependencyInjection.SingularityServiceProvider.GetService(System.Type)
+  nameWithType: SingularityServiceProvider.GetService(Type)
+- uid: Singularity.Microsoft.DependencyInjection.SingularityServiceProvider.GetService*
+  name: GetService
+  href: api/Singularity.Microsoft.DependencyInjection.SingularityServiceProvider.html#Singularity_Microsoft_DependencyInjection_SingularityServiceProvider_GetService_
+  commentId: Overload:Singularity.Microsoft.DependencyInjection.SingularityServiceProvider.GetService
+  isSpec: "True"
+  fullName: Singularity.Microsoft.DependencyInjection.SingularityServiceProvider.GetService
+  nameWithType: SingularityServiceProvider.GetService
+- uid: Singularity.Microsoft.DependencyInjection.SingularityServiceScope
+  name: SingularityServiceScope
+  href: api/Singularity.Microsoft.DependencyInjection.SingularityServiceScope.html
+  commentId: T:Singularity.Microsoft.DependencyInjection.SingularityServiceScope
+  fullName: Singularity.Microsoft.DependencyInjection.SingularityServiceScope
+  nameWithType: SingularityServiceScope
+- uid: Singularity.Microsoft.DependencyInjection.SingularityServiceScope.#ctor(Singularity.Scoped)
+  name: SingularityServiceScope(Scoped)
+  href: api/Singularity.Microsoft.DependencyInjection.SingularityServiceScope.html#Singularity_Microsoft_DependencyInjection_SingularityServiceScope__ctor_Singularity_Scoped_
+  commentId: M:Singularity.Microsoft.DependencyInjection.SingularityServiceScope.#ctor(Singularity.Scoped)
+  fullName: Singularity.Microsoft.DependencyInjection.SingularityServiceScope.SingularityServiceScope(Singularity.Scoped)
+  nameWithType: SingularityServiceScope.SingularityServiceScope(Scoped)
+- uid: Singularity.Microsoft.DependencyInjection.SingularityServiceScope.#ctor*
+  name: SingularityServiceScope
+  href: api/Singularity.Microsoft.DependencyInjection.SingularityServiceScope.html#Singularity_Microsoft_DependencyInjection_SingularityServiceScope__ctor_
+  commentId: Overload:Singularity.Microsoft.DependencyInjection.SingularityServiceScope.#ctor
+  isSpec: "True"
+  fullName: Singularity.Microsoft.DependencyInjection.SingularityServiceScope.SingularityServiceScope
+  nameWithType: SingularityServiceScope.SingularityServiceScope
+- uid: Singularity.Microsoft.DependencyInjection.SingularityServiceScope.Dispose
+  name: Dispose()
+  href: api/Singularity.Microsoft.DependencyInjection.SingularityServiceScope.html#Singularity_Microsoft_DependencyInjection_SingularityServiceScope_Dispose
+  commentId: M:Singularity.Microsoft.DependencyInjection.SingularityServiceScope.Dispose
+  fullName: Singularity.Microsoft.DependencyInjection.SingularityServiceScope.Dispose()
+  nameWithType: SingularityServiceScope.Dispose()
+- uid: Singularity.Microsoft.DependencyInjection.SingularityServiceScope.Dispose*
+  name: Dispose
+  href: api/Singularity.Microsoft.DependencyInjection.SingularityServiceScope.html#Singularity_Microsoft_DependencyInjection_SingularityServiceScope_Dispose_
+  commentId: Overload:Singularity.Microsoft.DependencyInjection.SingularityServiceScope.Dispose
+  isSpec: "True"
+  fullName: Singularity.Microsoft.DependencyInjection.SingularityServiceScope.Dispose
+  nameWithType: SingularityServiceScope.Dispose
+- uid: Singularity.Microsoft.DependencyInjection.SingularityServiceScope.GetService(System.Type)
+  name: GetService(Type)
+  href: api/Singularity.Microsoft.DependencyInjection.SingularityServiceScope.html#Singularity_Microsoft_DependencyInjection_SingularityServiceScope_GetService_System_Type_
+  commentId: M:Singularity.Microsoft.DependencyInjection.SingularityServiceScope.GetService(System.Type)
+  fullName: Singularity.Microsoft.DependencyInjection.SingularityServiceScope.GetService(System.Type)
+  nameWithType: SingularityServiceScope.GetService(Type)
+- uid: Singularity.Microsoft.DependencyInjection.SingularityServiceScope.GetService*
+  name: GetService
+  href: api/Singularity.Microsoft.DependencyInjection.SingularityServiceScope.html#Singularity_Microsoft_DependencyInjection_SingularityServiceScope_GetService_
+  commentId: Overload:Singularity.Microsoft.DependencyInjection.SingularityServiceScope.GetService
+  isSpec: "True"
+  fullName: Singularity.Microsoft.DependencyInjection.SingularityServiceScope.GetService
+  nameWithType: SingularityServiceScope.GetService
+- uid: Singularity.Microsoft.DependencyInjection.SingularityServiceScope.ServiceProvider
+  name: ServiceProvider
+  href: api/Singularity.Microsoft.DependencyInjection.SingularityServiceScope.html#Singularity_Microsoft_DependencyInjection_SingularityServiceScope_ServiceProvider
+  commentId: P:Singularity.Microsoft.DependencyInjection.SingularityServiceScope.ServiceProvider
+  fullName: Singularity.Microsoft.DependencyInjection.SingularityServiceScope.ServiceProvider
+  nameWithType: SingularityServiceScope.ServiceProvider
+- uid: Singularity.Microsoft.DependencyInjection.SingularityServiceScope.ServiceProvider*
+  name: ServiceProvider
+  href: api/Singularity.Microsoft.DependencyInjection.SingularityServiceScope.html#Singularity_Microsoft_DependencyInjection_SingularityServiceScope_ServiceProvider_
+  commentId: Overload:Singularity.Microsoft.DependencyInjection.SingularityServiceScope.ServiceProvider
+  isSpec: "True"
+  fullName: Singularity.Microsoft.DependencyInjection.SingularityServiceScope.ServiceProvider
+  nameWithType: SingularityServiceScope.ServiceProvider
+- uid: Singularity.Microsoft.DependencyInjection.SingularityServiceScopeFactory
+  name: SingularityServiceScopeFactory
+  href: api/Singularity.Microsoft.DependencyInjection.SingularityServiceScopeFactory.html
+  commentId: T:Singularity.Microsoft.DependencyInjection.SingularityServiceScopeFactory
+  fullName: Singularity.Microsoft.DependencyInjection.SingularityServiceScopeFactory
+  nameWithType: SingularityServiceScopeFactory
+- uid: Singularity.Microsoft.DependencyInjection.SingularityServiceScopeFactory.#ctor(Singularity.Container)
+  name: SingularityServiceScopeFactory(Container)
+  href: api/Singularity.Microsoft.DependencyInjection.SingularityServiceScopeFactory.html#Singularity_Microsoft_DependencyInjection_SingularityServiceScopeFactory__ctor_Singularity_Container_
+  commentId: M:Singularity.Microsoft.DependencyInjection.SingularityServiceScopeFactory.#ctor(Singularity.Container)
+  fullName: Singularity.Microsoft.DependencyInjection.SingularityServiceScopeFactory.SingularityServiceScopeFactory(Singularity.Container)
+  nameWithType: SingularityServiceScopeFactory.SingularityServiceScopeFactory(Container)
+- uid: Singularity.Microsoft.DependencyInjection.SingularityServiceScopeFactory.#ctor*
+  name: SingularityServiceScopeFactory
+  href: api/Singularity.Microsoft.DependencyInjection.SingularityServiceScopeFactory.html#Singularity_Microsoft_DependencyInjection_SingularityServiceScopeFactory__ctor_
+  commentId: Overload:Singularity.Microsoft.DependencyInjection.SingularityServiceScopeFactory.#ctor
+  isSpec: "True"
+  fullName: Singularity.Microsoft.DependencyInjection.SingularityServiceScopeFactory.SingularityServiceScopeFactory
+  nameWithType: SingularityServiceScopeFactory.SingularityServiceScopeFactory
+- uid: Singularity.Microsoft.DependencyInjection.SingularityServiceScopeFactory.CreateScope
+  name: CreateScope()
+  href: api/Singularity.Microsoft.DependencyInjection.SingularityServiceScopeFactory.html#Singularity_Microsoft_DependencyInjection_SingularityServiceScopeFactory_CreateScope
+  commentId: M:Singularity.Microsoft.DependencyInjection.SingularityServiceScopeFactory.CreateScope
+  fullName: Singularity.Microsoft.DependencyInjection.SingularityServiceScopeFactory.CreateScope()
+  nameWithType: SingularityServiceScopeFactory.CreateScope()
+- uid: Singularity.Microsoft.DependencyInjection.SingularityServiceScopeFactory.CreateScope*
+  name: CreateScope
+  href: api/Singularity.Microsoft.DependencyInjection.SingularityServiceScopeFactory.html#Singularity_Microsoft_DependencyInjection_SingularityServiceScopeFactory_CreateScope_
+  commentId: Overload:Singularity.Microsoft.DependencyInjection.SingularityServiceScopeFactory.CreateScope
+  isSpec: "True"
+  fullName: Singularity.Microsoft.DependencyInjection.SingularityServiceScopeFactory.CreateScope
+  nameWithType: SingularityServiceScopeFactory.CreateScope
 - uid: Singularity.Scoped
   name: Scoped
   href: api/Singularity.Scoped.html
@@ -1295,3 +1645,22 @@ references:
   isSpec: "True"
   fullName: Singularity.Scoped.MethodInject
   nameWithType: Scoped.MethodInject
+- uid: Singularity.SingularitySettings
+  name: SingularitySettings
+  href: api/Singularity.SingularitySettings.html
+  commentId: T:Singularity.SingularitySettings
+  fullName: Singularity.SingularitySettings
+  nameWithType: SingularitySettings
+- uid: Singularity.SingularitySettings.AutoDispose
+  name: AutoDispose
+  href: api/Singularity.SingularitySettings.html#Singularity_SingularitySettings_AutoDispose
+  commentId: P:Singularity.SingularitySettings.AutoDispose
+  fullName: Singularity.SingularitySettings.AutoDispose
+  nameWithType: SingularitySettings.AutoDispose
+- uid: Singularity.SingularitySettings.AutoDispose*
+  name: AutoDispose
+  href: api/Singularity.SingularitySettings.html#Singularity_SingularitySettings_AutoDispose_
+  commentId: Overload:Singularity.SingularitySettings.AutoDispose
+  isSpec: "True"
+  fullName: Singularity.SingularitySettings.AutoDispose
+  nameWithType: SingularitySettings.AutoDispose

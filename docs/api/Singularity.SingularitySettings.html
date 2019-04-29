@@ -5,10 +5,10 @@
   <head>
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
-    <title>Enum CreationMode
+    <title>Class SingularitySettings
    </title>
     <meta name="viewport" content="width=device-width">
-    <meta name="title" content="Enum CreationMode
+    <meta name="title" content="Class SingularitySettings
    ">
     <meta name="generator" content="docfx 2.41.0.0">
     
@@ -68,47 +68,80 @@
         </div>
         <div class="article row grid-right">
           <div class="col-md-10">
-            <article class="content wrap" id="_content" data-uid="Singularity.CreationMode">
+            <article class="content wrap" id="_content" data-uid="Singularity.SingularitySettings">
   
   
-  <h1 id="Singularity_CreationMode" data-uid="Singularity.CreationMode" class="text-break">Enum CreationMode
+  <h1 id="Singularity_SingularitySettings" data-uid="Singularity.SingularitySettings" class="text-break">Class SingularitySettings
   </h1>
-  <div class="markdown level0 summary"><p>Specifies when new instances of dependencies should be made</p>
-</div>
+  <div class="markdown level0 summary"></div>
   <div class="markdown level0 conceptual"></div>
+  <div class="inheritance">
+    <h5>Inheritance</h5>
+    <div class="level0"><span class="xref">System.Object</span></div>
+    <div class="level1"><span class="xref">SingularitySettings</span></div>
+  </div>
+  <div class="inheritedMembers">
+    <h5>Inherited Members</h5>
+    <div>
+      <span class="xref">System.Object.Equals(System.Object)</span>
+    </div>
+    <div>
+      <span class="xref">System.Object.Equals(System.Object, System.Object)</span>
+    </div>
+    <div>
+      <span class="xref">System.Object.GetHashCode()</span>
+    </div>
+    <div>
+      <span class="xref">System.Object.GetType()</span>
+    </div>
+    <div>
+      <span class="xref">System.Object.MemberwiseClone()</span>
+    </div>
+    <div>
+      <span class="xref">System.Object.ReferenceEquals(System.Object, System.Object)</span>
+    </div>
+    <div>
+      <span class="xref">System.Object.ToString()</span>
+    </div>
+  </div>
   <h6><strong>Namespace</strong>: <a class="xref" href="Singularity.html">Singularity</a></h6>
   <h6><strong>Assembly</strong>: Singularity.dll</h6>
-  <h5 id="Singularity_CreationMode_syntax">Syntax</h5>
+  <h5 id="Singularity_SingularitySettings_syntax">Syntax</h5>
   <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">public enum CreationMode</code></pre>
+    <pre><code class="lang-csharp hljs">public class SingularitySettings</code></pre>
   </div>
-  <h3 id="fields">Fields
+  <h3 id="properties">Properties
   </h3>
+  <span class="small pull-right mobile-hide">
+    <span class="divider">|</span>
+    <a href="https://github.com/Barsonax/Singularity/new/master/apiSpec/new?filename=Singularity_SingularitySettings_AutoDispose.md&amp;value=---%0Auid%3A%20Singularity.SingularitySettings.AutoDispose%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">Improve this Doc</a>
+  </span>
+  <span class="small pull-right mobile-hide">
+    <a href="https://github.com/Barsonax/Singularity/blob/master/Singularity/SingularitySettings.cs/#L8">View Source</a>
+  </span>
+  <a id="Singularity_SingularitySettings_AutoDispose_" data-uid="Singularity.SingularitySettings.AutoDispose*"></a>
+  <h4 id="Singularity_SingularitySettings_AutoDispose" data-uid="Singularity.SingularitySettings.AutoDispose">AutoDispose</h4>
+  <div class="markdown level1 summary"></div>
+  <div class="markdown level1 conceptual"></div>
+  <h5 class="decalaration">Declaration</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public bool AutoDispose { get; set; }</code></pre>
+  </div>
+  <h5 class="propertyValue">Property Value</h5>
   <table class="table table-bordered table-striped table-condensed">
     <thead>
       <tr>
-        <th>Name</th>
+        <th>Type</th>
         <th>Description</th>
       </tr>
-    <thead>
+    </thead>
     <tbody>
       <tr>
-        <td id="Singularity_CreationMode_PerContainer">PerContainer</td>
-        <td><p>The same instance will be returned as long as it is requested in the same <a class="xref" href="Singularity.Container.html">Container</a> or a child of this container.</p>
-</td>
-      </tr>
-      <tr>
-        <td id="Singularity_CreationMode_PerScope">PerScope</td>
-        <td><p>The same instance will be returned as long as it is requested in the same <a class="xref" href="Singularity.Scoped.html">Scoped</a>.</p>
-</td>
-      </tr>
-      <tr>
-        <td id="Singularity_CreationMode_Transient">Transient</td>
-        <td><p>Every time a instance is requested a new instance is returned.</p>
-</td>
+        <td><span class="xref">System.Boolean</span></td>
+        <td></td>
       </tr>
     </tbody>
-  </thead></thead></table>
+  </table>
 </article>
           </div>
           
@@ -117,10 +150,10 @@
               <div class="contribution">
                 <ul class="nav">
                   <li>
-                    <a href="https://github.com/Barsonax/Singularity/new/master/apiSpec/new?filename=Singularity_CreationMode.md&amp;value=---%0Auid%3A%20Singularity.CreationMode%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A" class="contribution-link">Improve this Doc</a>
+                    <a href="https://github.com/Barsonax/Singularity/new/master/apiSpec/new?filename=Singularity_SingularitySettings.md&amp;value=---%0Auid%3A%20Singularity.SingularitySettings%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A" class="contribution-link">Improve this Doc</a>
                   </li>
                   <li>
-                    <a href="https://github.com/Barsonax/Singularity/blob/master/Singularity/CreationMode.cs/#L6" class="contribution-link">View Source</a>
+                    <a href="https://github.com/Barsonax/Singularity/blob/master/Singularity/SingularitySettings.cs/#L3" class="contribution-link">View Source</a>
                   </li>
                 </ul>
               </div>

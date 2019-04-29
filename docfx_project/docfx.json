@@ -6,7 +6,8 @@
           "src": "../",
           "files": [
             "Singularity/Singularity.csproj",
-            "Duality/Source/Code/Singularity.Duality/Singularity.Duality.csproj"
+            "Duality/Source/Code/Singularity.Duality/Singularity.Duality.csproj",
+            "Singularity.Microsoft.DependencyInjection/Singularity.Microsoft.DependencyInjection.csproj"
           ]
         }
       ],

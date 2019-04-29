@@ -1,6 +1,6 @@
 {
   "homepages": [],
-  "source_base_path": "C:/Git/Singularity/docfx_project",
+  "source_base_path": "C:/git/Singularity/docfx_project",
   "xrefmap": "xrefmap.yml",
   "files": [
     {
@@ -33,7 +33,7 @@
       "output": {
         ".html": {
           "relative_path": "api/Singularity.BindingConfig.html",
-          "hash": "ZnhJlIFZWSEb/Atzlt8mRw=="
+          "hash": "TH/38l3mGxD9QoBxKf+R+Q=="
         }
       },
       "is_incremental": false,
@@ -45,7 +45,7 @@
       "output": {
         ".html": {
           "relative_path": "api/Singularity.Bindings.StronglyTypedBinding-1.html",
-          "hash": "Zk7mK4cwcdZZZBl9sKZUaQ=="
+          "hash": "KzyyFGf5Wn2ZEGHTqLP5Lw=="
         }
       },
       "is_incremental": false,
@@ -57,7 +57,7 @@
       "output": {
         ".html": {
           "relative_path": "api/Singularity.Bindings.StronglyTypedConfiguredBinding-2.html",
-          "hash": "OTyDC7K/cRJWaYVZoruKDg=="
+          "hash": "/8YXatuHQdr1i/krtnOQcw=="
         }
       },
       "is_incremental": false,
@@ -69,7 +69,7 @@
       "output": {
         ".html": {
           "relative_path": "api/Singularity.Bindings.StronglyTypedDecoratorBinding-1.html",
-          "hash": "qop9ifkJtPsUH24zqtbSgw=="
+          "hash": "AZpp8UFO0OE0wq3mbCaHiA=="
         }
       },
       "is_incremental": false,
@@ -81,7 +81,7 @@
       "output": {
         ".html": {
           "relative_path": "api/Singularity.Bindings.WeaklyTypedBinding.html",
-          "hash": "/NASDfS1Zg7oZG9UdrKjrg=="
+          "hash": "4SfP0baVyNssbGuvQ35efA=="
         }
       },
       "is_incremental": false,
@@ -105,7 +105,7 @@
       "output": {
         ".html": {
           "relative_path": "api/Singularity.Bindings.WeaklyTypedConfiguredBinding.html",
-          "hash": "nCQxtI04PBYBU28ohjq/LQ=="
+          "hash": "qzkWg3HEKJfu9Ytion01Ug=="
         }
       },
       "is_incremental": false,
@@ -117,7 +117,7 @@
       "output": {
         ".html": {
           "relative_path": "api/Singularity.Bindings.WeaklyTypedDecoratorBinding.html",
-          "hash": "/ACWm967dUHwFaICM8T28g=="
+          "hash": "sjZbb2Kte2gkTYaN0WXVwg=="
         }
       },
       "is_incremental": false,
@@ -153,7 +153,19 @@
       "output": {
         ".html": {
           "relative_path": "api/Singularity.Container.html",
-          "hash": "kTJTn4Hj0uBI+Z4JG4Zr2w=="
+          "hash": "LRmGraCTF5Gpg1DSsw8RAg=="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/Singularity.DisposeBehavior.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Singularity.DisposeBehavior.html",
+          "hash": "Lta4xqUs0q4Q/RdHMKTwGg=="
         }
       },
       "is_incremental": false,
@@ -293,11 +305,11 @@
     },
     {
       "type": "ManagedReference",
-      "source_relative_path": "api/Singularity.Exceptions.InvalidExpressionArgumentsException.yml",
+      "source_relative_path": "api/Singularity.Exceptions.InvalidEnumValue-1.yml",
       "output": {
         ".html": {
-          "relative_path": "api/Singularity.Exceptions.InvalidExpressionArgumentsException.html",
-          "hash": "MiYrpB57ce0Hng1C9ZrdSQ=="
+          "relative_path": "api/Singularity.Exceptions.InvalidEnumValue-1.html",
+          "hash": "AMaXjMTyxSk/hAx1wmi9Gw=="
         }
       },
       "is_incremental": false,
@@ -305,11 +317,11 @@
     },
     {
       "type": "ManagedReference",
-      "source_relative_path": "api/Singularity.Exceptions.InvalidLifetimeException.yml",
+      "source_relative_path": "api/Singularity.Exceptions.InvalidExpressionArgumentsException.yml",
       "output": {
         ".html": {
-          "relative_path": "api/Singularity.Exceptions.InvalidLifetimeException.html",
-          "hash": "L3v5DNoNEFZ1sGad+NktRA=="
+          "relative_path": "api/Singularity.Exceptions.InvalidExpressionArgumentsException.html",
+          "hash": "MiYrpB57ce0Hng1C9ZrdSQ=="
         }
       },
       "is_incremental": false,
@@ -341,6 +353,18 @@
     },
     {
       "type": "ManagedReference",
+      "source_relative_path": "api/Singularity.Exceptions.RegistrationCollisionException.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Singularity.Exceptions.RegistrationCollisionException.html",
+          "hash": "SU16yslFrf0MgtqRRddW1w=="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
       "source_relative_path": "api/Singularity.Exceptions.SingularityAggregateException.yml",
       "output": {
         ".html": {
@@ -357,7 +381,7 @@
       "output": {
         ".html": {
           "relative_path": "api/Singularity.Exceptions.SingularityException.html",
-          "hash": "cmNswMLN6kxwsvIvyOBYeA=="
+          "hash": "HQCnIXOya0ewFe4rYhn4+A=="
         }
       },
       "is_incremental": false,
@@ -381,7 +405,7 @@
       "output": {
         ".html": {
           "relative_path": "api/Singularity.Exceptions.html",
-          "hash": "Qd5q/N+7ywBLa3qxgLjPRQ=="
+          "hash": "wzQJGU85V6O7GFLgKfg63w=="
         }
       },
       "is_incremental": false,
@@ -393,7 +417,7 @@
       "output": {
         ".html": {
           "relative_path": "api/Singularity.Graph.BindingMetadata.html",
-          "hash": "IhCGRHy3UtXuYLAeZy3G6Q=="
+          "hash": "9dR4DjMOMAf3KmaJSRDt3w=="
         }
       },
       "is_incremental": false,
@@ -417,7 +441,7 @@
       "output": {
         ".html": {
           "relative_path": "api/Singularity.IContainer.html",
-          "hash": "jhnrAkp2/ktuGVU/8JnNbw=="
+          "hash": "KQA7dvkdWZJZiXLMktR3Cw=="
         }
       },
       "is_incremental": false,
@@ -449,11 +473,83 @@
     },
     {
       "type": "ManagedReference",
+      "source_relative_path": "api/Singularity.Microsoft.DependencyInjection.Extensions.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Singularity.Microsoft.DependencyInjection.Extensions.html",
+          "hash": "LxjT9MtGehOLm9TfXPxdEg=="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/Singularity.Microsoft.DependencyInjection.SingularityServiceProvider.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Singularity.Microsoft.DependencyInjection.SingularityServiceProvider.html",
+          "hash": "ChDNIaTse3jsL8gSX+CqKQ=="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/Singularity.Microsoft.DependencyInjection.SingularityServiceScope.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Singularity.Microsoft.DependencyInjection.SingularityServiceScope.html",
+          "hash": "wkl4k3+jurNKC1KNPqBS5w=="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/Singularity.Microsoft.DependencyInjection.SingularityServiceScopeFactory.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Singularity.Microsoft.DependencyInjection.SingularityServiceScopeFactory.html",
+          "hash": "pbKNB5/9yIbYbfUTjys/TQ=="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/Singularity.Microsoft.DependencyInjection.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Singularity.Microsoft.DependencyInjection.html",
+          "hash": "JRvkSmsJie6jpVkqfxogog=="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
       "source_relative_path": "api/Singularity.Scoped.yml",
       "output": {
         ".html": {
           "relative_path": "api/Singularity.Scoped.html",
-          "hash": "vIyVu8xmsKjl7wgMqBJJGA=="
+          "hash": "b+qrfZs1GGgoIC1ibUXYbQ=="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/Singularity.SingularitySettings.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Singularity.SingularitySettings.html",
+          "hash": "m035cy9WisinvMRjoK0fww=="
         }
       },
       "is_incremental": false,
@@ -465,7 +561,7 @@
       "output": {
         ".html": {
           "relative_path": "api/Singularity.html",
-          "hash": "ksiLvs2FJnUHo0+oo5LWKg=="
+          "hash": "nu3fQHF/Gv20toE6t9sMNQ=="
         }
       },
       "is_incremental": false,
@@ -489,7 +585,7 @@
       "output": {
         ".html": {
           "relative_path": "api/toc.html",
-          "hash": "FlAr08QDV0YOh2AGRYO46g=="
+          "hash": "Z1SIIyBGTsJsKNLQe08EKA=="
         }
       },
       "is_incremental": false,
@@ -504,7 +600,7 @@
           "hash": "BWvCZVUeGfT2vrp0IZ1Tfw=="
         }
       },
-      "is_incremental": false,
+      "is_incremental": true,
       "version": ""
     },
     {
@@ -516,7 +612,7 @@
           "hash": "fEc2trO377Y68YLaxjCPuQ=="
         }
       },
-      "is_incremental": false,
+      "is_incremental": true,
       "version": ""
     },
     {
@@ -528,7 +624,7 @@
           "hash": "8uXyHlGyB3I0fDWE0lKmzg=="
         }
       },
-      "is_incremental": false,
+      "is_incremental": true,
       "version": ""
     },
     {
@@ -540,7 +636,7 @@
           "hash": "RvF6V7V/JYGaMbX8eEXOVw=="
         }
       },
-      "is_incremental": false,
+      "is_incremental": true,
       "version": ""
     },
     {
@@ -552,7 +648,7 @@
           "hash": "5MhfvZ2eGobYQiSUrzNnSg=="
         }
       },
-      "is_incremental": false,
+      "is_incremental": true,
       "version": ""
     },
     {
@@ -564,7 +660,7 @@
           "hash": "1fJDd5AUnoppSNBYjDqCMw=="
         }
       },
-      "is_incremental": false,
+      "is_incremental": true,
       "version": ""
     },
     {
@@ -576,7 +672,7 @@
           "hash": "Y3ZeyxEiH0MhMKgIQmgKRg=="
         }
       },
-      "is_incremental": false,
+      "is_incremental": true,
       "version": ""
     },
     {
@@ -588,7 +684,7 @@
           "hash": "CdFotZgi3EoK8frs8rF61w=="
         }
       },
-      "is_incremental": false,
+      "is_incremental": true,
       "version": ""
     },
     {
@@ -612,7 +708,7 @@
           "hash": "dBPukYjFLZGCfFl4gP0vaA=="
         }
       },
-      "is_incremental": false,
+      "is_incremental": true,
       "version": ""
     },
     {
@@ -631,12 +727,10 @@
   "incremental_info": [
     {
       "status": {
-        "can_incremental": false,
-        "details": "Disable incremental build by force rebuild option.",
+        "can_incremental": true,
         "incrementalPhase": "build",
         "total_file_count": 0,
-        "skipped_file_count": 0,
-        "full_build_reason_code": "ForceRebuild"
+        "skipped_file_count": 0
       },
       "processors": {
         "TocDocumentProcessor": {
@@ -646,24 +740,24 @@
           "total_file_count": 0,
           "skipped_file_count": 0
         },
+        "ManagedReferenceDocumentProcessor": {
+          "can_incremental": true,
+          "incrementalPhase": "build",
+          "total_file_count": 47,
+          "skipped_file_count": 18
+        },
         "ConceptualDocumentProcessor": {
-          "can_incremental": false,
+          "can_incremental": true,
           "incrementalPhase": "build",
           "total_file_count": 10,
-          "skipped_file_count": 0
-        },
-        "ManagedReferenceDocumentProcessor": {
-          "can_incremental": false,
-          "incrementalPhase": "build",
-          "total_file_count": 39,
-          "skipped_file_count": 0
+          "skipped_file_count": 10
         }
       }
     },
     {
       "status": {
-        "can_incremental": false,
-        "details": "Cannot support incremental post processing, the reason is: it's disabled.",
+        "can_incremental": true,
+        "details": "Can support incremental post processing.",
         "incrementalPhase": "postProcessing",
         "total_file_count": 0,
         "skipped_file_count": 0
