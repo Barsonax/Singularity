@@ -10,7 +10,7 @@ namespace Singularity
     /// <summary>
     /// A weakly typed configurator for registering new bindings.
     /// </summary>
-    public class WeaklyTypedServiceConfigurator
+    public sealed class WeaklyTypedServiceConfigurator
     {
         internal WeaklyTypedServiceConfigurator(Type dependencyType, Type instanceType, string callerFilePath, int callerLineNumber, IModule? module = null)
         {

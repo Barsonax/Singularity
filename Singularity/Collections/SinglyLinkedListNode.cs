@@ -68,7 +68,7 @@ namespace Singularity.Collections
         /// Efficient enumerator.
         /// </summary>
         /// <returns></returns>
-        public class Enumerator : IEnumerator<T>
+        public sealed class Enumerator : IEnumerator<T>
         {
             private SinglyLinkedListNode<T>? _node;
 

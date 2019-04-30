@@ -8,7 +8,7 @@ namespace Singularity
     /// </summary>
     /// <typeparam name="TDependency"></typeparam>
     /// <typeparam name="TDecorator"></typeparam>
-    public class StronglyTypedDecoratorConfigurator<TDependency, TDecorator>
+    public sealed class StronglyTypedDecoratorConfigurator<TDependency, TDecorator>
         where TDependency : class
         where TDecorator : TDependency
     {

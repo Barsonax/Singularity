@@ -6,7 +6,7 @@ namespace Singularity
     /// <summary>
     /// A weakly typed configurator for registering new decorators.
     /// </summary>
-    public class WeaklyTypedDecoratorConfigurator
+    public sealed class WeaklyTypedDecoratorConfigurator
     {
         internal WeaklyTypedDecoratorConfigurator(Type dependencyType, Type decoratorType, string callerFilePath, int callerLineNumber, IModule? module = null)
         {

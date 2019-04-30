@@ -8,7 +8,7 @@ using Singularity.Graph;
 namespace Singularity
 {
     [DebuggerDisplay("{Expression?.Type}")]
-    internal class Binding
+    internal sealed class Binding
     {
         public BindingMetadata BindingMetadata { get; }
         public Expression Expression { get; }

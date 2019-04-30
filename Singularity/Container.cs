@@ -101,7 +101,7 @@ namespace Singularity
         public T GetInstance<T>() where T : class => GetInstance<T>(_containerScope);
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        internal T GetInstance<T>(Scoped scope) where T : class => (T)GetInstance(typeof(T), scope);
+        private T GetInstance<T>(Scoped scope) where T : class => (T)GetInstance(typeof(T), scope);
 
         /// <inheritdoc />
         [MethodImpl(MethodImplOptions.AggressiveInlining)]

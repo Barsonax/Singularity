@@ -5,7 +5,7 @@ using System.Reflection;
 
 namespace Singularity.Graph.Resolvers
 {
-    internal class LazyDependencyResolver : IDependencyResolver
+    internal sealed class LazyDependencyResolver : IDependencyResolver
     {
         public IEnumerable<Binding> Resolve(IResolverPipeline graph, Type type)
         {

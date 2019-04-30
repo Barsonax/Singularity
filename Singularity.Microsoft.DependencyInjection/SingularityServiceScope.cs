@@ -7,7 +7,7 @@ namespace Singularity.Microsoft.DependencyInjection
     /// <see cref="IServiceScope"/> implementation for the singularity container.
     /// Wraps a <see cref="Scoped"/> so that it can be used as a <see cref="IServiceScope"/>
     /// </summary>
-    public class SingularityServiceScope : IServiceScope, IServiceProvider
+    public sealed class SingularityServiceScope : IServiceScope, IServiceProvider
     {
         private readonly Scoped _scope;
 

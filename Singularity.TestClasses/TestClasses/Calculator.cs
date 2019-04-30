@@ -26,8 +26,8 @@
 
         public static int Instances
         {
-            get { return counter; }
-            set { counter = value; }
+            get => counter;
+            set => counter = value;
         }
 
         public virtual int Add(int first, int second) => first + second;
@@ -44,8 +44,8 @@
 
         public static int Instances
         {
-            get { return counter; }
-            set { counter = value; }
+            get => counter;
+            set => counter = value;
         }
 
         public virtual int Add(int first, int second) => first + second;
@@ -62,8 +62,8 @@
 
         public static int Instances
         {
-            get { return counter; }
-            set { counter = value; }
+            get => counter;
+            set => counter = value;
         }
 
         public virtual int Add(int first, int second) => first + second;

@@ -5,7 +5,7 @@ namespace Singularity
     /// <summary>
     /// Defines settings for the singularity container.
     /// </summary>
-    public class SingularitySettings
+    public sealed class SingularitySettings
     {
         /// <summary>
         /// The default singularity settings.

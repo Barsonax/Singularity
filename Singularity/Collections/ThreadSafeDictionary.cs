@@ -11,11 +11,11 @@ namespace Singularity.Collections
     /// </summary>
     /// <typeparam name="TKey"></typeparam>
     /// <typeparam name="TValue"></typeparam>
-    internal class ThreadSafeDictionary<TKey, TValue> : IEnumerable<TValue>
+    internal sealed class ThreadSafeDictionary<TKey, TValue> : IEnumerable<TValue>
         where TKey : class
     {
         public int Count => ImmutableAvlDictionary.Count;
-        internal ImmutableHashTable<TKey, TValue> ImmutableAvlDictionary = ImmutableHashTable<TKey, TValue>.Empty;
+        private ImmutableHashTable<TKey, TValue> ImmutableAvlDictionary = ImmutableHashTable<TKey, TValue>.Empty;
 
         /// <summary>
         /// Adds a key to the dictionary.

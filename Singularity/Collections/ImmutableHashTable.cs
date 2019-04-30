@@ -9,7 +9,7 @@ namespace Singularity.Collections
     {
         public static readonly ImmutableHashTable<TKey, TValue> Empty = new ImmutableHashTable<TKey, TValue>();
         public readonly int Count;
-        public readonly SinglyLinkedListNode<HashedKeyValue<TKey, TValue>>[] Buckets;
+        private readonly SinglyLinkedListNode<HashedKeyValue<TKey, TValue>>[] Buckets;
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public ImmutableHashTable<TKey, TValue> Add(TKey key, TValue value)
@@ -37,10 +37,10 @@ namespace Singularity.Collections
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         private ImmutableHashTable(ImmutableHashTable<TKey, TValue> previous, in HashedKeyValue<TKey, TValue> hashedKeyValue)
         {
-            this.Count = previous.Count + 1;
+            Count = previous.Count + 1;
             if (previous.Count >= previous.Buckets.Length)
             {
-                this.Buckets = new SinglyLinkedListNode<HashedKeyValue<TKey, TValue>>[previous.Buckets.Length * 2];
+                Buckets = new SinglyLinkedListNode<HashedKeyValue<TKey, TValue>>[previous.Buckets.Length * 2];
                 foreach (SinglyLinkedListNode<HashedKeyValue<TKey, TValue>> t in previous.Buckets)
                 {
                     SinglyLinkedListNode<HashedKeyValue<TKey, TValue>>? current = t;
@@ -53,10 +53,10 @@ namespace Singularity.Collections
             }
             else
             {
-                this.Buckets = new SinglyLinkedListNode<HashedKeyValue<TKey, TValue>>[previous.Buckets.Length];
+                Buckets = new SinglyLinkedListNode<HashedKeyValue<TKey, TValue>>[previous.Buckets.Length];
                 for (var i = 0; i < previous.Buckets.Length; i++)
                 {
-                    this.Buckets[i] = previous.Buckets[i];
+                    Buckets[i] = previous.Buckets[i];
                 }
             }
 
@@ -66,13 +66,13 @@ namespace Singularity.Collections
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         private void FillBucket(in HashedKeyValue<TKey, TValue> hashedKeyValue)
         {
-            int bucketIndex = hashedKeyValue.HashCode & (this.Buckets.Length - 1);
-            this.Buckets[bucketIndex] = this.Buckets[bucketIndex].Add(in hashedKeyValue);
+            int bucketIndex = hashedKeyValue.HashCode & (Buckets.Length - 1);
+            Buckets[bucketIndex] = Buckets[bucketIndex].Add(in hashedKeyValue);
         }
 
         private ImmutableHashTable()
         {
-            this.Buckets = new SinglyLinkedListNode<HashedKeyValue<TKey, TValue>>[2];
+            Buckets = new SinglyLinkedListNode<HashedKeyValue<TKey, TValue>>[2];
         }
 
         public IEnumerator<TValue> GetEnumerator()

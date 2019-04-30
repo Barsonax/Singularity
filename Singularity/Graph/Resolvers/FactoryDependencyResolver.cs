@@ -4,7 +4,7 @@ using System.Linq.Expressions;
 
 namespace Singularity.Graph.Resolvers
 {
-    internal class FactoryDependencyResolver : IDependencyResolver
+    internal sealed class FactoryDependencyResolver : IDependencyResolver
     {
         public IEnumerable<Binding> Resolve(IResolverPipeline graph, Type type)
         {

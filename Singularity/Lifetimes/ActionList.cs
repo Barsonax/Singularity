@@ -4,7 +4,7 @@ using Singularity.Collections;
 
 namespace Singularity
 {
-    internal class ActionList<T>
+    internal sealed class ActionList<T>
         where T : class
     {
         private Action<T> Action { get; }

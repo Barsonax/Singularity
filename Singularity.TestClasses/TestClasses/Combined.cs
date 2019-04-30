@@ -20,7 +20,7 @@ namespace Singularity.TestClasses.TestClasses
         ISingleton3 Singleton { get; }
     }
 
-    public class Combined1 : ICombined1
+    public sealed class Combined1 : ICombined1
     {
         public ITransient1 Transient { get; }
         public ISingleton1 Singleton { get; }
@@ -32,7 +32,7 @@ namespace Singularity.TestClasses.TestClasses
         }
     }
 
-    public class Combined2 : ICombined2
+    public abstract class Combined2 : ICombined2
     {
         public ITransient2 Transient { get; }
         public ISingleton2 Singleton { get; }
@@ -44,7 +44,7 @@ namespace Singularity.TestClasses.TestClasses
         }
     }
 
-    public class Combined3 : ICombined3
+    public abstract class Combined3 : ICombined3
     {
         public ITransient3 Transient { get; }
         public ISingleton3 Singleton { get; }

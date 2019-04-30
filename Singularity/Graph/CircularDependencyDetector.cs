@@ -5,7 +5,7 @@ using Singularity.Exceptions;
 
 namespace Singularity.Graph.Resolvers
 {
-    internal class CircularDependencyDetector
+    internal sealed class CircularDependencyDetector
     {
         private readonly HashSet<Type> _visitedDependencies = new HashSet<Type>();
 

@@ -38,12 +38,12 @@ namespace Singularity
             }
         }
 
-        public static void ThrowEnumerableRegistrationException(Type dependencyType)
+        private static void ThrowEnumerableRegistrationException(Type dependencyType)
         {
             throw new EnumerableRegistrationException($"don't register {dependencyType} as IEnumerable directly. Instead register them as you would normally.");
         }
 
-        public static bool IsEnumerable(Type dependencyType)
+        private static bool IsEnumerable(Type dependencyType)
         {
             if (dependencyType.IsGenericType && dependencyType.GetGenericTypeDefinition() == typeof(IEnumerable<>))
             {

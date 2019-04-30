@@ -3,7 +3,7 @@ using System.Collections.Generic;
 
 namespace Singularity.Collections
 {
-    internal class ArrayList<T> : IEnumerable<T>
+    internal sealed class ArrayList<T> : IEnumerable<T>
     {
         public static readonly T[] Empty = new T[0];
         public T[] Array { get; private set; }

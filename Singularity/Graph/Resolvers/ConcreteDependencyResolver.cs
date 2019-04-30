@@ -3,7 +3,7 @@ using System.Collections.Generic;
 
 namespace Singularity.Graph.Resolvers
 {
-    internal class ConcreteDependencyResolver : IDependencyResolver
+    internal sealed class ConcreteDependencyResolver : IDependencyResolver
     {
         public IEnumerable<Binding> Resolve(IResolverPipeline graph, Type type)
         {

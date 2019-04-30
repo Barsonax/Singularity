@@ -14,7 +14,7 @@ namespace Singularity
         internal static readonly MethodInfo AddDisposableMethod = typeof(Scoped).GetRuntimeMethods().Single(x => x.Name == nameof(AddDisposable));
         internal static readonly MethodInfo AddFinalizerMethod = typeof(Scoped).GetRuntimeMethods().Single(x => x.Name == nameof(AddFinalizer));
         internal static readonly MethodInfo GetOrAddScopedInstanceMethod = typeof(Scoped).GetRuntimeMethods().Single(x => x.Name == nameof(GetOrAddScopedInstance));
-        internal static readonly Action<IDisposable> DisposeAction = x => x.Dispose();
+        private static readonly Action<IDisposable> DisposeAction = x => x.Dispose();
 
         private ThreadSafeDictionary<Binding, ActionList<object>> Finalizers { get; } = new ThreadSafeDictionary<Binding, ActionList<object>>();
         private ActionList<IDisposable> Disposables { get; } = new ActionList<IDisposable>(DisposeAction);
@@ -113,10 +113,12 @@ namespace Singularity
             Disposables.Invoke();
 
             if (Finalizers.Count > 0)
+            {
                 foreach (ActionList<object> objectActionList in Finalizers)
                 {
                     objectActionList.Invoke();
                 }
+            }
         }
     }
 }

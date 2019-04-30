@@ -3,7 +3,7 @@ using Singularity.Collections;
 
 namespace Singularity
 {
-    internal class Registration
+    internal sealed class Registration
     {
         public Type DependencyType { get; }
         public ArrayList<Binding> Bindings { get; }

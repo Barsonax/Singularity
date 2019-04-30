@@ -5,7 +5,7 @@ using System.Reflection;
 
 namespace Singularity.Graph.Resolvers
 {
-    internal class ExpressionDependencyResolver : IDependencyResolver
+    internal sealed class ExpressionDependencyResolver : IDependencyResolver
     {
         private static readonly MethodInfo GenericCreateLambdaMethod;
         static ExpressionDependencyResolver()

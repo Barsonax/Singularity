@@ -7,11 +7,11 @@ using Singularity.Graph;
 namespace Singularity
 {
     /// <summary>
-    /// A strongly typed configurator for registering new bindings. 
+    /// A strongly typed configurator for registering new bindings.
     /// </summary>
     /// <typeparam name="TDependency"></typeparam>
     /// <typeparam name="TInstance"></typeparam>
-    public class StronglyTypedServiceConfigurator<TDependency, TInstance>
+    public sealed class StronglyTypedServiceConfigurator<TDependency, TInstance>
         where TInstance : class, TDependency
     {
         internal StronglyTypedServiceConfigurator(string callerFilePath, int callerLineNumber, IModule? module = null)
@@ -134,7 +134,7 @@ namespace Singularity
         /// </summary>
         public StronglyTypedServiceConfigurator<TDependency, TInstance> Inject<TP1, TP2, TP3, TP4, TP5, TP6, TP7, TP8>(Expression<Func<TP1, TP2, TP3, TP4, TP5, TP6, TP7, TP8, TInstance>> expression) => InjectInternal(expression);
 
-        internal StronglyTypedServiceConfigurator<TDependency, TInstance> InjectInternal(Expression expression)
+        private StronglyTypedServiceConfigurator<TDependency, TInstance> InjectInternal(Expression expression)
         {
             _expression = expression;
             return this;

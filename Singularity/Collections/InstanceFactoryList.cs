@@ -4,7 +4,7 @@ using System.Collections.Generic;
 
 namespace Singularity.Collections
 {
-    internal class InstanceFactoryList<T> : IReadOnlyList<T>
+    internal sealed class InstanceFactoryList<T> : IReadOnlyList<T>
     {
         private readonly Func<Scoped, object>[] _instanceFactories;
         private readonly Scoped _scope;

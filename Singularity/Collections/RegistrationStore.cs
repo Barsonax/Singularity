@@ -4,7 +4,7 @@ using System.Linq.Expressions;
 
 namespace Singularity.Collections
 {
-    internal class RegistrationStore
+    internal sealed class RegistrationStore
     {
         public Dictionary<Type, Registration> Registrations { get; } = new Dictionary<Type, Registration>();
         public Dictionary<Type, ArrayList<Expression>> Decorators { get; } = new Dictionary<Type, ArrayList<Expression>>();

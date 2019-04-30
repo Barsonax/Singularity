@@ -47,7 +47,7 @@ namespace Singularity.Microsoft.DependencyInjection
                     Expression.Lambda(
                             Expression.Convert(
                                     Expression.Invoke(
-                                        Expression.Constant(registration.ImplementationFactory), serviceProviderParameter), registration.ServiceType), serviceProviderParameter)) 
+                                        Expression.Constant(registration.ImplementationFactory), serviceProviderParameter), registration.ServiceType), serviceProviderParameter))
                     .With(ConvertLifetime(registration.Lifetime)));
             }
             else if (registration.ImplementationInstance != null)

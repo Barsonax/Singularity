@@ -8,9 +8,8 @@ using Singularity.Expressions;
 
 namespace Singularity.Graph.Resolvers
 {
-    internal class ResolverPipeline : IResolverPipeline
+    internal sealed class ResolverPipeline : IResolverPipeline
     {
-        private static readonly Expression[] EmptyDecorators = new Expression[0];
         IReadOnlyDictionary<Type, Registration> IResolverPipeline.Dependencies => RegistrationStore.Registrations;
         private RegistrationStore RegistrationStore { get; }
         public object SyncRoot { get; }
