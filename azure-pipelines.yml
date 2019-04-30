@@ -1,8 +1,8 @@
 steps:
 - task: DotNetCoreInstaller@0
-  displayName: 'Use .NET Core sdk 3.0.100-preview4-01122'
+  displayName: 'Use .NET Core sdk 3.0.100-preview3-010431'
   inputs:
-    version: '3.0.100-preview4-01122'
+    version: '3.0.100-preview3-010431'
 - task: PowerShell@2
   displayName: 'Nuke build'
   inputs:
