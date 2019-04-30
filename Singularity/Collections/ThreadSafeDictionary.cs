@@ -14,8 +14,8 @@ namespace Singularity.Collections
     internal sealed class ThreadSafeDictionary<TKey, TValue> : IEnumerable<TValue>
         where TKey : class
     {
-        public int Count => ImmutableAvlDictionary.Count;
-        private ImmutableHashTable<TKey, TValue> ImmutableAvlDictionary = ImmutableHashTable<TKey, TValue>.Empty;
+        public int Count => _immutableHashTable.Count;
+        private ImmutableHashTable<TKey, TValue> _immutableHashTable = ImmutableHashTable<TKey, TValue>.Empty;
 
         /// <summary>
         /// Adds a key to the dictionary.
@@ -28,21 +28,21 @@ namespace Singularity.Collections
             ImmutableHashTable<TKey, TValue> initialValue, computedValue;
             do
             {
-                initialValue = ImmutableAvlDictionary;
-                computedValue = ImmutableAvlDictionary.Add(key, value);
+                initialValue = _immutableHashTable;
+                computedValue = _immutableHashTable.Add(key, value);
             }
-            while (initialValue != Interlocked.CompareExchange(ref ImmutableAvlDictionary, computedValue, initialValue));
+            while (initialValue != Interlocked.CompareExchange(ref _immutableHashTable, computedValue, initialValue));
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public TValue Get(TKey key)
+        public TValue GetOrDefault(TKey key)
         {
-            return ImmutableAvlDictionary.Get(key);
+            return _immutableHashTable.GetOrDefault(key);
         }
 
         public IEnumerator<TValue> GetEnumerator()
         {
-            return ImmutableAvlDictionary.GetEnumerator();
+            return _immutableHashTable.GetEnumerator();
         }
 
         IEnumerator IEnumerable.GetEnumerator()

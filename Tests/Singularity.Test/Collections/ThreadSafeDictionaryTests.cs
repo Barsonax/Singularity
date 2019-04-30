@@ -23,7 +23,7 @@ namespace Singularity.Test.Collections
 
             foreach ((Type key, ReferenceInt value) in testValues)
             {
-                Assert.Equal(value, dictionary.Get(key));
+                Assert.Equal(value, dictionary.GetOrDefault(key));
             }
         }
 
@@ -44,7 +44,7 @@ namespace Singularity.Test.Collections
                 {
 
                 }
-                Assert.Equal(value, dictionary.Get(key));
+                Assert.Equal(value, dictionary.GetOrDefault(key));
             }
         }
 
