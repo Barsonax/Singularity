@@ -1,8 +1,9 @@
 steps:
-- task: DotNetCoreInstaller@0
+- task: DotNetCoreInstaller@2
   displayName: 'Use .NET Core sdk 3.0.100-preview3-010431'
   inputs:
     version: '3.0.100-preview3-010431'
+    performMultiLevelLookup: true
 - task: PowerShell@2
   displayName: 'Nuke build'
   inputs:
