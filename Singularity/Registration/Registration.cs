@@ -6,20 +6,20 @@ namespace Singularity
     internal sealed class Registration
     {
         public Type DependencyType { get; }
-        public ArrayList<Binding> Bindings { get; }
-        public Binding Default { get; private set; }
+        public ArrayList<ServiceBinding> Bindings { get; }
+        public ServiceBinding Default { get; private set; }
 
-        public Registration(Type dependencyType, Binding binding)
+        public Registration(Type dependencyType, ServiceBinding serviceBinding)
         {
             DependencyType = dependencyType;
-            Default = binding;
-            Bindings = new ArrayList<Binding>(new[] { binding });
+            Default = serviceBinding;
+            Bindings = new ArrayList<ServiceBinding>(new[] { serviceBinding });
         }
 
-        public void AddBinding(Binding binding)
+        public void AddBinding(ServiceBinding serviceBinding)
         {
-            Default = binding;
-            Bindings.Add(binding);
+            Default = serviceBinding;
+            Bindings.Add(serviceBinding);
         }
     }
 }

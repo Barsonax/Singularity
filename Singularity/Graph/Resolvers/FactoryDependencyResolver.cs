@@ -6,7 +6,7 @@ namespace Singularity.Graph.Resolvers
 {
     internal sealed class FactoryDependencyResolver : IDependencyResolver
     {
-        public IEnumerable<Binding> Resolve(IResolverPipeline graph, Type type)
+        public IEnumerable<ServiceBinding> Resolve(IResolverPipeline graph, Type type)
         {
             if (type.IsGenericType && type.GetGenericTypeDefinition() == typeof(Func<>))
             {
@@ -16,7 +16,7 @@ namespace Singularity.Graph.Resolvers
                 {
                     LambdaExpression baseExpression = Expression.Lambda(factory.Expression);
 
-                    yield return new Binding(new BindingMetadata(type), baseExpression)
+                    yield return new ServiceBinding(type, new BindingMetadata(), baseExpression)
                     {
                         BaseExpression = baseExpression
                     };

@@ -5,11 +5,11 @@ namespace Singularity.Graph.Resolvers
 {
     internal sealed class ConcreteDependencyResolver : IDependencyResolver
     {
-        public IEnumerable<Binding> Resolve(IResolverPipeline graph, Type type)
+        public IEnumerable<ServiceBinding> Resolve(IResolverPipeline graph, Type type)
         {
             if (!type.IsInterface && !type.IsGenericType)
             {
-                yield return new Binding(new BindingMetadata(type), type.AutoResolveConstructorExpression());
+                yield return new ServiceBinding(type, new BindingMetadata(), type.AutoResolveConstructorExpression());
             }
         }
     }

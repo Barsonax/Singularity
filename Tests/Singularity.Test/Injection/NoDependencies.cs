@@ -123,66 +123,6 @@ namespace Singularity.Test.Injection
         }
 
         [Fact]
-        public void MethodInject_InjectsCorrectDependencies()
-        {
-            //ARRANGE
-            var container = new Container(builder =>
-            {
-                builder.Register<ITestService10, TestService10>();
-            });
-            var instance = new MethodInjectionClass();
-
-            //ACT
-            container.MethodInject(instance);
-
-            //ASSERT
-            Assert.IsType<TestService10>(instance.TestService10);
-        }
-
-        [Fact]
-        public void MethodInject_Scoped_InjectsCorrectDependencies()
-        {
-            //ARRANGE
-            var container = new Container(builder =>
-            {
-                builder.Register<ITestService10, TestService10>();
-            });
-            var instance = new MethodInjectionClass();
-
-            //ACT
-            Scoped scope = container.BeginScope();
-            scope.MethodInject(instance);
-
-            //ASSERT
-            Assert.IsType<TestService10>(instance.TestService10);
-        }
-
-        [Fact]
-        public void MethodInjectAll_InjectsCorrectDependencies()
-        {
-            //ARRANGE
-            var container = new Container(builder =>
-            {
-                builder.Register<ITestService10, TestService10>();
-            });
-
-            var instances = new List<MethodInjectionClass>();
-            for (var i = 0; i < 10; i++)
-            {
-                instances.Add(new MethodInjectionClass());
-            }
-
-            //ACT
-            container.MethodInjectAll(instances);
-
-            //ASSERT
-            foreach (MethodInjectionClass instance in instances)
-            {
-                Assert.IsType<TestService10>(instance.TestService10);
-            }
-        }
-
-        [Fact]
         public void GetInstance_PerContainerLifetime_ReturnsSameInstancePerCall()
         {
             //ARRANGE

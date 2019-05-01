@@ -3,6 +3,7 @@ using System.Linq.Expressions;
 using System.Runtime.CompilerServices;
 using Singularity.Collections;
 using Singularity.Exceptions;
+using Singularity.Graph;
 
 namespace Singularity
 {
@@ -138,39 +139,64 @@ namespace Singularity
             }
         }
 
-        private void RegisterInternal<TDependency, TInstance>(Action<StronglyTypedServiceConfigurator<TDependency, TInstance>>? configurator = null, string callerFilePath = "", int callerLineNumber = -1)
+        /// <summary>
+        /// Registers a new late injector for <typeparamref name="TInstance"/>
+        /// </summary>
+        /// <param name="configurator"></param>
+        /// <param name="callerFilePath"></param>
+        /// <param name="callerLineNumber"></param>
+        /// <typeparam name="TInstance"></typeparam>
+        public void LateInject<TInstance>(Action<StronglyTypedLateInjectorConfigurator<TInstance>>? configurator, [CallerFilePath]string callerFilePath = "", [CallerLineNumber] int callerLineNumber = -1)
+        {
+            LateInjectInternal(configurator, callerFilePath, callerLineNumber);
+        }
+
+        private void RegisterInternal<TDependency, TInstance>(Action<StronglyTypedServiceConfigurator<TDependency, TInstance>>? configurator, string callerFilePath, int callerLineNumber)
             where TInstance : class, TDependency
         {
-            var context = new StronglyTypedServiceConfigurator<TDependency, TInstance>(callerFilePath, callerLineNumber, Registrations.CurrentModule);
+            var metadata = new BindingMetadata(callerFilePath, callerLineNumber, Registrations.CurrentModule);
+            var context = new StronglyTypedServiceConfigurator<TDependency, TInstance>(metadata);
             configurator?.Invoke(context);
-            Binding binding = context.ToBinding();
-            Registrations.AddBinding(binding);
+            ServiceBinding serviceBinding = context.ToBinding();
+            Registrations.AddBinding(serviceBinding);
         }
 
-        private void RegisterInternal(Type dependencyType, Type instanceType, Action<WeaklyTypedServiceConfigurator>? configurator = null, string callerFilePath = "", int callerLineNumber = -1)
+        private void RegisterInternal(Type dependencyType, Type instanceType, Action<WeaklyTypedServiceConfigurator>? configurator, string callerFilePath, int callerLineNumber)
         {
-            var context = new WeaklyTypedServiceConfigurator(dependencyType, instanceType, callerFilePath, callerLineNumber, Registrations.CurrentModule);
+            var metadata = new BindingMetadata(callerFilePath, callerLineNumber, Registrations.CurrentModule);
+            var context = new WeaklyTypedServiceConfigurator(dependencyType, instanceType, metadata);
             configurator?.Invoke(context);
-            Binding binding = context.ToBinding();
-            Registrations.AddBinding(binding);
+            ServiceBinding serviceBinding = context.ToBinding();
+            Registrations.AddBinding(serviceBinding);
         }
 
-        private void DecorateInternal<TDependency, TDecorator>(Action<StronglyTypedDecoratorConfigurator<TDependency, TDecorator>>? registrator = null, string callerFilePath = "", int callerLineNumber = -1)
+        private void DecorateInternal<TDependency, TDecorator>(Action<StronglyTypedDecoratorConfigurator<TDependency, TDecorator>>? configurator, string callerFilePath, int callerLineNumber)
             where TDependency : class
             where TDecorator : TDependency
         {
-            var context = new StronglyTypedDecoratorConfigurator<TDependency, TDecorator>(callerFilePath, callerLineNumber, Registrations.CurrentModule);
-            registrator?.Invoke(context);
+            var metadata = new BindingMetadata(callerFilePath, callerLineNumber, Registrations.CurrentModule);
+            var context = new StronglyTypedDecoratorConfigurator<TDependency, TDecorator>(metadata);
+            configurator?.Invoke(context);
             Expression binding = context.ToBinding();
             Registrations.AddDecorator(typeof(TDependency), binding);
         }
 
-        private void DecorateInternal(Type dependencyType, Type decoratorType, Action<WeaklyTypedDecoratorConfigurator>? configurator = null, string callerFilePath = "", int callerLineNumber = -1)
+        private void DecorateInternal(Type dependencyType, Type decoratorType, Action<WeaklyTypedDecoratorConfigurator>? configurator, string callerFilePath, int callerLineNumber)
         {
-            var context = new WeaklyTypedDecoratorConfigurator(dependencyType, decoratorType, callerFilePath, callerLineNumber, Registrations.CurrentModule);
+            var metadata = new BindingMetadata(callerFilePath, callerLineNumber, Registrations.CurrentModule);
+            var context = new WeaklyTypedDecoratorConfigurator(dependencyType, decoratorType, metadata);
             configurator?.Invoke(context);
             Expression binding = context.ToBinding();
             Registrations.AddDecorator(dependencyType, binding);
+        }
+
+        private void LateInjectInternal<TInstance>(Action<StronglyTypedLateInjectorConfigurator<TInstance>>? configurator, string callerFilePath, int callerLineNumber)
+        {
+            var metadata = new BindingMetadata(callerFilePath, callerLineNumber, Registrations.CurrentModule);
+            var context = new StronglyTypedLateInjectorConfigurator<TInstance>(metadata);
+            configurator?.Invoke(context);
+            LateInjectorBinding binding = context.ToBinding();
+            Registrations.AddLateInjectorBinding(binding);
         }
     }
 }

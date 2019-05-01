@@ -5,6 +5,6 @@ namespace Singularity.Graph.Resolvers
 {
     internal interface IDependencyResolver
     {
-        IEnumerable<Binding> Resolve(IResolverPipeline graph, Type type);
+        IEnumerable<ServiceBinding> Resolve(IResolverPipeline graph, Type type);
     }
 }

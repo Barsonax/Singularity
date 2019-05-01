@@ -1,5 +1,4 @@
 ﻿using System;
-using Singularity.Attributes;
 using Singularity.Exceptions;
 
 namespace Singularity
@@ -26,10 +25,10 @@ namespace Singularity
         object GetInstance(Type type);
 
         /// <summary>
-        /// Injects dependencies by calling all methods marked with <see cref="InjectAttribute"/> on the <paramref name="instance"/>.
+        /// Injects dependencies by calling all methods that were registered using <see cref="ContainerBuilder.LateInject{T}"/>
         /// </summary>
         /// <param name="instance"></param>
         /// <exception cref="DependencyNotFoundException">If the method had parameters that couldn't be resolved</exception>
-        void MethodInject(object instance);
+        void LateInject(object instance);
     }
 }

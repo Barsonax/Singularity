@@ -29,52 +29,16 @@ namespace Singularity.Graph
         /// </summary>
         public bool Generated { get; }
 
-        /// <summary>
-        /// The dependency type
-        /// </summary>
-        public SinglyLinkedListNode<Type> DependencyTypes { get; }
-
-        internal BindingMetadata(Type dependencyType, string creatorFilePath, int creatorLineNumber, IModule? module)
+        internal BindingMetadata(string creatorFilePath, int creatorLineNumber, IModule? module)
         {
-            DependencyTypes = new SinglyLinkedListNode<Type>(dependencyType);
             ModuleType = module?.GetType();
             CreatorFilePath = creatorFilePath;
             CreatorLineNumber = creatorLineNumber;
         }
 
-        internal BindingMetadata(SinglyLinkedListNode<Type> dependencyTypes, string creatorFilePath, int creatorLineNumber, IModule? module)
-        {
-            DependencyTypes = dependencyTypes;
-            ModuleType = module?.GetType();
-            CreatorFilePath = creatorFilePath;
-            CreatorLineNumber = creatorLineNumber;
-        }
-
-        internal BindingMetadata(SinglyLinkedListNode<Type> types)
+        internal BindingMetadata()
         {
             Generated = true;
-            DependencyTypes = types;
-            CreatorFilePath = string.Empty;
-            CreatorLineNumber = -1;
-        }
-
-        internal BindingMetadata(Type type)
-        {
-            Generated = true;
-            DependencyTypes = new SinglyLinkedListNode<Type>(type);
-            CreatorFilePath = string.Empty;
-            CreatorLineNumber = -1;
-        }
-
-        internal string StringRepresentation()
-        {
-            if (Generated)
-            {
-                return $"dynamically generated binding {DependencyTypes}";
-            }
-            return ModuleType == null ?
-                $"registered binding in {CreatorFilePath} at line {CreatorLineNumber}" :
-                $"registered binding in module {ModuleType.FullName} at line {CreatorLineNumber}";
         }
     }
 }

@@ -13,7 +13,7 @@ namespace Singularity.Graph.Resolvers
             GenericCreateLambdaMethod = typeof(ExpressionDependencyResolver).GetMethod(nameof(CreateLambda));
         }
 
-        public IEnumerable<Binding> Resolve(IResolverPipeline graph, Type type)
+        public IEnumerable<ServiceBinding> Resolve(IResolverPipeline graph, Type type)
         {
             if (type.IsGenericType && type.GetGenericTypeDefinition() == typeof(Expression<>) && type.GenericTypeArguments.Length == 1)
             {
@@ -25,7 +25,7 @@ namespace Singularity.Graph.Resolvers
                     foreach (InstanceFactory instanceFactory in graph.ResolveAll(dependencyType))
                     {
                         Expression baseExpression = instanceFactory.Expression;
-                        var newBinding = new Binding(new BindingMetadata(type), baseExpression);
+                        var newBinding = new ServiceBinding(type, new BindingMetadata(), baseExpression);
 
                         var expression = (Expression)method.Invoke(null, new object[] { baseExpression });
                         var factory = new InstanceFactory(type, expression, scoped => expression);

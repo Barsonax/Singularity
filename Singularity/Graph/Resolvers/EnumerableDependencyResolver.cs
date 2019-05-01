@@ -9,7 +9,7 @@ namespace Singularity.Graph.Resolvers
 {
     internal sealed class EnumerableDependencyResolver : IDependencyResolver
     {
-        public IEnumerable<Binding> Resolve(IResolverPipeline graph, Type type)
+        public IEnumerable<ServiceBinding> Resolve(IResolverPipeline graph, Type type)
         {
             if (type.IsGenericType)
             {
@@ -31,7 +31,7 @@ namespace Singularity.Graph.Resolvers
 
                     foreach (Type newType in types)
                     {
-                        yield return new Binding(new BindingMetadata(newType), expression);
+                        yield return new ServiceBinding(newType, new BindingMetadata(), expression);
                     }
                 }
             }

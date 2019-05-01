@@ -5,10 +5,8 @@ using System.Linq;
 using System.Linq.Expressions;
 using System.Reflection;
 using System.Runtime.CompilerServices;
-using Singularity.Attributes;
 using Singularity.Collections;
 using Singularity.Expressions;
-using Singularity.Graph;
 using Singularity.Graph.Resolvers;
 
 namespace Singularity
@@ -27,6 +25,7 @@ namespace Singularity
         private readonly ThreadSafeDictionary<Type, Action<Scoped, object>> _injectionCache = new ThreadSafeDictionary<Type, Action<Scoped, object>>();
         private readonly ThreadSafeDictionary<Type, Func<Scoped, object>> _getInstanceCache = new ThreadSafeDictionary<Type, Func<Scoped, object>>();
         private readonly Scoped _containerScope;
+        private readonly Container? _parentContainer;
         private readonly SingularitySettings _options;
 
         /// <summary>
@@ -34,7 +33,7 @@ namespace Singularity
         /// </summary>
         /// <param name="modules"></param>
         /// <param name="options"></param>
-        public Container(IEnumerable<IModule> modules, SingularitySettings? options = null) : this(ToBuilder(modules), options) {}
+        public Container(IEnumerable<IModule> modules, SingularitySettings? options = null) : this(ToBuilder(modules), options) { }
 
         /// <summary>
         /// Creates a new container using the provided builder.
@@ -55,6 +54,7 @@ namespace Singularity
         {
             var context = new ContainerBuilder(this);
             builder?.Invoke(context);
+            _parentContainer = parentContainer;
             _options = parentContainer._options;
             _containerScope = new Scoped(this);
             Registrations = context.Registrations;
@@ -93,7 +93,7 @@ namespace Singularity
         {
             foreach (T instance in instances)
             {
-                if (instance != null) MethodInject(instance);
+                if (instance != null) LateInject(instance);
             }
         }
 
@@ -122,46 +122,61 @@ namespace Singularity
 
         /// <inheritdoc />
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public void MethodInject(object instance) => MethodInject(instance, _containerScope);
+        public void LateInject(object instance) => LateInject(instance, _containerScope);
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        internal void MethodInject(object instance, Scoped scope)
+        internal void LateInject(object instance, Scoped scope)
         {
             Type type = instance.GetType();
             Action<Scoped, object> action = _injectionCache.GetOrDefault(type);
             if (action == null)
             {
-                action = GenerateMethodInjector(type);
+                action = GenerateLateInjector(type);
                 _injectionCache.Add(type, action);
             }
             action(scope, instance);
         }
 
-        private Action<Scoped, object> GenerateMethodInjector(Type type)
+        private Action<Scoped, object> GenerateLateInjector(Type type)
         {
-            ParameterExpression instanceParameter = Expression.Parameter(typeof(object));
-
-            var body = new List<Expression>();
-            ParameterExpression instanceCasted = Expression.Variable(type, "instanceCasted");
-            body.Add(Expression.Assign(instanceCasted, Expression.Convert(instanceParameter, type)));
-            foreach (MethodInfo methodInfo in type.GetRuntimeMethods())
+            if (Registrations.LateInjectorBindings.TryGetValue(type, out ArrayList<LateInjectorBinding> lateInjectorBindings))
             {
-                if (methodInfo.CustomAttributes.All(x => x.AttributeType != typeof(InjectAttribute))) continue;
-                ParameterInfo[] parameterTypes = methodInfo.GetParameters();
-                var parameterExpressions = new Expression[parameterTypes.Length];
-                for (var i = 0; i < parameterTypes.Length; i++)
+                ParameterExpression instanceParameter = Expression.Parameter(typeof(object));
+
+                var body = new List<Expression>();
+
+                Expression instanceCasted = Expression.Convert(instanceParameter, type);
+                foreach (MethodInfo methodInfo in lateInjectorBindings.SelectMany(x => x.InjectionMethods))
                 {
-                    Type parameterType = parameterTypes[i].ParameterType;
-                    parameterExpressions[i] = _dependencyGraph.Resolve(parameterType).Expression;
+                    ParameterInfo[] parameterTypes = methodInfo.GetParameters();
+                    var parameterExpressions = new Expression[parameterTypes.Length];
+                    for (var i = 0; i < parameterTypes.Length; i++)
+                    {
+                        Type parameterType = parameterTypes[i].ParameterType;
+                        parameterExpressions[i] = _dependencyGraph.Resolve(parameterType).Expression;
+                    }
+                    body.Add(Expression.Call(instanceCasted, methodInfo, parameterExpressions));
                 }
-                body.Add(Expression.Call(instanceCasted, methodInfo, parameterExpressions));
+
+                foreach (PropertyInfo propertyInfo in lateInjectorBindings.SelectMany(x => x.InjectionProperties))
+                {
+                    body.Add(Expression.Assign(Expression.MakeMemberAccess(instanceCasted, propertyInfo), _dependencyGraph.Resolve(propertyInfo.PropertyType).Expression));
+                }
+
+                if (body.Count == 0) return (scope, instance) => { };
+                Expression expression = body.Count == 1 ? body[0] : Expression.Block(body);
+                Expression<Action<Scoped, object>> expressionTree = Expression.Lambda<Action<Scoped, object>>(expression, ExpressionGenerator.ScopeParameter, instanceParameter);
+
+                Action<Scoped, object> action = expressionTree.Compile();
+
+                return action;
             }
-            BlockExpression block = Expression.Block(new[] { instanceCasted }, body);
-            Expression<Action<Scoped, object>> expressionTree = Expression.Lambda<Action<Scoped, object>>(block, ExpressionGenerator.ScopeParameter, instanceParameter);
+            else if (_parentContainer != null)
+            {
+                return _parentContainer.GenerateLateInjector(type);
+            }
 
-            Action<Scoped, object> action = expressionTree.Compile();
-
-            return action;
+            return (scope, instance) => { };
         }
 
         /// <summary>

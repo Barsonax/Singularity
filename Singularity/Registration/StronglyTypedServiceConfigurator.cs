@@ -14,33 +14,28 @@ namespace Singularity
     public sealed class StronglyTypedServiceConfigurator<TDependency, TInstance>
         where TInstance : class, TDependency
     {
-        internal StronglyTypedServiceConfigurator(string callerFilePath, int callerLineNumber, IModule? module = null)
+        internal StronglyTypedServiceConfigurator(BindingMetadata bindingMetadata)
         {
             ServiceTypeValidator.Cache<TDependency>.CheckIsEnumerable();
-            _module = module;
-            _callerFilePath = callerFilePath;
-            _callerLineNumber = callerLineNumber;
+            _bindingMetadata = bindingMetadata;
             _dependencyTypes = new SinglyLinkedListNode<Type>(typeof(TDependency));
         }
 
-        private readonly IModule? _module;
-        private readonly string _callerFilePath;
-        private readonly int _callerLineNumber;
+        private readonly BindingMetadata _bindingMetadata;
         private SinglyLinkedListNode<Type> _dependencyTypes;
         private Expression? _expression;
         private Lifetime _lifetime;
         private Action<object>? _finalizer;
         private DisposeBehavior _disposeBehavior;
 
-        internal Binding ToBinding()
+        internal ServiceBinding ToBinding()
         {
             if (_expression == null)
             {
                 if (typeof(TInstance).IsInterface) throw new BindingConfigException($"{typeof(TInstance)} cannot be a interface");
                 _expression = AutoResolveConstructorExpressionCache<TInstance>.Expression;
             }
-            var bindingMetadata = new BindingMetadata(_dependencyTypes, _callerFilePath, _callerLineNumber, _module);
-            return new Binding(bindingMetadata, _expression, _lifetime, _finalizer, _disposeBehavior);
+            return new ServiceBinding(_dependencyTypes, _bindingMetadata, _expression, _lifetime, _finalizer, _disposeBehavior);
         }
 
         /// <summary>
@@ -60,7 +55,6 @@ namespace Singularity
         /// <returns></returns>
         public StronglyTypedServiceConfigurator<TDependency, TInstance> With(DisposeBehavior value)
         {
-            if (!EnumMetadata<DisposeBehavior>.IsValidValue(value)) throw new InvalidEnumValue<DisposeBehavior>(value);
             _disposeBehavior = value;
             return this;
         }
@@ -71,7 +65,6 @@ namespace Singularity
         /// </summary>
         public StronglyTypedServiceConfigurator<TDependency, TInstance> With(Lifetime value)
         {
-            if (!EnumMetadata<Lifetime>.IsValidValue(value)) throw new InvalidEnumValue<Lifetime>(value);
             _lifetime = value;
             return this;
         }
