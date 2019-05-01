@@ -9,7 +9,7 @@ namespace Singularity.Graph.Resolvers
 {
     internal sealed class EnumerableDependencyResolver : IDependencyResolver
     {
-        public IEnumerable<Binding> Resolve(IResolverPipeline graph, Type type)
+        public IEnumerable<ServiceBinding> Resolve(IResolverPipeline graph, Type type)
         {
             if (type.IsGenericType)
             {
@@ -17,10 +17,8 @@ namespace Singularity.Graph.Resolvers
                 if (definition == typeof(IEnumerable<>) || definition == typeof(IReadOnlyCollection<>) || definition == typeof(IReadOnlyList<>))
                 {
                     Type elementType = type.GenericTypeArguments[0];
-                    Registration? registration = graph.TryGetDependency(elementType);
-                    Binding[] dependencies = registration?.Bindings.Array ?? new Binding[0];
 
-                    Func<Scoped, object>[] instanceFactories = dependencies.Select(x => graph.ResolveDependency(elementType, x).Factory).ToArray();
+                    Func<Scoped, object>[] instanceFactories = graph.TryResolveAll(elementType).Select(x => x.Factory).ToArray();
 
                     Type instanceFactoryListType = typeof(InstanceFactoryList<>).MakeGenericType(type.GenericTypeArguments);
                     Expression expression = Expression.New(instanceFactoryListType.AutoResolveConstructor(), ExpressionGenerator.ScopeParameter, Expression.Constant(instanceFactories));
@@ -33,7 +31,7 @@ namespace Singularity.Graph.Resolvers
 
                     foreach (Type newType in types)
                     {
-                        yield return new Binding(new BindingMetadata(newType), expression);
+                        yield return new ServiceBinding(newType, new BindingMetadata(), expression);
                     }
                 }
             }

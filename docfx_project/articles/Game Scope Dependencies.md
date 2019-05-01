@@ -11,9 +11,9 @@ A example of a game dependency module can be found below:
 ```cs
 public class GameDependencies : IModule
 {
-	public void Register(BindingConfig config)
+	public void Register(containerBuilder builder)
 	{
-		config.Register<IPathfinder, Pathfinder>();
+		builder.Register<IPathfinder, Pathfinder>();
 	}
 }
 ```

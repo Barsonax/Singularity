@@ -10,33 +10,37 @@ namespace Singularity.Expressions
 {
     internal class ExpressionGenerator
     {
-        public static ParameterExpression ScopeParameter = Expression.Parameter(typeof(Scoped));
+        public static readonly ParameterExpression ScopeParameter = Expression.Parameter(typeof(Scoped));
         internal static readonly MethodInfo CreateScopedExpressionMethod = typeof(ExpressionGenerator).GetRuntimeMethods().FirstOrDefault(x => x.Name == nameof(CreateScopedExpression));
 
-        public Expression GenerateBaseExpression(Binding binding, InstanceFactory[] children, Scoped containerScope, SingularitySettings settings)
+        public Expression GenerateBaseExpression(ServiceBinding serviceBinding, InstanceFactory[] children, Scoped containerScope, SingularitySettings settings)
         {
-            Expression expression = binding.Expression! is LambdaExpression lambdaExpression ? lambdaExpression.Body : binding.Expression;
+            if (serviceBinding.Expression is AbstractBindingExpression)
+            {
+                return Expression.Constant(serviceBinding);
+            }
+            Expression expression = serviceBinding.Expression! is LambdaExpression lambdaExpression ? lambdaExpression.Body : serviceBinding.Expression;
             var parameterExpressionVisitor = new ParameterExpressionVisitor(children!);
             expression = parameterExpressionVisitor.Visit(expression);
 
-            if (binding.NeedsDispose == DisposeBehavior.Always || settings.AutoDispose && binding.NeedsDispose != DisposeBehavior.Never && typeof(IDisposable).IsAssignableFrom(expression.Type))
+            if (serviceBinding.NeedsDispose == DisposeBehavior.Always || settings.AutoDispose && serviceBinding.NeedsDispose != DisposeBehavior.Never && typeof(IDisposable).IsAssignableFrom(expression.Type))
             {
                 MethodInfo method = Scoped.AddDisposableMethod.MakeGenericMethod(expression.Type);
                 expression = Expression.Call(ScopeParameter, method, expression);
             }
 
-            if (binding.Finalizer != null)
+            if (serviceBinding.Finalizer != null)
             {
                 MethodInfo method = Scoped.AddFinalizerMethod.MakeGenericMethod(expression.Type);
-                expression = Expression.Call(ScopeParameter, method, expression, Expression.Constant(binding));
+                expression = Expression.Call(ScopeParameter, method, expression, Expression.Constant(serviceBinding));
             }
 
-            return ApplyCaching(binding.Lifetime, containerScope, expression);
+            return ApplyCaching(serviceBinding.Lifetime, containerScope, expression);
         }
 
-        public Expression ApplyDecorators(Type dependencyType, Binding binding, InstanceFactory[] children, Expression[] decorators, Scoped containerScope)
+        public Expression ApplyDecorators(Type dependencyType, ServiceBinding serviceBinding, InstanceFactory[] children, Expression[] decorators, Scoped containerScope)
         {
-            Expression expression = binding.BaseExpression ?? throw new ArgumentNullException("binding.BaseExpression");
+            Expression expression = serviceBinding.BaseExpression ?? throw new ArgumentNullException("binding.BaseExpression");
             if (decorators.Length > 0)
             {
                 var body = new List<Expression>();
@@ -58,7 +62,7 @@ namespace Singularity.Expressions
 
                 if (body.Last().Type == typeof(void)) body.Add(instanceParameter);
                 expression = body.Count == 1 ? expression : Expression.Block(new[] { instanceParameter }, body);
-                expression = ApplyCaching(binding.Lifetime, containerScope, expression);
+                expression = ApplyCaching(serviceBinding.Lifetime, containerScope, expression);
             }
 
             return expression;

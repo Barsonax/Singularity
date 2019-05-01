@@ -16,7 +16,7 @@ namespace Singularity
         internal static readonly MethodInfo GetOrAddScopedInstanceMethod = typeof(Scoped).GetRuntimeMethods().Single(x => x.Name == nameof(GetOrAddScopedInstance));
         private static readonly Action<IDisposable> DisposeAction = x => x.Dispose();
 
-        private ThreadSafeDictionary<Binding, ActionList<object>> Finalizers { get; } = new ThreadSafeDictionary<Binding, ActionList<object>>();
+        private ThreadSafeDictionary<ServiceBinding, ActionList<object>> Finalizers { get; } = new ThreadSafeDictionary<ServiceBinding, ActionList<object>>();
         private ActionList<IDisposable> Disposables { get; } = new ActionList<IDisposable>(DisposeAction);
         private ThreadSafeDictionary<Type, object> ScopedInstances { get; } = new ThreadSafeDictionary<Type, object>();
         private readonly Container _container;
@@ -49,13 +49,13 @@ namespace Singularity
         }
 
         /// <summary>
-        /// <see cref="Singularity.Container.MethodInject(object)"/>
+        /// <see cref="Container.LateInject"/>
         /// </summary>
         /// <param name="instance"></param>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public void MethodInject(object instance)
+        public void LateInject(object instance)
         {
-            _container.MethodInject(instance, this);
+            _container.LateInject(instance, this);
         }
 
         internal T GetOrAddScopedInstance<T>(Func<Scoped, T> factory, Type key)
@@ -82,10 +82,10 @@ namespace Singularity
             return obj;
         }
 
-        internal T AddFinalizer<T>(T obj, Binding binding)
+        internal T AddFinalizer<T>(T obj, ServiceBinding serviceBinding)
             where T : class
         {
-            ActionList<object> list = Finalizers.GetOrDefault(binding);
+            ActionList<object> list = Finalizers.GetOrDefault(serviceBinding);
             if (list != null)
             {
                 list.Add(obj);
@@ -94,11 +94,11 @@ namespace Singularity
 
             lock (Finalizers)
             {
-                list = Finalizers.GetOrDefault(binding);
+                list = Finalizers.GetOrDefault(serviceBinding);
                 if (list == null)
                 {
-                    list = new ActionList<object>(binding.Finalizer!);
-                    Finalizers.Add(binding, list);
+                    list = new ActionList<object>(serviceBinding.Finalizer!);
+                    Finalizers.Add(serviceBinding, list);
                 }
             }
             list.Add(obj!);

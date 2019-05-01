@@ -53,7 +53,7 @@ namespace Singularity.Duality.Scopes
             }
 			try
 			{
-				Container.MethodInject(args.Component);
+				Container.LateInject(args.Component);
 			}
 			catch (Exception e)
 			{

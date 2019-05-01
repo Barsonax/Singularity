@@ -7,20 +7,19 @@ namespace Singularity.Graph.Resolvers
 {
     internal sealed class LazyDependencyResolver : IDependencyResolver
     {
-        public IEnumerable<Binding> Resolve(IResolverPipeline graph, Type type)
+        public IEnumerable<ServiceBinding> Resolve(IResolverPipeline graph, Type type)
         {
             if (type.IsGenericType && type.GetGenericTypeDefinition() == typeof(Lazy<>))
             {
                 Type funcType = typeof(Func<>).MakeGenericType(type.GenericTypeArguments[0]);
                 Type lazyType = typeof(Lazy<>).MakeGenericType(type.GenericTypeArguments[0]);
-                Registration factoryDependency = graph.GetDependency(funcType);
 
                 ConstructorInfo constructor = lazyType.GetConstructor(new[] { funcType });
 
-                foreach (Binding binding in factoryDependency.Bindings)
+                foreach (InstanceFactory factory in graph.ResolveAll(funcType))
                 {
-                    NewExpression baseExpression = Expression.New(constructor, graph.ResolveDependency(lazyType, binding).Expression);
-                    var newBinding = new Binding(new BindingMetadata(type), baseExpression);
+                    NewExpression baseExpression = Expression.New(constructor, factory.Expression);
+                    var newBinding = new ServiceBinding(type, new BindingMetadata(), baseExpression);
                     newBinding.Factories.Add(new InstanceFactory(type, baseExpression));
                     yield return newBinding;
                 }

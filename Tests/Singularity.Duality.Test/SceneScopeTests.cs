@@ -30,7 +30,12 @@ namespace Singularity.Duality.Test
 
 			scene.AddObject(gameObject);
 
-			using (var sceneScope = new SceneScope(new Container(builder => builder.Register<IModule, TestModule>()), scene, new SceneEventsProviderMockup(), new LoggerMockup()))
+			using (var sceneScope = new SceneScope(new Container(builder =>
+            {
+                builder.Register<IModule, TestModule>();
+                builder.LateInject<TestComponentWithDependency>(c => c
+                    .UseMethod(nameof(TestComponentWithDependency.Init)));
+            }), scene, new SceneEventsProviderMockup(), new LoggerMockup()))
 			{
 				Assert.IsType<TestModule>(testComponent.Module);
 				Assert.Single(testComponent.InitCalls);
@@ -41,7 +46,12 @@ namespace Singularity.Duality.Test
 		public void AddGameObject_DependencyIsInjected()
 		{
             var sceneEventsProvider = new SceneEventsProviderMockup();
-			using (var sceneScope = new SceneScope(new Container(builder => builder.Register<IModule, TestModule>()), new Scene(), sceneEventsProvider, new LoggerMockup()))
+			using (var sceneScope = new SceneScope(new Container(builder =>
+            {
+                builder.Register<IModule, TestModule>();
+                builder.LateInject<TestComponentWithDependency>(c => c
+                    .UseMethod(nameof(TestComponentWithDependency.Init)));
+            }), new Scene(), sceneEventsProvider, new LoggerMockup()))
 			{
 				var gameObject = new GameObject("Test");
 				var testComponent = gameObject.AddComponent<TestComponentWithDependency>();
@@ -57,7 +67,12 @@ namespace Singularity.Duality.Test
 		public void AddComponent_DependencyIsInjected()
 		{
             var sceneEventsProvider = new SceneEventsProviderMockup();
-			using (var sceneScope = new SceneScope(new Container(builder => builder.Register<IModule, TestModule>()), new Scene(), sceneEventsProvider, new LoggerMockup()))
+			using (var sceneScope = new SceneScope(new Container(builder =>
+            {
+                builder.Register<IModule, TestModule>();
+                builder.LateInject<TestComponentWithDependency>(c => c
+                    .UseMethod(nameof(TestComponentWithDependency.Init)));
+            }), new Scene(), sceneEventsProvider, new LoggerMockup()))
 			{
 				var component = new TestComponentWithDependency();
 				sceneEventsProvider.TriggerComponentAdded(component);

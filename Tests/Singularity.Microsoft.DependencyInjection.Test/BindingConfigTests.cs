@@ -22,9 +22,9 @@ namespace Singularity.Microsoft.DependencyInjection.Test
 
             Registration registration = Assert.Single(registrationStore.Registrations.Values);
             Assert.Empty(registrationStore.Decorators);
-            Binding binding = Assert.Single(registration.Bindings);
+            ServiceBinding serviceBinding = Assert.Single(registration.Bindings);
             Assert.Equal(typeof(IRepositoryTransient1), registration.DependencyType);
-            Assert.Equal(typeof(RepositoryTransient1), binding.Expression?.Type);
+            Assert.Equal(typeof(RepositoryTransient1), serviceBinding.Expression?.Type);
         }
     }
 }

@@ -61,10 +61,10 @@ namespace Singularity.Test.Registrations
             Registration[] registrations = container.Registrations.Registrations.Values.ToArray();
 
             //ASSERT
-            Binding[] bindings = Assert.Single(registrations).Bindings.ToArray();
-            Assert.Equal(typeof(Plugin1), bindings[0].Expression!.Type);
-            Assert.Equal(typeof(Plugin2), bindings[1].Expression!.Type);
-            Assert.Equal(typeof(Plugin3), bindings[2].Expression!.Type);
+            ServiceBinding[] serviceBindings = Assert.Single(registrations).Bindings.ToArray();
+            Assert.Equal(typeof(Plugin1), serviceBindings[0].Expression!.Type);
+            Assert.Equal(typeof(Plugin2), serviceBindings[1].Expression!.Type);
+            Assert.Equal(typeof(Plugin3), serviceBindings[2].Expression!.Type);
         }
 
         [Fact]
@@ -86,10 +86,10 @@ namespace Singularity.Test.Registrations
             Registration[] registrations = container.Registrations.Registrations.Values.ToArray();
 
             //ASSERT
-            Binding[] bindings = Assert.Single(registrations).Bindings.ToArray();
-            Assert.Equal(typeof(Plugin1), bindings[0].Expression!.Type);
-            Assert.Equal(typeof(Plugin2), bindings[1].Expression!.Type);
-            Assert.Equal(typeof(Plugin3), bindings[2].Expression!.Type);
+            ServiceBinding[] serviceBindings = Assert.Single(registrations).Bindings.ToArray();
+            Assert.Equal(typeof(Plugin1), serviceBindings[0].Expression!.Type);
+            Assert.Equal(typeof(Plugin2), serviceBindings[1].Expression!.Type);
+            Assert.Equal(typeof(Plugin3), serviceBindings[2].Expression!.Type);
             Assert.True(registrations[0].Bindings.All(x => x.Lifetime == Lifetime.PerContainer));
         }
 
@@ -115,10 +115,10 @@ namespace Singularity.Test.Registrations
             RegistrationStore readOnlyBindingConfig = container.Registrations;
 
             //ASSERT
-            Binding[] bindings = Assert.Single(readOnlyBindingConfig.Registrations).Value.Bindings.ToArray();
-            Assert.Equal(typeof(Plugin1), bindings[0].Expression!.Type);
-            Assert.Equal(typeof(Plugin2), bindings[1].Expression!.Type);
-            Assert.Equal(typeof(Plugin3), bindings[2].Expression!.Type);
+            ServiceBinding[] serviceBindings = Assert.Single(readOnlyBindingConfig.Registrations).Value.Bindings.ToArray();
+            Assert.Equal(typeof(Plugin1), serviceBindings[0].Expression!.Type);
+            Assert.Equal(typeof(Plugin2), serviceBindings[1].Expression!.Type);
+            Assert.Equal(typeof(Plugin3), serviceBindings[2].Expression!.Type);
 
             ArrayList<Expression> decorators = Assert.Single(readOnlyBindingConfig.Decorators.Values);
 
@@ -128,7 +128,7 @@ namespace Singularity.Test.Registrations
         [Fact]
         public void Register_InvalidLifetime_StronglyTyped()
         {
-            Assert.Throws<InvalidEnumValue<Lifetime>>(() =>
+            Assert.Throws<InvalidEnumValueException<Lifetime>>(() =>
             {
                 new Container(builder =>
                 {
@@ -141,7 +141,7 @@ namespace Singularity.Test.Registrations
         [Fact]
         public void Register_InvalidLifetime_WeaklyTyped()
         {
-            Assert.Throws<InvalidEnumValue<Lifetime>>(() =>
+            Assert.Throws<InvalidEnumValueException<Lifetime>>(() =>
             {
                 new Container(builder =>
                 {
@@ -154,7 +154,7 @@ namespace Singularity.Test.Registrations
         [Fact]
         public void Register_InvalidDisposeBehavior_StronglyTyped()
         {
-            Assert.Throws<InvalidEnumValue<DisposeBehavior>>(() =>
+            Assert.Throws<InvalidEnumValueException<DisposeBehavior>>(() =>
             {
                 new Container(builder =>
                 {
@@ -167,7 +167,7 @@ namespace Singularity.Test.Registrations
         [Fact]
         public void Register_InvalidDisposeBehavior_WeaklyTyped()
         {
-            Assert.Throws<InvalidEnumValue<DisposeBehavior>>(() =>
+            Assert.Throws<InvalidEnumValueException<DisposeBehavior>>(() =>
             {
                 new Container(builder =>
                 {

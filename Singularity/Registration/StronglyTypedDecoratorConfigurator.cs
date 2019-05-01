@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Linq.Expressions;
+using Singularity.Graph;
 
 namespace Singularity
 {
@@ -12,20 +13,16 @@ namespace Singularity
         where TDependency : class
         where TDecorator : TDependency
     {
-        internal StronglyTypedDecoratorConfigurator(string callerFilePath, int callerLineNumber, IModule? module = null)
+        internal StronglyTypedDecoratorConfigurator(BindingMetadata bindingMetadata)
         {
-            _module = module;
-            _callerFilePath = callerFilePath;
-            _callerLineNumber = callerLineNumber;
+            _bindingMetadata = bindingMetadata;
             _dependencyType = typeof(TDependency);
             _expression = AutoResolveConstructorExpressionCache<TDecorator>.Expression;
             DecoratorTypeValidator.CheckIsInterface(typeof(TDependency));
             DecoratorTypeValidator.CheckParameters(_expression, typeof(TDependency), typeof(TDecorator));
         }
 
-        private IModule? _module;
-        private string _callerFilePath;
-        private int _callerLineNumber;
+        private BindingMetadata _bindingMetadata;
         private Type _dependencyType;
         private readonly Expression _expression;
 

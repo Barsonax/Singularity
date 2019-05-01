@@ -5,10 +5,9 @@ namespace Singularity.Graph.Resolvers
 {
     internal interface IResolverPipeline
     {
-        Registration? TryGetDependency(Type type);
-        Registration GetDependency(Type type);
-        InstanceFactory ResolveDependency(Type type, Binding dependency);
-        IReadOnlyDictionary<Type, Registration> Dependencies { get; }
-        object SyncRoot { get; }
+        InstanceFactory Resolve(Type type);
+        IEnumerable<InstanceFactory> ResolveAll(Type type);
+        InstanceFactory? TryResolve(Type type);
+        IEnumerable<InstanceFactory?> TryResolveAll(Type type);
     }
 }

@@ -1,4 +1,6 @@
-﻿using Singularity.TestClasses.TestClasses;
+﻿using System;
+using Singularity.Exceptions;
+using Singularity.TestClasses.TestClasses;
 using Xunit;
 
 namespace Singularity.Test.Injection
@@ -20,6 +22,23 @@ namespace Singularity.Test.Injection
 
             //ASSERT
             Assert.IsType<DefaultSerializer<Special>>(serializer);
+        }
+
+        [Fact]
+        public void Getinstance_ByOpenGenericType_Throws()
+        {
+            //ARRANGE
+            var container = new Container(builder =>
+            {
+                builder.Register(typeof(ISerializer<>), typeof(DefaultSerializer<>));
+            });
+
+            //ACT
+            //ASSERT
+            Assert.Throws<AbstractTypeResolveException>(() =>
+            {
+                object serializer = container.GetInstance(typeof(ISerializer<>));
+            });
         }
 
         [Fact]

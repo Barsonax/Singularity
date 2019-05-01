@@ -10,19 +10,26 @@ namespace Singularity.Graph.Resolvers
 {
     internal sealed class ResolverPipeline : IResolverPipeline
     {
-        IReadOnlyDictionary<Type, Registration> IResolverPipeline.Dependencies => RegistrationStore.Registrations;
         private RegistrationStore RegistrationStore { get; }
-        public object SyncRoot { get; }
+        private object SyncRoot { get; }
         private readonly IDependencyResolver[] _resolvers;
-        private readonly IResolverPipeline? _parentPipeline;
+        private readonly ResolverPipeline? _parentPipeline;
         private readonly Scoped _containerScope;
         private readonly ExpressionGenerator _expressionGenerator = new ExpressionGenerator();
         private readonly SingularitySettings _settings;
 
-        public ResolverPipeline(RegistrationStore registrationStore, IDependencyResolver[] resolvers, Scoped containerScope, SingularitySettings settings, IResolverPipeline? parentPipeline)
+        public ResolverPipeline(RegistrationStore registrationStore, Scoped containerScope, SingularitySettings settings, ResolverPipeline? parentPipeline)
         {
             _settings = settings ?? throw new ArgumentNullException(nameof(settings));
-            _resolvers = resolvers ?? throw new ArgumentNullException(nameof(resolvers));
+            _resolvers = new IDependencyResolver[]
+            {
+                new EnumerableDependencyResolver(),
+                new ExpressionDependencyResolver(),
+                new LazyDependencyResolver(),
+                new FactoryDependencyResolver(),
+                new ConcreteDependencyResolver(),
+                new OpenGenericResolver()
+            };
             _parentPipeline = parentPipeline;
             SyncRoot = parentPipeline?.SyncRoot ?? new object();
             _containerScope = containerScope ?? throw new ArgumentNullException(nameof(containerScope));
@@ -30,11 +37,42 @@ namespace Singularity.Graph.Resolvers
 
             if (parentPipeline != null)
             {
-                CheckChildRegistrations(parentPipeline, registrationStore.Registrations, SyncRoot);
+                CheckChildRegistrations(parentPipeline.RegistrationStore.Registrations, registrationStore.Registrations, SyncRoot);
             }
         }
 
-        public Registration? TryGetDependency(Type type)
+        public InstanceFactory Resolve(Type type)
+        {
+            ServiceBinding serviceBinding = GetDependency(type).Default;
+            return ResolveDependency(type, serviceBinding);
+        }
+
+        public IEnumerable<InstanceFactory> ResolveAll(Type type)
+        {
+            Registration registration = GetDependency(type);
+            foreach (ServiceBinding registrationBinding in registration.Bindings)
+            {
+                yield return ResolveDependency(type, registrationBinding);
+            }
+        }
+
+        public InstanceFactory? TryResolve(Type type)
+        {
+            ServiceBinding? serviceBinding = TryGetDependency(type)?.Default;
+            return serviceBinding == null ? null : ResolveDependency(type, serviceBinding);
+        }
+
+        public IEnumerable<InstanceFactory?> TryResolveAll(Type type)
+        {
+            Registration? registration = TryGetDependency(type);
+            if(registration == null) yield break;
+            foreach (ServiceBinding registrationBinding in registration.Bindings)
+            {
+                yield return ResolveDependency(type, registrationBinding);
+            }
+        }
+
+        private Registration? TryGetDependency(Type type)
         {
             lock (SyncRoot)
             {
@@ -42,10 +80,10 @@ namespace Singularity.Graph.Resolvers
 
                 foreach (IDependencyResolver dependencyResolver in _resolvers)
                 {
-                    Binding[] bindings = dependencyResolver.Resolve(this, type).ToArray();
-                    if (bindings.Length > 0)
+                    ServiceBinding[] serviceBindings = dependencyResolver.Resolve(this, type).ToArray();
+                    if (serviceBindings.Length > 0)
                     {
-                        foreach (Binding binding in bindings)
+                        foreach (ServiceBinding binding in serviceBindings)
                         {
                             RegistrationStore.AddBinding(binding);
                         }
@@ -57,16 +95,16 @@ namespace Singularity.Graph.Resolvers
             }
         }
 
-        public Registration GetDependency(Type type)
+        private Registration GetDependency(Type type)
         {
             Registration? dependency = TryGetDependency(type);
             if (dependency == null) throw new DependencyNotFoundException(type);
             return dependency;
         }
 
-        public InstanceFactory ResolveDependency(Type type, Binding dependency) => ResolveDependency(type, dependency, new CircularDependencyDetector());
+        private InstanceFactory ResolveDependency(Type type, ServiceBinding dependency) => ResolveDependency(type, dependency, new CircularDependencyDetector());
 
-        private InstanceFactory ResolveDependency(Type type, Binding dependency, CircularDependencyDetector circularDependencyDetector)
+        private InstanceFactory ResolveDependency(Type type, ServiceBinding dependency, CircularDependencyDetector circularDependencyDetector)
         {
             circularDependencyDetector.Enter(type);
             GenerateBaseExpression(dependency, circularDependencyDetector);
@@ -75,50 +113,57 @@ namespace Singularity.Graph.Resolvers
             return factory;
         }
 
-        private void GenerateBaseExpression(Binding binding, CircularDependencyDetector circularDependencyDetector)
+        private void GenerateBaseExpression(ServiceBinding serviceBinding, CircularDependencyDetector circularDependencyDetector)
         {
-            if (binding.BaseExpression == null)
+            if (serviceBinding.BaseExpression == null)
             {
-                lock (binding)
+                lock (serviceBinding)
                 {
-                    if (binding.BaseExpression == null)
+                    if (serviceBinding.BaseExpression == null)
                     {
-                        ParameterExpression[] parameters = binding.Expression.GetParameterExpressions().Where(x => x.Type != ExpressionGenerator.ScopeParameter.Type).ToArray();
+                        ParameterExpression[] parameters = serviceBinding.Expression.GetParameterExpressions().Where(x => x.Type != ExpressionGenerator.ScopeParameter.Type).ToArray();
                         var factories = new InstanceFactory[parameters.Length];
                         for (var i = 0; i < parameters.Length; i++)
                         {
                             ParameterExpression parameter = parameters[i];
-                            Binding child = GetDependency(parameter.Type).Default;
+                            ServiceBinding child = GetDependency(parameter.Type).Default;
                             factories[i] = ResolveDependency(parameter.Type, child, circularDependencyDetector);
                         }
 
-                        if (binding.ResolveError != null) throw binding.ResolveError;
-                        binding.BaseExpression = _expressionGenerator.GenerateBaseExpression(binding, factories, _containerScope, _settings);
+                        if (serviceBinding.ResolveError != null) throw serviceBinding.ResolveError;
+                        serviceBinding.BaseExpression = _expressionGenerator.GenerateBaseExpression(serviceBinding, factories, _containerScope, _settings);
                     }
                 }
             }
         }
 
 
-        private InstanceFactory GenerateInstanceFactory(Type type, Binding dependency, CircularDependencyDetector circularDependencyDetector)
+        private InstanceFactory GenerateInstanceFactory(Type type, ServiceBinding serviceBinding, CircularDependencyDetector circularDependencyDetector)
         {
-            lock (dependency)
+            lock (serviceBinding)
             {
-                if (!dependency.TryGetInstanceFactory(type, out InstanceFactory factory))
+                if (!serviceBinding.TryGetInstanceFactory(type, out InstanceFactory factory))
                 {
+                    if (serviceBinding.Expression is AbstractBindingExpression)
+                    {
+                        factory = new InstanceFactory(type, serviceBinding.BaseExpression!, scoped => throw new AbstractTypeResolveException($"Cannot create a instance for type {type} since its abstract"));
+                        serviceBinding.Factories.Add(factory);
+                        return factory;
+                    }
+
                     Expression[] decorators = FindDecorators(type);
                     ParameterExpression[] parameters = decorators.GetParameterExpressions().Where(x => x.Type != ExpressionGenerator.ScopeParameter.Type && x.Type != type).ToArray();
                     var childFactories = new InstanceFactory[parameters.Length];
                     for (var i = 0; i < parameters.Length; i++)
                     {
                         ParameterExpression parameter = parameters[i];
-                        Binding child = GetDependency(parameter.Type).Default;
+                        ServiceBinding child = GetDependency(parameter.Type).Default;
                         childFactories[i] = ResolveDependency(parameter.Type, child, circularDependencyDetector);
                     }
 
-                    Expression expression = _expressionGenerator.ApplyDecorators(type, dependency, childFactories, decorators, _containerScope);
+                    Expression expression = _expressionGenerator.ApplyDecorators(type, serviceBinding, childFactories, decorators, _containerScope);
                     factory = new InstanceFactory(type, expression);
-                    dependency.Factories.Add(factory);
+                    serviceBinding.Factories.Add(factory);
                 }
                 return factory;
             }
@@ -129,20 +174,20 @@ namespace Singularity.Graph.Resolvers
             return RegistrationStore.Decorators.TryGetValue(type, out ArrayList<Expression> decorators) ? decorators.Array : ArrayList<Expression>.Empty;
         }
 
-        private static void CheckChildRegistrations(IResolverPipeline parentDependencyGraph, Dictionary<Type, Registration> registrations, object syncRoot)
+        private static void CheckChildRegistrations(Dictionary<Type, Registration> parentRegistrations, Dictionary<Type, Registration> childRegistrations, object syncRoot)
         {
             lock (syncRoot)
             {
-                foreach (Registration registration in registrations.Values)
+                foreach (Registration registration in childRegistrations.Values)
                 {
                     Type type = registration.DependencyType;
-                    if (parentDependencyGraph.Dependencies.TryGetValue(type, out _))
+                    if (parentRegistrations.TryGetValue(type, out _))
                     {
                         throw new RegistrationAlreadyExistsException($"Dependency {type} was already registered in the parent graph!");
                     }
                     else if (type.IsGenericType)
                     {
-                        if (parentDependencyGraph.Dependencies.TryGetValue(type.GetGenericTypeDefinition(), out _))
+                        if (parentRegistrations.TryGetValue(type.GetGenericTypeDefinition(), out _))
                         {
                             throw new RegistrationAlreadyExistsException($"Dependency {type} was already registered as a open generic in the parent graph!");
                         }

@@ -12,20 +12,16 @@ namespace Singularity
     /// </summary>
     public sealed class WeaklyTypedServiceConfigurator
     {
-        internal WeaklyTypedServiceConfigurator(Type dependencyType, Type instanceType, string callerFilePath, int callerLineNumber, IModule? module = null)
+        internal WeaklyTypedServiceConfigurator(Type dependencyType, Type instanceType, BindingMetadata bindingMetadata)
         {
             ServiceTypeValidator.CheckIsEnumerable(dependencyType);
             ServiceTypeValidator.CheckIsAssignable(dependencyType, instanceType);
             _instanceType = instanceType;
-            _module = module;
-            _callerFilePath = callerFilePath;
-            _callerLineNumber = callerLineNumber;
+            _bindingMetadata = bindingMetadata;
             _dependencyTypes = new SinglyLinkedListNode<Type>(dependencyType);
         }
 
-        private readonly IModule? _module;
-        private readonly string _callerFilePath;
-        private readonly int _callerLineNumber;
+        private readonly BindingMetadata _bindingMetadata;
         private readonly Type _instanceType;
         private SinglyLinkedListNode<Type> _dependencyTypes;
         private Expression? _expression;
@@ -33,21 +29,20 @@ namespace Singularity
         private Action<object>? _finalizer;
         private DisposeBehavior _disposeBehavior;
 
-        internal Binding ToBinding()
+        internal ServiceBinding ToBinding()
         {
             if (_expression == null)
             {
                 if (_instanceType.ContainsGenericParameters)
                 {
-                    _expression = new OpenGenericTypeExpression(_instanceType);
+                    _expression = new AbstractBindingExpression(_instanceType);
                 }
                 else
                 {
                     _expression = _instanceType.AutoResolveConstructorExpression();
                 }
             }
-            var bindingMetadata = new BindingMetadata(_dependencyTypes, _callerFilePath, _callerLineNumber, _module);
-            return new Binding(bindingMetadata, _expression, _lifetime, _finalizer, _disposeBehavior);
+            return new ServiceBinding(_dependencyTypes, _bindingMetadata, _expression, _lifetime, _finalizer, _disposeBehavior);
         }
 
         /// <summary>
@@ -67,7 +62,6 @@ namespace Singularity
         /// <returns></returns>
         public WeaklyTypedServiceConfigurator With(DisposeBehavior value)
         {
-            if (!EnumMetadata<DisposeBehavior>.IsValidValue(value)) throw new InvalidEnumValue<DisposeBehavior>(value);
             _disposeBehavior = value;
             return this;
         }
@@ -78,7 +72,6 @@ namespace Singularity
         /// </summary>
         public WeaklyTypedServiceConfigurator With(Lifetime value)
         {
-            if (!EnumMetadata<Lifetime>.IsValidValue(value)) throw new InvalidEnumValue<Lifetime>(value);
             _lifetime = value;
             return this;
         }
