@@ -39,7 +39,7 @@ namespace Singularity
             {
                 if (_instanceType.ContainsGenericParameters)
                 {
-                    _expression = new OpenGenericTypeExpression(_instanceType);
+                    _expression = new AbstractBindingExpression(_instanceType);
                 }
                 else
                 {

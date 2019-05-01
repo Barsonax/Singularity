@@ -18,8 +18,8 @@ namespace Singularity
         public Action<object>? Finalizer { get; }
 
 
-        public Expression? BaseExpression { get; set; }
-        public Exception? ResolveError { get; set; }
+        public Expression? BaseExpression { get; internal set; }
+        public Exception? ResolveError { get; internal set; }
 
         public ArrayList<InstanceFactory> Factories { get; } = new ArrayList<InstanceFactory>();
 

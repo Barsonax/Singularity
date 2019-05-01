@@ -13,13 +13,12 @@ namespace Singularity.Graph.Resolvers
             {
                 Type funcType = typeof(Func<>).MakeGenericType(type.GenericTypeArguments[0]);
                 Type lazyType = typeof(Lazy<>).MakeGenericType(type.GenericTypeArguments[0]);
-                Registration factoryDependency = graph.GetDependency(funcType);
 
                 ConstructorInfo constructor = lazyType.GetConstructor(new[] { funcType });
 
-                foreach (Binding binding in factoryDependency.Bindings)
+                foreach (InstanceFactory factory in graph.ResolveAll(funcType))
                 {
-                    NewExpression baseExpression = Expression.New(constructor, graph.ResolveDependency(lazyType, binding).Expression);
+                    NewExpression baseExpression = Expression.New(constructor, factory.Expression);
                     var newBinding = new Binding(new BindingMetadata(type), baseExpression);
                     newBinding.Factories.Add(new InstanceFactory(type, baseExpression));
                     yield return newBinding;

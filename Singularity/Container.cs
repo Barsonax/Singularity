@@ -9,6 +9,7 @@ using Singularity.Attributes;
 using Singularity.Collections;
 using Singularity.Expressions;
 using Singularity.Graph;
+using Singularity.Graph.Resolvers;
 
 namespace Singularity
 {
@@ -22,7 +23,7 @@ namespace Singularity
         /// </summary>
 		public bool IsDisposed { get; private set; }
         internal RegistrationStore Registrations { get; }
-        private readonly DependencyGraph _dependencyGraph;
+        private readonly ResolverPipeline _dependencyGraph;
         private readonly ThreadSafeDictionary<Type, Action<Scoped, object>> _injectionCache = new ThreadSafeDictionary<Type, Action<Scoped, object>>();
         private readonly ThreadSafeDictionary<Type, Func<Scoped, object>> _getInstanceCache = new ThreadSafeDictionary<Type, Func<Scoped, object>>();
         private readonly Scoped _containerScope;
@@ -47,7 +48,7 @@ namespace Singularity
             _options = options ?? SingularitySettings.Default;
             _containerScope = new Scoped(this);
             Registrations = context.Registrations;
-            _dependencyGraph = new DependencyGraph(context.Registrations, _containerScope, _options);
+            _dependencyGraph = new ResolverPipeline(context.Registrations, _containerScope, _options, null);
         }
 
         private Container(Container parentContainer, Action<ContainerBuilder>? builder)
@@ -57,7 +58,7 @@ namespace Singularity
             _options = parentContainer._options;
             _containerScope = new Scoped(this);
             Registrations = context.Registrations;
-            _dependencyGraph = new DependencyGraph(context.Registrations, _containerScope, _options, parentContainer._dependencyGraph);
+            _dependencyGraph = new ResolverPipeline(context.Registrations, _containerScope, _options, parentContainer._dependencyGraph);
         }
 
         /// <summary>
@@ -113,7 +114,7 @@ namespace Singularity
             Func<Scoped, object> func = _getInstanceCache.GetOrDefault(type);
             if (func == null)
             {
-                func = _dependencyGraph.GetResolvedFactory(type)!;
+                func = _dependencyGraph.Resolve(type).Factory;
                 _getInstanceCache.Add(type, func);
             }
             return func(scope);
@@ -151,7 +152,7 @@ namespace Singularity
                 for (var i = 0; i < parameterTypes.Length; i++)
                 {
                     Type parameterType = parameterTypes[i].ParameterType;
-                    parameterExpressions[i] = _dependencyGraph.GetResolvedExpression(parameterType)!;
+                    parameterExpressions[i] = _dependencyGraph.Resolve(parameterType).Expression;
                 }
                 body.Add(Expression.Call(instanceCasted, methodInfo, parameterExpressions));
             }

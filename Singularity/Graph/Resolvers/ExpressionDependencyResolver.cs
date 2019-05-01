@@ -21,13 +21,10 @@ namespace Singularity.Graph.Resolvers
                 if (funcType.GetGenericTypeDefinition() == typeof(Func<>) && funcType.GenericTypeArguments.Length == 1)
                 {
                     Type dependencyType = funcType.GenericTypeArguments[0];
-                    Registration registration = graph.GetDependency(dependencyType);
-
                     MethodInfo method = GenericCreateLambdaMethod.MakeGenericMethod(dependencyType);
-
-                    foreach (Binding binding in registration.Bindings)
+                    foreach (InstanceFactory instanceFactory in graph.ResolveAll(dependencyType))
                     {
-                        Expression baseExpression = graph.ResolveDependency(dependencyType, binding).Expression;
+                        Expression baseExpression = instanceFactory.Expression;
                         var newBinding = new Binding(new BindingMetadata(type), baseExpression);
 
                         var expression = (Expression)method.Invoke(null, new object[] { baseExpression });

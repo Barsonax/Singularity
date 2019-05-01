@@ -10,11 +10,15 @@ namespace Singularity.Expressions
 {
     internal class ExpressionGenerator
     {
-        public static ParameterExpression ScopeParameter = Expression.Parameter(typeof(Scoped));
+        public static readonly ParameterExpression ScopeParameter = Expression.Parameter(typeof(Scoped));
         internal static readonly MethodInfo CreateScopedExpressionMethod = typeof(ExpressionGenerator).GetRuntimeMethods().FirstOrDefault(x => x.Name == nameof(CreateScopedExpression));
 
         public Expression GenerateBaseExpression(Binding binding, InstanceFactory[] children, Scoped containerScope, SingularitySettings settings)
         {
+            if (binding.Expression is AbstractBindingExpression)
+            {
+                return Expression.Constant(binding);
+            }
             Expression expression = binding.Expression! is LambdaExpression lambdaExpression ? lambdaExpression.Body : binding.Expression;
             var parameterExpressionVisitor = new ParameterExpressionVisitor(children!);
             expression = parameterExpressionVisitor.Visit(expression);

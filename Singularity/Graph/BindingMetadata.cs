@@ -34,6 +34,14 @@ namespace Singularity.Graph
         /// </summary>
         public SinglyLinkedListNode<Type> DependencyTypes { get; }
 
+        internal BindingMetadata(Type dependencyType, string creatorFilePath, int creatorLineNumber, IModule? module)
+        {
+            DependencyTypes = new SinglyLinkedListNode<Type>(dependencyType);
+            ModuleType = module?.GetType();
+            CreatorFilePath = creatorFilePath;
+            CreatorLineNumber = creatorLineNumber;
+        }
+
         internal BindingMetadata(SinglyLinkedListNode<Type> dependencyTypes, string creatorFilePath, int creatorLineNumber, IModule? module)
         {
             DependencyTypes = dependencyTypes;

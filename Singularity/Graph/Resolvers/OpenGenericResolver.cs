@@ -12,16 +12,14 @@ namespace Singularity.Graph.Resolvers
             if (type.IsGenericType && !type.ContainsGenericParameters)
             {
                 Type genericTypeDefinition = type.GetGenericTypeDefinition();
-                Registration? genericRegistration = graph.TryGetDependency(genericTypeDefinition);
-                if (genericRegistration != null)
-                {
-                    Binding genericBinding = genericRegistration.Default;
-                    Type openGenericType = ((OpenGenericTypeExpression)genericBinding.Expression!).Type;
-                    Type closedGenericType = openGenericType.MakeGenericType(type.GenericTypeArguments);
-                    Expression newExpression = closedGenericType.AutoResolveConstructorExpression();
+                InstanceFactory openGenericFactory = graph.Resolve(genericTypeDefinition);
+                var openGenericBinding = (Binding) ((ConstantExpression) openGenericFactory.Expression).Value;
 
-                    yield return new Binding(new BindingMetadata(type), newExpression, genericBinding.Lifetime);
-                }
+                Type openGenericType = ((AbstractBindingExpression)openGenericBinding.Expression!).Type;
+                Type closedGenericType = openGenericType.MakeGenericType(type.GenericTypeArguments);
+                Expression newExpression = closedGenericType.AutoResolveConstructorExpression();
+
+                yield return new Binding(new BindingMetadata(type), newExpression, openGenericBinding.Lifetime, openGenericBinding.Finalizer, openGenericBinding.NeedsDispose);
             }
         }
     }
