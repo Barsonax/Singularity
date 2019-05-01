@@ -1,13 +1,17 @@
 ## Lifetimes
 Lifetimes allow you to control when new instances are created. You can set lifetimes with the `With` method:
 ```cs
-var config = new BindingConfig();
-config.Register<ITestService10, TestService10>().With(Lifetime.Transient);
+var container = new Container(builder =>
+{
+    builder.Register<ITestService10, TestService10>(c => c.With(Lifetime.Transient));
+});
 ```
 And
 ```cs
-var config = new BindingConfig();
-config.Register<ITestService10, TestService10>().With(Lifetime.Singleton);
+var container = new Container(builder =>
+{
+    builder.Register<ITestService10, TestService10>(c => c.With(Lifetime.Singleton));
+});
 ```
 
 There are a few different lifetimes:
@@ -19,11 +23,11 @@ The `Lifetime.Transient` is the default setting which means singularity will ret
 
 The following example illustrates how lifetimes can be used:
 ```cs
-var config = new BindingConfig();
-config.Register<IScopedService, ScopedService>().With(Lifetime.PerScope));
-config.Register<ISingleton, Singleton>().With(Lifetime.Singleton));
-
-var container = new Container(config);
+var container = new Container(builder =>
+{
+    builder.Register<IScopedService, ScopedService>().With(Lifetime.PerScope));
+	builder.Register<ISingleton, Singleton>().With(Lifetime.Singleton));
+});
 
 Scoped scope1 = container.BeginScope();
 

@@ -1,10 +1,10 @@
 ## Simple Dependencies
 Setting up the container is straightforward and easy:
 ```cs
-var config = new BindingConfig();
-config.Register<ITestService10, TestService10>();
-
-var container = new Container(config);
+var container = new Container(builder =>
+{
+    builder.Register<ITestService10, TestService10>();
+});
 ```
 
 You can then request a instance by calling `GetInstance`:
@@ -16,8 +16,11 @@ In this case a `TestService10` instance will be returned.
 ## Complex Dependencies
 That wasnt that exciting right? All it did was calling the constructor to return a new instance. Lets say we have a slightly different config:
 ```cs
-config.Register<ITestService10, TestService10>();
-config.Register<ITestService11, TestService11>();
+var container = new Container(builder =>
+{
+    builder.Register<ITestService10, TestService10>();
+	builder.Register<ITestService11, TestService11>();
+});
 ```
 The `TestService11` class looks like this:
 ```cs
@@ -38,8 +41,11 @@ var value = container.GetInstance<ITestService11>();
 
 If there is only 1 constructor then Singularity will use that constructor's arguments types to determine what to inject. If there are more than 1 constructors then you need to use expressions to explicitly state what constructor you want:
 ```cs
-config.Register<ITestService10, TestService10>();
-config.Register<ITestService11>().Inject((ITestService10 testService10) => new TestService11(testService10));
+var container = new Container(builder =>
+{
+    builder.Register<ITestService10, TestService10>();
+	builder.Register<ITestService11>(c => c.Inject((ITestService10 testService10) => new TestService11(testService10)));
+});
 ```
 In this case the expression arguments will be used to figure out what the needed dependencies are.
 
