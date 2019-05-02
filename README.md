@@ -40,7 +40,7 @@ var instanceExpressions = container.GetInstance<IReadOnlyList<Expression<Func<IP
 Advanced scenarios such as open generics are also supported. 
 
 ## Documentation
-More info about `Singularity` can be found on the documentation website which can be found [here](http://www.the-photographing-programmer.com/Singularity/).
+More info about `Singularity` can be found on the documentation website which can be found [here](http://www.the-photographing-programmer.com/Singularity.Docs/).
 
 ## Other
 ### Benchmarks
