@@ -13,7 +13,7 @@
     <Configurations>Debug;Release;z_CI_config</Configurations>
     <LangVersion>8.0</LangVersion>
     <NullableContextOptions>enable</NullableContextOptions>
-    <DocumentationFile>C:\Git\Singularity\Singularity.Microsoft.DependencyInjection\bin\$(Configuration)\$(TargetFramework)\Singularity.Microsoft.DependencyInjection.xml</DocumentationFile>
+    <DocumentationFile>$(SolutionDir)src\Singularity.Microsoft.DependencyInjection\bin\$(Configuration)\$(TargetFramework)\Singularity.Microsoft.DependencyInjection.xml</DocumentationFile>
     <PackageLicenseFile>LICENSE</PackageLicenseFile>
   </PropertyGroup>
 
@@ -34,7 +34,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <None Include="..\LICENSE">
+    <None Include="..\..\LICENSE">
       <Pack>True</Pack>
       <PackagePath></PackagePath>
     </None>

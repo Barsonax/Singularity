@@ -26,8 +26,8 @@
 
   <ItemGroup>
     <ProjectReference Include="..\..\Singularity.Microsoft.DependencyInjection\Singularity.Microsoft.DependencyInjection.csproj" />
-    <ProjectReference Include="..\..\Singularity.TestClasses\Singularity.TestClasses.csproj" />
     <ProjectReference Include="..\..\Singularity\Singularity.csproj" />
+    <ProjectReference Include="..\Singularity.TestClasses\Singularity.TestClasses.csproj" />
   </ItemGroup>
 
 </Project>

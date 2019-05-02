@@ -13,7 +13,7 @@
     <Configurations>Debug;Release;z_CI_config</Configurations>
     <LangVersion>8.0</LangVersion>
     <NullableContextOptions>enable</NullableContextOptions>
-    <DocumentationFile>C:\Git\Singularity\Duality\Source\Code\Singularity.Duality\bin\$(Configuration)\$(TargetFramework)\Singularity.Duality.core.xml</DocumentationFile>
+    <DocumentationFile>$(SolutionDir)src\Duality\Source\Code\Singularity.Duality\bin\$(Configuration)\$(TargetFramework)\Singularity.Duality.core.xml</DocumentationFile>
     <PackageLicenseFile>LICENSE</PackageLicenseFile>
   </PropertyGroup>
 
@@ -25,7 +25,7 @@
   </PropertyGroup>
 
   <Target Name="PostBuild" AfterTargets="PostBuildEvent">
-    <Exec Command="if $(ConfigurationName) == Debug (&#xD;&#xA;mkdir &quot;$(SolutionDir)Duality/Plugins&quot;&#xD;&#xA;copy &quot;$(TargetPath)&quot; &quot;$(SolutionDir)Duality/Plugins&quot;&#xD;&#xA;copy &quot;$(TargetDir)$(TargetName).pdb&quot; &quot;$(SolutionDir)Duality/Plugins&quot;&#xD;&#xA;xcopy /Y &quot;$(TargetDir)*.core.xml&quot; &quot;$(SolutionDir)Duality/Plugins&quot;&#xD;&#xA;)" />
+    <Exec Command="if $(ConfigurationName) == Debug (&#xD;&#xA;mkdir &quot;$(SolutionDir)src/Duality/Plugins&quot;&#xD;&#xA;copy &quot;$(TargetPath)&quot; &quot;$(SolutionDir)src/Duality/Plugins&quot;&#xD;&#xA;copy &quot;$(TargetDir)$(TargetName).pdb&quot; &quot;$(SolutionDir)src/Duality/Plugins&quot;&#xD;&#xA;xcopy /Y &quot;$(TargetDir)*.core.xml&quot; &quot;$(SolutionDir)src/Duality/Plugins&quot;&#xD;&#xA;)" />
   </Target>
   <ItemGroup>
     <PackageReference Include="AdamsLair.Duality" Version="3.0.0" />
@@ -34,7 +34,7 @@
     <ProjectReference Include="..\..\..\..\Singularity\Singularity.csproj" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="..\..\..\..\LICENSE">
+    <None Include="..\..\..\..\..\LICENSE">
       <Pack>True</Pack>
       <PackagePath></PackagePath>
     </None>

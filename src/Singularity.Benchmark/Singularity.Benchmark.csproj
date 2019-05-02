@@ -13,8 +13,8 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\Singularity.TestClasses\Singularity.TestClasses.csproj" />
     <ProjectReference Include="..\Singularity\Singularity.csproj" />
+    <ProjectReference Include="..\Tests\Singularity.TestClasses\Singularity.TestClasses.csproj" />
   </ItemGroup>
 
 </Project>

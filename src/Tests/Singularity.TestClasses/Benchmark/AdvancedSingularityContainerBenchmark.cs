@@ -108,7 +108,7 @@ namespace Singularity.TestClasses.Benchmark
             builder.Register<IRepositoryTransient1, RepositoryTransient1>();
             builder.Register<IRepositoryTransient2, RepositoryTransient2>();
             builder.Register<IRepositoryTransient3, RepositoryTransient3>();
-            builder.Register<IScopedService, ScopedService>(c => c.With(Lifetime.PerContainer));
+            builder.Register<IScopedService, ScopedService>(c => c.With(Lifetime.PerScope));
         }
     }
 }
