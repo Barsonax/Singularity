@@ -136,6 +136,7 @@ class Build : NukeBuild
         .Executes(() =>
         {
             DotNetPack(s => s
+            .SetProject(Solution)
             .SetOutputDirectory(ArtifactsDirectory)
             .SetConfiguration(Configuration)
             .SetVersion(GitVersion.NuGetVersion)
