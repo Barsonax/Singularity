@@ -3,13 +3,13 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 16
 VisualStudioVersion = 16.0.28711.60
 MinimumVisualStudioVersion = 16.0.28711.60
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Singularity", "src\Singularity\Singularity.csproj", "{83CB49EE-53FD-43F6-A136-E688BAFA2148}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Singularity", "Singularity\Singularity.csproj", "{83CB49EE-53FD-43F6-A136-E688BAFA2148}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Singularity.Test", "src\Tests\Singularity.Test\Singularity.Test.csproj", "{4FE77B0A-DA6B-4F00-A5E8-E66EB9EC1775}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Singularity.Test", "Tests\Singularity.Test\Singularity.Test.csproj", "{4FE77B0A-DA6B-4F00-A5E8-E66EB9EC1775}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Singularity.Benchmark", "src\Singularity.Benchmark\Singularity.Benchmark.csproj", "{A6CEF3E9-C75E-48CB-90F4-21C99007C406}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Singularity.Benchmark", "Singularity.Benchmark\Singularity.Benchmark.csproj", "{A6CEF3E9-C75E-48CB-90F4-21C99007C406}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Singularity.Duality", "src\Duality\Source\Code\Singularity.Duality\Singularity.Duality.csproj", "{AFE883F3-72B4-4C7C-A1D1-44EDC09C8F6E}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Singularity.Duality", "Duality\Source\Code\Singularity.Duality\Singularity.Duality.csproj", "{AFE883F3-72B4-4C7C-A1D1-44EDC09C8F6E}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{F07B1110-A580-458C-92DB-09A67CEF6CBA}"
 	ProjectSection(SolutionItems) = preProject
@@ -19,7 +19,7 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution 
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Examples", "Examples", "{45EDBBA9-9BFB-4B23-8A08-0A4AD26BE42A}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Singularity.Duality.Examples", "src\Duality\Source\Code\Singularity.Duality.Examples\Singularity.Duality.Examples.csproj", "{DC6835B4-63D5-465A-9590-08544ABB2DDB}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Singularity.Duality.Examples", "Duality\Source\Code\Singularity.Duality.Examples\Singularity.Duality.Examples.csproj", "{DC6835B4-63D5-465A-9590-08544ABB2DDB}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Git", "Git", "{15197F05-E231-4B17-AD9C-402818E97CC8}"
 	ProjectSection(SolutionItems) = preProject
@@ -27,21 +27,19 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Git", "Git", "{15197F05-E23
 		.gitignore = .gitignore
 	EndProjectSection
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Singularity.Duality.Test", "src\Tests\Singularity.Duality.Test\Singularity.Duality.Test.csproj", "{403EA696-4514-4B11-80DE-216A4FA1A7E1}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Singularity.Duality.Test", "Tests\Singularity.Duality.Test\Singularity.Duality.Test.csproj", "{403EA696-4514-4B11-80DE-216A4FA1A7E1}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Tests", "Tests", "{2C762633-E965-4223-94D4-B66EB384AF27}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Benchmarks", "Benchmarks", "{3B36A153-A0C6-4B5E-A8FD-D9B8F5471834}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Singularity.TestClasses", "src\Tests\Singularity.TestClasses\Singularity.TestClasses.csproj", "{95E46EE0-5C12-4096-B6D6-5B1BC0D33806}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Singularity.TestClasses", "Tests\Singularity.TestClasses\Singularity.TestClasses.csproj", "{95E46EE0-5C12-4096-B6D6-5B1BC0D33806}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Singularity.Docs", "docfx_project\Singularity.Docs.csproj", "{9C2FFF0C-4746-43D0-9FE8-356C1DDCF4DA}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Singularity.Microsoft.DependencyInjection", "Singularity.Microsoft.DependencyInjection\Singularity.Microsoft.DependencyInjection.csproj", "{F1C57017-0D80-4CDF-B68C-BA2C3855179E}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Singularity.Microsoft.DependencyInjection", "src\Singularity.Microsoft.DependencyInjection\Singularity.Microsoft.DependencyInjection.csproj", "{F1C57017-0D80-4CDF-B68C-BA2C3855179E}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Singularity.Microsoft.DependencyInjection.Test", "Tests\Singularity.Microsoft.DependencyInjection.Test\Singularity.Microsoft.DependencyInjection.Test.csproj", "{FE121F03-31B6-4B21-A396-A26D62850D8A}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Singularity.Microsoft.DependencyInjection.Test", "src\Tests\Singularity.Microsoft.DependencyInjection.Test\Singularity.Microsoft.DependencyInjection.Test.csproj", "{FE121F03-31B6-4B21-A396-A26D62850D8A}"
-EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "_build", "_build\_build.csproj", "{631020B5-A29B-40D3-86C1-BB63C67900F4}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "_build", "..\_build\_build.csproj", "{631020B5-A29B-40D3-86C1-BB63C67900F4}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -90,9 +88,6 @@ Global
 		{95E46EE0-5C12-4096-B6D6-5B1BC0D33806}.Release|Any CPU.Build.0 = Release|Any CPU
 		{95E46EE0-5C12-4096-B6D6-5B1BC0D33806}.z_CI_config|Any CPU.ActiveCfg = Debug|Any CPU
 		{95E46EE0-5C12-4096-B6D6-5B1BC0D33806}.z_CI_config|Any CPU.Build.0 = Debug|Any CPU
-		{9C2FFF0C-4746-43D0-9FE8-356C1DDCF4DA}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{9C2FFF0C-4746-43D0-9FE8-356C1DDCF4DA}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{9C2FFF0C-4746-43D0-9FE8-356C1DDCF4DA}.z_CI_config|Any CPU.ActiveCfg = Debug|Any CPU
 		{F1C57017-0D80-4CDF-B68C-BA2C3855179E}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{F1C57017-0D80-4CDF-B68C-BA2C3855179E}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{F1C57017-0D80-4CDF-B68C-BA2C3855179E}.Release|Any CPU.ActiveCfg = Release|Any CPU
@@ -120,7 +115,6 @@ Global
 		{403EA696-4514-4B11-80DE-216A4FA1A7E1} = {2C762633-E965-4223-94D4-B66EB384AF27}
 		{3B36A153-A0C6-4B5E-A8FD-D9B8F5471834} = {2C762633-E965-4223-94D4-B66EB384AF27}
 		{95E46EE0-5C12-4096-B6D6-5B1BC0D33806} = {2C762633-E965-4223-94D4-B66EB384AF27}
-		{9C2FFF0C-4746-43D0-9FE8-356C1DDCF4DA} = {F07B1110-A580-458C-92DB-09A67CEF6CBA}
 		{FE121F03-31B6-4B21-A396-A26D62850D8A} = {2C762633-E965-4223-94D4-B66EB384AF27}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution

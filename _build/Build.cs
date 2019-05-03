@@ -2,6 +2,7 @@ using System.Collections.Generic;
 using Nuke.Common;
 using Nuke.Common.Execution;
 using Nuke.Common.Git;
+using Nuke.Common.IO;
 using Nuke.Common.ProjectModel;
 using Nuke.Common.Tooling;
 using Nuke.Common.Tools.DotNet;
@@ -9,11 +10,14 @@ using Nuke.Common.Tools.DotCover;
 using Nuke.Common.Tools.GitVersion;
 using Nuke.Common.Tools.ReportGenerator;
 using Nuke.Common.Utilities;
+using Nuke.DocFX;
 using static Nuke.Common.IO.FileSystemTasks;
 using static Nuke.Common.IO.PathConstruction;
 using static Nuke.Common.Tools.DotNet.DotNetTasks;
 using static Nuke.Common.Tools.DotCover.DotCoverTasks;
 using static Nuke.Common.Tools.ReportGenerator.ReportGeneratorTasks;
+using static Nuke.DocFX.DocFXTasks;
+using System;
 
 [CheckBuildProjectConfigurations]
 [UnsetVisualStudioEnvironmentVariables]
@@ -26,7 +30,7 @@ class Build : NukeBuild
     [Parameter] readonly string ApiKey;
     [Parameter] readonly bool CoberturaReport;
 
-    [Solution] readonly Solution Solution;
+    [Solution("src/Singularity.sln")] readonly Solution Solution;
     [GitRepository] readonly GitRepository GitRepository;
     [GitVersion] readonly GitVersion GitVersion;
 
@@ -34,6 +38,15 @@ class Build : NukeBuild
     AbsolutePath ArtifactsDirectory => RootDirectory / "artifacts";
 
     AbsolutePath CoverageDirectory => RootDirectory / "coverage";
+
+    AbsolutePath SrcPath => RootDirectory / "src";
+    AbsolutePath DocFXPath => SrcPath / "Docs";
+    AbsolutePath DocFxOutput => DocFXPath / "_site";
+    AbsolutePath DocsRepository => DocFXPath / "repository";
+    AbsolutePath DocsRepositoryFolder => DocsRepository / "docs";
+
+    [PathExecutable]
+    private static Tool Git;
 
     private Dictionary<string, object> NoWarns = new Dictionary<string, object> { { "NoWarn", "NU1701" }, };
 
@@ -146,4 +159,45 @@ class Build : NukeBuild
                     .SetTargetPath(nupkgFile)
                 ), degreeOfParallelism: 10);
         });
+
+    Target BuildDocs => _ => _
+    .Executes(() =>
+    {
+        DocFXBuild(s => s
+           .SetOutputFolder(DocFXPath)
+           .SetConfigFile(DocFXPath / "docfx.json"));
+    });
+
+    Target PushDocs => _ => _
+        .DependsOn(BuildDocs)
+        .Executes(() =>
+    {
+        EnsureCleanDirectory(DocsRepository);
+        Git($"clone https://github.com/Barsonax/Singularity.Docs {DocsRepository}");
+        EnsureCleanDirectory(DocsRepositoryFolder);
+        CopyDirectoryRecursively(DocFxOutput, DocsRepositoryFolder, DirectoryExistsPolicy.Merge);
+        System.IO.Directory.SetCurrentDirectory(DocsRepository);
+        try
+        {
+            Git("add docs");
+            IgnoreError(() => Git("commit -m nuke_build_generated_commit"));
+            Git("push");
+        }
+        finally
+        {
+            System.IO.Directory.SetCurrentDirectory(RootDirectory);
+        }
+    });
+
+    private void IgnoreError(Action action)
+    {
+        try
+        {
+            action.Invoke();
+        }
+        catch (System.Exception e)
+        {
+            Nuke.Common.Logger.Log(LogLevel.Warning, $"Ignored error {e.Message}");
+        }
+    }
 }

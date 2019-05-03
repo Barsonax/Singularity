@@ -10,12 +10,17 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <PackageReference Include="docfx.console" Version="2.42.0">
+      <PrivateAssets>all</PrivateAssets>
+      <IncludeAssets>runtime;</IncludeAssets>
+    </PackageReference>
     <PackageReference Include="Nuke.Common" Version="0.18.0" />
     <PackageReference Include="GitVersion.CommandLine.DotNetCore" Version="4.0.1-beta1-49" />
     <PackageReference Include="JetBrains.dotCover.CommandLineTools" Version="2019.1.0-eap07">
       <PrivateAssets>all</PrivateAssets>
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
     </PackageReference>
+    <PackageReference Include="Nuke.DocFX" Version="0.2.0" />
     <PackageReference Include="ReportGenerator" Version="4.1.3" />
   </ItemGroup>
 

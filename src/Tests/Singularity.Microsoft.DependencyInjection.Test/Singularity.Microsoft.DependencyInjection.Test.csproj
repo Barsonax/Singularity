@@ -10,7 +10,7 @@
   </PropertyGroup>
 
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='z_CI_config|AnyCPU'">
-    <OutputPath>$(SolutionDir)BuildOutput\</OutputPath>
+    <OutputPath>$(SolutionDir)\..\BuildOutput\</OutputPath>
   </PropertyGroup>
 
   <ItemGroup>
