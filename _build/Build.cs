@@ -42,6 +42,7 @@ class Build : NukeBuild
     AbsolutePath SrcPath => RootDirectory / "src";
     AbsolutePath DocFXPath => SrcPath / "Docs";
     AbsolutePath DocFxOutput => DocFXPath / "_site";
+    AbsolutePath DocFXJson => DocFXPath / "docfx.json";
     AbsolutePath DocsRepository => DocFXPath / "repository";
     AbsolutePath DocsRepositoryFolder => DocsRepository / "docs";
 
@@ -164,9 +165,9 @@ class Build : NukeBuild
     Target BuildDocs => _ => _
     .Executes(() =>
     {
-        DocFXBuild(s => s
-           .SetOutputFolder(DocFXPath)
-           .SetConfigFile(DocFXPath / "docfx.json"));
+        Environment.SetEnvironmentVariable("MSBUILD_EXE_PATH", @"C:\Program Files\dotnet\sdk\1.1.13\MSBuild.dll");
+        DocFXMetadata(s => s.SetProjects(DocFXJson));
+        DocFXBuild(s => s.SetConfigFile(DocFXJson));
     });
 
     Target PushDocs => _ => _
