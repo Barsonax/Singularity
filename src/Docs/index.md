@@ -1,22 +1,26 @@
 # Home
+[![Discord](https://img.shields.io/discord/569232642105540608.svg)](https://discord.gg/9x9J3y) [![NuGet Badge](https://buildstats.info/nuget/Singularity)](https://www.nuget.org/packages/Singularity/) [![Build Status](https://dev.azure.com/Barsonax/Singularity/_apis/build/status/Singularity-CI?branchName=master)](https://dev.azure.com/Barsonax/Singularity/_build/latest?definitionId=7&branchName=master) ![Azure DevOps tests (branch)](https://img.shields.io/azure-devops/tests/Barsonax/Singularity/7/master.svg) ![coverage](https://img.shields.io/azure-devops/coverage/Barsonax/Singularity/7/master.svg) [![Beerpay](https://img.shields.io/beerpay/Barsonax/Singularity.svg)](https://beerpay.io/Barsonax/Singularity)
+
 Singularity is a ioc container that focuses on the following things
-- Very high performance. The first time you use a dependency it will be compiled to a delegate and cached in a dictionary. When that dependency is requested again all it then retrieves the delegate from the dictionary and invokes it. This means that performance in Singularity is measured in nanoseconds as opposed to microseconds like in other containers. This makes it feasible to use singularity in applications where performance matters such as games. 
-- No magic. Singularity has been designed in such a way that it won't hide too much from you. For instance `Dispose` wont be automagically called but instead you can configure Singularity to do so through the `OnDeath` method. This way you can always find out who is calling your methods.
+- Performance, Singularity is one of the fastest if not the fastest dependency injection container out there. Don't believe me? Check out my [benchmarks](#Benchmarks) or if you want a second opinion check out the benchmarks that Daniel Palme made [here](https://github.com/danielpalme/IocPerformance).
+- Not invasive. For instance `Dispose` wont be automatically called by default, instead you can configure Singularity to do so through the `With(DisposeBehavior)` method or tell singularity to automatically call `Dispose` by simply changing the settings. Is calling Dispose not enough and you want to invoke your own custom logic? The `WithFinalizer(Action<TInstance>)` method might be of help here.
 - Clear error messages and fail fast to point you in the right direction as fast as possible.
+
 
 ## Getting started
 ### Installation
 `Singularity` can be installed through nuget:
 - [![NuGet Badge](https://buildstats.info/nuget/Singularity)](https://www.nuget.org/packages/Singularity/) Singularity
 - [![NuGet Badge](https://buildstats.info/nuget/Singularity.Duality.core)](https://www.nuget.org/packages/Singularity.Duality.core/) Singularity.Duality.core
+- [![NuGet Badge](https://buildstats.info/nuget/Singularity.Microsoft.DependencyInjection)](https://www.nuget.org/packages/Singularity.Microsoft.DependencyInjection/) Singularity.Microsoft.DependencyInjection
 
 ### A simple example
 Its easy to setup a container and request a instance:
 ```cs
-var config = new BindingConfig();
-config.Register<ITestService10>, TestService10>();
-
-var container = new Container(config);
+var container = new Container(builder =>
+{
+    builder.Register<ITestService10, TestService10>();
+});
 
 var instance = container.GetInstance<ITestService10>();
 ```

@@ -13,10 +13,10 @@ Singularity is a ioc container that focuses on the following things
 ### A simple example
 Its easy to setup a container and request a instance:
 ```cs
-var config = new BindingConfig();
-config.Register<ITestService10>, TestService10>();
-
-var container = new Container(config);
+var container = new Container(builder =>
+{
+    builder.Register<ITestService10, TestService10>();
+});
 
 var instance = container.GetInstance<ITestService10>();
 ```
