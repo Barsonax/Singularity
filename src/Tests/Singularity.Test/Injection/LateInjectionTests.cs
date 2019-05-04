@@ -82,7 +82,7 @@ namespace Singularity.Test.Injection
             }
 
             //ACT
-            container.MethodInjectAll(instances);
+            container.LateInjectAll(instances);
 
             //ASSERT
             foreach (MethodInjectionClass instance in instances)

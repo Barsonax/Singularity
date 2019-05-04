@@ -8,7 +8,7 @@ namespace Singularity.Exceptions
     /// </summary>
     /// <typeparam name="T"></typeparam>
     [Serializable]
-    public class InvalidEnumValueException<T> : SingularityException
+    public sealed class InvalidEnumValueException<T> : SingularityException
         where T : struct, Enum
     {
         internal InvalidEnumValueException(T enumValue, Exception? inner = null) : base(GetMessage(enumValue), inner)
@@ -25,7 +25,7 @@ namespace Singularity.Exceptions
         /// </summary>
         /// <param name="info"></param>
         /// <param name="context"></param>
-        protected InvalidEnumValueException(SerializationInfo info, StreamingContext context) : base(info, context)
+        private InvalidEnumValueException(SerializationInfo info, StreamingContext context) : base(info, context)
         {
         }
     }

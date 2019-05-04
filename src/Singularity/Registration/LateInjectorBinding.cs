@@ -5,7 +5,7 @@ using Singularity.Graph;
 
 namespace Singularity
 {
-    public class LateInjectorBinding
+    internal sealed class LateInjectorBinding
     {
         public Type InstanceType { get; }
         public ArrayList<MethodInfo> InjectionMethods { get; }

@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
 using Singularity.TestClasses.TestClasses;
 using Xunit;
 

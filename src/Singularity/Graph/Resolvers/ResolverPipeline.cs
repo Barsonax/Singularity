@@ -62,7 +62,7 @@ namespace Singularity.Graph.Resolvers
             return serviceBinding == null ? null : ResolveDependency(type, serviceBinding);
         }
 
-        public IEnumerable<InstanceFactory?> TryResolveAll(Type type)
+        public IEnumerable<InstanceFactory> TryResolveAll(Type type)
         {
             Registration? registration = TryGetDependency(type);
             if(registration == null) yield break;
@@ -146,7 +146,7 @@ namespace Singularity.Graph.Resolvers
                 {
                     if (serviceBinding.Expression is AbstractBindingExpression)
                     {
-                        factory = new InstanceFactory(type, serviceBinding.BaseExpression!, scoped => throw new AbstractTypeResolveException($"Cannot create a instance for type {type} since its abstract"));
+                        factory = new InstanceFactory(type, serviceBinding.BaseExpression!, scoped => throw new AbstractTypeResolveException($"Cannot create a instance for type {type} since its registered as a abstract binding and not meant to be used directly."));
                         serviceBinding.Factories.Add(factory);
                         return factory;
                     }

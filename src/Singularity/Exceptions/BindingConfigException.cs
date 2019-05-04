@@ -7,7 +7,7 @@ namespace Singularity.Exceptions
     /// Exception for when something is wrong with the bindings.
     /// </summary>
     [Serializable]
-    public class BindingConfigException : SingularityException
+    public sealed class BindingConfigException : SingularityException
     {
         internal BindingConfigException(string message, Exception? inner = null) : base(message, inner)
         {
@@ -18,7 +18,7 @@ namespace Singularity.Exceptions
         /// </summary>
         /// <param name="info"></param>
         /// <param name="context"></param>
-        protected BindingConfigException(SerializationInfo info, StreamingContext context) : base(info, context)
+        private BindingConfigException(SerializationInfo info, StreamingContext context) : base(info, context)
         {
         }
     }

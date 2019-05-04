@@ -7,7 +7,7 @@ namespace Singularity.Exceptions
     /// Exception for when a type should be a interface but its not.
     /// </summary>
     [Serializable]
-    public class InterfaceExpectedException : SingularityException
+    public sealed class InterfaceExpectedException : SingularityException
     {
         internal InterfaceExpectedException(string message, Exception? inner = null) : base(message, inner)
         {
@@ -18,7 +18,7 @@ namespace Singularity.Exceptions
         /// </summary>
         /// <param name="info"></param>
         /// <param name="context"></param>
-        protected InterfaceExpectedException(SerializationInfo info, StreamingContext context) : base(info, context)
+        private InterfaceExpectedException(SerializationInfo info, StreamingContext context) : base(info, context)
         {
         }
     }

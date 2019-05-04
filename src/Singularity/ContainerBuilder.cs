@@ -140,7 +140,7 @@ namespace Singularity
         }
 
         /// <summary>
-        /// Registers a new late injector for <typeparamref name="TInstance"/>
+        /// Registers a new strongly typed late injector for <typeparamref name="TInstance"/>
         /// </summary>
         /// <param name="configurator"></param>
         /// <param name="callerFilePath"></param>
@@ -149,6 +149,18 @@ namespace Singularity
         public void LateInject<TInstance>(Action<StronglyTypedLateInjectorConfigurator<TInstance>>? configurator, [CallerFilePath]string callerFilePath = "", [CallerLineNumber] int callerLineNumber = -1)
         {
             LateInjectInternal(configurator, callerFilePath, callerLineNumber);
+        }
+
+        /// <summary>
+        /// Registers a new strongly typed late injector for <paramref name="instanceType"/>
+        /// </summary>
+        /// <param name="instanceType"></param>
+        /// <param name="configurator"></param>
+        /// <param name="callerFilePath"></param>
+        /// <param name="callerLineNumber"></param>
+        public void LateInject(Type instanceType, Action<WeaklyTypedLateInjectorConfigurator>? configurator, [CallerFilePath]string callerFilePath = "", [CallerLineNumber] int callerLineNumber = -1)
+        {
+            LateInjectInternal(instanceType, configurator, callerFilePath, callerLineNumber);
         }
 
         private void RegisterInternal<TDependency, TInstance>(Action<StronglyTypedServiceConfigurator<TDependency, TInstance>>? configurator, string callerFilePath, int callerLineNumber)
@@ -194,6 +206,15 @@ namespace Singularity
         {
             var metadata = new BindingMetadata(callerFilePath, callerLineNumber, Registrations.CurrentModule);
             var context = new StronglyTypedLateInjectorConfigurator<TInstance>(metadata);
+            configurator?.Invoke(context);
+            LateInjectorBinding binding = context.ToBinding();
+            Registrations.AddLateInjectorBinding(binding);
+        }
+
+        private void LateInjectInternal(Type instanceType, Action<WeaklyTypedLateInjectorConfigurator>? configurator, string callerFilePath, int callerLineNumber)
+        {
+            var metadata = new BindingMetadata(callerFilePath, callerLineNumber, Registrations.CurrentModule);
+            var context = new WeaklyTypedLateInjectorConfigurator(instanceType, metadata);
             configurator?.Invoke(context);
             LateInjectorBinding binding = context.ToBinding();
             Registrations.AddLateInjectorBinding(binding);

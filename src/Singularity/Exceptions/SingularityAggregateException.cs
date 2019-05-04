@@ -10,7 +10,7 @@ namespace Singularity.Exceptions
     /// Singularities version of the <see cref="AggregateException"/>. Has additional logic for formatting the message.
     /// </summary>
     [Serializable]
-    public class SingularityAggregateException : AggregateException
+    public sealed class SingularityAggregateException : AggregateException
 	{
         /// <summary>
         /// The header of this exception
@@ -32,7 +32,7 @@ namespace Singularity.Exceptions
         /// </summary>
         /// <param name="info"></param>
         /// <param name="context"></param>
-        protected SingularityAggregateException(SerializationInfo info, StreamingContext context) : base(info, context)
+        private SingularityAggregateException(SerializationInfo info, StreamingContext context) : base(info, context)
         {
             HeaderMessage = info.GetString(nameof(HeaderMessage));
         }

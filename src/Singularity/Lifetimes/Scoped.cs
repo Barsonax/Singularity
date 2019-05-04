@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
 using System.Runtime.CompilerServices;
@@ -49,13 +50,23 @@ namespace Singularity
         }
 
         /// <summary>
-        /// <see cref="Container.LateInject"/>
+        /// <see cref="Container.LateInject(object)"/>
         /// </summary>
         /// <param name="instance"></param>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public void LateInject(object instance)
         {
             _container.LateInject(instance, this);
+        }
+
+        /// <summary>
+        /// <see cref="Container.LateInjectAll{T}(IEnumerable{T})"/>
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        /// <param name="instances"></param>
+        public void LateInjectAll<T>(IEnumerable<T> instances)
+        {
+            _container.LateInjectAll(instances, this);
         }
 
         internal T GetOrAddScopedInstance<T>(Func<Scoped, T> factory, Type key)

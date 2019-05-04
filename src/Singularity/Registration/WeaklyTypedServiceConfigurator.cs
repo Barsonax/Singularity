@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Linq.Expressions;
 using Singularity.Collections;
-using Singularity.Exceptions;
 using Singularity.Expressions;
 using Singularity.Graph;
 

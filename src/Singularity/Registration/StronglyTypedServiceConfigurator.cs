@@ -7,7 +7,7 @@ using Singularity.Graph;
 namespace Singularity
 {
     /// <summary>
-    /// A strongly typed configurator for registering new bindings.
+    /// A strongly typed configurator for registering new service bindings.
     /// </summary>
     /// <typeparam name="TDependency"></typeparam>
     /// <typeparam name="TInstance"></typeparam>

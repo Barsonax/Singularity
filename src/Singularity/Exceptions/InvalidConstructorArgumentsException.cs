@@ -7,7 +7,7 @@ namespace Singularity.Exceptions
     /// Exception for when the arguments of a exception are incorrect.
     /// </summary>
     [Serializable]
-    public class InvalidExpressionArgumentsException : SingularityException
+    public sealed class InvalidExpressionArgumentsException : SingularityException
     {
         internal InvalidExpressionArgumentsException(string message, Exception? inner = null) : base(message, inner)
         {
@@ -18,7 +18,7 @@ namespace Singularity.Exceptions
         /// </summary>
         /// <param name="info"></param>
         /// <param name="context"></param>
-        protected InvalidExpressionArgumentsException(SerializationInfo info, StreamingContext context) : base(info, context)
+        private InvalidExpressionArgumentsException(SerializationInfo info, StreamingContext context) : base(info, context)
         {
         }
     }

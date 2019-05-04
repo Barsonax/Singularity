@@ -1,5 +1,4 @@
-﻿using Singularity.Collections;
-using System;
+﻿using System;
 
 namespace Singularity.Graph
 {
@@ -38,6 +37,8 @@ namespace Singularity.Graph
 
         internal BindingMetadata()
         {
+            CreatorFilePath = "Generated";
+            CreatorLineNumber = -1;
             Generated = true;
         }
     }

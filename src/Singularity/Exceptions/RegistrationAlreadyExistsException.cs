@@ -7,7 +7,7 @@ namespace Singularity.Exceptions
     /// Exception for when a registration for the same type is registered in the child container.
     /// </summary>
     [Serializable]
-    public class RegistrationAlreadyExistsException : SingularityException
+    public sealed class RegistrationAlreadyExistsException : SingularityException
     {
         internal RegistrationAlreadyExistsException(string message, Exception? inner = null) : base(message, inner)
         {
@@ -18,7 +18,7 @@ namespace Singularity.Exceptions
         /// </summary>
         /// <param name="info"></param>
         /// <param name="context"></param>
-        protected RegistrationAlreadyExistsException(SerializationInfo info, StreamingContext context) : base(info, context)
+        private RegistrationAlreadyExistsException(SerializationInfo info, StreamingContext context) : base(info, context)
         {
         }
     }

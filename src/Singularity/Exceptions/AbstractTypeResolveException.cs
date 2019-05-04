@@ -1,29 +1,28 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Runtime.Serialization;
-using System.Text;
-using System.Threading.Tasks;
+using Singularity.Expressions;
 
 namespace Singularity.Exceptions
 {
+    /// <summary>
+    /// Exception thrown when trying to create a instance for a <see cref="AbstractBindingExpression"/>
+    /// </summary>
     [Serializable]
-    public class AbstractTypeResolveException : Exception
+    public sealed class AbstractTypeResolveException : Exception
     {
-        public AbstractTypeResolveException(string message) : base(message)
+        internal AbstractTypeResolveException(string message, Exception? inner = null) : base(message, inner)
         {
         }
 
-        public AbstractTypeResolveException(string message, Exception inner) : base(message, inner)
-        {
-        }
-
-        protected AbstractTypeResolveException(
+        /// <summary>
+        /// Deserialization constructor
+        /// </summary>
+        /// <param name="info"></param>
+        /// <param name="context"></param>
+        private AbstractTypeResolveException(
             SerializationInfo info,
             StreamingContext context) : base(info, context)
         {
         }
     }
-
-
 }

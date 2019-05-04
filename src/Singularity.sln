@@ -13,7 +13,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Singularity.Duality", "Dual
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{F07B1110-A580-458C-92DB-09A67CEF6CBA}"
 	ProjectSection(SolutionItems) = preProject
-		README.md = README.md
+		..\README.md = ..\README.md
 		Singularity.sln.DotSettings = Singularity.sln.DotSettings
 	EndProjectSection
 EndProject
@@ -23,8 +23,8 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Singularity.Duality.Example
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Git", "Git", "{15197F05-E231-4B17-AD9C-402818E97CC8}"
 	ProjectSection(SolutionItems) = preProject
-		.gitattributes = .gitattributes
-		.gitignore = .gitignore
+		..\.gitattributes = ..\.gitattributes
+		..\.gitignore = ..\.gitignore
 	EndProjectSection
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Singularity.Duality.Test", "Tests\Singularity.Duality.Test\Singularity.Duality.Test.csproj", "{403EA696-4514-4B11-80DE-216A4FA1A7E1}"

@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using Singularity.Exceptions;
 
 namespace Singularity
@@ -28,7 +29,14 @@ namespace Singularity
         /// Injects dependencies by calling all methods that were registered using <see cref="ContainerBuilder.LateInject{T}"/>
         /// </summary>
         /// <param name="instance"></param>
-        /// <exception cref="DependencyNotFoundException">If the method had parameters that couldn't be resolved</exception>
+        /// <exception cref="DependencyNotFoundException">If the late injection target had parameters that couldn't be resolved</exception>
         void LateInject(object instance);
+
+        /// <summary>
+        /// Injects dependencies for all elements of the provided <paramref name="instances"/> by calling all late injection targets that were registered using <see cref="ContainerBuilder.LateInject{T}"/>
+        /// </summary>
+        /// <param name="instances"></param>
+        /// <exception cref="DependencyNotFoundException">If the late injection target had parameters that couldn't be resolved</exception>
+        void LateInjectAll<T>(IEnumerable<T> instances);
     }
 }

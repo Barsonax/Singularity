@@ -1,8 +1,6 @@
-﻿using BenchmarkDotNet.Running;
-using System;
+﻿using System;
 using System.Linq.Expressions;
 using Singularity.FastExpressionCompiler;
-using Singularity.TestClasses.Benchmark;
 
 namespace Singularity.Benchmark
 {

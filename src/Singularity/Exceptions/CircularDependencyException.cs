@@ -10,7 +10,7 @@ namespace Singularity.Exceptions
     /// Thrown when a circular dependency has been found.
     /// </summary>
     [Serializable]
-    public class CircularDependencyException : SingularityException
+    public sealed class CircularDependencyException : SingularityException
     {
         /// <summary>
         /// The assembly qualified names of the types that are in the cycle.
@@ -32,7 +32,7 @@ namespace Singularity.Exceptions
         /// </summary>
         /// <param name="info"></param>
         /// <param name="context"></param>
-        protected CircularDependencyException(SerializationInfo info, StreamingContext context) : base(info, context)
+        private CircularDependencyException(SerializationInfo info, StreamingContext context) : base(info, context)
         {
             Cycle = (string[])info.GetValue(nameof(Cycle), typeof(string[]));
         }

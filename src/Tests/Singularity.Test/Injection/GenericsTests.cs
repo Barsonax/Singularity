@@ -1,5 +1,4 @@
-﻿using System;
-using Singularity.Exceptions;
+﻿using Singularity.Exceptions;
 using Singularity.TestClasses.TestClasses;
 using Xunit;
 

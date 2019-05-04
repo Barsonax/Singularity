@@ -72,7 +72,7 @@ namespace Singularity.Duality.Scopes
 			{
 				try
 				{
-					Container.MethodInjectAll(gameObject.GetComponents<Component>());
+					Container.LateInjectAll(gameObject.GetComponents<Component>());
 				}
 				catch (Exception e)
 				{

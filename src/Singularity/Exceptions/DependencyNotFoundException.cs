@@ -8,7 +8,7 @@ namespace Singularity.Exceptions
     /// Thrown when a dependency cannot be found.
     /// </summary>
     [Serializable]
-    public class DependencyNotFoundException : SingularityException
+    public sealed class DependencyNotFoundException : SingularityException
     {
         /// <summary>
         /// The assembly qualified name of the type that couldn't be found.
@@ -30,7 +30,7 @@ namespace Singularity.Exceptions
         /// </summary>
         /// <param name="info"></param>
         /// <param name="context"></param>
-        protected DependencyNotFoundException(
+        private DependencyNotFoundException(
             SerializationInfo info,
             StreamingContext context) : base(info, context)
         {

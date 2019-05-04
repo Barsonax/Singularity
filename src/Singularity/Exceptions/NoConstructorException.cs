@@ -7,7 +7,7 @@ namespace Singularity.Exceptions
     /// Exception for when no public constructor is available to be resolved.
     /// </summary>
     [Serializable]
-    public class NoConstructorException : SingularityException
+    public sealed class NoConstructorException : SingularityException
     {
         internal NoConstructorException(string message, Exception? inner = null) : base(message, inner)
         {
@@ -18,7 +18,7 @@ namespace Singularity.Exceptions
         /// </summary>
         /// <param name="info"></param>
         /// <param name="context"></param>
-        protected NoConstructorException(SerializationInfo info, StreamingContext context) : base(info, context)
+        private NoConstructorException(SerializationInfo info, StreamingContext context) : base(info, context)
         {
         }
     }

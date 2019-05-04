@@ -171,6 +171,7 @@ class Build : NukeBuild
 
     Target PushDocs => _ => _
         .DependsOn(BuildDocs)
+        .OnlyWhenDynamic(() => GitRepository.Branch == "master")
         .Executes(() =>
     {
         EnsureCleanDirectory(DocsRepository);

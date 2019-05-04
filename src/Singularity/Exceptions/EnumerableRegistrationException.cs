@@ -7,7 +7,7 @@ namespace Singularity.Exceptions
     /// Exception for when a enumerable is registered incorrectly.
     /// </summary>
     [Serializable]
-    public class EnumerableRegistrationException : Exception
+    public sealed class EnumerableRegistrationException : Exception
     {
         internal EnumerableRegistrationException(string message, Exception? inner = null) : base(message, inner)
         {
@@ -18,7 +18,7 @@ namespace Singularity.Exceptions
         /// </summary>
         /// <param name="info"></param>
         /// <param name="context"></param>
-        protected EnumerableRegistrationException(
+        private EnumerableRegistrationException(
             SerializationInfo info,
             StreamingContext context) : base(info, context)
         {

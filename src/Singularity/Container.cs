@@ -1,5 +1,4 @@
-﻿using Singularity.Exceptions;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Linq.Expressions;
@@ -83,20 +82,6 @@ namespace Singularity
             return new Scoped(this);
         }
 
-        /// <summary>
-        /// Injects dependencies by calling all methods marked with <see cref="InjectAttribute"/> on the <paramref name="instances"/>.
-        /// </summary>
-        /// <typeparam name="T"></typeparam>
-        /// <param name="instances"></param>
-        /// <exception cref="DependencyNotFoundException">If the method had parameters that couldn't be resolved</exception>
-        public void MethodInjectAll<T>(IEnumerable<T> instances)
-        {
-            foreach (T instance in instances)
-            {
-                if (instance != null) LateInject(instance);
-            }
-        }
-
         /// <inheritdoc />
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public T GetInstance<T>() where T : class => GetInstance<T>(_containerScope);
@@ -122,7 +107,23 @@ namespace Singularity
 
         /// <inheritdoc />
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public void LateInjectAll<T>(IEnumerable<T> instances)
+        {
+            LateInjectAll(instances, _containerScope);
+        }
+
+        /// <inheritdoc />
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public void LateInject(object instance) => LateInject(instance, _containerScope);
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        internal void LateInjectAll<T>(IEnumerable<T> instances, Scoped scope)
+        {
+            foreach (T instance in instances)
+            {
+                if (instance != null) LateInject(instance, scope);
+            }
+        }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         internal void LateInject(object instance, Scoped scope)
