@@ -3,23 +3,23 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
 using System.Runtime.CompilerServices;
+using System.Threading;
 using Singularity.Collections;
 
 namespace Singularity
 {
     /// <summary>
-    /// Represents the scope in which instances will life.
+    /// A light weight scope in which instances will life.
     /// </summary>
     public sealed class Scoped : IContainer
     {
         internal static readonly MethodInfo AddDisposableMethod = typeof(Scoped).GetRuntimeMethods().Single(x => x.Name == nameof(AddDisposable));
         internal static readonly MethodInfo AddFinalizerMethod = typeof(Scoped).GetRuntimeMethods().Single(x => x.Name == nameof(AddFinalizer));
         internal static readonly MethodInfo GetOrAddScopedInstanceMethod = typeof(Scoped).GetRuntimeMethods().Single(x => x.Name == nameof(GetOrAddScopedInstance));
-        private static readonly Action<IDisposable> DisposeAction = x => x.Dispose();
 
-        private ThreadSafeDictionary<ServiceBinding, ActionList<object>> Finalizers { get; } = new ThreadSafeDictionary<ServiceBinding, ActionList<object>>();
-        private ActionList<IDisposable> Disposables { get; } = new ActionList<IDisposable>(DisposeAction);
-        private ThreadSafeDictionary<Type, object> ScopedInstances { get; } = new ThreadSafeDictionary<Type, object>();
+        private SinglyLinkedListKeyNode<ServiceBinding, ActionList<object>> _finalizers;
+        private SinglyLinkedListNode<IDisposable> _disposables;
+        private SinglyLinkedListKeyNode<Type, object> _scopedInstances;
         private readonly Container _container;
 
         internal Scoped(Container container)
@@ -72,47 +72,51 @@ namespace Singularity
         internal T GetOrAddScopedInstance<T>(Func<Scoped, T> factory, Type key)
             where T : class
         {
-            var instance = (T)ScopedInstances.GetOrDefault(key);
-            if (instance != null) return instance;
-
-            lock (ScopedInstances)
+            SinglyLinkedListKeyNode<Type, object>? initialValue, computedValue;
+            do
             {
-                instance = (T)ScopedInstances.GetOrDefault(key);
+                initialValue = _scopedInstances;
+                var instance = (T)initialValue.GetOrDefault(key);
                 if (instance != null) return instance;
-                instance = factory(this);
-                ScopedInstances.Add(key, instance);
-
-                return instance;
+                T obj = factory(this); //There is a very slight chance that this instance is created more than once under heavy load.
+                computedValue = initialValue.Add(key, obj);
             }
+            while (initialValue != Interlocked.CompareExchange(ref _scopedInstances, computedValue, initialValue));
+
+            return (T)computedValue.Value;
         }
 
         internal T AddDisposable<T>(T obj)
             where T : class, IDisposable
         {
-            Disposables.Add(obj);
+            SinglyLinkedListNode<IDisposable>? initialValue, computedValue;
+            do
+            {
+                initialValue = _disposables;
+                computedValue = initialValue.Add(obj);
+            }
+            while (initialValue != Interlocked.CompareExchange(ref _disposables, computedValue, initialValue));
             return obj;
         }
 
-        internal T AddFinalizer<T>(T obj, ServiceBinding serviceBinding)
+        internal T AddFinalizer<T>(T obj, ServiceBinding key)
             where T : class
         {
-            ActionList<object> list = Finalizers.GetOrDefault(serviceBinding);
-            if (list != null)
+            SinglyLinkedListKeyNode<ServiceBinding, ActionList<object>>? initialValue, computedValue;
+            do
             {
-                list.Add(obj);
-                return obj;
-            }
-
-            lock (Finalizers)
-            {
-                list = Finalizers.GetOrDefault(serviceBinding);
-                if (list == null)
+                initialValue = _finalizers;
+                ActionList<object> list = initialValue.GetOrDefault(key);
+                if (list != null)
                 {
-                    list = new ActionList<object>(serviceBinding.Finalizer!);
-                    Finalizers.Add(serviceBinding, list);
+                    list.Add(obj);
+                    return obj;
                 }
+
+                computedValue = initialValue.Add(key, new ActionList<object>(key.Finalizer!));
             }
-            list.Add(obj!);
+            while (initialValue != Interlocked.CompareExchange(ref _finalizers, computedValue, initialValue));
+            computedValue.Value.Add(obj);
             return obj;
         }
 
@@ -121,14 +125,18 @@ namespace Singularity
         /// </summary>
         public void Dispose()
         {
-            Disposables.Invoke();
-
-            if (Finalizers.Count > 0)
+            SinglyLinkedListNode<IDisposable>? disposables = _disposables;
+            while (disposables != null)
             {
-                foreach (ActionList<object> objectActionList in Finalizers)
-                {
-                    objectActionList.Invoke();
-                }
+                disposables.Value.Dispose();
+                disposables = disposables.Next!;
+            }
+
+            SinglyLinkedListKeyNode<ServiceBinding, ActionList<object>>? finalizers = _finalizers;
+            while (finalizers != null)
+            {
+                finalizers.Value.Invoke();
+                finalizers = finalizers.Next;
             }
         }
     }

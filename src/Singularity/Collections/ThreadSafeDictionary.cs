@@ -29,7 +29,7 @@ namespace Singularity.Collections
             do
             {
                 initialValue = _immutableHashTable;
-                computedValue = _immutableHashTable.Add(key, value);
+                computedValue = initialValue.Add(key, value);
             }
             while (initialValue != Interlocked.CompareExchange(ref _immutableHashTable, computedValue, initialValue));
         }
