@@ -31,7 +31,7 @@ namespace Singularity
             do
             {
                 initialValue = _root;
-                computedValue = _root.Add(obj);
+                computedValue = initialValue.Add(obj);
             }
             while (initialValue != Interlocked.CompareExchange(ref _root, computedValue, initialValue));
         }

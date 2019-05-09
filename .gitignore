@@ -276,6 +276,7 @@ src/Duality/UserData.dat
 src/Duality/DesignTimeData.dat
 src/Duality/DefaultUserData.dat
 src/Duality/AppData.dat
+src/Docs/repository
 src/Duality/Plugins/Singularity.Duality.Examples.core.dll
 /coverage
 /BuildOutput

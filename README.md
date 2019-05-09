@@ -1,9 +1,25 @@
 # Singularity
 [![Discord](https://img.shields.io/discord/569232642105540608.svg)](https://discord.gg/9x9J3y) [![NuGet Badge](https://buildstats.info/nuget/Singularity)](https://www.nuget.org/packages/Singularity/) [![Build Status](https://dev.azure.com/Barsonax/Singularity/_apis/build/status/Singularity-CI?branchName=master)](https://dev.azure.com/Barsonax/Singularity/_build/latest?definitionId=7&branchName=master) ![Azure DevOps tests (branch)](https://img.shields.io/azure-devops/tests/Barsonax/Singularity/7/master.svg) ![coverage](https://img.shields.io/azure-devops/coverage/Barsonax/Singularity/7/master.svg) [![Beerpay](https://img.shields.io/beerpay/Barsonax/Singularity.svg)](https://beerpay.io/Barsonax/Singularity)
 
-Singularity is a ioc container that focuses on the following things
-- Performance, Singularity is one of the fastest if not the fastest dependency injection container out there. Don't believe me? Check out my [benchmarks](#Benchmarks) or if you want a second opinion check out the benchmarks that Daniel Palme made [here](https://github.com/danielpalme/IocPerformance).
-- Not invasive. For instance `Dispose` wont be automatically called by default, instead you can configure Singularity to do so through the `With(DisposeBehavior)` method or tell singularity to automatically call `Dispose` by simply changing the settings. Is calling Dispose not enough and you want to invoke your own custom logic? The `WithFinalizer(Action<TInstance>)` method might be of help here.
+## Features
+- Extreme performance, Singularity is one of the fastest if not the fastest dependency injection container out there. Don't believe me? Check out my [benchmarks](#Benchmarks) or if you want a second opinion check out the benchmarks that Daniel Palme made [here](https://github.com/danielpalme/IocPerformance).
+- Clean fluent API.
+- Generic wrappers:
+  1. `Func<T>`
+  1. `Lazy<T>`
+  1. `Expression<Func<T>>`
+- Collection support:
+  1. `IEnumerable<T>`
+  1. `IReadOnlyCollection<T>`
+  1. `IReadOnlyList`
+- Supports open generics.
+- Supports resolving unregistered concrete types.
+- Supports decorators.
+- Supports method and property injection without forcing you to litter attributes all over your code base. All configuration is kept inside the container.
+- Auto dispose, this is off by default but can be turned on with `With(DisposeBehavior)`or by setting `SingularitySettings.AutoDispose` to true.
+- Custom finalizers with the `WithFinalizer(Action<TInstance>)` method.
+- Supports Transient, Singleton and Scope lifetimes.
+- Supports child containers.
 - Clear error messages and fail fast to point you in the right direction as fast as possible.
 
 ## Getting started

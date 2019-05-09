@@ -108,9 +108,8 @@ namespace Singularity.Expressions
 
         public static Expression CreateScopedExpression<T>(Expression expression)
         {
-            var factory = (Func<Scoped, T>)Expression.Lambda(expression, ScopeParameter).CompileFast();
             MethodInfo method = Scoped.GetOrAddScopedInstanceMethod.MakeGenericMethod(expression.Type);
-            return Expression.Call(ScopeParameter, method, Expression.Constant(factory), Expression.Constant(expression.Type));
+            return Expression.Call(ScopeParameter, method, Expression.Lambda(expression, ScopeParameter), Expression.Constant(expression.Type));
         }
     }
 }
