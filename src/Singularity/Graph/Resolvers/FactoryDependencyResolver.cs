@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq.Expressions;
+using Singularity.Expressions;
 
 namespace Singularity.Graph.Resolvers
 {
@@ -14,11 +15,11 @@ namespace Singularity.Graph.Resolvers
 
                 foreach (InstanceFactory factory in graph.ResolveAll(dependencyType))
                 {
-                    LambdaExpression baseExpression = Expression.Lambda(factory.Expression);
+                    LambdaExpression baseExpression = Expression.Lambda(factory.Context.Expression);
 
                     yield return new ServiceBinding(type, new BindingMetadata(), baseExpression)
                     {
-                        BaseExpression = baseExpression
+                        BaseExpression = new ExpressionContext(baseExpression)
                     };
                 }
             }

@@ -20,10 +20,24 @@ namespace Singularity.TestClasses.Benchmark
         {
             var factory = (IServiceScopeFactory)_container.GetInstance(typeof(IServiceScopeFactory));
 
-            using (IServiceScope scope = factory.CreateScope())
+            using (var scope = factory.CreateScope())
             {
-                object controller = scope.ServiceProvider.GetService(typeof(TestController1));
+                var controller = scope.ServiceProvider.GetService(typeof(TestController1));
             }
+
+            //factory = (IServiceScopeFactory)_container.GetInstance(typeof(IServiceScopeFactory));
+
+            //using (var scope = factory.CreateScope())
+            //{
+            //    var controller = scope.ServiceProvider.GetService(typeof(TestController2));
+            //}
+
+            //factory = (IServiceScopeFactory)_container.GetInstance(typeof(IServiceScopeFactory));
+
+            //using (var scope = factory.CreateScope())
+            //{
+            //    var controller = scope.ServiceProvider.GetService(typeof(TestController3));
+            //}
         }
 
         public IEnumerable<ISimpleAdapter> Multi()
@@ -108,7 +122,13 @@ namespace Singularity.TestClasses.Benchmark
             builder.Register<IRepositoryTransient1, RepositoryTransient1>();
             builder.Register<IRepositoryTransient2, RepositoryTransient2>();
             builder.Register<IRepositoryTransient3, RepositoryTransient3>();
-            builder.Register<IScopedService, ScopedService>(c => c.With(Lifetime.PerScope));
+            builder.Register<IRepositoryTransient4, RepositoryTransient4>();
+            builder.Register<IRepositoryTransient5, RepositoryTransient5>();
+            builder.Register<IScopedService1, ScopedService1>(c => c.With(Lifetime.PerScope));
+            builder.Register<IScopedService2, ScopedService2>(c => c.With(Lifetime.PerScope));
+            builder.Register<IScopedService3, ScopedService3>(c => c.With(Lifetime.PerScope));
+            builder.Register<IScopedService4, ScopedService4>(c => c.With(Lifetime.PerScope));
+            builder.Register<IScopedService5, ScopedService5>(c => c.With(Lifetime.PerScope));
         }
     }
 }

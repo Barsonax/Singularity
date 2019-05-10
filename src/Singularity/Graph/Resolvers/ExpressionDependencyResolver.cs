@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq.Expressions;
 using System.Reflection;
+using Singularity.Expressions;
 
 namespace Singularity.Graph.Resolvers
 {
@@ -24,11 +25,10 @@ namespace Singularity.Graph.Resolvers
                     MethodInfo method = GenericCreateLambdaMethod.MakeGenericMethod(dependencyType);
                     foreach (InstanceFactory instanceFactory in graph.ResolveAll(dependencyType))
                     {
-                        Expression baseExpression = instanceFactory.Expression;
-                        var newBinding = new ServiceBinding(type, new BindingMetadata(), baseExpression);
+                        var newBinding = new ServiceBinding(type, new BindingMetadata(), instanceFactory.Context.Expression);
 
-                        var expression = (Expression)method.Invoke(null, new object[] { baseExpression });
-                        var factory = new InstanceFactory(type, expression, scoped => expression);
+                        var expression = (Expression)method.Invoke(null, new object[] { instanceFactory.Context });
+                        var factory = new InstanceFactory(type, new ExpressionContext(expression), scoped => expression);
                         newBinding.Factories.Add(factory);
                         yield return newBinding;
                     }
@@ -36,8 +36,9 @@ namespace Singularity.Graph.Resolvers
             }
         }
 
-        public static LambdaExpression CreateLambda<T>(Expression expression)
+        public static LambdaExpression CreateLambda<T>(ReadOnlyExpressionContext context)
         {
+            Expression expression = ExpressionCompiler.OptimizeExpression(context);
             return Expression.Lambda<Func<T>>(expression);
         }
     }

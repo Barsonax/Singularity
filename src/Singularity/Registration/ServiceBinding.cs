@@ -4,6 +4,7 @@ using System.Linq;
 using System.Linq.Expressions;
 using Singularity.Collections;
 using Singularity.Exceptions;
+using Singularity.Expressions;
 using Singularity.Graph;
 
 namespace Singularity
@@ -25,7 +26,7 @@ namespace Singularity
         public Action<object>? Finalizer { get; }
 
 
-        public Expression? BaseExpression { get; internal set; }
+        public ReadOnlyExpressionContext BaseExpression { get; internal set; }
         public Exception? ResolveError { get; internal set; }
 
         public ArrayList<InstanceFactory> Factories { get; } = new ArrayList<InstanceFactory>();

@@ -16,6 +16,10 @@
         /// <summary>
         /// The same instance will be returned as long as it is requested in the same <see cref="Scoped"/>.
         /// </summary>
-        PerScope
+        PerScope,
+        /// <summary>
+        /// The same instance will be used in the entire graph
+        /// </summary>
+        PerGraph
     }
 }

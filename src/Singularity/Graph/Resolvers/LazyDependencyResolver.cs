@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq.Expressions;
 using System.Reflection;
+using Singularity.Expressions;
 
 namespace Singularity.Graph.Resolvers
 {
@@ -18,9 +19,10 @@ namespace Singularity.Graph.Resolvers
 
                 foreach (InstanceFactory factory in graph.ResolveAll(funcType))
                 {
-                    NewExpression baseExpression = Expression.New(constructor, factory.Expression);
-                    var newBinding = new ServiceBinding(type, new BindingMetadata(), baseExpression);
-                    newBinding.Factories.Add(new InstanceFactory(type, baseExpression));
+                    var context = (ExpressionContext)factory.Context;
+                    context.Expression = Expression.New(constructor, factory.Context.Expression);
+                    var newBinding = new ServiceBinding(type, new BindingMetadata(), context.Expression);
+                    newBinding.Factories.Add(new InstanceFactory(type, context));
                     yield return newBinding;
                 }
             }

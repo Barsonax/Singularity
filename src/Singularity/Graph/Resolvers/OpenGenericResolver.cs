@@ -13,7 +13,7 @@ namespace Singularity.Graph.Resolvers
             {
                 Type genericTypeDefinition = type.GetGenericTypeDefinition();
                 InstanceFactory openGenericFactory = graph.Resolve(genericTypeDefinition);
-                var openGenericBinding = (ServiceBinding) ((ConstantExpression) openGenericFactory.Expression).Value;
+                var openGenericBinding = (ServiceBinding) ((ConstantExpression) openGenericFactory.Context.Expression).Value;
 
                 Type openGenericType = ((AbstractBindingExpression)openGenericBinding.Expression!).Type;
                 Type closedGenericType = openGenericType.MakeGenericType(type.GenericTypeArguments);

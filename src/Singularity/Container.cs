@@ -154,14 +154,14 @@ namespace Singularity
                     for (var i = 0; i < parameterTypes.Length; i++)
                     {
                         Type parameterType = parameterTypes[i].ParameterType;
-                        parameterExpressions[i] = _dependencyGraph.Resolve(parameterType).Expression;
+                        parameterExpressions[i] = _dependencyGraph.Resolve(parameterType).Context.Expression;
                     }
                     body.Add(Expression.Call(instanceCasted, methodInfo, parameterExpressions));
                 }
 
                 foreach (PropertyInfo propertyInfo in lateInjectorBindings.SelectMany(x => x.InjectionProperties))
                 {
-                    body.Add(Expression.Assign(Expression.MakeMemberAccess(instanceCasted, propertyInfo), _dependencyGraph.Resolve(propertyInfo.PropertyType).Expression));
+                    body.Add(Expression.Assign(Expression.MakeMemberAccess(instanceCasted, propertyInfo), _dependencyGraph.Resolve(propertyInfo.PropertyType).Context.Expression));
                 }
 
                 if (body.Count == 0) return (scope, instance) => { };
