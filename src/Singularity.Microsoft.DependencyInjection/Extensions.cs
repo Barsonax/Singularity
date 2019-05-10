@@ -16,8 +16,8 @@ namespace Singularity.Microsoft.DependencyInjection
         public static void RegisterServiceProvider(this ContainerBuilder config)
         {
             config.Register<Container>(c => c.Inject(() => config.Container).With(DisposeBehavior.Never));
-            config.Register<IServiceProvider, SingularityServiceProvider>();
-            config.Register<IServiceScopeFactory, SingularityServiceScopeFactory>();
+            config.Register<IServiceProvider, SingularityServiceProvider>(c => c.With(Lifetime.PerContainer));
+            config.Register<IServiceScopeFactory, SingularityServiceScopeFactory>(c => c.With(Lifetime.PerContainer));
         }
 
         /// <summary>
