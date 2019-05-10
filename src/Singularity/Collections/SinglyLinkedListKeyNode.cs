@@ -39,6 +39,7 @@ namespace Singularity.Collections
         /// Adds a new node to a existing list with the provided value.
         /// </summary>
         /// <param name="next"></param>
+        /// <param name="key"></param>
         /// <param name="value"></param>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public SinglyLinkedListKeyNode(SinglyLinkedListKeyNode<TKey, TValue>? next, in TKey key, in TValue value)
@@ -119,6 +120,7 @@ namespace Singularity.Collections
             return new SinglyLinkedListKeyNode<TKey, TValue>(previous, in key, in value);
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static TValue GetOrDefault<TKey, TValue>(this SinglyLinkedListKeyNode<TKey, TValue>? list, TKey key)
         {
             while (list != null)
