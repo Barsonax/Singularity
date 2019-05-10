@@ -20,7 +20,6 @@ namespace Singularity.Expressions
             if (context.ScopedExpressions.Count > 1)
             {
                 var body = new List<Expression>();
-                var variables = new List<ParameterExpression>();
                 foreach (IGrouping<Type, MethodCallExpression> grouping in context.ScopedExpressions.GroupBy(x => x.Type))
                 {
                     if (grouping.Count() > 1)
@@ -28,7 +27,6 @@ namespace Singularity.Expressions
                         MethodCallExpression methodCallExpression = grouping.First();
 
                         ParameterExpression newValue = Expression.Variable(methodCallExpression.Type);
-                        variables.Add(newValue);
                         var visitor = new ScopedExpressionVisitor(methodCallExpression, newValue);
                         expression = visitor.Visit(expression);
                         body.Add(newValue);
