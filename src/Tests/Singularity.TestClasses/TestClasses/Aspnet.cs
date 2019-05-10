@@ -6,29 +6,57 @@ namespace Singularity.TestClasses.TestClasses
     public class TestController1 : IDisposable
     {
         private static int counter;
+
         private static int disposeCount;
 
-        public TestController1(IRepositoryTransient1 transient1, IRepositoryTransient2 repositoryTransient2, IRepositoryTransient3 repositoryTransient3)
+        public TestController1(
+            IRepositoryTransient1 transient1,
+            IRepositoryTransient2 repositoryTransient2,
+            IRepositoryTransient3 repositoryTransient3,
+            IRepositoryTransient4 repositoryTransient4,
+            IRepositoryTransient5 repositoryTransient5)
         {
-            if (transient1 == null) throw new ArgumentNullException(nameof(transient1));
-            if (repositoryTransient2 == null) throw new ArgumentNullException(nameof(repositoryTransient2));
-            if (repositoryTransient3 == null) throw new ArgumentNullException(nameof(repositoryTransient3));
+            if (transient1 == null)
+            {
+                throw new ArgumentNullException(nameof(transient1));
+            }
+
+            if (repositoryTransient2 == null)
+            {
+                throw new ArgumentNullException(nameof(repositoryTransient2));
+            }
+
+            if (repositoryTransient3 == null)
+            {
+                throw new ArgumentNullException(nameof(repositoryTransient3));
+            }
+
+            if (repositoryTransient4 == null)
+            {
+                throw new ArgumentNullException(nameof(repositoryTransient4));
+            }
+
+            if (repositoryTransient5 == null)
+            {
+                throw new ArgumentNullException(nameof(repositoryTransient5));
+            }
 
             Interlocked.Increment(ref counter);
         }
 
         public static int Instances
         {
-            get => counter;
-            set => counter = value;
+            get { return counter; }
+            set { counter = value; }
         }
 
         public static int DisposeCount
         {
-            get => disposeCount;
-            set => disposeCount = value;
+            get { return disposeCount; }
+            set { disposeCount = value; }
         }
 
+        /// <summary>Performs application-defined tasks associated with freeing, releasing, or resetting unmanaged resources.</summary>
         public void Dispose()
         {
             Interlocked.Increment(ref disposeCount);
@@ -40,27 +68,54 @@ namespace Singularity.TestClasses.TestClasses
         private static int counter;
         private static int disposeCount;
 
-        public TestController2(IRepositoryTransient1 transient1, IRepositoryTransient2 repositoryTransient2, IRepositoryTransient3 repositoryTransient3)
+        public TestController2(
+            IRepositoryTransient1 transient1,
+            IRepositoryTransient2 repositoryTransient2,
+            IRepositoryTransient3 repositoryTransient3,
+            IRepositoryTransient4 repositoryTransient4,
+            IRepositoryTransient5 repositoryTransient5)
         {
-            if (transient1 == null) throw new ArgumentNullException(nameof(transient1));
-            if (repositoryTransient2 == null) throw new ArgumentNullException(nameof(repositoryTransient2));
-            if (repositoryTransient3 == null) throw new ArgumentNullException(nameof(repositoryTransient3));
+            if (transient1 == null)
+            {
+                throw new ArgumentNullException(nameof(transient1));
+            }
+
+            if (repositoryTransient2 == null)
+            {
+                throw new ArgumentNullException(nameof(repositoryTransient2));
+            }
+
+            if (repositoryTransient3 == null)
+            {
+                throw new ArgumentNullException(nameof(repositoryTransient3));
+            }
+
+            if (repositoryTransient4 == null)
+            {
+                throw new ArgumentNullException(nameof(repositoryTransient4));
+            }
+
+            if (repositoryTransient5 == null)
+            {
+                throw new ArgumentNullException(nameof(repositoryTransient5));
+            }
 
             Interlocked.Increment(ref counter);
         }
 
         public static int Instances
         {
-            get => counter;
-            set => counter = value;
+            get { return counter; }
+            set { counter = value; }
         }
 
         public static int DisposeCount
         {
-            get => disposeCount;
-            set => disposeCount = value;
+            get { return disposeCount; }
+            set { disposeCount = value; }
         }
 
+        /// <summary>Performs application-defined tasks associated with freeing, releasing, or resetting unmanaged resources.</summary>
         public void Dispose()
         {
             Interlocked.Increment(ref disposeCount);
@@ -72,25 +127,51 @@ namespace Singularity.TestClasses.TestClasses
         private static int counter;
         private static int disposeCount;
 
-        public TestController3(IRepositoryTransient1 transient1, IRepositoryTransient2 repositoryTransient2, IRepositoryTransient3 repositoryTransient3)
+        public TestController3(
+            IRepositoryTransient1 transient1,
+            IRepositoryTransient2 repositoryTransient2,
+            IRepositoryTransient3 repositoryTransient3,
+            IRepositoryTransient4 repositoryTransient4,
+            IRepositoryTransient5 repositoryTransient5)
         {
-            if (transient1 == null) throw new ArgumentNullException(nameof(transient1));
-            if (repositoryTransient2 == null) throw new ArgumentNullException(nameof(repositoryTransient2));
-            if (repositoryTransient3 == null) throw new ArgumentNullException(nameof(repositoryTransient3));
+            if (transient1 == null)
+            {
+                throw new ArgumentNullException(nameof(transient1));
+            }
+
+            if (repositoryTransient2 == null)
+            {
+                throw new ArgumentNullException(nameof(repositoryTransient2));
+            }
+
+            if (repositoryTransient3 == null)
+            {
+                throw new ArgumentNullException(nameof(repositoryTransient3));
+            }
+
+            if (repositoryTransient4 == null)
+            {
+                throw new ArgumentNullException(nameof(repositoryTransient4));
+            }
+
+            if (repositoryTransient5 == null)
+            {
+                throw new ArgumentNullException(nameof(repositoryTransient5));
+            }
 
             Interlocked.Increment(ref counter);
         }
 
         public static int Instances
         {
-            get => counter;
-            set => counter = value;
+            get { return counter; }
+            set { counter = value; }
         }
 
         public static int DisposeCount
         {
-            get => disposeCount;
-            set => disposeCount = value;
+            get { return disposeCount; }
+            set { disposeCount = value; }
         }
 
         /// <summary>Performs application-defined tasks associated with freeing, releasing, or resetting unmanaged resources.</summary>
@@ -100,28 +181,203 @@ namespace Singularity.TestClasses.TestClasses
         }
     }
 
-    public interface IRepositoryTransient1 { }
+    public interface IScopedService1
+    {
+        void DoSomething();
+    }
 
-    public interface IRepositoryTransient2 { }
+    public class ScopedService1 : IScopedService1
+    {
+        private static int counter;
 
-    public interface IRepositoryTransient3 { }
+        public ScopedService1()
+        {
+            Interlocked.Increment(ref counter);
+        }
+
+        public static int Instances
+        {
+            get { return counter; }
+            set { counter = value; }
+        }
+
+        public void DoSomething()
+        {
+        }
+    }
+
+    public interface IScopedService2
+    {
+        void DoSomething();
+    }
+
+    public class ScopedService2 : IScopedService2
+    {
+        private static int counter;
+
+        public ScopedService2()
+        {
+            Interlocked.Increment(ref counter);
+        }
+
+        public static int Instances
+        {
+            get { return counter; }
+            set { counter = value; }
+        }
+
+        public void DoSomething()
+        {
+        }
+    }
+
+    public interface IScopedService3
+    {
+        void DoSomething();
+    }
+
+    public class ScopedService3 : IScopedService3
+    {
+        private static int counter;
+
+        public ScopedService3()
+        {
+            Interlocked.Increment(ref counter);
+        }
+
+        public static int Instances
+        {
+            get { return counter; }
+            set { counter = value; }
+        }
+
+        public void DoSomething()
+        {
+        }
+    }
+
+    public interface IScopedService4
+    {
+        void DoSomething();
+    }
+
+    public class ScopedService4 : IScopedService4
+    {
+        private static int counter;
+
+        public ScopedService4()
+        {
+            Interlocked.Increment(ref counter);
+        }
+
+        public static int Instances
+        {
+            get { return counter; }
+            set { counter = value; }
+        }
+
+        public void DoSomething()
+        {
+        }
+    }
+
+    public interface IScopedService5
+    {
+        void DoSomething();
+    }
+
+    public class ScopedService5 : IScopedService5
+    {
+        private static int counter;
+
+        public ScopedService5()
+        {
+            Interlocked.Increment(ref counter);
+        }
+
+        public static int Instances
+        {
+            get { return counter; }
+            set { counter = value; }
+        }
+
+        public void DoSomething()
+        {
+        }
+    }
+
+    public interface IRepositoryTransient1
+    {
+        void DoSomething();
+    }
+
+    public interface IRepositoryTransient2
+    {
+        void DoSomething();
+    }
+
+    public interface IRepositoryTransient3
+    {
+        void DoSomething();
+    }
+
+    public interface IRepositoryTransient4
+    {
+        void DoSomething();
+    }
+
+    public interface IRepositoryTransient5
+    {
+        void DoSomething();
+    }
 
     public class RepositoryTransient1 : IRepositoryTransient1
     {
         private static int counter;
 
-        public RepositoryTransient1(ISingleton1 singleton, IScopedService scopedService)
+        public RepositoryTransient1(ISingleton1 singleton, IScopedService1 scopedService1, IScopedService2 scopedService2, IScopedService3 scopedService3, IScopedService4 scopedService4, IScopedService5 scopedService5)
         {
-            if (singleton == null) throw new ArgumentNullException(nameof(singleton));
-            if (scopedService == null) throw new ArgumentNullException(nameof(scopedService));
+            if (singleton == null)
+            {
+                throw new ArgumentNullException(nameof(singleton));
+            }
+
+            if (scopedService1 == null)
+            {
+                throw new ArgumentNullException(nameof(scopedService1));
+            }
+
+            if (scopedService2 == null)
+            {
+                throw new ArgumentNullException(nameof(scopedService2));
+            }
+
+            if (scopedService3 == null)
+            {
+                throw new ArgumentNullException(nameof(scopedService3));
+            }
+
+            if (scopedService4 == null)
+            {
+                throw new ArgumentNullException(nameof(scopedService4));
+            }
+
+            if (scopedService5 == null)
+            {
+                throw new ArgumentNullException(nameof(scopedService5));
+            }
 
             Interlocked.Increment(ref counter);
         }
 
         public static int Instances
         {
-            get => counter;
-            set => counter = value;
+            get { return counter; }
+            set { counter = value; }
+        }
+
+        public void DoSomething()
+        {
         }
     }
 
@@ -129,18 +385,49 @@ namespace Singularity.TestClasses.TestClasses
     {
         private static int counter;
 
-        public RepositoryTransient2(ISingleton1 singleton, IScopedService scopedService)
+        public RepositoryTransient2(ISingleton1 singleton, IScopedService1 scopedService1, IScopedService2 scopedService2, IScopedService3 scopedService3, IScopedService4 scopedService4, IScopedService5 scopedService5)
         {
-            if (singleton == null) throw new ArgumentNullException(nameof(singleton));
-            if (scopedService == null) throw new ArgumentNullException(nameof(scopedService));
+            if (singleton == null)
+            {
+                throw new ArgumentNullException(nameof(singleton));
+            }
+
+            if (scopedService1 == null)
+            {
+                throw new ArgumentNullException(nameof(scopedService1));
+            }
+
+            if (scopedService2 == null)
+            {
+                throw new ArgumentNullException(nameof(scopedService2));
+            }
+
+            if (scopedService3 == null)
+            {
+                throw new ArgumentNullException(nameof(scopedService3));
+            }
+
+            if (scopedService4 == null)
+            {
+                throw new ArgumentNullException(nameof(scopedService4));
+            }
+
+            if (scopedService5 == null)
+            {
+                throw new ArgumentNullException(nameof(scopedService5));
+            }
 
             Interlocked.Increment(ref counter);
         }
 
         public static int Instances
         {
-            get => counter;
-            set => counter = value;
+            get { return counter; }
+            set { counter = value; }
+        }
+
+        public void DoSomething()
+        {
         }
     }
 
@@ -148,36 +435,149 @@ namespace Singularity.TestClasses.TestClasses
     {
         private static int counter;
 
-        public RepositoryTransient3(ISingleton1 singleton, IScopedService scopedService)
+        public RepositoryTransient3(ISingleton1 singleton, IScopedService1 scopedService1, IScopedService2 scopedService2, IScopedService3 scopedService3, IScopedService4 scopedService4, IScopedService5 scopedService5)
         {
-            if (singleton == null) throw new ArgumentNullException(nameof(singleton));
-            if (scopedService == null) throw new ArgumentNullException(nameof(scopedService));
+            if (singleton == null)
+            {
+                throw new ArgumentNullException(nameof(singleton));
+            }
+
+            if (scopedService1 == null)
+            {
+                throw new ArgumentNullException(nameof(scopedService1));
+            }
+
+            if (scopedService2 == null)
+            {
+                throw new ArgumentNullException(nameof(scopedService2));
+            }
+
+            if (scopedService3 == null)
+            {
+                throw new ArgumentNullException(nameof(scopedService3));
+            }
+
+            if (scopedService4 == null)
+            {
+                throw new ArgumentNullException(nameof(scopedService4));
+            }
+
+            if (scopedService5 == null)
+            {
+                throw new ArgumentNullException(nameof(scopedService5));
+            }
 
             Interlocked.Increment(ref counter);
         }
 
         public static int Instances
         {
-            get => counter;
-            set => counter = value;
+            get { return counter; }
+            set { counter = value; }
+        }
+
+        public void DoSomething()
+        {
         }
     }
 
-    public interface IScopedService { }
-
-    public class ScopedService : IScopedService
+    public class RepositoryTransient4 : IRepositoryTransient4
     {
         private static int counter;
 
-        public ScopedService()
+        public RepositoryTransient4(ISingleton1 singleton, IScopedService1 scopedService1, IScopedService2 scopedService2, IScopedService3 scopedService3, IScopedService4 scopedService4, IScopedService5 scopedService5)
         {
+            if (singleton == null)
+            {
+                throw new ArgumentNullException(nameof(singleton));
+            }
+
+            if (scopedService1 == null)
+            {
+                throw new ArgumentNullException(nameof(scopedService1));
+            }
+
+            if (scopedService2 == null)
+            {
+                throw new ArgumentNullException(nameof(scopedService2));
+            }
+
+            if (scopedService3 == null)
+            {
+                throw new ArgumentNullException(nameof(scopedService3));
+            }
+
+            if (scopedService4 == null)
+            {
+                throw new ArgumentNullException(nameof(scopedService4));
+            }
+
+            if (scopedService5 == null)
+            {
+                throw new ArgumentNullException(nameof(scopedService5));
+            }
+
             Interlocked.Increment(ref counter);
         }
 
         public static int Instances
         {
-            get => counter;
-            set => counter = value;
+            get { return counter; }
+            set { counter = value; }
+        }
+
+        public void DoSomething()
+        {
+        }
+    }
+
+    public class RepositoryTransient5 : IRepositoryTransient5
+    {
+        private static int counter;
+
+        public RepositoryTransient5(ISingleton1 singleton, IScopedService1 scopedService1, IScopedService2 scopedService2, IScopedService3 scopedService3, IScopedService4 scopedService4, IScopedService5 scopedService5)
+        {
+            if (singleton == null)
+            {
+                throw new ArgumentNullException(nameof(singleton));
+            }
+
+            if (scopedService1 == null)
+            {
+                throw new ArgumentNullException(nameof(scopedService1));
+            }
+
+            if (scopedService2 == null)
+            {
+                throw new ArgumentNullException(nameof(scopedService2));
+            }
+
+            if (scopedService3 == null)
+            {
+                throw new ArgumentNullException(nameof(scopedService3));
+            }
+
+            if (scopedService4 == null)
+            {
+                throw new ArgumentNullException(nameof(scopedService4));
+            }
+
+            if (scopedService5 == null)
+            {
+                throw new ArgumentNullException(nameof(scopedService5));
+            }
+
+            Interlocked.Increment(ref counter);
+        }
+
+        public static int Instances
+        {
+            get { return counter; }
+            set { counter = value; }
+        }
+
+        public void DoSomething()
+        {
         }
     }
 }

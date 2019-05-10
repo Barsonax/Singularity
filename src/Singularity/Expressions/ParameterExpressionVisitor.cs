@@ -7,8 +7,10 @@ namespace Singularity.Expressions
     internal sealed class ParameterExpressionVisitor : ExpressionVisitor
     {
         private readonly InstanceFactory[] _factories;
-        public ParameterExpressionVisitor(InstanceFactory[] factories)
+        private readonly ExpressionContext _context;
+        public ParameterExpressionVisitor(ExpressionContext context, InstanceFactory[] factories)
         {
+            _context = context;
             _factories = factories;
         }
 
@@ -16,8 +18,18 @@ namespace Singularity.Expressions
         {
             if (node.Type == typeof(Scoped)) return ExpressionGenerator.ScopeParameter;
             InstanceFactory factory = _factories.First(x => x.DependencyType == node.Type);
-
-            return factory.Expression!;
+            if (factory.Context.Expression is MethodCallExpression methodCallExpression && methodCallExpression.Method.GetGenericMethodDefinition() == Scoped.GetOrAddScopedInstanceMethod)
+            {
+                _context.ScopedExpressions.Add(methodCallExpression);
+            }
+            else
+            {
+                foreach (MethodCallExpression scopedExpression in factory.Context.ScopedExpressions)
+                {
+                    _context.ScopedExpressions.Add(scopedExpression);
+                }
+            }
+            return factory.Context.Expression!;
         }
     }
 }

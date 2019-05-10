@@ -65,7 +65,7 @@ namespace Singularity.Graph.Resolvers
         public IEnumerable<InstanceFactory> TryResolveAll(Type type)
         {
             Registration? registration = TryGetDependency(type);
-            if(registration == null) yield break;
+            if (registration == null) yield break;
             foreach (ServiceBinding registrationBinding in registration.Bindings)
             {
                 yield return ResolveDependency(type, registrationBinding);
@@ -146,7 +146,7 @@ namespace Singularity.Graph.Resolvers
                 {
                     if (serviceBinding.Expression is AbstractBindingExpression)
                     {
-                        factory = new InstanceFactory(type, serviceBinding.BaseExpression!, scoped => throw new AbstractTypeResolveException($"Cannot create a instance for type {type} since its registered as a abstract binding and not meant to be used directly."));
+                        factory = new InstanceFactory(type, (ExpressionContext)serviceBinding.BaseExpression!, scoped => throw new AbstractTypeResolveException($"Cannot create a instance for type {type} since its registered as a abstract binding and not meant to be used directly."));
                         serviceBinding.Factories.Add(factory);
                         return factory;
                     }
@@ -161,8 +161,8 @@ namespace Singularity.Graph.Resolvers
                         childFactories[i] = ResolveDependency(parameter.Type, child, circularDependencyDetector);
                     }
 
-                    Expression expression = _expressionGenerator.ApplyDecorators(type, serviceBinding, childFactories, decorators, _containerScope);
-                    factory = new InstanceFactory(type, expression);
+                    ReadOnlyExpressionContext context = _expressionGenerator.ApplyDecorators(type, serviceBinding, childFactories, decorators, _containerScope);
+                    factory = new InstanceFactory(type, context);
                     serviceBinding.Factories.Add(factory);
                 }
                 return factory;

@@ -73,17 +73,18 @@ namespace Singularity
             where T : class
         {
             SinglyLinkedListKeyNode<Type, object>? initialValue, computedValue;
+            T obj;
             do
             {
                 initialValue = _scopedInstances;
-                var instance = (T)initialValue.GetOrDefault(key);
-                if (instance != null) return instance;
-                T obj = factory(this); //There is a very slight chance that this instance is created more than once under heavy load.
+                var instance = initialValue.GetOrDefault(key);
+                if (instance != null) return (T)instance;
+                obj = factory(this); //There is a very slight chance that this instance is created more than once under heavy load.
                 computedValue = initialValue.Add(key, obj);
             }
             while (initialValue != Interlocked.CompareExchange(ref _scopedInstances, computedValue, initialValue));
 
-            return (T)computedValue.Value;
+            return obj;
         }
 
         internal T AddDisposable<T>(T obj)
