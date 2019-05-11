@@ -70,7 +70,6 @@ namespace Singularity
         }
 
         internal T GetOrAddScopedInstance<T>(Func<Scoped, T> factory, Type key)
-            where T : class
         {
             SinglyLinkedListKeyNode<Type, object> initialValue = _scopedInstances;
             SinglyLinkedListKeyNode<Type, object> current = initialValue;
@@ -95,7 +94,6 @@ namespace Singularity
         }
 
         private T HandleScopeThreadCollision<T>(T obj, Type key)
-            where T : class
         {
             SinglyLinkedListKeyNode<Type, object>? initialValue, computedValue;
             do
