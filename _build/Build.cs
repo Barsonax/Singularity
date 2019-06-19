@@ -18,6 +18,7 @@ using static Nuke.Common.Tools.DotCover.DotCoverTasks;
 using static Nuke.Common.Tools.ReportGenerator.ReportGeneratorTasks;
 using static Nuke.DocFX.DocFXTasks;
 using System;
+using System.Threading.Tasks;
 
 [CheckBuildProjectConfigurations]
 [UnsetVisualStudioEnvironmentVariables]
@@ -48,6 +49,9 @@ class Build : NukeBuild
 
     [PathExecutable]
     private static Tool Git;
+
+    [PathExecutable]
+    private static Tool Dotnet;
 
     private Dictionary<string, object> NoWarns = new Dictionary<string, object> { { "NoWarn", "NU1701" }, };
 
@@ -145,6 +149,7 @@ class Build : NukeBuild
             .EnableNoBuild());
         });
 
+
     Target Push => _ => _
         .Requires(() => ApiKey)
         .After(Test)
@@ -153,13 +158,40 @@ class Build : NukeBuild
         .After(Pack)
         .Executes(() =>
         {
-            DotNetNuGetPush(s => s
-            .SetApiKey(ApiKey)
-            .CombineWith(
-                ArtifactsDirectory.GlobFiles("*.nupkg").NotEmpty(), (cs, nupkgFile) =>
-                    (nupkgFile.ToString().EndsWith(".symbols.nupkg") ? cs.SetSource("https://nuget.smbsrc.net/") : cs.SetSource("https://www.nuget.org"))
-                    .SetTargetPath(nupkgFile)
-                ), degreeOfParallelism: 10);
+            Parallel.ForEach(ArtifactsDirectory.GlobFiles("*.nupkg").NotEmpty(), (nupkgFile) =>
+            {
+                var source = nupkgFile.ToString().EndsWith(".symbols.nupkg")
+                                ? "https://nuget.smbsrc.net/"
+                                : "https://www.nuget.org";
+
+                var errorIsWarning = false;
+                try
+                {
+                    Dotnet.Invoke($"nuget push {nupkgFile} --source {source} --api-key {ApiKey}", customLogger: (type, output) =>
+                    {
+                        if (output.StartsWith("error: Response status code does not indicate success: 409"))
+                        {
+                            errorIsWarning = true;
+                            Nuke.Common.Logger.Log(LogLevel.Warning, $"Ignoring {output}");
+                        }
+                        else
+                        {
+                            ProcessTasks.DefaultLogger(type, output);
+                        }
+                    });
+                }
+                catch (System.Exception e)
+                {
+                    if (errorIsWarning)
+                    {
+                        Logger.Warn(e.Message);
+                    }
+                    else
+                    {
+                        throw e;
+                    }
+                }
+            });
         });
 
     Target BuildDocs => _ => _
