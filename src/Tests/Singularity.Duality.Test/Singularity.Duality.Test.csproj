@@ -1,7 +1,7 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <TargetFrameworks>net472;netcoreapp2.0</TargetFrameworks>
+    <TargetFramework>netcoreapp2.0</TargetFramework>
     <Configurations>Debug;Release;z_CI_config</Configurations>
   </PropertyGroup>
 

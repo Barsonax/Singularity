@@ -159,9 +159,10 @@ namespace Singularity
                     body.Add(Expression.Call(instanceCasted, methodInfo, parameterExpressions));
                 }
 
-                foreach (PropertyInfo propertyInfo in lateInjectorBindings.SelectMany(x => x.InjectionProperties))
+                foreach (MemberInfo memberInfo in lateInjectorBindings.SelectMany(x => x.InjectionProperties))
                 {
-                    body.Add(Expression.Assign(Expression.MakeMemberAccess(instanceCasted, propertyInfo), _dependencyGraph.Resolve(propertyInfo.PropertyType).Context.Expression));
+                    MemberExpression memberAccessExpression = Expression.MakeMemberAccess(instanceCasted, memberInfo);
+                    body.Add(Expression.Assign(memberAccessExpression, _dependencyGraph.Resolve(memberAccessExpression.Type).Context.Expression));
                 }
 
                 if (body.Count == 0) return (scope, instance) => { };

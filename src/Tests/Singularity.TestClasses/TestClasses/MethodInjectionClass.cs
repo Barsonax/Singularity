@@ -4,6 +4,7 @@ namespace Singularity.TestClasses.TestClasses
 {
     public class MethodInjectionClass
     {
+        public ITestService10 TestService10Field;
         public ITestService10? TestService10 { get; set; }
 
         public ITestService10? TestService10noSetter { get; }

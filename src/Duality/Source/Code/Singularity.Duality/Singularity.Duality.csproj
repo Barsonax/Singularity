@@ -1,7 +1,7 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <TargetFrameworks>net452;netstandard2.0</TargetFrameworks>
+    <TargetFramework>netstandard2.0</TargetFramework>
     <AssemblyName>Singularity.Duality.core</AssemblyName>
     <PackageProjectUrl>https://github.com/Barsonax/Singularity</PackageProjectUrl>
     <PackageIconUrl>https://raw.githubusercontent.com/Barsonax/Singularity/master/Icon.png</PackageIconUrl>
