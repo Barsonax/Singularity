@@ -1,7 +1,7 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <TargetFramework>net452</TargetFramework>
+    <TargetFramework>netstandard2.0</TargetFramework>
     <AssemblyName>Singularity.Duality.Examples.core</AssemblyName>
     <NoWarn>1701;1702;1705;1591;NU1701</NoWarn>
     <IsPackable>false</IsPackable>

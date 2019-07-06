@@ -26,7 +26,7 @@ namespace Singularity.Test.Injection
         }
 
         [Fact]
-        public void PropertyInject_InjectsCorrectDependencies()
+        public void PropertyInject_Name_InjectsCorrectDependencies()
         {
             //ARRANGE
             var container = new Container(builder =>
@@ -42,6 +42,44 @@ namespace Singularity.Test.Injection
 
             //ASSERT
             Assert.IsType<TestService10>(instance.TestService10);
+        }
+
+        [Fact]
+        public void PropertyInject_Expression_InjectsCorrectDependencies()
+        {
+            //ARRANGE
+            var container = new Container(builder =>
+            {
+                builder.Register<ITestService10, TestService10>();
+                builder.LateInject<MethodInjectionClass>(c => c
+                    .UseMember(o => o.TestService10));
+            });
+            var instance = new MethodInjectionClass();
+
+            //ACT
+            container.LateInject(instance);
+
+            //ASSERT
+            Assert.IsType<TestService10>(instance.TestService10);
+        }
+
+        [Fact]
+        public void FieldInject_Expression_InjectsCorrectDependencies()
+        {
+            //ARRANGE
+            var container = new Container(builder =>
+            {
+                builder.Register<ITestService10, TestService10>();
+                builder.LateInject<MethodInjectionClass>(c => c
+                    .UseMember(o => o.TestService10Field));
+            });
+            var instance = new MethodInjectionClass();
+
+            //ACT
+            container.LateInject(instance);
+
+            //ASSERT
+            Assert.IsType<TestService10>(instance.TestService10Field);
         }
 
         [Fact]

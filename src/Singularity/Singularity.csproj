@@ -1,7 +1,7 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <TargetFrameworks>net452;netstandard2.0</TargetFrameworks>
+    <TargetFramework>netstandard2.0</TargetFramework>
     <Authors>Barsonax</Authors>
     <Description>The core library for the singularity ioc container</Description>
     <PackageProjectUrl>https://github.com/Barsonax/Singularity</PackageProjectUrl>

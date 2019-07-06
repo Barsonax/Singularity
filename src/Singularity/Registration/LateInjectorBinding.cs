@@ -9,10 +9,10 @@ namespace Singularity
     {
         public Type InstanceType { get; }
         public ArrayList<MethodInfo> InjectionMethods { get; }
-        public ArrayList<PropertyInfo> InjectionProperties { get; }
+        public ArrayList<MemberInfo> InjectionProperties { get; }
         public BindingMetadata BindingMetadata { get; }
 
-        public LateInjectorBinding(Type instanceType, BindingMetadata bindingMetadata, ArrayList<MethodInfo> injectionMethods, ArrayList<PropertyInfo> injectionProperties)
+        public LateInjectorBinding(Type instanceType, BindingMetadata bindingMetadata, ArrayList<MethodInfo> injectionMethods, ArrayList<MemberInfo> injectionProperties)
         {
             InstanceType = instanceType;
             InjectionMethods = injectionMethods;

@@ -14,7 +14,7 @@ namespace Singularity
         private readonly BindingMetadata _bindingMetadata;
         private readonly Type _instanceType;
         private readonly ArrayList<MethodInfo> _injectionMethods = new ArrayList<MethodInfo>();
-        private readonly ArrayList<PropertyInfo> _injectionProperties = new ArrayList<PropertyInfo>();
+        private readonly ArrayList<MemberInfo> _injectionProperties = new ArrayList<MemberInfo>();
 
         internal WeaklyTypedLateInjectorConfigurator(Type instanceType, BindingMetadata bindingMetadata)
         {
@@ -30,9 +30,9 @@ namespace Singularity
         public WeaklyTypedLateInjectorConfigurator UseMethod(string methodName)
         {
             MethodInfo method = (from m in _instanceType.GetRuntimeMethods()
-                where m.IsPublic
-                where m.Name == methodName
-                select m).Single();
+                                 where m.IsPublic
+                                 where m.Name == methodName
+                                 select m).Single();
             return UseMethod(method);
         }
 
@@ -55,9 +55,9 @@ namespace Singularity
         public WeaklyTypedLateInjectorConfigurator UseProperty(string propertyName)
         {
             PropertyInfo method = (from m in _instanceType.GetRuntimeProperties()
-                where m.SetMethod?.IsPublic == true
-                where m.Name == propertyName
-                select m).Single();
+                                   where m.SetMethod?.IsPublic == true
+                                   where m.Name == propertyName
+                                   select m).Single();
             return UseProperty(method);
         }
 
