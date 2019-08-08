@@ -43,17 +43,12 @@ stages:
       runOnce:
         deploy:
           steps:
-          - task: CopyFiles@2
-            inputs:
-              SourceFolder: '$(System.DefaultWorkingDirectory)/Build/artifacts'
-              Contents: '**'
-              TargetFolder: $(Build.SourcesDirectory)/Artifacts
           - task: PowerShell@2
             displayName: 'Nuke build'
             inputs:
               targetType: filePath
               filePath: ./build.ps1
-              arguments: 'Push -ApiKey $env:NugetToken'
+              arguments: 'Push -ApiKey $env:NugetToken -ArtifactsDirectory $(System.DefaultWorkingDirectory)/artifacts'
             env:
               NugetToken: $(nuget_token)
 schedules:

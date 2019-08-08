@@ -36,7 +36,9 @@ class Build : NukeBuild
     [GitVersion] readonly GitVersion GitVersion;
 
     AbsolutePath BuildOutput => RootDirectory / "BuildOutput";
-    AbsolutePath ArtifactsDirectory => RootDirectory / "artifacts";
+
+    [Parameter]
+    readonly AbsolutePath ArtifactsDirectory = RootDirectory / "artifacts";
 
     AbsolutePath CoverageDirectory => RootDirectory / "coverage";
 
