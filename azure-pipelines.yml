@@ -35,28 +35,26 @@ stages:
         reportDirectory: '$(Build.SourcesDirectory)/coverage'
 - stage: Deploy
   jobs:
-  - deployment: Deploy
+  - job: Build
     pool:
       vmImage: 'windows-2019'
     environment: 'nuget'
-    strategy: 
-      runOnce:
-        deploy:
-          steps:
-          - task: DownloadBuildArtifacts@0
-            inputs:
-              buildType: 'current'
-              downloadType: 'single'
-              downloadPath: '$(System.DefaultWorkingDirectory)/artifacts'
-              artifactName: 'artifacts'
-          - task: PowerShell@2
-            displayName: 'Nuke build'
-            inputs:
-              targetType: filePath
-              filePath: ./build.ps1
-              arguments: 'Push -ApiKey $env:NugetToken -ArtifactsDirectory $(System.DefaultWorkingDirectory)/artifacts'
-            env:
-              NugetToken: $(nuget_token)
+    steps:
+      steps:
+      - task: DownloadBuildArtifacts@0
+        inputs:
+          buildType: 'current'
+          downloadType: 'single'
+          downloadPath: '$(System.DefaultWorkingDirectory)/artifacts'
+          artifactName: 'artifacts'
+      - task: PowerShell@2
+        displayName: 'Nuke build'
+        inputs:
+          targetType: filePath
+          filePath: ./build.ps1
+          arguments: 'Push -ApiKey $env:NugetToken -ArtifactsDirectory $(System.DefaultWorkingDirectory)/artifacts'
+        env:
+          NugetToken: $(nuget_token)
 schedules:
 - cron: "0 0 * * *"
   displayName: nightly
