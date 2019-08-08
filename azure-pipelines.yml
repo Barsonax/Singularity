@@ -49,7 +49,7 @@ stages:
             inputs:
               targetType: filePath
               filePath: ./build.ps1
-              arguments: 'Push -ApiKey $env:NugetToken -ArtifactsDirectory ./../artifacts'
+              arguments: 'Push -ApiKey $env:NugetToken -ArtifactsDirectory $(Pipeline.Workspace)/artifacts'
             env:
               NugetToken: $(nuget_token)
 schedules:
