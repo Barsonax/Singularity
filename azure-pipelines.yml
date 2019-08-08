@@ -45,9 +45,9 @@ stages:
           steps:
           - task: CopyFiles@2
             inputs:
-            SourceFolder: '$(System.DefaultWorkingDirectory)/Build/artifacts'
-            Contents: '**'
-            TargetFolder: $(Build.SourcesDirectory)/Artifacts
+              SourceFolder: '$(System.DefaultWorkingDirectory)/Build/artifacts'
+              Contents: '**'
+              TargetFolder: $(Build.SourcesDirectory)/Artifacts
           - task: PowerShell@2
             displayName: 'Nuke build'
             inputs:
