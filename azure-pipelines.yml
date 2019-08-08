@@ -27,3 +27,10 @@ steps:
     codeCoverageTool: Cobertura
     summaryFileLocation: '$(Build.SourcesDirectory)/coverage/Cobertura.xml'
     reportDirectory: '$(Build.SourcesDirectory)/coverage'
+schedules:
+- cron: "0 0 * * *"
+  displayName: nightly
+  branches:
+    include:
+    - master
+  always: false
