@@ -39,15 +39,19 @@ stages:
   - deployment: Deploy
     pool:
       vmImage: 'windows-2019'
-    steps:
-    - task: PowerShell@2
-      displayName: 'Nuke build'
-      inputs:
-        targetType: filePath
-        filePath: ./build.ps1
-        arguments: 'Push -ApiKey $env:NugetToken'
-      env:
-        NugetToken: $(nuget_token)
+    environment: 'nuget'
+    strategy: 
+      runOnce:
+        deploy:
+          steps:
+          - task: PowerShell@2
+            displayName: 'Nuke build'
+            inputs:
+              targetType: filePath
+              filePath: ./build.ps1
+              arguments: 'Push -ApiKey $env:NugetToken'
+            env:
+              NugetToken: $(nuget_token)
 schedules:
 - cron: "0 0 * * *"
   displayName: nightly
