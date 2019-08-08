@@ -15,7 +15,7 @@ stages:
       inputs:
         targetType: filePath
         filePath: ./build.ps1
-        arguments: 'Pack Coverage Push -ApiKey $env:NugetToken --CoberturaReport'
+        arguments: 'Pack Coverage --CoberturaReport'
       env:
         NugetToken: $(nuget_token)
     - task: PublishBuildArtifacts@1
@@ -34,7 +34,6 @@ stages:
         summaryFileLocation: '$(Build.SourcesDirectory)/coverage/Cobertura.xml'
         reportDirectory: '$(Build.SourcesDirectory)/coverage'
 - stage: Deploy
-  condition: false
   jobs:
   - deployment: Deploy
     pool:
@@ -44,6 +43,11 @@ stages:
       runOnce:
         deploy:
           steps:
+          - task: CopyFiles@2
+            inputs:
+            SourceFolder: '$(System.DefaultWorkingDirectory)/Build/artifacts'
+            Contents: '**'
+            TargetFolder: $(Build.SourcesDirectory)/Artifacts
           - task: PowerShell@2
             displayName: 'Nuke build'
             inputs:
