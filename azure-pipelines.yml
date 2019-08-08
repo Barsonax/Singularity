@@ -34,6 +34,7 @@ stages:
         summaryFileLocation: '$(Build.SourcesDirectory)/coverage/Cobertura.xml'
         reportDirectory: '$(Build.SourcesDirectory)/coverage'
 - stage: Deploy
+  condition: false
   jobs:
   - job: Deploy
     pool:
