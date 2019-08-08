@@ -1,35 +1,52 @@
-pool:
- vmImage: 'windows-2019'
-
-steps:
-- task: DotNetCoreInstaller@2
-  displayName: 'Use .NET Core sdk 3.0.100-preview3-010431'
-  inputs:
-    version: '3.0.100-preview3-010431'
-    performMultiLevelLookup: true
-- task: PowerShell@2
-  displayName: 'Nuke build'
-  inputs:
-    targetType: filePath
-    filePath: ./build.ps1
-    arguments: 'Pack Coverage Push -ApiKey $env:NugetToken --CoberturaReport'
-  env:
-    NugetToken: $(nuget_token)
-- task: PublishBuildArtifacts@1
-  inputs:
-    PathtoPublish: '$(Build.SourcesDirectory)/Artifacts'
-    ArtifactName: 'artifacts'
-- task: PublishTestResults@2
-  inputs:
-    testResultsFormat: VSTest
-    testResultsFiles: '*.trx'
-    searchFolder: '$(Build.SourcesDirectory)/TestResults'
-- task: PublishCodeCoverageResults@1
-  displayName: 'Publish code coverage'
-  inputs:
-    codeCoverageTool: Cobertura
-    summaryFileLocation: '$(Build.SourcesDirectory)/coverage/Cobertura.xml'
-    reportDirectory: '$(Build.SourcesDirectory)/coverage'
+stages:
+- stage: Build
+  jobs:
+  - job: Build
+    pool:
+      vmImage: 'windows-2019'
+    steps:
+    - task: DotNetCoreInstaller@2
+      displayName: 'Use .NET Core sdk 3.0.100-preview3-010431'
+      inputs:
+        version: '3.0.100-preview3-010431'
+        performMultiLevelLookup: true
+    - task: PowerShell@2
+      displayName: 'Nuke build'
+      inputs:
+        targetType: filePath
+        filePath: ./build.ps1
+        arguments: 'Pack Coverage Push -ApiKey $env:NugetToken --CoberturaReport'
+      env:
+        NugetToken: $(nuget_token)
+    - task: PublishBuildArtifacts@1
+      inputs:
+        PathtoPublish: '$(Build.SourcesDirectory)/Artifacts'
+        ArtifactName: 'artifacts'
+    - task: PublishTestResults@2
+      inputs:
+        testResultsFormat: VSTest
+        testResultsFiles: '*.trx'
+        searchFolder: '$(Build.SourcesDirectory)/TestResults'
+    - task: PublishCodeCoverageResults@1
+      displayName: 'Publish code coverage'
+      inputs:
+        codeCoverageTool: Cobertura
+        summaryFileLocation: '$(Build.SourcesDirectory)/coverage/Cobertura.xml'
+        reportDirectory: '$(Build.SourcesDirectory)/coverage'
+- stage: Deploy
+  jobs:
+  - job: Deploy
+    pool:
+      vmImage: 'windows-2019'
+    steps:
+    - task: PowerShell@2
+      displayName: 'Nuke build'
+      inputs:
+        targetType: filePath
+        filePath: ./build.ps1
+        arguments: 'Push -ApiKey $env:NugetToken'
+      env:
+        NugetToken: $(nuget_token)
 schedules:
 - cron: "0 0 * * *"
   displayName: nightly
