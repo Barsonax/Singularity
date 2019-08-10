@@ -1374,6 +1374,13 @@
             or null if no help information is available
             </returns>
         </member>
+        <member name="T:Duality.Editor.PackageManagement.Internal.NuGetTargetedPackageManager">
+            <summary>
+            A custom version of the NuGet <see cref="T:NuGet.PackageManager"/> based on a cleaned up decompile.
+            This was necessary in order to add support for framework-dependent dependencies via target framework
+            parameter in its internal package dependency walkers.
+            </summary>
+        </member>
         <member name="T:Duality.Editor.PackageManagement.PackageDependencyWalker">
             <summary>
             Implements an algorithm to walk a package dependency graph and determine
@@ -2867,118 +2874,118 @@
         </member>
         <member name="T:Duality.Editor.Properties.Resources">
             <summary>
-              Eine stark typisierte Ressourcenklasse zum Suchen von lokalisierten Zeichenfolgen usw.
+              A strongly-typed resource class, for looking up localized strings, etc.
             </summary>
         </member>
         <member name="P:Duality.Editor.Properties.Resources.ResourceManager">
             <summary>
-              Gibt die zwischengespeicherte ResourceManager-Instanz zurück, die von dieser Klasse verwendet wird.
+              Returns the cached ResourceManager instance used by this class.
             </summary>
         </member>
         <member name="P:Duality.Editor.Properties.Resources.Culture">
             <summary>
-              Überschreibt die CurrentUICulture-Eigenschaft des aktuellen Threads für alle
-              Ressourcenzuordnungen, die diese stark typisierte Ressourcenklasse verwenden.
+              Overrides the current thread's CurrentUICulture property for all
+              resource lookups using this strongly typed resource class.
             </summary>
         </member>
         <member name="P:Duality.Editor.Properties.Resources.add">
             <summary>
-              Sucht eine lokalisierte Ressource vom Typ System.Drawing.Bitmap.
+              Looks up a localized resource of type System.Drawing.Bitmap.
             </summary>
         </member>
         <member name="P:Duality.Editor.Properties.Resources.application_bug">
             <summary>
-              Sucht eine lokalisierte Ressource vom Typ System.Drawing.Bitmap.
+              Looks up a localized resource of type System.Drawing.Bitmap.
             </summary>
         </member>
         <member name="P:Duality.Editor.Properties.Resources.application_go">
             <summary>
-              Sucht eine lokalisierte Ressource vom Typ System.Drawing.Bitmap.
+              Looks up a localized resource of type System.Drawing.Bitmap.
             </summary>
         </member>
         <member name="P:Duality.Editor.Properties.Resources.application_stopwatch">
             <summary>
-              Sucht eine lokalisierte Ressource vom Typ System.Drawing.Bitmap.
+              Looks up a localized resource of type System.Drawing.Bitmap.
             </summary>
         </member>
         <member name="P:Duality.Editor.Properties.Resources.arrow_refresh">
             <summary>
-              Sucht eine lokalisierte Ressource vom Typ System.Drawing.Bitmap.
+              Looks up a localized resource of type System.Drawing.Bitmap.
             </summary>
         </member>
         <member name="P:Duality.Editor.Properties.Resources.control_pause_blue">
             <summary>
-              Sucht eine lokalisierte Ressource vom Typ System.Drawing.Bitmap.
+              Looks up a localized resource of type System.Drawing.Bitmap.
             </summary>
         </member>
         <member name="P:Duality.Editor.Properties.Resources.control_play_blue">
             <summary>
-              Sucht eine lokalisierte Ressource vom Typ System.Drawing.Bitmap.
+              Looks up a localized resource of type System.Drawing.Bitmap.
             </summary>
         </member>
         <member name="P:Duality.Editor.Properties.Resources.control_step_blue">
             <summary>
-              Sucht eine lokalisierte Ressource vom Typ System.Drawing.Bitmap.
+              Looks up a localized resource of type System.Drawing.Bitmap.
             </summary>
         </member>
         <member name="P:Duality.Editor.Properties.Resources.control_stop_blue">
             <summary>
-              Sucht eine lokalisierte Ressource vom Typ System.Drawing.Bitmap.
+              Looks up a localized resource of type System.Drawing.Bitmap.
             </summary>
         </member>
         <member name="P:Duality.Editor.Properties.Resources.cross">
             <summary>
-              Sucht eine lokalisierte Ressource vom Typ System.Drawing.Bitmap.
+              Looks up a localized resource of type System.Drawing.Bitmap.
             </summary>
         </member>
         <member name="P:Duality.Editor.Properties.Resources.disk_multiple">
             <summary>
-              Sucht eine lokalisierte Ressource vom Typ System.Drawing.Bitmap.
+              Looks up a localized resource of type System.Drawing.Bitmap.
             </summary>
         </member>
         <member name="P:Duality.Editor.Properties.Resources.drive_disk">
             <summary>
-              Sucht eine lokalisierte Ressource vom Typ System.Drawing.Bitmap.
+              Looks up a localized resource of type System.Drawing.Bitmap.
             </summary>
         </member>
         <member name="P:Duality.Editor.Properties.Resources.DualitorLogoHalfSize">
             <summary>
-              Sucht eine lokalisierte Ressource vom Typ System.Drawing.Bitmap.
+              Looks up a localized resource of type System.Drawing.Bitmap.
             </summary>
         </member>
         <member name="P:Duality.Editor.Properties.Resources.DualityIcon256">
             <summary>
-              Sucht eine lokalisierte Ressource vom Typ System.Drawing.Bitmap.
+              Looks up a localized resource of type System.Drawing.Bitmap.
             </summary>
         </member>
         <member name="P:Duality.Editor.Properties.Resources.DualityIcon48">
             <summary>
-              Sucht eine lokalisierte Ressource vom Typ System.Drawing.Bitmap.
+              Looks up a localized resource of type System.Drawing.Bitmap.
             </summary>
         </member>
         <member name="P:Duality.Editor.Properties.Resources.icon_color">
             <summary>
-              Sucht eine lokalisierte Ressource vom Typ System.Drawing.Bitmap.
+              Looks up a localized resource of type System.Drawing.Bitmap.
             </summary>
         </member>
         <member name="P:Duality.Editor.Properties.Resources.page_code">
             <summary>
-              Sucht eine lokalisierte Ressource vom Typ System.Drawing.Bitmap.
+              Looks up a localized resource of type System.Drawing.Bitmap.
             </summary>
         </member>
         <member name="P:Duality.Editor.Properties.Resources.page_gear">
             <summary>
-              Sucht eine lokalisierte Ressource vom Typ System.Drawing.Bitmap.
+              Looks up a localized resource of type System.Drawing.Bitmap.
             </summary>
         </member>
         <member name="P:Duality.Editor.Properties.Resources.page_white_csharp">
             <summary>
-              Sucht eine lokalisierte Ressource vom Typ System.Drawing.Bitmap.
+              Looks up a localized resource of type System.Drawing.Bitmap.
             </summary>
         </member>
         <member name="P:Duality.Editor.Properties.Resources.working_bigtask">
             <summary>
-              Sucht eine lokalisierte Ressource vom Typ System.Drawing.Bitmap.
+              Looks up a localized resource of type System.Drawing.Bitmap.
             </summary>
         </member>
         <member name="M:Duality.Editor.UndoRedoActions.CreateComponentAction.GetRequiredConcreteType(System.Type,System.Type)">

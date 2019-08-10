@@ -14,26 +14,6 @@
             Provides a interface for a Vorbis logical stream container.
             </summary>
         </member>
-        <member name="M:NVorbis.IContainerReader.Init">
-            <summary>
-            Initializes the container and finds the first stream.
-            </summary>
-            <returns><c>True</c> if a valid logical stream is found, otherwise <c>False</c>.</returns>
-        </member>
-        <member name="M:NVorbis.IContainerReader.FindNextStream">
-            <summary>
-            Finds the next new stream in the container.
-            </summary>
-            <returns><c>True</c> if a new stream was found, otherwise <c>False</c>.</returns>
-            <exception cref="T:System.InvalidOperationException"><see cref="P:NVorbis.IContainerReader.CanSeek"/> is <c>False</c>.</exception>
-        </member>
-        <member name="M:NVorbis.IContainerReader.GetTotalPageCount">
-            <summary>
-            Retrieves the total number of pages in the container.
-            </summary>
-            <returns>The total number of pages.</returns>
-            <exception cref="T:System.InvalidOperationException"><see cref="P:NVorbis.IContainerReader.CanSeek"/> is <c>False</c>.</exception>
-        </member>
         <member name="P:NVorbis.IContainerReader.StreamSerials">
             <summary>
             Gets the list of stream serials found in the container so far.
@@ -59,9 +39,44 @@
             Event raised when a new logical stream is found in the container.
             </summary>
         </member>
+        <member name="M:NVorbis.IContainerReader.Init">
+            <summary>
+            Initializes the container and finds the first stream.
+            </summary>
+            <returns><c>True</c> if a valid logical stream is found, otherwise <c>False</c>.</returns>
+        </member>
+        <member name="M:NVorbis.IContainerReader.FindNextStream">
+            <summary>
+            Finds the next new stream in the container.
+            </summary>
+            <returns><c>True</c> if a new stream was found, otherwise <c>False</c>.</returns>
+            <exception cref="T:System.InvalidOperationException"><see cref="P:NVorbis.IContainerReader.CanSeek"/> is <c>False</c>.</exception>
+        </member>
+        <member name="M:NVorbis.IContainerReader.GetTotalPageCount">
+            <summary>
+            Retrieves the total number of pages in the container.
+            </summary>
+            <returns>The total number of pages.</returns>
+            <exception cref="T:System.InvalidOperationException"><see cref="P:NVorbis.IContainerReader.CanSeek"/> is <c>False</c>.</exception>
+        </member>
         <member name="T:NVorbis.IPacketProvider">
             <summary>
             Provides packets on-demand for the Vorbis stream decoder.
+            </summary>
+        </member>
+        <member name="P:NVorbis.IPacketProvider.StreamSerial">
+            <summary>
+            Gets the serial number associated with this stream.
+            </summary>
+        </member>
+        <member name="P:NVorbis.IPacketProvider.CanSeek">
+            <summary>
+            Gets whether seeking is supported on this stream.
+            </summary>
+        </member>
+        <member name="P:NVorbis.IPacketProvider.ContainerBits">
+            <summary>
+            Gets the number of bits of overhead in this stream's container.
             </summary>
         </member>
         <member name="M:NVorbis.IPacketProvider.GetTotalPageCount">
@@ -116,21 +131,6 @@
             <exception cref="T:System.ArgumentOutOfRangeException"><paramref name="index"/> is less than 0 or greater than the last available packet index.</exception>
             <exception cref="T:System.InvalidOperationException"><see cref="P:NVorbis.IPacketProvider.CanSeek"/> is <c>False</c>.</exception>
         </member>
-        <member name="P:NVorbis.IPacketProvider.StreamSerial">
-            <summary>
-            Gets the serial number associated with this stream.
-            </summary>
-        </member>
-        <member name="P:NVorbis.IPacketProvider.CanSeek">
-            <summary>
-            Gets whether seeking is supported on this stream.
-            </summary>
-        </member>
-        <member name="P:NVorbis.IPacketProvider.ContainerBits">
-            <summary>
-            Gets the number of bits of overhead in this stream's container.
-            </summary>
-        </member>
         <member name="T:NVorbis.NewStreamEventArgs">
             <summary>
             Event data for when a new logical stream is found in a container.
@@ -155,6 +155,16 @@
         <member name="T:NVorbis.Ogg.ContainerReader">
             <summary>
             Provides an <see cref="T:NVorbis.IContainerReader"/> implementation for basic Ogg files.
+            </summary>
+        </member>
+        <member name="P:NVorbis.Ogg.ContainerReader.StreamSerials">
+            <summary>
+            Gets the list of stream serials found in the container so far.
+            </summary>
+        </member>
+        <member name="E:NVorbis.Ogg.ContainerReader.NewStream">
+            <summary>
+            Event raised when a new logical stream is found in the container.
             </summary>
         </member>
         <member name="M:NVorbis.Ogg.ContainerReader.#ctor(System.IO.Stream,System.Boolean)">
@@ -195,27 +205,17 @@
             <returns><c>True</c> if a new stream was found, otherwise <c>False</c>.</returns>
             <exception cref="T:System.InvalidOperationException"><see cref="P:NVorbis.Ogg.ContainerReader.CanSeek"/> is <c>False</c>.</exception>
         </member>
+        <member name="P:NVorbis.Ogg.ContainerReader.PagesRead">
+            <summary>
+            Gets the number of pages that have been read in the container.
+            </summary>
+        </member>
         <member name="M:NVorbis.Ogg.ContainerReader.GetTotalPageCount">
             <summary>
             Retrieves the total number of pages in the container.
             </summary>
             <returns>The total number of pages.</returns>
             <exception cref="T:System.InvalidOperationException"><see cref="P:NVorbis.Ogg.ContainerReader.CanSeek"/> is <c>False</c>.</exception>
-        </member>
-        <member name="P:NVorbis.Ogg.ContainerReader.StreamSerials">
-            <summary>
-            Gets the list of stream serials found in the container so far.
-            </summary>
-        </member>
-        <member name="E:NVorbis.Ogg.ContainerReader.NewStream">
-            <summary>
-            Event raised when a new logical stream is found in the container.
-            </summary>
-        </member>
-        <member name="P:NVorbis.Ogg.ContainerReader.PagesRead">
-            <summary>
-            Gets the number of pages that have been read in the container.
-            </summary>
         </member>
         <member name="P:NVorbis.Ogg.ContainerReader.CanSeek">
             <summary>
@@ -267,6 +267,41 @@
         <member name="M:NVorbis.DataPacket.ResetBitReader">
             <summary>
             Resets the bit reader.
+            </summary>
+        </member>
+        <member name="P:NVorbis.DataPacket.IsResync">
+            <summary>
+            Gets whether the packet was found after a stream resync.
+            </summary>
+        </member>
+        <member name="P:NVorbis.DataPacket.GranulePosition">
+            <summary>
+            Gets the position of the last granule in the packet.
+            </summary>
+        </member>
+        <member name="P:NVorbis.DataPacket.PageGranulePosition">
+            <summary>
+            Gets the position of the last granule in the page the packet is in.
+            </summary>
+        </member>
+        <member name="P:NVorbis.DataPacket.Length">
+            <summary>
+            Gets the length of the packet.
+            </summary>
+        </member>
+        <member name="P:NVorbis.DataPacket.IsEndOfStream">
+            <summary>
+            Gets whether the packet is the last one in the logical stream.
+            </summary>
+        </member>
+        <member name="P:NVorbis.DataPacket.BitsRead">
+            <summary>
+            Gets the number of bits read from the packet.
+            </summary>
+        </member>
+        <member name="P:NVorbis.DataPacket.GranuleCount">
+            <summary>
+            Gets the number of granules in the packet.  If <c>null</c>, the packet has not been decoded yet.
             </summary>
         </member>
         <member name="M:NVorbis.DataPacket.ReadBits(System.Int32)">
@@ -354,57 +389,6 @@
             </summary>
             <param name="count">The number of bytes to advance.</param>
         </member>
-        <member name="P:NVorbis.DataPacket.IsResync">
-            <summary>
-            Gets whether the packet was found after a stream resync.
-            </summary>
-        </member>
-        <member name="P:NVorbis.DataPacket.GranulePosition">
-            <summary>
-            Gets the position of the last granule in the packet.
-            </summary>
-        </member>
-        <member name="P:NVorbis.DataPacket.PageGranulePosition">
-            <summary>
-            Gets the position of the last granule in the page the packet is in.
-            </summary>
-        </member>
-        <member name="P:NVorbis.DataPacket.Length">
-            <summary>
-            Gets the length of the packet.
-            </summary>
-        </member>
-        <member name="P:NVorbis.DataPacket.IsEndOfStream">
-            <summary>
-            Gets whether the packet is the last one in the logical stream.
-            </summary>
-        </member>
-        <member name="P:NVorbis.DataPacket.BitsRead">
-            <summary>
-            Gets the number of bits read from the packet.
-            </summary>
-        </member>
-        <member name="P:NVorbis.DataPacket.GranuleCount">
-            <summary>
-            Gets the number of granules in the packet.  If <c>null</c>, the packet has not been decoded yet.
-            </summary>
-        </member>
-        <member name="M:NVorbis.StreamReadBuffer.Read(System.Int64,System.Byte[],System.Int32,System.Int32)">
-            <summary>
-            Reads the number of bytes specified into the buffer given, starting with the offset indicated.
-            </summary>
-            <param name="offset">The offset into the stream to start reading.</param>
-            <param name="buffer">The buffer to read to.</param>
-            <param name="index">The index into the buffer to start writing to.</param>
-            <param name="count">The number of bytes to read.</param>
-            <returns>The number of bytes read.</returns>
-        </member>
-        <member name="M:NVorbis.StreamReadBuffer.DiscardThrough(System.Int64)">
-            <summary>
-            Tells the buffer that it no longer needs to maintain any bytes before the indicated offset.
-            </summary>
-            <param name="offset">The offset to discard through.</param>
-        </member>
         <member name="P:NVorbis.StreamReadBuffer.MinimalRead">
             <summary>
             Gets or Sets whether to limit reads to the smallest size possible.
@@ -430,21 +414,21 @@
             Gets the number of bytes the buffer can hold.
             </summary>
         </member>
-        <member name="M:NVorbis.VorbisReader.ReadSamples(System.Single[],System.Int32,System.Int32)">
+        <member name="M:NVorbis.StreamReadBuffer.Read(System.Int64,System.Byte[],System.Int32,System.Int32)">
             <summary>
-            Reads decoded samples from the current logical stream
+            Reads the number of bytes specified into the buffer given, starting with the offset indicated.
             </summary>
-            <param name="buffer">The buffer to write the samples to</param>
-            <param name="offset">The offset into the buffer to write the samples to</param>
-            <param name="count">The number of samples to write</param>
-            <returns>The number of samples written</returns>
+            <param name="offset">The offset into the stream to start reading.</param>
+            <param name="buffer">The buffer to read to.</param>
+            <param name="index">The index into the buffer to start writing to.</param>
+            <param name="count">The number of bytes to read.</param>
+            <returns>The number of bytes read.</returns>
         </member>
-        <member name="M:NVorbis.VorbisReader.SwitchStreams(System.Int32)">
+        <member name="M:NVorbis.StreamReadBuffer.DiscardThrough(System.Int64)">
             <summary>
-            Switches to an alternate logical stream.
+            Tells the buffer that it no longer needs to maintain any bytes before the indicated offset.
             </summary>
-            <param name="index">The logical stream index to switch to</param>
-            <returns><c>True</c> if the properties of the logical stream differ from those of the one previously being decoded. Otherwise, <c>False</c>.</returns>
+            <param name="offset">The offset to discard through.</param>
         </member>
         <member name="P:NVorbis.VorbisReader.Channels">
             <summary>
@@ -501,10 +485,26 @@
             Gets the currently-selected stream's index
             </summary>
         </member>
+        <member name="M:NVorbis.VorbisReader.ReadSamples(System.Single[],System.Int32,System.Int32)">
+            <summary>
+            Reads decoded samples from the current logical stream
+            </summary>
+            <param name="buffer">The buffer to write the samples to</param>
+            <param name="offset">The offset into the buffer to write the samples to</param>
+            <param name="count">The number of samples to write</param>
+            <returns>The number of samples written</returns>
+        </member>
         <member name="P:NVorbis.VorbisReader.StreamCount">
             <summary>
             Returns the number of logical streams found so far in the physical container
             </summary>
+        </member>
+        <member name="M:NVorbis.VorbisReader.SwitchStreams(System.Int32)">
+            <summary>
+            Switches to an alternate logical stream.
+            </summary>
+            <param name="index">The logical stream index to switch to</param>
+            <returns><c>True</c> if the properties of the logical stream differ from those of the one previously being decoded. Otherwise, <c>False</c>.</returns>
         </member>
         <member name="P:NVorbis.VorbisReader.DecodedTime">
             <summary>

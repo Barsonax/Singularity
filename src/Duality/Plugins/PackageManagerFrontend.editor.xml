@@ -212,23 +212,23 @@
         </member>
         <member name="T:Duality.Editor.Plugins.PackageManagerFrontend.Properties.Resources">
             <summary>
-              Eine stark typisierte Ressourcenklasse zum Suchen von lokalisierten Zeichenfolgen usw.
+              A strongly-typed resource class, for looking up localized strings, etc.
             </summary>
         </member>
         <member name="P:Duality.Editor.Plugins.PackageManagerFrontend.Properties.Resources.ResourceManager">
             <summary>
-              Gibt die zwischengespeicherte ResourceManager-Instanz zurück, die von dieser Klasse verwendet wird.
+              Returns the cached ResourceManager instance used by this class.
             </summary>
         </member>
         <member name="P:Duality.Editor.Plugins.PackageManagerFrontend.Properties.Resources.Culture">
             <summary>
-              Überschreibt die CurrentUICulture-Eigenschaft des aktuellen Threads für alle
-              Ressourcenzuordnungen, die diese stark typisierte Ressourcenklasse verwenden.
+              Overrides the current thread's CurrentUICulture property for all
+              resource lookups using this strongly typed resource class.
             </summary>
         </member>
         <member name="P:Duality.Editor.Plugins.PackageManagerFrontend.Properties.Resources.packagebig">
             <summary>
-              Sucht eine lokalisierte Ressource vom Typ System.Drawing.Bitmap.
+              Looks up a localized resource of type System.Drawing.Bitmap.
             </summary>
         </member>
         <member name="F:Duality.Editor.Plugins.PackageManagerFrontend.PackageViewDialog.components">

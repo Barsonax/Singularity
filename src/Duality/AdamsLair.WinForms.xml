@@ -26,6 +26,58 @@
             Represents the level of drawing quality. It is guaranteed that higher levels also have higher numeric values.
             </summary>
         </member>
+        <member name="M:AdamsLair.WinForms.ItemViews.TiledView.CreateItemEditor(System.Int32,System.Object,System.Drawing.Point)">
+            <summary>
+            Override this method to allow editing items in the <see cref="T:AdamsLair.WinForms.ItemViews.TiledView"/> using the provided editor.
+            </summary>
+            <param name="modelIndex"></param>
+            <param name="item"></param>
+            <param name="editorPos"></param>
+            <returns></returns>
+        </member>
+        <member name="M:AdamsLair.WinForms.ItemViews.TiledView.DestroyItemEditor(AdamsLair.WinForms.ItemViews.ITiledViewItemEditor)">
+            <summary>
+            Override this method to clean up after editing an item in the <see cref="T:AdamsLair.WinForms.ItemViews.TiledView"/>.
+            </summary>
+            <param name="editor"></param>
+        </member>
+        <member name="M:AdamsLair.WinForms.PropertyEditing.MemberwisePropertyEditor.ReflectTypeForMember(System.Reflection.MemberInfo,System.Collections.Generic.IEnumerable{System.Object})">
+            <summary>
+            Determines the Type to use as a basis for generating a PropertyEditor for the specified member
+            by evaluating the members current value and static Type.
+            </summary>
+            <param name="member"></param>
+            <param name="values"></param>
+            <returns></returns>
+        </member>
+        <member name="P:AdamsLair.WinForms.PropertyEditing.PropertyEditor.EditedType">
+            <summary>
+            [GET / SET] The Type of values that this PropertyEditor is able to edit.
+            </summary>
+        </member>
+        <member name="P:AdamsLair.WinForms.PropertyEditing.PropertyEditor.EditedMember">
+            <summary>
+            [GET / SET] The underlying reflected MemberInfo, which is edited by this PropertyEditor.
+            This is usually null for PropertyEditors that haven't been instantiated by <see cref="T:AdamsLair.WinForms.PropertyEditing.MemberwisePropertyEditor"/>
+            </summary>
+        </member>
+        <member name="P:AdamsLair.WinForms.PropertyEditing.PropertyEditor.ValueMutable">
+            <summary>
+            [GET / SET] Specifies whether this PropertyEditor can be modified, even when its parents are set to <see cref="P:AdamsLair.WinForms.PropertyEditing.PropertyEditor.ReadOnly"/> mode.
+            </summary>
+        </member>
+        <member name="P:AdamsLair.WinForms.PropertyEditing.PropertyEditor.NonPublic">
+            <summary>
+            [GET / SET] Specifies whether this PropertyEditor represents a non-public value. It will
+            usually be displayed "greyed out", so the user is able to make a distinction between
+            public and non-public data, which is only displayed for debugging purposes.
+            </summary>
+        </member>
+        <member name="P:AdamsLair.WinForms.PropertyEditing.PropertyEditor.IsUpdating">
+            <summary>
+            [GET] Returns whether or not this editor is currently performing a refresh operation.
+            </summary>
+        </member>
         <member name="M:AdamsLair.WinForms.PropertyEditing.PropertyEditor.GetValue">
             <summary>
             Performs a get operation using the PropertyEditors <see cref="P:AdamsLair.WinForms.PropertyEditing.PropertyEditor.Getter"/>.
@@ -92,34 +144,6 @@
             <param name="dynamicTypes"></param>
             <returns></returns>
         </member>
-        <member name="P:AdamsLair.WinForms.PropertyEditing.PropertyEditor.EditedType">
-            <summary>
-            [GET / SET] The Type of values that this PropertyEditor is able to edit.
-            </summary>
-        </member>
-        <member name="P:AdamsLair.WinForms.PropertyEditing.PropertyEditor.EditedMember">
-            <summary>
-            [GET / SET] The underlying reflected MemberInfo, which is edited by this PropertyEditor.
-            This is usually null for PropertyEditors that haven't been instantiated by <see cref="T:AdamsLair.WinForms.PropertyEditing.MemberwisePropertyEditor"/>
-            </summary>
-        </member>
-        <member name="P:AdamsLair.WinForms.PropertyEditing.PropertyEditor.ValueMutable">
-            <summary>
-            [GET / SET] Specifies whether this PropertyEditor can be modified, even when its parents are set to <see cref="P:AdamsLair.WinForms.PropertyEditing.PropertyEditor.ReadOnly"/> mode.
-            </summary>
-        </member>
-        <member name="P:AdamsLair.WinForms.PropertyEditing.PropertyEditor.NonPublic">
-            <summary>
-            [GET / SET] Specifies whether this PropertyEditor represents a non-public value. It will
-            usually be displayed "greyed out", so the user is able to make a distinction between
-            public and non-public data, which is only displayed for debugging purposes.
-            </summary>
-        </member>
-        <member name="P:AdamsLair.WinForms.PropertyEditing.PropertyEditor.IsUpdating">
-            <summary>
-            [GET] Returns whether or not this editor is currently performing a refresh operation.
-            </summary>
-        </member>
         <member name="P:AdamsLair.WinForms.TimelineControls.TimelineViewTrackPaintEventArgs.TargetRect">
             <summary>
             [GET] The rectangular area that is occupied by the track that is currently painted. It won't be
@@ -143,15 +167,6 @@
             <summary>
             [GET / SET] If true, the TimelineView will automatically adjust its drawing quality while scrolling and resizing in order to achieve maximum performance.
             </summary>
-        </member>
-        <member name="M:AdamsLair.WinForms.PropertyEditing.MemberwisePropertyEditor.ReflectTypeForMember(System.Reflection.MemberInfo,System.Collections.Generic.IEnumerable{System.Object})">
-            <summary>
-            Determines the Type to use as a basis for generating a PropertyEditor for the specified member
-            by evaluating the members current value and static Type.
-            </summary>
-            <param name="member"></param>
-            <param name="values"></param>
-            <returns></returns>
         </member>
         <member name="T:AdamsLair.WinForms.Properties.Resources">
             <summary>
@@ -278,21 +293,6 @@
             <summary>
               Looks up a localized string similar to Properties.
             </summary>
-        </member>
-        <member name="M:AdamsLair.WinForms.ItemViews.TiledView.CreateItemEditor(System.Int32,System.Object,System.Drawing.Point)">
-            <summary>
-            Override this method to allow editing items in the <see cref="T:AdamsLair.WinForms.ItemViews.TiledView"/> using the provided editor.
-            </summary>
-            <param name="modelIndex"></param>
-            <param name="item"></param>
-            <param name="editorPos"></param>
-            <returns></returns>
-        </member>
-        <member name="M:AdamsLair.WinForms.ItemViews.TiledView.DestroyItemEditor(AdamsLair.WinForms.ItemViews.ITiledViewItemEditor)">
-            <summary>
-            Override this method to clean up after editing an item in the <see cref="T:AdamsLair.WinForms.ItemViews.TiledView"/>.
-            </summary>
-            <param name="editor"></param>
         </member>
         <member name="M:AdamsLair.WinForms.ReflectionHelper.GetDefaultInstanceOf(System.Type)">
             <summary>
