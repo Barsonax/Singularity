@@ -2,7 +2,7 @@
 
 namespace Singularity.Expressions
 {
-    public class ScopedExpressionVisitor : ExpressionVisitor
+    internal class ScopedExpressionVisitor : ExpressionVisitor
     {
         private readonly MethodCallExpression OldValue;
         private readonly Expression NewValue;

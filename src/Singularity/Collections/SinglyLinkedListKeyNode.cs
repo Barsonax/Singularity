@@ -9,9 +9,11 @@ namespace Singularity.Collections
     /// A immutable singly linked list.
     /// Note that adding items to this list will reverse the order.
     /// </summary>
-    /// <typeparam name="TValue"></typeparam>
     public sealed class SinglyLinkedListKeyNode<TKey, TValue> : IEnumerable<TValue>
     {
+        /// <summary>
+        /// The key of this node.
+        /// </summary>
         public readonly TKey Key;
 
         /// <summary>
@@ -27,7 +29,6 @@ namespace Singularity.Collections
         /// <summary>
         /// Creates a new list with the provided value.
         /// </summary>
-        /// <param name="value"></param>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public SinglyLinkedListKeyNode(in TKey key, in TValue value)
         {
@@ -38,9 +39,6 @@ namespace Singularity.Collections
         /// <summary>
         /// Adds a new node to a existing list with the provided value.
         /// </summary>
-        /// <param name="next"></param>
-        /// <param name="key"></param>
-        /// <param name="value"></param>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public SinglyLinkedListKeyNode(SinglyLinkedListKeyNode<TKey, TValue>? next, in TKey key, in TValue value)
         {

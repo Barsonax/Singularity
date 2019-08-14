@@ -82,7 +82,7 @@ namespace Singularity
             //There is a very slight chance that this instance is created more than once under heavy load.
             //In that case the duplicate will be discarded.
             T obj = factory(this);
-            var computedValue = initialValue.Add(key, obj);
+            var computedValue = initialValue.Add(key, obj!);
             if (ReferenceEquals(Interlocked.CompareExchange(ref _scopedInstances, computedValue, initialValue), initialValue))
             {
                 return obj;
@@ -105,7 +105,7 @@ namespace Singularity
                     if (ReferenceEquals(current.Key, key)) return (T)current.Value;
                     current = current.Next!;
                 }
-                computedValue = initialValue.Add(key, obj);
+                computedValue = initialValue.Add(key, obj!);
             }
             while (!ReferenceEquals(Interlocked.CompareExchange(ref _scopedInstances, computedValue, initialValue), initialValue));
 

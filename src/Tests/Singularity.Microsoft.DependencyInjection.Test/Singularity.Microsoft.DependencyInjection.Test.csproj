@@ -5,7 +5,7 @@
     <Configurations>Debug;Release;z_CI_config</Configurations>
     <NoWarn>1701;1702;1705;1591;NU1701;NU1702;CS1591;CS1574;CS1711</NoWarn>
     <LangVersion>8.0</LangVersion>
-    <NullableContextOptions>enable</NullableContextOptions>
+    <Nullable>enable</Nullable>
     <IsPackable>false</IsPackable>
   </PropertyGroup>
 

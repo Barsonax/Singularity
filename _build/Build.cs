@@ -24,7 +24,7 @@ using System.Threading.Tasks;
 [UnsetVisualStudioEnvironmentVariables]
 class Build : NukeBuild
 {
-    public static int Main() => Execute<Build>(x => x.Compile);
+    public static int Main() => Execute<Build>(x => x.Test);
 
     readonly Configuration Configuration = CiConfiguration.CiConfig;
 
@@ -88,11 +88,12 @@ class Build : NukeBuild
         });
 
     Target Test => _ => _
-        .DependsOn(Compile)
+        //.DependsOn(Compile)
         .Executes(() =>
         {
             DotNetTest(s => s
             .SetOutput(BuildOutput / "netcoreapp2.0")
+            .SetWorkingDirectory(SrcPath)
             .SetFramework("netcoreapp2.0")
             .SetConfiguration(Configuration)
             .SetProperties(NoWarns)
