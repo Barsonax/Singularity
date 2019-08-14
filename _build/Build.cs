@@ -158,10 +158,6 @@ class Build : NukeBuild
             var organisation = "barsonax-github";
             var exclusions = "Singularity/FastExpressionCompiler/*,Tests/Singularity.TestClasses/**/*";
             SonarScanner($"begin /k:{projectKey} /o:{organisation} /d:sonar.login={SonarCloudLogin} /d:sonar.host.url={server} /d:sonar.exclusions={exclusions}");
-            SonarScannerBegin(s => s
-            .SetProjectKey("Barsonax_Singularity")
-            .SetLogin("a78efbe1cc0e836e7f0a1bbf30fdee68653e927e")
-            .SetServer("https://sonarcloud.io"));
         });
 
     Target SonarEnd => _ => _
