@@ -165,7 +165,7 @@ class Build : NukeBuild
         });
 
     Target SonarEnd => _ => _
-    .After(RunSonarScanner, Test, Coverage)
+    .After(RunSonarScanner, Test, Coverage, Compile)
         .Executes(() =>
         {
             SonarScannerEnd(s => s
