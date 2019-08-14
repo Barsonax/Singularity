@@ -27,16 +27,6 @@ namespace Singularity.Collections
         public readonly SinglyLinkedListKeyNode<TKey, TValue>? Next;
 
         /// <summary>
-        /// Creates a new list with the provided value.
-        /// </summary>
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public SinglyLinkedListKeyNode(in TKey key, in TValue value)
-        {
-            Key = key;
-            Value = value;
-        }
-
-        /// <summary>
         /// Adds a new node to a existing list with the provided value.
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]

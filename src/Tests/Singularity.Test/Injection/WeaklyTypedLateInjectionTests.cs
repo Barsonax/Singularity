@@ -4,7 +4,7 @@ using Xunit;
 
 namespace Singularity.Test.Injection
 {
-    public class LateInjectionTests
+    public class WeaklyTypedLateInjectionTests
     {
         [Fact]
         public void MethodInject_InjectsCorrectDependencies()
@@ -13,7 +13,7 @@ namespace Singularity.Test.Injection
             var container = new Container(builder =>
             {
                 builder.Register<ITestService10, TestService10>();
-                builder.LateInject<MethodInjectionClass>(c => c
+                builder.LateInject(typeof(MethodInjectionClass), c => c
                     .UseMethod(nameof(MethodInjectionClass.Inject)));
             });
             var instance = new MethodInjectionClass();
@@ -32,7 +32,7 @@ namespace Singularity.Test.Injection
             var container = new Container(builder =>
             {
                 builder.Register<ITestService10, TestService10>();
-                builder.LateInject<MethodInjectionClass>(c => c
+                builder.LateInject(typeof(MethodInjectionClass), c => c
                     .UseProperty(nameof(MethodInjectionClass.TestService10)));
             });
             var instance = new MethodInjectionClass();
@@ -45,51 +45,13 @@ namespace Singularity.Test.Injection
         }
 
         [Fact]
-        public void PropertyInject_Expression_InjectsCorrectDependencies()
-        {
-            //ARRANGE
-            var container = new Container(builder =>
-            {
-                builder.Register<ITestService10, TestService10>();
-                builder.LateInject<MethodInjectionClass>(c => c
-                    .UseMember(o => o.TestService10));
-            });
-            var instance = new MethodInjectionClass();
-
-            //ACT
-            container.LateInject(instance);
-
-            //ASSERT
-            Assert.IsType<TestService10>(instance.TestService10);
-        }
-
-        [Fact]
-        public void FieldInject_Expression_InjectsCorrectDependencies()
-        {
-            //ARRANGE
-            var container = new Container(builder =>
-            {
-                builder.Register<ITestService10, TestService10>();
-                builder.LateInject<MethodInjectionClass>(c => c
-                    .UseMember(o => o.TestService10Field));
-            });
-            var instance = new MethodInjectionClass();
-
-            //ACT
-            container.LateInject(instance);
-
-            //ASSERT
-            Assert.IsType<TestService10>(instance.TestService10Field);
-        }
-
-        [Fact]
         public void MethodInject_Scoped_InjectsCorrectDependencies()
         {
             //ARRANGE
             var container = new Container(builder =>
             {
                 builder.Register<ITestService10, TestService10>();
-                builder.LateInject<MethodInjectionClass>(c => c
+                builder.LateInject(typeof(MethodInjectionClass), c => c
                     .UseMethod(nameof(MethodInjectionClass.Inject)));
             });
             var instance = new MethodInjectionClass();
@@ -109,7 +71,7 @@ namespace Singularity.Test.Injection
             var container = new Container(builder =>
             {
                 builder.Register<ITestService10, TestService10>();
-                builder.LateInject<MethodInjectionClass>(c => c
+                builder.LateInject(typeof(MethodInjectionClass), c => c
                     .UseMethod(nameof(MethodInjectionClass.Inject)));
             });
 
