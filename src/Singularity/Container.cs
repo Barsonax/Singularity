@@ -15,6 +15,11 @@ namespace Singularity
     /// </summary>
 	public sealed class Container : IContainer
     {
+        public void NothingHaha()
+        {
+
+        }
+
         /// <summary>
         /// Is the container disposed or not?
         /// </summary>
