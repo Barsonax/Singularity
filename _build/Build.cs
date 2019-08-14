@@ -159,7 +159,7 @@ class Build : NukeBuild
             var exclusions = "Singularity/FastExpressionCompiler/*,Tests/Singularity.TestClasses/**/*";
             var branch = GitVersion.BranchName;
             var version = GitVersion.GetNormalizedAssemblyVersion();
-            SonarScanner($"begin /k:{projectKey} /o:{organisation} /d:sonar.login={SonarCloudLogin} /d:sonar.host.url={server} /d:sonar.exclusions={exclusions} /d:sonar.branch.name={branch} /d:sonar.projectVersion={version}");
+            SonarScanner($"begin /k:{projectKey} /o:{organisation} /v:{version} /d:sonar.login={SonarCloudLogin} /d:sonar.host.url={server} /d:sonar.exclusions={exclusions} /d:sonar.branch.name={branch}");
         });
 
     Target SonarEnd => _ => _
