@@ -157,7 +157,9 @@ class Build : NukeBuild
             var projectKey = "Barsonax_Singularity";
             var organisation = "barsonax-github";
             var exclusions = "Singularity/FastExpressionCompiler/*,Tests/Singularity.TestClasses/**/*";
-            SonarScanner($"begin /k:{projectKey} /o:{organisation} /d:sonar.login={SonarCloudLogin} /d:sonar.host.url={server} /d:sonar.exclusions={exclusions}");
+            var branch = GitVersion.BranchName;
+            var version = GitVersion.GetNormalizedAssemblyVersion();
+            SonarScanner($"begin /k:{projectKey} /o:{organisation} /d:sonar.login={SonarCloudLogin} /d:sonar.host.url={server} /d:sonar.exclusions={exclusions} /d:sonar.branch.name={branch} /d:sonar.projectVersion={version}");
         });
 
     Target SonarEnd => _ => _
