@@ -92,7 +92,8 @@ Platform=X64  IterationTime=500.0000 ms
 | Singularity.Microsoft.DependencyInjection      | [![NuGet Badge](https://buildstats.info/nuget/Singularity.Microsoft.DependencyInjection)](https://www.nuget.org/packages/Singularity.Microsoft.DependencyInjection/)|
 
 ### Random info
-![GitHub repo size](https://img.shields.io/github/repo-size/Barsonax/Singularity.svg) ![GitHub code size in bytes](https://img.shields.io/github/languages/code-size/barsonax/singularity.svg)
+![GitHub repo size](https://img.shields.io/github/repo-size/Barsonax/Singularity.svg) ![GitHub code size in bytes](https://img.shields.io/github/languages/code-size/barsonax/singularity.svg) [![Lines of Code](https://sonarcloud.io/api/project_badges/measure?project=Barsonax_Singularity&metric=ncloc)](https://sonarcloud.io/dashboard?id=Barsonax_Singularity) [![Duplicated Lines (%)](https://sonarcloud.io/api/project_badges/measure?project=Barsonax_Singularity&metric=duplicated_lines_density)](https://sonarcloud.io/dashboard?id=Barsonax_Singularity)
+
 
 [![Build History](https://buildstats.info/azurepipelines/chart/Barsonax/Singularity/7?branch=master)](https://dev.azure.com/Barsonax/Singularity/_build?definitionId=7)
 
