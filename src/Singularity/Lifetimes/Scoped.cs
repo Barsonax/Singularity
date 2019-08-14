@@ -17,9 +17,9 @@ namespace Singularity
         internal static readonly MethodInfo AddFinalizerMethod = typeof(Scoped).GetRuntimeMethods().Single(x => x.Name == nameof(AddFinalizer));
         internal static readonly MethodInfo GetOrAddScopedInstanceMethod = typeof(Scoped).GetRuntimeMethods().Single(x => x.Name == nameof(GetOrAddScopedInstance));
 
-        private SinglyLinkedListKeyNode<ServiceBinding, ActionList<object>> _finalizers;
-        private SinglyLinkedListNode<IDisposable> _disposables;
-        private SinglyLinkedListKeyNode<Type, object> _scopedInstances;
+        private SinglyLinkedListKeyNode<ServiceBinding, ActionList<object>>? _finalizers;
+        private SinglyLinkedListNode<IDisposable>? _disposables;
+        private SinglyLinkedListKeyNode<Type, object>? _scopedInstances;
         private readonly Container _container;
 
         internal Scoped(Container container)
@@ -71,8 +71,8 @@ namespace Singularity
 
         internal T GetOrAddScopedInstance<T>(Func<Scoped, T> factory, Type key)
         {
-            SinglyLinkedListKeyNode<Type, object> initialValue = _scopedInstances;
-            SinglyLinkedListKeyNode<Type, object> current = initialValue;
+            SinglyLinkedListKeyNode<Type, object>? initialValue = _scopedInstances;
+            SinglyLinkedListKeyNode<Type, object>? current = initialValue;
             while (current != null)
             {
                 if (ReferenceEquals(current.Key, key)) return (T)current.Value;
@@ -99,7 +99,7 @@ namespace Singularity
             do
             {
                 initialValue = _scopedInstances;
-                SinglyLinkedListKeyNode<Type, object> current = initialValue;
+                SinglyLinkedListKeyNode<Type, object>? current = initialValue;
                 while (current != null)
                 {
                     if (ReferenceEquals(current.Key, key)) return (T)current.Value;
