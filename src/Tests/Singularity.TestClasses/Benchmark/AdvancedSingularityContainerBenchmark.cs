@@ -9,7 +9,7 @@ namespace Singularity.TestClasses.Benchmark
 {
     public class AdvancedSingularityContainerBenchmark
     {
-        private Container _container;
+        private readonly Container _container;
 
         public AdvancedSingularityContainerBenchmark()
         {

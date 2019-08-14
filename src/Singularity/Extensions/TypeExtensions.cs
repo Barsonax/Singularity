@@ -53,7 +53,7 @@ namespace Singularity
     }
 
 
-    internal class AutoResolveConstructorExpressionCache<T>
+    internal static class AutoResolveConstructorExpressionCache<T>
     {
         public static readonly Expression Expression = typeof(T).AutoResolveConstructorExpression();
     }

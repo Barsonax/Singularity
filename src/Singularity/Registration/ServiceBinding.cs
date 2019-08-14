@@ -26,7 +26,7 @@ namespace Singularity
         public Action<object>? Finalizer { get; }
 
 
-        public ReadOnlyExpressionContext BaseExpression { get; internal set; }
+        public ReadOnlyExpressionContext? BaseExpression { get; internal set; }
         public Exception? ResolveError { get; internal set; }
 
         public ArrayList<InstanceFactory> Factories { get; } = new ArrayList<InstanceFactory>();

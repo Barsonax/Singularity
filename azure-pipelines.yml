@@ -6,18 +6,18 @@ stages:
       vmImage: 'windows-2019'
     steps:
     - task: DotNetCoreInstaller@2
-      displayName: 'Use .NET Core sdk 3.0.100-preview3-010431'
+      displayName: 'Use .NET Core sdk 3.0.100-preview8-013656'
       inputs:
-        version: '3.0.100-preview3-010431'
+        version: '3.0.100-preview8-013656'
         performMultiLevelLookup: true
     - task: PowerShell@2
       displayName: 'Nuke build'
       inputs:
         targetType: filePath
         filePath: ./build.ps1
-        arguments: 'Pack Coverage --CoberturaReport'
+        arguments: 'Pack Coverage RunSonarScanner --CoberturaReport -SonarCloudLogin $env:SonarCloudLogin'
       env:
-        NugetToken: $(nuget_token)
+        SonarCloudLogin: $(sonar_cloud_login)
     - task: PublishBuildArtifacts@1
       inputs:
         PathtoPublish: '$(Build.SourcesDirectory)/Artifacts'

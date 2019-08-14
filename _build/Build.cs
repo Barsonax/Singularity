@@ -9,6 +9,7 @@ using Nuke.Common.Tools.DotNet;
 using Nuke.Common.Tools.DotCover;
 using Nuke.Common.Tools.GitVersion;
 using Nuke.Common.Tools.ReportGenerator;
+using Nuke.Common.Tools.SonarScanner;
 using Nuke.Common.Utilities;
 using Nuke.DocFX;
 using static Nuke.Common.IO.FileSystemTasks;
@@ -16,6 +17,7 @@ using static Nuke.Common.IO.PathConstruction;
 using static Nuke.Common.Tools.DotNet.DotNetTasks;
 using static Nuke.Common.Tools.DotCover.DotCoverTasks;
 using static Nuke.Common.Tools.ReportGenerator.ReportGeneratorTasks;
+using static Nuke.Common.Tools.SonarScanner.SonarScannerTasks;
 using static Nuke.DocFX.DocFXTasks;
 using System;
 using System.Threading.Tasks;
@@ -24,7 +26,7 @@ using System.Threading.Tasks;
 [UnsetVisualStudioEnvironmentVariables]
 class Build : NukeBuild
 {
-    public static int Main() => Execute<Build>(x => x.Compile);
+    public static int Main() => Execute<Build>(x => x.Test);
 
     readonly Configuration Configuration = CiConfiguration.CiConfig;
 
@@ -40,6 +42,9 @@ class Build : NukeBuild
     [Parameter]
     readonly AbsolutePath ArtifactsDirectory = RootDirectory / "artifacts";
 
+    [Parameter]
+    readonly string SonarCloudLogin;
+
     AbsolutePath CoverageDirectory => RootDirectory / "coverage";
 
     AbsolutePath SrcPath => RootDirectory / "src";
@@ -54,6 +59,9 @@ class Build : NukeBuild
 
     [PathExecutable]
     private static Tool Dotnet;
+
+    [PackageExecutable("dotnet-sonarscanner", @"tools\netcoreapp2.1\any\SonarScanner.MSBuild.dll")]
+    private static Tool SonarScanner;
 
     private Dictionary<string, object> NoWarns = new Dictionary<string, object> { { "NoWarn", "NU1701" }, };
 
@@ -93,6 +101,7 @@ class Build : NukeBuild
         {
             DotNetTest(s => s
             .SetOutput(BuildOutput / "netcoreapp2.0")
+            .SetWorkingDirectory(SrcPath)
             .SetFramework("netcoreapp2.0")
             .SetConfiguration(Configuration)
             .SetProperties(NoWarns)
@@ -138,6 +147,27 @@ class Build : NukeBuild
         }
     });
 
+    Target RunSonarScanner => _ => _
+        .Requires(() => !string.IsNullOrEmpty(SonarCloudLogin))
+        .Before(Compile)
+        .Triggers(SonarEnd)
+        .Executes(() =>
+        {
+            var server = "https://sonarcloud.io";
+            var projectKey = "Barsonax_Singularity";
+            var organisation = "barsonax-github";
+            var exclusions = "Singularity/FastExpressionCompiler/*,Tests/Singularity.TestClasses/**/*";
+            SonarScanner($"begin /k:{projectKey} /o:{organisation} /d:sonar.login={SonarCloudLogin} /d:sonar.host.url={server} /d:sonar.exclusions={exclusions}");
+        });
+
+    Target SonarEnd => _ => _
+    .After(RunSonarScanner, Test, Coverage, Compile)
+        .Executes(() =>
+        {
+            SonarScannerEnd(s => s
+            .SetLogin(SonarCloudLogin));
+        });
+
     Target Pack => _ => _
         .DependsOn(Compile)
         .Executes(() =>
@@ -153,7 +183,7 @@ class Build : NukeBuild
 
 
     Target Push => _ => _
-        .Requires(() => ApiKey)
+        .Requires(() => !string.IsNullOrEmpty(ApiKey))
         .After(Test)
         .After(Coverage)
         .OnlyWhenDynamic(() => GitRepository.Branch == "master")

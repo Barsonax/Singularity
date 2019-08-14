@@ -352,6 +352,50 @@
             </summary>
             <param name="state"></param>
         </member>
+        <member name="T:Duality.Backend.GraphicsBackendCapabilities">
+            <summary>
+            Provides information about the graphics / rendering capabilities of an <see cref="T:Duality.Backend.IGraphicsBackend"/>.
+            </summary>
+        </member>
+        <member name="P:Duality.Backend.GraphicsBackendCapabilities.ApiVersion">
+            <summary>
+            The API version of the backends underlying graphics API, such as the available 
+            OpenGL version, DirectX version or similar.
+            </summary>
+        </member>
+        <member name="P:Duality.Backend.GraphicsBackendCapabilities.MaxTextureSize">
+            <summary>
+            The maximum edge length of a <see cref="T:Duality.Resources.Texture"/>.
+            </summary>
+        </member>
+        <member name="P:Duality.Backend.GraphicsBackendCapabilities.MaxTextureBindings">
+            <summary>
+            The maximum number of textures that can be bound simultaneously for shader access.
+            </summary>
+        </member>
+        <member name="P:Duality.Backend.GraphicsBackendCapabilities.MaxRenderTargetSize">
+            <summary>
+            The maximum edge length of a <see cref="T:Duality.Resources.RenderTarget"/>.
+            </summary>
+        </member>
+        <member name="M:Duality.Backend.GraphicsBackendCapabilities.Reset">
+            <summary>
+            Resets all capability values back to their default / undefined state.
+            </summary>
+        </member>
+        <member name="M:Duality.Backend.GraphicsBackendCapabilities.AppendToLogMessage(System.Text.StringBuilder)">
+            <summary>
+            Appends all relevant capability values to the specified log message.
+            </summary>
+            <param name="messageBuilder"></param>
+        </member>
+        <member name="M:Duality.Backend.GraphicsBackendCapabilities.WriteToLog(Duality.Log)">
+            <summary>
+            Writes all capability data to the specified <see cref="T:Duality.Log"/> for
+            diagnostic purposes.
+            </summary>
+            <param name="log"></param>
+        </member>
         <member name="T:Duality.Backend.INativeGraphicsBuffer">
             <summary>
             Represents a GPU buffer for storing data such as vertices or indices.
@@ -540,6 +584,11 @@
             </summary>
             <param name="dir"></param>
             <returns></returns>
+        </member>
+        <member name="P:Duality.Backend.IGraphicsBackend.Capabilities">
+            <summary>
+            Returns information about the backends graphics / rendering capabilities.
+            </summary>
         </member>
         <member name="M:Duality.Backend.IGraphicsBackend.GetOutputPixelData(System.IntPtr,Duality.Drawing.ColorDataLayout,Duality.Drawing.ColorDataElementType,System.Int32,System.Int32,System.Int32,System.Int32)">
             <summary>
@@ -13124,8 +13173,8 @@
         </member>
         <member name="T:Duality.DualityUserData">
             <summary>
-            Provides information about user settings for this Duality application / game.
-            It is persistent beyond installing or deleting this Duality game.
+            Provides information about user settings for this Duality application.
+            It is persistent and usually tied to the game folder.
             </summary>
         </member>
         <member name="P:Duality.DualityUserData.WindowSize">
@@ -15744,6 +15793,13 @@
             leave main loop and message processing as soon as possible.
             </summary>
         </member>
+        <member name="M:Duality.DualityApp.SwitchExecutionContext(Duality.DualityApp.ExecutionContext)">
+            <summary>
+            Switches to a different <see cref="P:Duality.DualityApp.ExecContext"/> at runtime. Intended for the editor
+            sandbox and similar features.
+            </summary>
+            <param name="targetContext"></param>
+        </member>
         <member name="M:Duality.DualityApp.Update">
             <summary>
             Performs a single update cycle.
@@ -16822,6 +16878,11 @@
         <member name="M:Duality.Time.Resume">
             <summary>
             Unfreezes game time. TimeMult resumes to its normal value and GameTimer starts running again.
+            </summary>
+        </member>
+        <member name="M:Duality.Time.Reset">
+            <summary>
+            Resets all game-related timers and starts over at frame zero, time zero.
             </summary>
         </member>
     </members>

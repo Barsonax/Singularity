@@ -6,10 +6,10 @@ namespace Singularity.Duality.Scopes
 {
     internal sealed class SceneEventsProvider : ISceneEventsProvider
 	{
-		public event EventHandler<ComponentEventArgs> ComponentAdded;
-		public event EventHandler<GameObjectGroupEventArgs> GameObjectsAdded;
-		public event EventHandler Leaving;
-		public event EventHandler Entered;
+		public event EventHandler<ComponentEventArgs>? ComponentAdded;
+		public event EventHandler<GameObjectGroupEventArgs>? GameObjectsAdded;
+		public event EventHandler? Leaving;
+		public event EventHandler? Entered;
 
 		public SceneEventsProvider()
 		{

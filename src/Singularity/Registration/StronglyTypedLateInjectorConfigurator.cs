@@ -52,7 +52,7 @@ namespace Singularity
         /// </summary>
         /// <param name="expression"></param>
         /// <returns></returns>
-        public StronglyTypedLateInjectorConfigurator<TInstance> UseMember(Expression<Func<TInstance, object>> expression)
+        public StronglyTypedLateInjectorConfigurator<TInstance> UseMember(Expression<Func<TInstance, object?>> expression)
         {
             switch (expression.Body)
             {

@@ -14,9 +14,15 @@
       <PrivateAssets>all</PrivateAssets>
       <IncludeAssets>runtime;</IncludeAssets>
     </PackageReference>
-    <PackageReference Include="Nuke.Common" Version="0.18.0" />
-    <PackageReference Include="GitVersion.CommandLine.DotNetCore" Version="4.0.1-beta1-49" />
-    <PackageReference Include="JetBrains.dotCover.CommandLineTools" Version="2019.1.0-eap07">
+    <PackageReference Include="Nuke.Common" Version="0.21.2" />
+    <PackageReference Include="GitVersion.CommandLine.DotNetCore" Version="5.0.1">
+      <PrivateAssets>all</PrivateAssets>
+      <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+    </PackageReference>
+    <PackageReference Include="dotnet-sonarscanner" Version="4.6.2">
+      <ExcludeAssets>all</ExcludeAssets>
+    </PackageReference>
+    <PackageReference Include="JetBrains.dotCover.CommandLineTools" Version="2019.2.0.1">
       <PrivateAssets>all</PrivateAssets>
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
     </PackageReference>

@@ -280,3 +280,4 @@ src/Docs/repository
 src/Duality/Plugins/Singularity.Duality.Examples.core.dll
 /coverage
 /BuildOutput
+.sonarqube

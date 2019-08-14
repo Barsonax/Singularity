@@ -8,7 +8,7 @@ using Singularity.Graph;
 
 namespace Singularity.Expressions
 {
-    internal class ExpressionGenerator
+    internal sealed class ExpressionGenerator
     {
         public static readonly ParameterExpression ScopeParameter = Expression.Parameter(typeof(Scoped));
         internal static readonly MethodInfo CreateScopedExpressionMethod = typeof(ExpressionGenerator).GetRuntimeMethods().FirstOrDefault(x => x.Name == nameof(CreateScopedExpression));
@@ -44,7 +44,7 @@ namespace Singularity.Expressions
 
         public ReadOnlyExpressionContext ApplyDecorators(Type dependencyType, ServiceBinding serviceBinding, InstanceFactory[] children, Expression[] decorators, Scoped containerScope)
         {
-            ExpressionContext context = (ExpressionContext)(serviceBinding.BaseExpression ?? throw new ArgumentNullException("binding.BaseExpression"));
+            ExpressionContext context = (ExpressionContext)(serviceBinding.BaseExpression ?? throw new ArgumentNullException($"{nameof(serviceBinding)}.{nameof(serviceBinding.BaseExpression)}"));
             if (decorators.Length > 0)
             {
                 var body = new List<Expression>();
@@ -89,7 +89,7 @@ namespace Singularity.Expressions
                     context.ScopedExpressions.Clear();
                     break;
                 default:
-                    throw new ArgumentOutOfRangeException();
+                    throw new ArgumentOutOfRangeException(nameof(lifetime), lifetime, null);
             }
         }
 

@@ -12,7 +12,7 @@
     <PackageIconUrl>https://raw.githubusercontent.com/Barsonax/Singularity/master/Icon.png</PackageIconUrl>
     <Configurations>Debug;Release;z_CI_config</Configurations>
     <LangVersion>8.0</LangVersion>
-    <NullableContextOptions>enable</NullableContextOptions>
+    <Nullable>enable</Nullable>
     <DocumentationFile>$(SolutionDir)Singularity.Microsoft.DependencyInjection\bin\$(Configuration)\$(TargetFramework)\Singularity.Microsoft.DependencyInjection.xml</DocumentationFile>
     <PackageLicenseFile>LICENSE</PackageLicenseFile>
   </PropertyGroup>

@@ -7,13 +7,7 @@ namespace Singularity
     internal static class EnumMetadata<T>
         where T : struct, Enum
     {
-        public static readonly ReadOnlyCollection<T> Values;
-
-        static EnumMetadata()
-        {
-            T[] values = Enum.GetValues(typeof(T)).OfType<T>().ToArray();
-            Values = new ReadOnlyCollection<T>(values);
-        }
+        public static readonly ReadOnlyCollection<T> Values = new ReadOnlyCollection<T>(Enum.GetValues(typeof(T)).OfType<T>().ToArray());
 
         public static bool IsValidValue(T value)
         {

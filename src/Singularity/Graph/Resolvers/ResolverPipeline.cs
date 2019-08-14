@@ -185,12 +185,9 @@ namespace Singularity.Graph.Resolvers
                     {
                         throw new RegistrationAlreadyExistsException($"Dependency {type} was already registered in the parent graph!");
                     }
-                    else if (type.IsGenericType)
+                    else if (type.IsGenericType && parentRegistrations.TryGetValue(type.GetGenericTypeDefinition(), out _))
                     {
-                        if (parentRegistrations.TryGetValue(type.GetGenericTypeDefinition(), out _))
-                        {
-                            throw new RegistrationAlreadyExistsException($"Dependency {type} was already registered as a open generic in the parent graph!");
-                        }
+                        throw new RegistrationAlreadyExistsException($"Dependency {type} was already registered as a open generic in the parent graph!");
                     }
                 }
             }

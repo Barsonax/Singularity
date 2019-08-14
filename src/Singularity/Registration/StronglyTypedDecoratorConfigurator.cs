@@ -22,8 +22,8 @@ namespace Singularity
             DecoratorTypeValidator.CheckParameters(_expression, typeof(TDependency), typeof(TDecorator));
         }
 
-        private BindingMetadata _bindingMetadata;
-        private Type _dependencyType;
+        private readonly BindingMetadata _bindingMetadata;
+        private readonly Type _dependencyType;
         private readonly Expression _expression;
 
         internal Expression ToBinding()

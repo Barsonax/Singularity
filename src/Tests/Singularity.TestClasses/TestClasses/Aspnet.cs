@@ -203,6 +203,7 @@ namespace Singularity.TestClasses.TestClasses
 
         public void DoSomething()
         {
+            //Dummy method
         }
     }
 
