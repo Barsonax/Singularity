@@ -7,7 +7,7 @@ namespace Singularity.Duality.Scopes
 	{
 	    public SceneScope Create(GameScope gameScope, Scene scene, ISceneEventsProvider sceneEventsProvider, ILogger logger)
 		{
-            if (gameScope.Container == null) throw new ArgumentNullException();
+            if (gameScope.Container == null) throw new ArgumentNullException($"{nameof(gameScope)}.{nameof(gameScope.Container)}");
 			return new SceneScope(gameScope.Container, scene, sceneEventsProvider, logger);
 		}
 	}

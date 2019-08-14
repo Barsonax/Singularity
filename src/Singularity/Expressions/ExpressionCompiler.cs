@@ -6,7 +6,7 @@ using Singularity.FastExpressionCompiler;
 
 namespace Singularity.Expressions
 {
-    internal class ExpressionCompiler
+    internal static class ExpressionCompiler
     {
         public static Func<Scoped, object> Compile(ReadOnlyExpressionContext context)
         {

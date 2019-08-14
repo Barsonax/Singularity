@@ -15,9 +15,9 @@ stages:
       inputs:
         targetType: filePath
         filePath: ./build.ps1
-        arguments: 'Pack Coverage --CoberturaReport'
+        arguments: 'Pack Coverage --CoberturaReport -SonarCloudLogin $env:SonarCloudLogin'
       env:
-        NugetToken: $(nuget_token)
+        SonarCloudLogin: $(sonarcloud_login)
     - task: PublishBuildArtifacts@1
       inputs:
         PathtoPublish: '$(Build.SourcesDirectory)/Artifacts'

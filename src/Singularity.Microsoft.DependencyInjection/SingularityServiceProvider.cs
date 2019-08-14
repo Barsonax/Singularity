@@ -20,9 +20,9 @@ namespace Singularity.Microsoft.DependencyInjection
         }
 
         /// <inheritdoc />
-        public object GetService(Type type)
+        public object GetService(Type serviceType)
         {
-            return _container.GetInstance(type);
+            return _container.GetInstance(serviceType);
         }
     }
 }

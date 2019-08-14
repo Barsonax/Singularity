@@ -53,7 +53,7 @@ namespace Singularity
             return false;
         }
 
-        internal class Cache<T>
+        internal static class Cache<T>
         {
             private static readonly bool IsEnumerableCache = IsEnumerable(typeof(T));
 

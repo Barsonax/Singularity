@@ -106,7 +106,7 @@ namespace Singularity.Collections
             }
 
             /// <inheritdoc />
-            public void Dispose() { }
+            public void Dispose() { /* Nothing to dispose */ }
         }
     }
 

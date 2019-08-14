@@ -8,11 +8,7 @@ namespace Singularity.Graph.Resolvers
 {
     internal sealed class ExpressionDependencyResolver : IDependencyResolver
     {
-        private static readonly MethodInfo GenericCreateLambdaMethod;
-        static ExpressionDependencyResolver()
-        {
-            GenericCreateLambdaMethod = typeof(ExpressionDependencyResolver).GetMethod(nameof(CreateLambda));
-        }
+        private static readonly MethodInfo GenericCreateLambdaMethod = typeof(ExpressionDependencyResolver).GetMethod(nameof(CreateLambda));
 
         public IEnumerable<ServiceBinding> Resolve(IResolverPipeline graph, Type type)
         {
