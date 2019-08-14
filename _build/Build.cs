@@ -165,7 +165,7 @@ class Build : NukeBuild
         .Executes(() =>
         {
             SonarScannerEnd(s => s
-            .SetLogin("a78efbe1cc0e836e7f0a1bbf30fdee68653e927e"));
+            .SetLogin(SonarCloudLogin));
         });
 
     Target Pack => _ => _
