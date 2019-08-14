@@ -156,7 +156,7 @@ class Build : NukeBuild
             var server = "https://sonarcloud.io";
             var projectKey = "Barsonax_Singularity";
             var organisation = "barsonax-github";
-            var exclusions = "Singularity/FastExpressionCompiler/*,Tests/Singularity.TestClasses/**/*";
+            var exclusions = "src/Singularity/FastExpressionCompiler/*,src/Tests/Singularity.TestClasses/**/*";
             var branch = GitVersion.BranchName;
             var version = GitVersion.GetNormalizedAssemblyVersion();
             SonarScanner($"begin /k:{projectKey} /o:{organisation} /v:{version} /d:sonar.login={SonarCloudLogin} /d:sonar.host.url={server} /d:sonar.exclusions={exclusions} /d:sonar.branch.name={branch}");
