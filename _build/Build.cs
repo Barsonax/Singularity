@@ -88,7 +88,7 @@ class Build : NukeBuild
         });
 
     Target Test => _ => _
-        //.DependsOn(Compile)
+        .DependsOn(Compile)
         .Executes(() =>
         {
             DotNetTest(s => s
