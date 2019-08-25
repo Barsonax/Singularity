@@ -1,5 +1,6 @@
-trigger:
-- 'master2'
+trigger: none
+
+pr: none
 
 stages:
 - stage: Build
