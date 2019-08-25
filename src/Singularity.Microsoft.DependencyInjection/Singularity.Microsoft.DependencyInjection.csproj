@@ -8,12 +8,11 @@
     <PackageTags>ioc di inversion control dependency injection container microsoftdi microsoftdependencyinjection</PackageTags>
     <RepositoryUrl>https://github.com/Barsonax/Singularity</RepositoryUrl>
     <NeutralLanguage>en</NeutralLanguage>
-    <Copyright>https://github.com/Barsonax/Singularity/blob/master/LICENSE</Copyright>
     <PackageIconUrl>https://raw.githubusercontent.com/Barsonax/Singularity/master/Icon.png</PackageIconUrl>
     <LangVersion>8.0</LangVersion>
     <Nullable>enable</Nullable>
     <GenerateDocumentationFile>true</GenerateDocumentationFile>
-    <PackageLicenseFile>LICENSE</PackageLicenseFile>
+    <PackageLicenseExpression>MIT</PackageLicenseExpression>
   </PropertyGroup>
 
   <ItemGroup>
@@ -23,12 +22,5 @@
 
   <ItemGroup>
     <ProjectReference Include="..\Singularity\Singularity.csproj" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <None Include="..\..\LICENSE">
-      <Pack>True</Pack>
-      <PackagePath></PackagePath>
-    </None>
   </ItemGroup>
 </Project>

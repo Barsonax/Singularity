@@ -9,11 +9,10 @@
     <Authors>Barsonax</Authors>
     <PackageTags>Duality Plugin ioc di inversion control dependency injection container</PackageTags>
     <Description>Plugin that adds a ioc container to duality</Description>
-    <Copyright>https://github.com/Barsonax/Singularity/blob/master/LICENSE</Copyright>
     <LangVersion>8.0</LangVersion>
     <Nullable>enable</Nullable>
     <GenerateDocumentationFile>true</GenerateDocumentationFile>
-    <PackageLicenseFile>LICENSE</PackageLicenseFile>
+    <PackageLicenseExpression>MIT</PackageLicenseExpression>
   </PropertyGroup>
 
   <Target Name="PostBuild" AfterTargets="PostBuildEvent">
@@ -24,11 +23,5 @@
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\..\..\..\Singularity\Singularity.csproj" />
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="..\..\..\..\..\LICENSE">
-      <Pack>True</Pack>
-      <PackagePath></PackagePath>
-    </None>
   </ItemGroup>
 </Project>
