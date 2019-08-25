@@ -9,7 +9,7 @@ namespace Singularity.Duality.Examples.Components
             config.Register<IPathfinder, Pathfinder>();
             config.Register<IGameManager>(c => c
                 .Inject(() => GameObj.Scene.FindComponent<GameManagerComponent>(true))
-                .With(Lifetime.PerContainer));
+                .With(Lifetimes.PerContainer));
 	    }
     }
 }

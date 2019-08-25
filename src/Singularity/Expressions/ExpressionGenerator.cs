@@ -11,7 +11,7 @@ namespace Singularity.Expressions
     internal sealed class ExpressionGenerator
     {
         public static readonly ParameterExpression ScopeParameter = Expression.Parameter(typeof(Scoped));
-        internal static readonly MethodInfo CreateScopedExpressionMethod = typeof(ExpressionGenerator).GetRuntimeMethods().FirstOrDefault(x => x.Name == nameof(CreateScopedExpression));
+
 
         public ReadOnlyExpressionContext GenerateBaseExpression(ServiceBinding serviceBinding, InstanceFactory[] children, Scoped containerScope, SingularitySettings settings)
         {
@@ -25,7 +25,7 @@ namespace Singularity.Expressions
             var parameterExpressionVisitor = new ParameterExpressionVisitor(context, children!);
             context.Expression = parameterExpressionVisitor.Visit(context.Expression);
 
-            if (serviceBinding.NeedsDispose == DisposeBehavior.Always || settings.AutoDispose && serviceBinding.NeedsDispose != DisposeBehavior.Never && typeof(IDisposable).IsAssignableFrom(context.Expression.Type))
+            if (ShouldBeAutoDisposed(serviceBinding, context, settings))
             {
                 MethodInfo method = Scoped.AddDisposableMethod.MakeGenericMethod(context.Expression.Type);
                 MethodCallExpression methodCallExpression = Expression.Call(ScopeParameter, method, context.Expression);
@@ -38,9 +38,15 @@ namespace Singularity.Expressions
                 context.Expression = Expression.Call(ScopeParameter, method, context.Expression, Expression.Constant(serviceBinding));
             }
 
-            ApplyCaching(serviceBinding.Lifetime, containerScope, context);
+            serviceBinding.Lifetime.ApplyCaching(containerScope, context);
             return context;
         }
+
+        private bool ShouldBeAutoDisposed(ServiceBinding serviceBinding, ExpressionContext context, SingularitySettings settings)
+        {
+            return serviceBinding.NeedsDispose == ServiceAutoDispose.Always ||
+                   serviceBinding.NeedsDispose != ServiceAutoDispose.Never && typeof(IDisposable).IsAssignableFrom(context.Expression.Type) && settings.AutoDispose.Contains(serviceBinding.Lifetime);
+ }
 
         public ReadOnlyExpressionContext ApplyDecorators(Type dependencyType, ServiceBinding serviceBinding, InstanceFactory[] children, Expression[] decorators, Scoped containerScope)
         {
@@ -66,58 +72,10 @@ namespace Singularity.Expressions
 
                 if (body.Last().Type == typeof(void)) body.Add(instanceParameter);
                 context.Expression = body.Count == 1 ? context.Expression : Expression.Block(new[] { instanceParameter }, body);
-                ApplyCaching(serviceBinding.Lifetime, containerScope, context);
+                serviceBinding.Lifetime.ApplyCaching(containerScope, context);
             }
 
             return context;
-        }
-
-        private static void ApplyCaching(Lifetime lifetime, Scoped containerScope, ExpressionContext context)
-        {
-            switch (lifetime)
-            {
-                case Lifetime.Transient:
-                    break;
-                case Lifetime.PerContainer:
-                    object singletonInstance = GetSingleton(containerScope, context.Expression);
-                    context.Expression = Expression.Constant(singletonInstance, context.Expression.Type);
-                    context.ScopedExpressions.Clear();
-                    break;
-                case Lifetime.PerScope:
-                    MethodInfo method = CreateScopedExpressionMethod.MakeGenericMethod(context.Expression.Type);
-                    context.Expression = (Expression)method.Invoke(null, new object[] { context.Expression });
-                    context.ScopedExpressions.Clear();
-                    break;
-                default:
-                    throw new ArgumentOutOfRangeException(nameof(lifetime), lifetime, null);
-            }
-        }
-
-        private static object GetSingleton(Scoped containerScope, Expression expression)
-        {
-            switch (expression)
-            {
-                case ConstantExpression constantExpression:
-                    return constantExpression.Value;
-                case NewExpression newExpression:
-                    if (newExpression.Arguments.Count == 0)
-                    {
-                        return newExpression.Constructor.Invoke(null);
-                    }
-                    else
-                    {
-                        return ((Func<Scoped, object>)Expression.Lambda(expression, ScopeParameter).CompileFast())(containerScope);
-                    }
-                default:
-                    return ((Func<Scoped, object>)Expression.Lambda(expression, ScopeParameter).CompileFast())(containerScope);
-            }
-        }
-
-        public static Expression CreateScopedExpression<T>(Expression expression)
-        {
-            var factory = Expression.Lambda(expression, ScopeParameter).CompileFast<Func<Scoped, T>>();
-            MethodInfo method = Scoped.GetOrAddScopedInstanceMethod.MakeGenericMethod(expression.Type);
-            return Expression.Call(ScopeParameter, method, Expression.Constant(factory), Expression.Constant(expression.Type));
         }
     }
 }

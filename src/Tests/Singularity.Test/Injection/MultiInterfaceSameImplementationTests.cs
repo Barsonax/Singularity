@@ -137,7 +137,7 @@ namespace Singularity.Test.Injection
                 builder.Register<IService1, Implementation1>(c => c
                     .As<IService2>()
                     .As<IService3>()
-                    .With(Lifetime.PerContainer));
+                    .With(Lifetimes.PerContainer));
                 builder.Decorate<IService1, Service1Decorator>();
                 builder.Decorate<IService2, Service2Decorator>();
             });
@@ -205,7 +205,7 @@ namespace Singularity.Test.Injection
                     .As<IService2>()
                     .As<IService3>()
                     .As<Implementation1>()
-                    .With(Lifetime.PerContainer));
+                    .With(Lifetimes.PerContainer));
             });
 
             //ACT
@@ -235,7 +235,7 @@ namespace Singularity.Test.Injection
                     .As(typeof(IService2))
                     .As(typeof(IService3))
                     .As(typeof(Implementation1))
-                    .With(Lifetime.PerContainer));
+                    .With(Lifetimes.PerContainer));
             });
 
             //ACT

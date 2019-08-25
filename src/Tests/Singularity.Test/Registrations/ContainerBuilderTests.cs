@@ -79,7 +79,7 @@ namespace Singularity.Test.Registrations
                     typeof(Plugin2),
                     typeof(Plugin3),
                 }, c => c
-                    .With(Lifetime.PerContainer));
+                    .With(Lifetimes.PerContainer));
             });
 
             //ACT
@@ -90,7 +90,7 @@ namespace Singularity.Test.Registrations
             Assert.Equal(typeof(Plugin1), serviceBindings[0].Expression!.Type);
             Assert.Equal(typeof(Plugin2), serviceBindings[1].Expression!.Type);
             Assert.Equal(typeof(Plugin3), serviceBindings[2].Expression!.Type);
-            Assert.True(registrations[0].Bindings.All(x => x.Lifetime == Lifetime.PerContainer));
+            Assert.True(registrations[0].Bindings.All(x => x.Lifetime == Lifetimes.PerContainer));
         }
 
         [Fact]
@@ -126,40 +126,14 @@ namespace Singularity.Test.Registrations
         }
 
         [Fact]
-        public void Register_InvalidLifetime_StronglyTyped()
-        {
-            Assert.Throws<InvalidEnumValueException<Lifetime>>(() =>
-            {
-                new Container(builder =>
-                {
-                    builder.Register<ITestService10, TestService10>(c => c
-                        .With((Lifetime)234234));
-                });
-            });
-        }
-
-        [Fact]
-        public void Register_InvalidLifetime_WeaklyTyped()
-        {
-            Assert.Throws<InvalidEnumValueException<Lifetime>>(() =>
-            {
-                new Container(builder =>
-                {
-                    builder.Register(typeof(ITestService10), typeof(TestService10), c => c
-                        .With((Lifetime)234234));
-                });
-            });
-        }
-
-        [Fact]
         public void Register_InvalidDisposeBehavior_StronglyTyped()
         {
-            Assert.Throws<InvalidEnumValueException<DisposeBehavior>>(() =>
+            Assert.Throws<InvalidEnumValueException<ServiceAutoDispose>>(() =>
             {
                 new Container(builder =>
                 {
                     builder.Register<ITestService10, TestService10>(c => c
-                        .With((DisposeBehavior)234234));
+                        .With((ServiceAutoDispose)234234));
                 });
             });
         }
@@ -167,12 +141,12 @@ namespace Singularity.Test.Registrations
         [Fact]
         public void Register_InvalidDisposeBehavior_WeaklyTyped()
         {
-            Assert.Throws<InvalidEnumValueException<DisposeBehavior>>(() =>
+            Assert.Throws<InvalidEnumValueException<ServiceAutoDispose>>(() =>
             {
                 new Container(builder =>
                 {
                     builder.Register(typeof(ITestService10), typeof(TestService10), c => c
-                        .With((DisposeBehavior)234234));
+                        .With((ServiceAutoDispose)234234));
                 });
             });
         }

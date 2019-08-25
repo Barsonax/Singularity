@@ -21,8 +21,8 @@ namespace Singularity
 
         public Expression Expression { get; }
 
-        public Lifetime Lifetime { get; }
-        public DisposeBehavior NeedsDispose { get; }
+        public ILifetime Lifetime { get; }
+        public ServiceAutoDispose NeedsDispose { get; }
         public Action<object>? Finalizer { get; }
 
 
@@ -38,20 +38,20 @@ namespace Singularity
         }
 
         public ServiceBinding(SinglyLinkedListNode<Type> serviceTypes, BindingMetadata bindingMetadata, Expression expression,
-            Lifetime lifetime = Lifetime.Transient, Action<object>? finalizer = null,
-            DisposeBehavior needsDispose = DisposeBehavior.Default)
+            ILifetime? lifetime = null, Action<object>? finalizer = null,
+            ServiceAutoDispose needsDispose = ServiceAutoDispose.Default)
         {
             ServiceTypes = serviceTypes ?? throw new ArgumentNullException(nameof(serviceTypes));
             BindingMetadata = bindingMetadata ?? throw new ArgumentNullException(nameof(bindingMetadata));
-            Lifetime = !EnumMetadata<Lifetime>.IsValidValue(lifetime) ? throw new InvalidEnumValueException<Lifetime>(lifetime) : lifetime;
+            Lifetime = lifetime ?? Lifetimes.Transient;
             Expression = expression ?? throw new ArgumentNullException(nameof(expression));
-            NeedsDispose = !EnumMetadata<DisposeBehavior>.IsValidValue(needsDispose) ? throw new InvalidEnumValueException<DisposeBehavior>(needsDispose) : needsDispose;
+            NeedsDispose = !EnumMetadata<ServiceAutoDispose>.IsValidValue(needsDispose) ? throw new InvalidEnumValueException<ServiceAutoDispose>(needsDispose) : needsDispose;
             Finalizer = finalizer;
         }
 
         public ServiceBinding(Type dependencyType, BindingMetadata bindingMetadata, Expression expression,
-            Lifetime lifetime = Lifetime.Transient, Action<object>? finalizer = null,
-            DisposeBehavior needsDispose = DisposeBehavior.Default) : this(new SinglyLinkedListNode<Type>(dependencyType), bindingMetadata, expression, lifetime, finalizer, needsDispose)
+            ILifetime? lifetime = null, Action<object>? finalizer = null,
+            ServiceAutoDispose needsDispose = ServiceAutoDispose.Default) : this(new SinglyLinkedListNode<Type>(dependencyType), bindingMetadata, expression, lifetime, finalizer, needsDispose)
         {
         }
     }

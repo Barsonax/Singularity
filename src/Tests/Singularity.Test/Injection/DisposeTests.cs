@@ -13,8 +13,8 @@ namespace Singularity.Test.Injection
             var container = new Container(builder =>
             {
                 builder.Register<IDisposable, Disposable>(c => c
-                    .With(Lifetime.PerContainer)
-                    .With(DisposeBehavior.Always));
+                    .With(Lifetimes.PerContainer)
+                    .With(ServiceAutoDispose.Always));
             });
 
             //ACT
@@ -35,8 +35,8 @@ namespace Singularity.Test.Injection
             var container = new Container(builder =>
             {
                 builder.Register<IDisposable, Disposable>(c => c
-                    .With(Lifetime.PerContainer));
-            }, new SingularitySettings { AutoDispose = true });
+                    .With(Lifetimes.PerContainer));
+            }, new SingularitySettings { AutoDispose = new[] { Lifetimes.PerContainer } });
 
             //ACT
             var disposable = container.GetInstance<IDisposable>();
@@ -56,8 +56,8 @@ namespace Singularity.Test.Injection
             var container = new Container(builder =>
             {
                 builder.Register<ITestService10, TestService10>(c => c
-                    .With(Lifetime.PerContainer));
-            }, new SingularitySettings { AutoDispose = true });
+                    .With(Lifetimes.PerContainer));
+            }, new SingularitySettings { AutoDispose = new[] { Lifetimes.PerContainer } });
 
             //ACT
             var testService10 = container.GetInstance<ITestService10>();
@@ -74,7 +74,7 @@ namespace Singularity.Test.Injection
             var container = new Container(builder =>
             {
                 builder.Register<IDisposable, Disposable>(c => c
-                    .With(DisposeBehavior.Always));
+                    .With(ServiceAutoDispose.Always));
             });
 
             //ACT
@@ -95,7 +95,7 @@ namespace Singularity.Test.Injection
             var container = new Container(builder =>
             {
                 builder.Register<IDisposable, Disposable>(c => c
-                    .With(DisposeBehavior.Always));
+                    .With(ServiceAutoDispose.Always));
                 builder.Decorate<IDisposable, DisposableDecorator>();
             });
 
@@ -118,8 +118,8 @@ namespace Singularity.Test.Injection
             var container = new Container(builder =>
             {
                 builder.Register<IDisposable, Disposable>(c => c
-                    .With(Lifetime.PerContainer)
-                    .With(DisposeBehavior.Always));
+                    .With(Lifetimes.PerContainer)
+                    .With(ServiceAutoDispose.Always));
             });
             Container nestedContainer = container.GetNestedContainer();
 
@@ -147,7 +147,7 @@ namespace Singularity.Test.Injection
             var container = new Container(builder =>
             {
                 builder.Register<IDisposable, Disposable>(c => c
-                    .With(DisposeBehavior.Always));
+                    .With(ServiceAutoDispose.Always));
             });
             Container nestedContainer = container.GetNestedContainer();
 

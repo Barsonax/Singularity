@@ -1,11 +1,12 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
 using System.Linq.Expressions;
 
 namespace Singularity.Expressions
 {
-    internal sealed class ExpressionContext
+    public sealed class ExpressionContext
     {
         public List<MethodCallExpression> ScopedExpressions { get; }
         public Expression Expression { get; set; }
@@ -13,13 +14,13 @@ namespace Singularity.Expressions
         public ExpressionContext(Expression expression)
         {
             ScopedExpressions = new List<MethodCallExpression>();
-            Expression = expression;
+            Expression = expression ?? throw new ArgumentNullException(nameof(expression));
         }
 
         public ExpressionContext(ReadOnlyExpressionContext context)
         {
             ScopedExpressions = context.ScopedExpressions.ToList();
-            Expression = context.Expression;
+            Expression = context.Expression ?? throw new ArgumentNullException("context.Expression");
         }
 
         public static implicit operator ReadOnlyExpressionContext(ExpressionContext context)
@@ -28,7 +29,7 @@ namespace Singularity.Expressions
         }
     }
 
-    internal sealed class ReadOnlyExpressionContext
+    public sealed class ReadOnlyExpressionContext
     {
         public ReadOnlyCollection<MethodCallExpression> ScopedExpressions { get; }
         public Expression Expression { get; }
@@ -36,7 +37,7 @@ namespace Singularity.Expressions
         public ReadOnlyExpressionContext(ExpressionContext context)
         {
             ScopedExpressions = new ReadOnlyCollection<MethodCallExpression>(context.ScopedExpressions.ToArray());
-            Expression = context.Expression;
+            Expression = context.Expression ?? throw new ArgumentNullException("context.Expression");
         }
 
         public static explicit operator ExpressionContext(ReadOnlyExpressionContext context)

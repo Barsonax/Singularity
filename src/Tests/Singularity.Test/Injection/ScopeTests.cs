@@ -13,7 +13,7 @@ namespace Singularity.Test.Injection
             var container = new Container(builder =>
             {
                 builder.Register<IDisposable, Disposable>(c => c
-                    .With(Lifetime.PerScope)
+                    .With(Lifetimes.PerScope)
                     .WithFinalizer(x => x.Dispose()));
             });
 
@@ -37,7 +37,7 @@ namespace Singularity.Test.Injection
             var container = new Container(builder =>
             {
                 builder.Register<IDisposable, Disposable>(c => c
-                    .With(Lifetime.PerScope)
+                    .With(Lifetimes.PerScope)
                     .WithFinalizer(x => x.Dispose()));
             });
 
@@ -64,7 +64,7 @@ namespace Singularity.Test.Injection
             var container = new Container(builder =>
             {
                 builder.Register<ITestService10, TestService10>(c => c
-                    .With(Lifetime.PerScope));
+                    .With(Lifetimes.PerScope));
                 builder.Register<ITestService11, TestService11>();
             });
 

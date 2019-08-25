@@ -24,9 +24,9 @@ namespace Singularity
         private readonly Type _instanceType;
         private SinglyLinkedListNode<Type> _dependencyTypes;
         private Expression? _expression;
-        private Lifetime _lifetime;
+        private ILifetime _lifetime;
         private Action<object>? _finalizer;
-        private DisposeBehavior _disposeBehavior;
+        private ServiceAutoDispose _disposeBehavior;
 
         internal ServiceBinding ToBinding()
         {
@@ -55,21 +55,21 @@ namespace Singularity
         }
 
         /// <summary>
-        /// Controls if and when the instance should be disposed. <see cref="DisposeBehavior"/> for more detailed information.
+        /// Controls if and when the instance should be disposed. <see cref="ServiceAutoDispose"/> for more detailed information.
         /// </summary>
         /// <param name="value"></param>
         /// <returns></returns>
-        public WeaklyTypedServiceConfigurator With(DisposeBehavior value)
+        public WeaklyTypedServiceConfigurator With(ServiceAutoDispose value)
         {
             _disposeBehavior = value;
             return this;
         }
 
         /// <summary>
-        /// Controls when should new instances be created. See <see cref="Lifetime"/> for more detailed information.
+        /// Controls when should new instances be created. See <see cref="Lifetimes"/> for more detailed information.
         /// <param name="value"></param>
         /// </summary>
-        public WeaklyTypedServiceConfigurator With(Lifetime value)
+        public WeaklyTypedServiceConfigurator With(ILifetime value)
         {
             _lifetime = value;
             return this;
