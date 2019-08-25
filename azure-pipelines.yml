@@ -1,9 +1,5 @@
 trigger:
 - 'master'
-pr:
-  branches:
-    include:
-    - '*'
 
 stages:
 - stage: Build
