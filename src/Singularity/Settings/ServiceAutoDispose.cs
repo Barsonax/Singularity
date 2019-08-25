@@ -8,15 +8,15 @@ namespace Singularity
     public enum ServiceAutoDispose
     {
         /// <summary>
-        /// Will dispose a instance if its a <see cref="IDisposable"/> and <see cref="SingularitySettings.AutoDispose"/> is true.
+        /// Will dispose a instance if its a <see cref="IDisposable"/> and <see cref="SingularitySettings.AutoDisposeLifetimes"/> is true.
         /// </summary>
         Default,
         /// <summary>
-        /// Never disposes a instance regardless of the value of <see cref="SingularitySettings.AutoDispose"/>.
+        /// Never disposes a instance regardless of the value of <see cref="SingularitySettings.AutoDisposeLifetimes"/>.
         /// </summary>
         Never,
         /// <summary>
-        /// Will always dispose a instance if its a <see cref="IDisposable"/> regardless of the value of <see cref="SingularitySettings.AutoDispose"/>.
+        /// Will always dispose a instance if its a <see cref="IDisposable"/> regardless of the value of <see cref="SingularitySettings.AutoDisposeLifetimes"/>.
         /// </summary>
         Always
     }

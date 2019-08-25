@@ -17,7 +17,7 @@ namespace Singularity
         /// </summary>
         public static readonly SingularitySettings Microsoft = new SingularitySettings
         {
-            AutoDispose = new ILifetime[]
+            AutoDisposeLifetimes = new ILifetime[]
             {
                 Lifetimes.Transient,
                 Lifetimes.PerContainer,
@@ -29,6 +29,6 @@ namespace Singularity
         /// <summary>
         /// Specifies what lifetimes should be auto disposed if the instance is a <see cref="IDisposable"/> and the service is registered with <see cref="ServiceAutoDispose.Default"/>.
         /// </summary>
-        public LifetimeCollection AutoDispose { get; set; } = LifetimeCollection.Empty;
+        public LifetimeCollection AutoDisposeLifetimes { get; set; } = LifetimeCollection.Empty;
     }
 }

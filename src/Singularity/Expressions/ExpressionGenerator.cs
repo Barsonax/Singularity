@@ -45,7 +45,7 @@ namespace Singularity.Expressions
         private bool ShouldBeAutoDisposed(ServiceBinding serviceBinding, ExpressionContext context, SingularitySettings settings)
         {
             return serviceBinding.NeedsDispose == ServiceAutoDispose.Always ||
-                   serviceBinding.NeedsDispose != ServiceAutoDispose.Never && typeof(IDisposable).IsAssignableFrom(context.Expression.Type) && settings.AutoDispose.Contains(serviceBinding.Lifetime);
+                   serviceBinding.NeedsDispose != ServiceAutoDispose.Never && typeof(IDisposable).IsAssignableFrom(context.Expression.Type) && settings.AutoDisposeLifetimes.Contains(serviceBinding.Lifetime);
  }
 
         public ReadOnlyExpressionContext ApplyDecorators(Type dependencyType, ServiceBinding serviceBinding, InstanceFactory[] children, Expression[] decorators, Scoped containerScope)

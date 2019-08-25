@@ -36,7 +36,7 @@ namespace Singularity.Test.Injection
             {
                 builder.Register<IDisposable, Disposable>(c => c
                     .With(Lifetimes.PerContainer));
-            }, new SingularitySettings { AutoDispose = new[] { Lifetimes.PerContainer } });
+            }, new SingularitySettings { AutoDisposeLifetimes = new[] { Lifetimes.PerContainer } });
 
             //ACT
             var disposable = container.GetInstance<IDisposable>();
@@ -57,7 +57,7 @@ namespace Singularity.Test.Injection
             {
                 builder.Register<ITestService10, TestService10>(c => c
                     .With(Lifetimes.PerContainer));
-            }, new SingularitySettings { AutoDispose = new[] { Lifetimes.PerContainer } });
+            }, new SingularitySettings { AutoDisposeLifetimes = new[] { Lifetimes.PerContainer } });
 
             //ACT
             var testService10 = container.GetInstance<ITestService10>();
