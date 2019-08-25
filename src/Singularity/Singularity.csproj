@@ -10,18 +10,10 @@
     <NeutralLanguage>en</NeutralLanguage>
     <Copyright>https://github.com/Barsonax/Singularity/blob/master/LICENSE</Copyright>
     <PackageIconUrl>https://raw.githubusercontent.com/Barsonax/Singularity/master/Icon.png</PackageIconUrl>
-    <Configurations>Debug;Release;z_CI_config</Configurations>
     <LangVersion>8.0</LangVersion>
     <Nullable>enable</Nullable>
-    <DocumentationFile>$(SolutionDir)Singularity\bin\$(Configuration)\$(TargetFramework)\Singularity.xml</DocumentationFile>
+    <GenerateDocumentationFile>true</GenerateDocumentationFile>
     <PackageLicenseFile>LICENSE</PackageLicenseFile>
-  </PropertyGroup>
-
-  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='z_CI_config|AnyCPU'">
-    <DebugType>pdbonly</DebugType>
-    <DebugSymbols>true</DebugSymbols>
-    <Optimize>true</Optimize>
-    <OutputPath>$(SolutionDir)\..\BuildOutput\</OutputPath>
   </PropertyGroup>
 
   <ItemGroup>

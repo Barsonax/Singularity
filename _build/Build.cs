@@ -28,7 +28,7 @@ class Build : NukeBuild
 {
     public static int Main() => Execute<Build>(x => x.Test);
 
-    readonly Configuration Configuration = CiConfiguration.CiConfig;
+    readonly Configuration Configuration = Configuration.Release;
 
     [Parameter] readonly string ApiKey;
     [Parameter] readonly bool CoberturaReport;
@@ -37,7 +37,8 @@ class Build : NukeBuild
     [GitRepository] readonly GitRepository GitRepository;
     [GitVersion] readonly GitVersion GitVersion;
 
-    AbsolutePath BuildOutput => RootDirectory / "BuildOutput";
+    AbsolutePath BaseBuildOutput => RootDirectory / "BuildOutput";
+    AbsolutePath BuildOutput => BaseBuildOutput / Configuration;
 
     [Parameter]
     readonly AbsolutePath ArtifactsDirectory = RootDirectory / "artifacts";
@@ -92,6 +93,7 @@ class Build : NukeBuild
                 .SetFileVersion(GitVersion.GetNormalizedFileVersion())
                 .SetInformationalVersion(GitVersion.InformationalVersion)
                 .SetProperties(NoWarns)
+                .SetProperty("BaseOutputPath", BaseBuildOutput + "/")
                 .EnableNoRestore());
         });
 
@@ -179,6 +181,7 @@ class Build : NukeBuild
             .SetOutputDirectory(ArtifactsDirectory)
             .SetConfiguration(Configuration)
             .SetVersion(GitVersion.NuGetVersion)
+            .SetProperty("BaseOutputPath", BaseBuildOutput + "/")
             .EnableIncludeSymbols()
             .EnableNoBuild());
         });

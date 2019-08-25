@@ -10,18 +10,10 @@
     <PackageTags>Duality Plugin ioc di inversion control dependency injection container</PackageTags>
     <Description>Plugin that adds a ioc container to duality</Description>
     <Copyright>https://github.com/Barsonax/Singularity/blob/master/LICENSE</Copyright>
-    <Configurations>Debug;Release;z_CI_config</Configurations>
     <LangVersion>8.0</LangVersion>
     <Nullable>enable</Nullable>
-    <DocumentationFile>$(SolutionDir)Duality\Source\Code\Singularity.Duality\bin\$(Configuration)\$(TargetFramework)\Singularity.Duality.core.xml</DocumentationFile>
+    <GenerateDocumentationFile>true</GenerateDocumentationFile>
     <PackageLicenseFile>LICENSE</PackageLicenseFile>
-  </PropertyGroup>
-
-  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='z_CI_config|AnyCPU'">
-    <DebugType>pdbonly</DebugType>
-    <DebugSymbols>true</DebugSymbols>
-    <Optimize>true</Optimize>
-    <OutputPath>$(SolutionDir)\..\BuildOutput\</OutputPath>
   </PropertyGroup>
 
   <Target Name="PostBuild" AfterTargets="PostBuildEvent">
