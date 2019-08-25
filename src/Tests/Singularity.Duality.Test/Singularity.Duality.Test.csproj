@@ -2,11 +2,6 @@
 
   <PropertyGroup>
     <TargetFramework>netcoreapp2.0</TargetFramework>
-    <Configurations>Debug;Release;z_CI_config</Configurations>
-  </PropertyGroup>
-
-  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='z_CI_config|AnyCPU'">
-    <OutputPath>$(SolutionDir)\..\BuildOutput\</OutputPath>
   </PropertyGroup>
 
   <ItemGroup>

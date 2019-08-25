@@ -8,20 +8,11 @@
     <PackageTags>ioc di inversion control dependency injection container microsoftdi microsoftdependencyinjection</PackageTags>
     <RepositoryUrl>https://github.com/Barsonax/Singularity</RepositoryUrl>
     <NeutralLanguage>en</NeutralLanguage>
-    <Copyright>https://github.com/Barsonax/Singularity/blob/master/LICENSE</Copyright>
     <PackageIconUrl>https://raw.githubusercontent.com/Barsonax/Singularity/master/Icon.png</PackageIconUrl>
-    <Configurations>Debug;Release;z_CI_config</Configurations>
     <LangVersion>8.0</LangVersion>
     <Nullable>enable</Nullable>
-    <DocumentationFile>$(SolutionDir)Singularity.Microsoft.DependencyInjection\bin\$(Configuration)\$(TargetFramework)\Singularity.Microsoft.DependencyInjection.xml</DocumentationFile>
-    <PackageLicenseFile>LICENSE</PackageLicenseFile>
-  </PropertyGroup>
-
-  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='z_CI_config|AnyCPU'">
-    <DebugType>pdbonly</DebugType>
-    <DebugSymbols>true</DebugSymbols>
-    <Optimize>true</Optimize>
-    <OutputPath>$(SolutionDir)\..\BuildOutput\</OutputPath>
+    <GenerateDocumentationFile>true</GenerateDocumentationFile>
+    <PackageLicenseExpression>MIT</PackageLicenseExpression>
   </PropertyGroup>
 
   <ItemGroup>
@@ -31,12 +22,5 @@
 
   <ItemGroup>
     <ProjectReference Include="..\Singularity\Singularity.csproj" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <None Include="..\..\LICENSE">
-      <Pack>True</Pack>
-      <PackagePath></PackagePath>
-    </None>
   </ItemGroup>
 </Project>

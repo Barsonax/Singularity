@@ -8,34 +8,16 @@
     <PackageTags>ioc di inversion control dependency injection container</PackageTags>
     <RepositoryUrl>https://github.com/Barsonax/Singularity</RepositoryUrl>
     <NeutralLanguage>en</NeutralLanguage>
-    <Copyright>https://github.com/Barsonax/Singularity/blob/master/LICENSE</Copyright>
     <PackageIconUrl>https://raw.githubusercontent.com/Barsonax/Singularity/master/Icon.png</PackageIconUrl>
-    <Configurations>Debug;Release;z_CI_config</Configurations>
     <LangVersion>8.0</LangVersion>
     <Nullable>enable</Nullable>
-    <DocumentationFile>$(SolutionDir)Singularity\bin\$(Configuration)\$(TargetFramework)\Singularity.xml</DocumentationFile>
-    <PackageLicenseFile>LICENSE</PackageLicenseFile>
+    <GenerateDocumentationFile>true</GenerateDocumentationFile>
+    <PackageLicenseExpression>MIT</PackageLicenseExpression>
   </PropertyGroup>
-
-  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='z_CI_config|AnyCPU'">
-    <DebugType>pdbonly</DebugType>
-    <DebugSymbols>true</DebugSymbols>
-    <Optimize>true</Optimize>
-    <OutputPath>$(SolutionDir)\..\BuildOutput\</OutputPath>
-  </PropertyGroup>
-
-  <ItemGroup>
-    <None Include="..\..\LICENSE">
-      <Pack>True</Pack>
-      <PackagePath></PackagePath>
-    </None>
-  </ItemGroup>
 
   <ItemGroup>
     <PackageReference Include="System.Reflection.Emit.Lightweight" Version="4.3.0" />
   </ItemGroup>
 
-  <Target Name="PostBuild" AfterTargets="PostBuildEvent">
-    <Exec Command="if $(ConfigurationName) == Debug (&#xD;&#xA;mkdir &quot;$(SolutionDir)Duality/Plugins&quot;&#xD;&#xA;copy &quot;$(TargetPath)&quot; &quot;$(SolutionDir)Duality/Plugins&quot;&#xD;&#xA;copy &quot;$(TargetDir)$(TargetName).pdb&quot; &quot;$(SolutionDir)Duality/Plugins&quot;&#xD;&#xA;xcopy /Y &quot;$(TargetDir)*.core.xml&quot; &quot;$(SolutionDir)Duality/Plugins&quot;&#xD;&#xA;)" />
-  </Target>
+  <Import Project="$(SolutionDir)AggregateUserPlugins.targets" />
 </Project>

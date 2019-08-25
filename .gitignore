@@ -281,3 +281,5 @@ src/Duality/Plugins/Singularity.Duality.Examples.core.dll
 /coverage
 /BuildOutput
 .sonarqube
+src/Duality/Plugins/Singularity.Duality.Examples.core.xml
+src/Duality/Plugins/Singularity.xml

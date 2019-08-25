@@ -2,15 +2,10 @@
 
   <PropertyGroup>
     <TargetFramework>netcoreapp2.0</TargetFramework>
-    <Configurations>Debug;Release;z_CI_config</Configurations>
     <NoWarn>1701;1702;1705;1591;NU1701;NU1702;CS1591;CS1574;CS1711</NoWarn>
     <LangVersion>8.0</LangVersion>
     <Nullable>enable</Nullable>
     <IsPackable>false</IsPackable>
-  </PropertyGroup>
-
-  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='z_CI_config|AnyCPU'">
-    <OutputPath>$(SolutionDir)\..\BuildOutput\</OutputPath>
   </PropertyGroup>
 
   <ItemGroup>
