@@ -1,3 +1,10 @@
+trigger:
+- '*'
+pr:
+  branches:
+    include:
+    - '*'
+
 stages:
 - stage: Build
   jobs:
@@ -34,6 +41,7 @@ stages:
         summaryFileLocation: '$(Build.SourcesDirectory)/coverage/Cobertura.xml'
         reportDirectory: '$(Build.SourcesDirectory)/coverage'
 - stage: Deploy
+  condition: and(succeeded(), eq(variables['Build.SourceBranch'], 'refs/heads/master')) 
   jobs:
   - deployment: Deploy
     pool:
