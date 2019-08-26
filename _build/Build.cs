@@ -178,7 +178,7 @@ class Build : NukeBuild
         .Executes(() =>
         {
             var source = "https://api.nuget.org/v3/index.json";
-            Action<AbsolutePath> pushLogic = (nupkgFile) =>
+            Parallel.ForEach(BuildOutput.GlobFiles("*.nupkg").NotEmpty(), (nupkgFile) =>
             {
                 var errorIsWarning = false;
                 try
@@ -207,9 +207,7 @@ class Build : NukeBuild
                         throw e;
                     }
                 }
-            };
-            Parallel.ForEach(BuildOutput.GlobFiles("*.nupkg").NotEmpty(), pushLogic);
-            Parallel.ForEach(BuildOutput.GlobFiles("*.snupkg").NotEmpty(), pushLogic);
+            });
         });
 
     Target BuildDocs => _ => _
