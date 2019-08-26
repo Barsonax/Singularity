@@ -38,11 +38,8 @@ class Build : NukeBuild
     [GitRepository] readonly GitRepository GitRepository;
     [GitVersion] readonly GitVersion GitVersion;
 
-    AbsolutePath BaseBuildOutput => RootDirectory / "BuildOutput";
+    [Parameter] readonly AbsolutePath BaseBuildOutput = RootDirectory / "BuildOutput";
     AbsolutePath BuildOutput => BaseBuildOutput / Configuration;
-
-    [Parameter]
-    readonly AbsolutePath ArtifactsDirectory = RootDirectory / "artifacts";
 
     [Parameter]
     readonly string SonarCloudLogin;
@@ -72,7 +69,6 @@ class Build : NukeBuild
         .Executes(() =>
         {
             EnsureCleanDirectory(BuildOutput);
-            EnsureCleanDirectory(ArtifactsDirectory);
         });
 
     Target Restore => _ => _
@@ -92,9 +88,8 @@ class Build : NukeBuild
                 .SetConfiguration(Configuration)
                 .SetProperties(NoWarns)
                 .SetProperty("BaseOutputPath", BaseBuildOutput + "/")
-                .SetAssemblyVersion(GitVersion.GetNormalizedAssemblyVersion())
-                .SetFileVersion(GitVersion.GetNormalizedFileVersion())
-                .SetInformationalVersion(GitVersion.InformationalVersion)
+                .SetProperty("GeneratePackageOnBuild", true)
+                .SetVersion(GitVersion.NuGetVersion)
                 .EnableNoRestore());
         });
 
@@ -173,27 +168,13 @@ class Build : NukeBuild
             .SetLogin(SonarCloudLogin));
         });
 
-    Target Pack => _ => _
-        .DependsOn(Compile)
-        .Executes(() =>
-        {
-            DotNetPack(s => s
-            .SetProject(Solution)
-            .SetOutputDirectory(ArtifactsDirectory)
-            .SetConfiguration(Configuration)
-            .SetVersion(GitVersion.NuGetVersion)
-            .SetProperty("BaseOutputPath", BaseBuildOutput + "/")
-            .EnableIncludeSymbols()
-            .EnableNoBuild());
-        });
-
 
     Target Push => _ => _
         .Requires(() => !string.IsNullOrEmpty(ApiKey))
         .After(Test)
         .After(Coverage)
         .OnlyWhenDynamic(() => GitRepository.Branch == "master")
-        .After(Pack)
+        .After(Compile)
         .Executes(() =>
         {
             var source = "https://api.nuget.org/v3/index.json";
@@ -227,8 +208,8 @@ class Build : NukeBuild
                     }
                 }
             };
-            Parallel.ForEach(ArtifactsDirectory.GlobFiles("*.nupkg").NotEmpty(), pushLogic);
-            Parallel.ForEach(ArtifactsDirectory.GlobFiles("*.snupkg").NotEmpty(), pushLogic);
+            Parallel.ForEach(BuildOutput.GlobFiles("*.nupkg").NotEmpty(), pushLogic);
+            Parallel.ForEach(BuildOutput.GlobFiles("*.snupkg").NotEmpty(), pushLogic);
         });
 
     Target BuildDocs => _ => _
