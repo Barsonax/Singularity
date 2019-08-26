@@ -22,12 +22,12 @@ stages:
       inputs:
         targetType: filePath
         filePath: ./build.ps1
-        arguments: 'Pack Coverage RunSonarScanner --CoberturaReport -SonarCloudLogin $env:SonarCloudLogin'
+        arguments: 'Coverage RunSonarScanner --CoberturaReport -SonarCloudLogin $env:SonarCloudLogin'
       env:
         SonarCloudLogin: $(sonar_cloud_login)
     - task: PublishBuildArtifacts@1
       inputs:
-        PathtoPublish: '$(Build.SourcesDirectory)/Artifacts'
+        PathtoPublish: '$(Build.SourcesDirectory)/BuildOutput'
         ArtifactName: 'artifacts'
     - task: PublishTestResults@2
       inputs:
@@ -57,7 +57,7 @@ stages:
             inputs:
               targetType: filePath
               filePath: ./build.ps1
-              arguments: 'Push -ApiKey $env:NugetToken -ArtifactsDirectory $(Pipeline.Workspace)/artifacts'
+              arguments: 'Push -ApiKey $env:NugetToken -BaseBuildOutput $(Pipeline.Workspace)/BuildOutput'
             env:
               NugetToken: $(nuget_token)
 schedules:
