@@ -4,6 +4,7 @@
 ## Features
 - Extreme performance, Singularity is one of the fastest if not the fastest dependency injection container out there. Don't believe me? Check out my [benchmarks](#Benchmarks) or if you want a second opinion check out the benchmarks that Daniel Palme made [here](https://github.com/danielpalme/IocPerformance).
 - Clean fluent API.
+- [Source Link](https://github.com/dotnet/sourcelink) enabled
 - Generic wrappers:
   1. `Func<T>`
   1. `Lazy<T>`
