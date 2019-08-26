@@ -2,22 +2,15 @@
 
   <PropertyGroup>
     <TargetFramework>netstandard2.0</TargetFramework>
-    <Authors>Barsonax</Authors>
     <Description>The core library for the singularity ioc container</Description>
-    <PackageProjectUrl>https://github.com/Barsonax/Singularity</PackageProjectUrl>
     <PackageTags>ioc di inversion control dependency injection container</PackageTags>
-    <RepositoryUrl>https://github.com/Barsonax/Singularity</RepositoryUrl>
-    <NeutralLanguage>en</NeutralLanguage>
-    <PackageIconUrl>https://raw.githubusercontent.com/Barsonax/Singularity/master/Icon.png</PackageIconUrl>
-    <LangVersion>8.0</LangVersion>
-    <Nullable>enable</Nullable>
-    <GenerateDocumentationFile>true</GenerateDocumentationFile>
-    <PackageLicenseExpression>MIT</PackageLicenseExpression>
   </PropertyGroup>
 
   <ItemGroup>
     <PackageReference Include="System.Reflection.Emit.Lightweight" Version="4.3.0" />
+    <PackageReference Include="Microsoft.SourceLink.GitHub" Version="1.0.0-beta2-19351-01" PrivateAssets="All" />
   </ItemGroup>
 
+  <Import Project="$(SolutionDir)DefaultLibrarySettings.targets" />
   <Import Project="$(SolutionDir)AggregateUserPlugins.targets" />
 </Project>
