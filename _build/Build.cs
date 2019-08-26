@@ -196,12 +196,13 @@ class Build : NukeBuild
         .After(Pack)
         .Executes(() =>
         {
-            Parallel.ForEach(ArtifactsDirectory.GlobFiles("*.nupkg", "*.snupkg").NotEmpty(), (nupkgFile) =>
+            var source = "https://api.nuget.org/v3/index.json";
+            Action<AbsolutePath> pushLogic = (nupkgFile) =>
             {
                 var errorIsWarning = false;
                 try
                 {
-                    Dotnet.Invoke($"nuget push {nupkgFile} --source https://www.nuget.org --api-key {ApiKey}", customLogger: (type, output) =>
+                    Dotnet.Invoke($"nuget push {nupkgFile} --source {source} --api-key {ApiKey}", customLogger: (type, output) =>
                     {
                         if (output.StartsWith("error: Response status code does not indicate success: 409"))
                         {
@@ -225,7 +226,9 @@ class Build : NukeBuild
                         throw e;
                     }
                 }
-            });
+            };
+            Parallel.ForEach(ArtifactsDirectory.GlobFiles("*.nupkg").NotEmpty(), pushLogic);
+            Parallel.ForEach(ArtifactsDirectory.GlobFiles("*.snupkg").NotEmpty(), pushLogic);
         });
 
     Target BuildDocs => _ => _
