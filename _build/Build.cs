@@ -201,7 +201,7 @@ class Build : NukeBuild
                 var errorIsWarning = false;
                 try
                 {
-                    Dotnet.Invoke($"nuget push {nupkgFile} --api-key {ApiKey}", customLogger: (type, output) =>
+                    Dotnet.Invoke($"nuget push {nupkgFile} --source https://www.nuget.org --api-key {ApiKey}", customLogger: (type, output) =>
                     {
                         if (output.StartsWith("error: Response status code does not indicate success: 409"))
                         {
