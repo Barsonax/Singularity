@@ -90,11 +90,11 @@ class Build : NukeBuild
             DotNetBuild(s => s
                 .SetProjectFile(Solution)
                 .SetConfiguration(Configuration)
+                .SetProperties(NoWarns)
+                .SetProperty("BaseOutputPath", BaseBuildOutput + "/")
                 .SetAssemblyVersion(GitVersion.GetNormalizedAssemblyVersion())
                 .SetFileVersion(GitVersion.GetNormalizedFileVersion())
                 .SetInformationalVersion(GitVersion.InformationalVersion)
-                .SetProperties(NoWarns)
-                .SetProperty("BaseOutputPath", BaseBuildOutput + "/")
                 .EnableNoRestore());
         });
 
