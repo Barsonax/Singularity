@@ -3,24 +3,18 @@
   <PropertyGroup>
     <TargetFramework>netstandard2.0</TargetFramework>
     <AssemblyName>Singularity.Duality.core</AssemblyName>
-    <PackageProjectUrl>https://github.com/Barsonax/Singularity</PackageProjectUrl>
-    <PackageIconUrl>https://raw.githubusercontent.com/Barsonax/Singularity/master/Icon.png</PackageIconUrl>
-    <RepositoryUrl>https://github.com/Barsonax/Singularity</RepositoryUrl>
-    <Authors>Barsonax</Authors>
     <PackageTags>Duality Plugin ioc di inversion control dependency injection container</PackageTags>
     <Description>Plugin that adds a ioc container to duality</Description>
-    <LangVersion>8.0</LangVersion>
-    <Nullable>enable</Nullable>
-    <GenerateDocumentationFile>true</GenerateDocumentationFile>
-    <PackageLicenseExpression>MIT</PackageLicenseExpression>
   </PropertyGroup>
 
   <ItemGroup>
     <PackageReference Include="AdamsLair.Duality" Version="3.1.3" />
+    <PackageReference Include="Microsoft.SourceLink.GitHub" Version="1.0.0-beta2-19351-01" PrivateAssets="All" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\..\..\..\Singularity\Singularity.csproj" />
   </ItemGroup>
 
+  <Import Project="$(SolutionDir)DefaultLibrarySettings.targets" />
   <Import Project="$(SolutionDir)AggregateUserPlugins.targets" />
 </Project>

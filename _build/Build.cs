@@ -198,14 +198,10 @@ class Build : NukeBuild
         {
             Parallel.ForEach(ArtifactsDirectory.GlobFiles("*.nupkg").NotEmpty(), (nupkgFile) =>
             {
-                var source = nupkgFile.ToString().EndsWith(".symbols.nupkg")
-                                ? "https://nuget.smbsrc.net/"
-                                : "https://www.nuget.org";
-
                 var errorIsWarning = false;
                 try
                 {
-                    Dotnet.Invoke($"nuget push {nupkgFile} --source {source} --api-key {ApiKey}", customLogger: (type, output) =>
+                    Dotnet.Invoke($"nuget push {nupkgFile} --api-key {ApiKey}", customLogger: (type, output) =>
                     {
                         if (output.StartsWith("error: Response status code does not indicate success: 409"))
                         {
