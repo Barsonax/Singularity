@@ -196,7 +196,7 @@ class Build : NukeBuild
         .After(Pack)
         .Executes(() =>
         {
-            Parallel.ForEach(ArtifactsDirectory.GlobFiles("*.nupkg").NotEmpty(), (nupkgFile) =>
+            Parallel.ForEach(ArtifactsDirectory.GlobFiles("*.nupkg", "*.snupkg").NotEmpty(), (nupkgFile) =>
             {
                 var errorIsWarning = false;
                 try
