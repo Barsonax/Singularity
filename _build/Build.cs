@@ -122,7 +122,7 @@ class Build : NukeBuild
              .SetTargetExecutable(dotnetPath)
              .SetTargetWorkingDirectory(RootDirectory)
              .SetTargetArguments(targetArgs)
-             .SetFilters("+:Singularity*;-:Class=Singularity.FastExpressionCompiler*;-:*Test*")
+             .SetFilters("+:Singularity*;-:Class=Singularity.FastExpressionCompiler*;-:*Test*;-:*Benchmark*")
              .SetOutputFile(coverageSnapshot));
 
         DotCoverReport(c => c
