@@ -14,6 +14,11 @@ namespace Singularity.TestClasses.TestClasses
             throw new NotImplementedException();
         }
 
+        public object FakeMethodWithReturn()
+        {
+            return new object();
+        }
+
         public void Inject(ITestService10 testService10)
         {
             TestService10 = testService10;
