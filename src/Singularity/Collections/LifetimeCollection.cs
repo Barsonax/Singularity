@@ -1,11 +1,11 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 
-namespace Singularity
+namespace Singularity.Collections
 {
     public sealed class LifetimeCollection : IEnumerable<ILifetime>
     {
-        public static LifetimeCollection Empty = new LifetimeCollection(new ILifetime[0]);
+        public static LifetimeCollection Empty { get; } = new LifetimeCollection(new ILifetime[0]);
         internal static LifetimeComparer Comparer = new LifetimeComparer();
         private HashSet<ILifetime> Lifetimes { get; }
 

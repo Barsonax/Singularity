@@ -1,4 +1,5 @@
 ﻿using System;
+using Singularity.Collections;
 
 namespace Singularity
 {

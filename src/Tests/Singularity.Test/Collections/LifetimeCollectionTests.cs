@@ -1,4 +1,5 @@
-﻿using Xunit;
+﻿using Singularity.Collections;
+using Xunit;
 
 namespace Singularity.Test.Collections
 {
