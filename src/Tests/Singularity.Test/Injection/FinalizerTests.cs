@@ -13,7 +13,7 @@ namespace Singularity.Test.Injection
             var container = new Container(builder =>
             {
                 builder.Register<IDisposable, Disposable>(c => c
-                    .With(Lifetime.PerContainer)
+                    .With(Lifetimes.PerContainer)
                     .WithFinalizer(x => x.Dispose()));
             });
 
@@ -79,7 +79,7 @@ namespace Singularity.Test.Injection
             var container = new Container(builder =>
             {
                 builder.Register<IDisposable, Disposable>(c => c
-                    .With(Lifetime.PerContainer)
+                    .With(Lifetimes.PerContainer)
                     .WithFinalizer(x => x.Dispose()));
             });
             Container nestedContainer = container.GetNestedContainer();

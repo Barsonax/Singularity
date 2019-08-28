@@ -38,9 +38,9 @@ namespace Singularity.TestClasses.Benchmark
 
         private static void Register(ContainerBuilder config)
         {
-            config.Register<ISingleton1, Singleton1>(c => c.With(Lifetime.PerContainer));
-            config.Register<ISingleton2, Singleton2>(c => c.With(Lifetime.PerContainer));
-            config.Register<ISingleton3, Singleton3>(c => c.With(Lifetime.PerContainer));
+            config.Register<ISingleton1, Singleton1>(c => c.With(Lifetimes.PerContainer));
+            config.Register<ISingleton2, Singleton2>(c => c.With(Lifetimes.PerContainer));
+            config.Register<ISingleton3, Singleton3>(c => c.With(Lifetimes.PerContainer));
 
             config.Register<ITransient1, Transient1>();
             config.Register<ITransient2, Transient2>();
@@ -53,9 +53,9 @@ namespace Singularity.TestClasses.Benchmark
             config.Register<ISubObjectOne, SubObjectOne>();
             config.Register<ISubObjectTwo, SubObjectTwo>();
             config.Register<ISubObjectThree, SubObjectThree>();
-            config.Register<IFirstService, FirstService>(c => c.With(Lifetime.PerContainer));
-            config.Register<ISecondService, SecondService>(c => c.With(Lifetime.PerContainer));
-            config.Register<IThirdService, ThirdService>(c => c.With(Lifetime.PerContainer));
+            config.Register<IFirstService, FirstService>(c => c.With(Lifetimes.PerContainer));
+            config.Register<ISecondService, SecondService>(c => c.With(Lifetimes.PerContainer));
+            config.Register<IThirdService, ThirdService>(c => c.With(Lifetimes.PerContainer));
             config.Register<IComplex1, Complex1>();
         }
     }

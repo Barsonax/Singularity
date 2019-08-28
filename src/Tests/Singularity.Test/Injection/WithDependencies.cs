@@ -73,7 +73,7 @@ namespace Singularity.Test.Injection
             //ARRANGE
             var container = new Container(builder =>
             {
-                builder.Register<ITestService10, TestService10>(c => c.With(Lifetime.PerContainer));
+                builder.Register<ITestService10, TestService10>(c => c.With(Lifetimes.PerContainer));
                 builder.Register<ITestService11, TestService11>();
             });
 
@@ -126,7 +126,7 @@ namespace Singularity.Test.Injection
             //ARRANGE
             var container = new Container(builder =>
             {
-                builder.Register<ITestService10, TestService10>(c => c.With(Lifetime.PerContainer));
+                builder.Register<ITestService10, TestService10>(c => c.With(Lifetimes.PerContainer));
                 builder.Register<ITestService11, TestService11>();
                 builder.Register<ITestService12, TestService12>();
             });

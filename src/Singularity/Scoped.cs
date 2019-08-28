@@ -82,7 +82,7 @@ namespace Singularity
             //There is a very slight chance that this instance is created more than once under heavy load.
             //In that case the duplicate will be discarded.
             T obj = factory(this);
-            var computedValue = initialValue.Add(key, obj!);
+            SinglyLinkedListKeyNode<Type, object> computedValue = initialValue.Add(key, obj!);
             if (ReferenceEquals(Interlocked.CompareExchange(ref _scopedInstances, computedValue, initialValue), initialValue))
             {
                 return obj;
@@ -93,7 +93,15 @@ namespace Singularity
             }
         }
 
-        private T HandleScopeThreadCollision<T>(T obj, Type key)
+        /// <summary>
+        /// Internal accessor is for testing only.
+        /// Handles the rare case where another thread has already modified <see cref="_scopedInstances"/>
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        /// <param name="obj"></param>
+        /// <param name="key"></param>
+        /// <returns></returns>
+        internal T HandleScopeThreadCollision<T>(T obj, Type key)
         {
             SinglyLinkedListKeyNode<Type, object>? initialValue, computedValue;
             do

@@ -45,6 +45,9 @@ class Build : NukeBuild
     readonly string SonarCloudLogin;
 
     AbsolutePath CoverageDirectory => RootDirectory / "coverage";
+    AbsolutePath CoverageXml => CoverageDirectory / "coverage.xml";
+    AbsolutePath CoverageHtml => CoverageDirectory / "coverage.html";
+    AbsolutePath CoberturaReportPath => CoverageDirectory / "Cobertura.xml";
 
     AbsolutePath SrcPath => RootDirectory / "src";
     AbsolutePath DocFXPath => SrcPath / "Docs";
@@ -114,9 +117,7 @@ class Build : NukeBuild
         string targetArgs = $"vstest {testdlls} /logger:trx;LogFileName=testresults.trx";
         string dotnetPath = ToolPathResolver.GetPathExecutable("dotnet");
         AbsolutePath coverageSnapshot = CoverageDirectory / "coverage.dcvr";
-        AbsolutePath coverageXml = CoverageDirectory / "coverage.xml";
         AbsolutePath coverageReport = CoverageDirectory / "CoverageReport";
-        AbsolutePath coberturaReport = CoverageDirectory / "cobertura_coverage.xml";
 
         DotCoverCover(c => c
              .SetTargetExecutable(dotnetPath)
@@ -127,21 +128,20 @@ class Build : NukeBuild
 
         DotCoverReport(c => c
             .SetSource(coverageSnapshot)
-            .SetOutputFile(coverageXml)
+            .SetOutputFile(CoverageXml)
             .SetReportType(DotCoverReportType.DetailedXml));
+
+        DotCoverReport(c => c
+            .SetSource(coverageSnapshot)
+            .SetOutputFile(CoverageHtml)
+            .SetReportType(DotCoverReportType.Html));
 
         if (CoberturaReport)
         {
             ReportGenerator(c => c
-                .SetReports(coverageXml)
+                .SetReports(CoverageXml)
                 .SetTargetDirectory(CoverageDirectory)
                 .SetReportTypes(Nuke.Common.Tools.ReportGenerator.ReportTypes.Cobertura));
-        }
-        else
-        {
-            ReportGenerator(c => c
-                .SetReports(coverageXml)
-                .SetTargetDirectory(coverageReport));
         }
     });
 
@@ -157,7 +157,7 @@ class Build : NukeBuild
             var exclusions = "src/Singularity/FastExpressionCompiler/*,src/Tests/Singularity.TestClasses/**/*";
             var branch = GitVersion.BranchName;
             var version = GitVersion.GetNormalizedAssemblyVersion();
-            SonarScanner($"begin /k:{projectKey} /o:{organisation} /v:{version} /d:sonar.login={SonarCloudLogin} /d:sonar.host.url={server} /d:sonar.exclusions={exclusions} /d:sonar.branch.name={branch}");
+            SonarScanner($"begin /k:{projectKey} /o:{organisation} /v:{version} /d:sonar.login={SonarCloudLogin} /d:sonar.host.url={server} /d:sonar.exclusions={exclusions} /d:sonar.cs.dotcover.reportsPaths={CoverageHtml} /d:sonar.branch.name={branch}");
         });
 
     Target SonarEnd => _ => _

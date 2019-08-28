@@ -52,12 +52,12 @@ namespace Singularity.TestClasses.Benchmark
 
         public Container Register()
         {
-            return new Container(Register, new SingularitySettings { AutoDispose = true });
+            return new Container(Register, SingularitySettings.Microsoft);
         }
 
         public Container NewContainer()
         {
-            return new Container(Register, new SingularitySettings { AutoDispose = true });
+            return new Container(Register, SingularitySettings.Microsoft);
         }
 
         public IComplex1 NewContainerAndResolve()
@@ -85,11 +85,11 @@ namespace Singularity.TestClasses.Benchmark
             builder.Register<IDummyEight, DummyEight>();
             builder.Register<IDummyNine, DummyNine>();
             builder.Register<IDummyTen, DummyTen>();
-            builder.Register<IDisposable, Disposable>(c => c.With(Lifetime.PerScope));
+            builder.Register<IDisposable, Disposable>(c => c.With(Lifetimes.PerScope));
 
-            builder.Register<ISingleton1, Singleton1>(c => c.With(Lifetime.PerContainer));
-            builder.Register<ISingleton2, Singleton2>(c => c.With(Lifetime.PerContainer));
-            builder.Register<ISingleton3, Singleton3>(c => c.With(Lifetime.PerContainer));
+            builder.Register<ISingleton1, Singleton1>(c => c.With(Lifetimes.PerContainer));
+            builder.Register<ISingleton2, Singleton2>(c => c.With(Lifetimes.PerContainer));
+            builder.Register<ISingleton3, Singleton3>(c => c.With(Lifetimes.PerContainer));
             builder.Register<ITransient1, Transient1>();
             builder.Register<ITransient2, Transient2>();
             builder.Register<ITransient3, Transient3>();
@@ -103,9 +103,9 @@ namespace Singularity.TestClasses.Benchmark
             builder.Register<ISubObjectOne, SubObjectOne>();
             builder.Register<ISubObjectTwo, SubObjectTwo>();
             builder.Register<ISubObjectThree, SubObjectThree>();
-            builder.Register<IFirstService, FirstService>(c => c.With(Lifetime.PerContainer));
-            builder.Register<ISecondService, SecondService>(c => c.With(Lifetime.PerContainer));
-            builder.Register<IThirdService, ThirdService>(c => c.With(Lifetime.PerContainer));
+            builder.Register<IFirstService, FirstService>(c => c.With(Lifetimes.PerContainer));
+            builder.Register<ISecondService, SecondService>(c => c.With(Lifetimes.PerContainer));
+            builder.Register<IThirdService, ThirdService>(c => c.With(Lifetimes.PerContainer));
             builder.Register<IComplex1, Complex1>();
 
             builder.Register<ISimpleAdapter, SimpleAdapterOne>();
@@ -114,7 +114,7 @@ namespace Singularity.TestClasses.Benchmark
             builder.Register<ISimpleAdapter, SimpleAdapterFour>();
             builder.Register<ISimpleAdapter, SimpleAdapterFive>();
 
-            builder.Register<IDisposable, Disposable>(c => c.With(Lifetime.PerContainer));
+            builder.Register<IDisposable, Disposable>(c => c.With(Lifetimes.PerContainer));
 
             builder.Register<TestController1, TestController1>();
             builder.Register<TestController2, TestController2>();
@@ -124,11 +124,11 @@ namespace Singularity.TestClasses.Benchmark
             builder.Register<IRepositoryTransient3, RepositoryTransient3>();
             builder.Register<IRepositoryTransient4, RepositoryTransient4>();
             builder.Register<IRepositoryTransient5, RepositoryTransient5>();
-            builder.Register<IScopedService1, ScopedService1>(c => c.With(Lifetime.PerScope));
-            builder.Register<IScopedService2, ScopedService2>(c => c.With(Lifetime.PerScope));
-            builder.Register<IScopedService3, ScopedService3>(c => c.With(Lifetime.PerScope));
-            builder.Register<IScopedService4, ScopedService4>(c => c.With(Lifetime.PerScope));
-            builder.Register<IScopedService5, ScopedService5>(c => c.With(Lifetime.PerScope));
+            builder.Register<IScopedService1, ScopedService1>(c => c.With(Lifetimes.PerScope));
+            builder.Register<IScopedService2, ScopedService2>(c => c.With(Lifetimes.PerScope));
+            builder.Register<IScopedService3, ScopedService3>(c => c.With(Lifetimes.PerScope));
+            builder.Register<IScopedService4, ScopedService4>(c => c.With(Lifetimes.PerScope));
+            builder.Register<IScopedService5, ScopedService5>(c => c.With(Lifetimes.PerScope));
         }
     }
 }

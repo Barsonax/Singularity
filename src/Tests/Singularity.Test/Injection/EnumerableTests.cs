@@ -142,10 +142,10 @@ namespace Singularity.Test.Injection
             var container = new Container(builder =>
             {
                 builder.Register<IPlugin, Plugin1>(c => c
-                    .With(Lifetime.PerContainer));
+                    .With(Lifetimes.PerContainer));
                 builder.Register<IPlugin, Plugin2>();
                 builder.Register<IPlugin, Plugin3>(c => c
-                    .With(Lifetime.PerContainer));
+                    .With(Lifetimes.PerContainer));
             });
 
             //ACT

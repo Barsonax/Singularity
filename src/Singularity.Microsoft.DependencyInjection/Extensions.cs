@@ -15,9 +15,9 @@ namespace Singularity.Microsoft.DependencyInjection
         /// <param name="config"></param>
         public static void RegisterServiceProvider(this ContainerBuilder config)
         {
-            config.Register<Container>(c => c.Inject(() => config.Container).With(DisposeBehavior.Never));
-            config.Register<IServiceProvider, SingularityServiceProvider>(c => c.With(Lifetime.PerContainer));
-            config.Register<IServiceScopeFactory, SingularityServiceScopeFactory>(c => c.With(Lifetime.PerContainer));
+            config.Register<Container>(c => c.Inject(() => config.Container).With(ServiceAutoDispose.Never));
+            config.Register<IServiceProvider, SingularityServiceProvider>(c => c.With(Lifetimes.PerContainer));
+            config.Register<IServiceScopeFactory, SingularityServiceScopeFactory>(c => c.With(Lifetimes.PerContainer));
         }
 
         /// <summary>
@@ -60,16 +60,16 @@ namespace Singularity.Microsoft.DependencyInjection
             }
         }
 
-        private static Lifetime ConvertLifetime(ServiceLifetime serviceLifetime)
+        private static ILifetime ConvertLifetime(ServiceLifetime serviceLifetime)
         {
             switch (serviceLifetime)
             {
                 case ServiceLifetime.Singleton:
-                    return Lifetime.PerContainer;
+                    return Lifetimes.PerContainer;
                 case ServiceLifetime.Scoped:
-                    return Lifetime.PerScope;
+                    return Lifetimes.PerScope;
                 case ServiceLifetime.Transient:
-                    return Lifetime.Transient;
+                    return Lifetimes.Transient;
                 default:
                     throw new ArgumentOutOfRangeException(nameof(serviceLifetime), serviceLifetime, null);
             }

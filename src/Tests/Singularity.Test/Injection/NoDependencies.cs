@@ -127,7 +127,7 @@ namespace Singularity.Test.Injection
             //ARRANGE
             var container = new Container(builder =>
             {
-                builder.Register<ITestService10, TestService10>(c => c.With(Lifetime.PerContainer));
+                builder.Register<ITestService10, TestService10>(c => c.With(Lifetimes.PerContainer));
             });
 
             //ACT
