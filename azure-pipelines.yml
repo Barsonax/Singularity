@@ -57,7 +57,7 @@ stages:
             inputs:
               targetType: filePath
               filePath: ./build.ps1
-              arguments: 'Push -ApiKey $env:NugetToken -BaseBuildOutput $(Pipeline.Workspace)/BuildOutput'
+              arguments: 'Push -ApiKey $env:NugetToken -BaseBuildOutput $(Pipeline.Workspace)/artifacts'
             env:
               NugetToken: $(nuget_token)
 schedules:
