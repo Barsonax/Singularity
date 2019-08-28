@@ -38,12 +38,12 @@ namespace Singularity
         }
 
         public ServiceBinding(SinglyLinkedListNode<Type> serviceTypes, BindingMetadata bindingMetadata, Expression expression,
-            ILifetime? lifetime = null, Action<object>? finalizer = null,
+            ILifetime lifetime, Action<object>? finalizer = null,
             ServiceAutoDispose needsDispose = ServiceAutoDispose.Default)
         {
             ServiceTypes = serviceTypes ?? throw new ArgumentNullException(nameof(serviceTypes));
             BindingMetadata = bindingMetadata ?? throw new ArgumentNullException(nameof(bindingMetadata));
-            Lifetime = lifetime ?? Lifetimes.Transient;
+            Lifetime = lifetime ?? throw new ArgumentNullException(nameof(lifetime));
             Expression = expression ?? throw new ArgumentNullException(nameof(expression));
             NeedsDispose = !EnumMetadata<ServiceAutoDispose>.IsValidValue(needsDispose) ? throw new InvalidEnumValueException<ServiceAutoDispose>(needsDispose) : needsDispose;
             Finalizer = finalizer;
@@ -51,7 +51,7 @@ namespace Singularity
 
         public ServiceBinding(Type dependencyType, BindingMetadata bindingMetadata, Expression expression,
             ILifetime? lifetime = null, Action<object>? finalizer = null,
-            ServiceAutoDispose needsDispose = ServiceAutoDispose.Default) : this(new SinglyLinkedListNode<Type>(dependencyType), bindingMetadata, expression, lifetime, finalizer, needsDispose)
+            ServiceAutoDispose needsDispose = ServiceAutoDispose.Default) : this(new SinglyLinkedListNode<Type>(dependencyType), bindingMetadata, expression, lifetime ?? Lifetimes.Transient, finalizer, needsDispose)
         {
         }
     }

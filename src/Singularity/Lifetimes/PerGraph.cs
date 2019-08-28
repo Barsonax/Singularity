@@ -7,12 +7,14 @@ namespace Singularity
     /// The same instance will be used in the entire graph
     /// Not implemented
     /// </summary>
-    public class PerGraph : ILifetime
+    public sealed class PerGraph : ILifetime
     {
         /// <inheritdoc />
         public void ApplyCaching(Scoped containerScope, ExpressionContext context)
         {
             throw new NotImplementedException(nameof(PerGraph));
         }
+
+        internal PerGraph() { }
     }
 }

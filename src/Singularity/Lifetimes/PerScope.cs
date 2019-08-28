@@ -10,7 +10,7 @@ namespace Singularity
     /// <summary>
     /// The same instance will be returned as long as it is requested in the same <see cref="Scoped"/>.
     /// </summary>
-    public class PerScope : ILifetime
+    public sealed class PerScope : ILifetime
     {
         internal static readonly MethodInfo CreateScopedExpressionMethod = typeof(PerScope).GetRuntimeMethods().Single(x => x.Name == nameof(CreateScopedExpression));
 
@@ -28,5 +28,7 @@ namespace Singularity
             MethodInfo method = Scoped.GetOrAddScopedInstanceMethod.MakeGenericMethod(expression.Type);
             return Expression.Call(ExpressionGenerator.ScopeParameter, method, Expression.Constant(factory), Expression.Constant(expression.Type));
         }
+
+        internal PerScope() { }
     }
 }

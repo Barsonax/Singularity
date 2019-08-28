@@ -24,7 +24,7 @@ namespace Singularity
         private readonly BindingMetadata _bindingMetadata;
         private SinglyLinkedListNode<Type> _dependencyTypes;
         private Expression? _expression;
-        private ILifetime _lifetime;
+        private ILifetime _lifetime = Lifetimes.Transient;
         private Action<object>? _finalizer;
         private ServiceAutoDispose _disposeBehavior;
 
@@ -60,7 +60,7 @@ namespace Singularity
         }
 
         /// <summary>
-        /// Controls when should new instances be created. See <see cref="Lifetime"/> for more detailed information.
+        /// Controls when should new instances be created. See <see cref="Lifetimes"/> for more detailed information.
         /// <param name="value"></param>
         /// </summary>
         public StronglyTypedServiceConfigurator<TDependency, TInstance> With(ILifetime value)

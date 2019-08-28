@@ -6,18 +6,28 @@ using System.Linq.Expressions;
 
 namespace Singularity.Expressions
 {
+    /// <summary>
+    /// Contains useful info about a expression.
+    /// </summary>
     public sealed class ExpressionContext
     {
+        /// <summary>
+        /// The expressions in <see cref="Expression"/> that come from <see cref="Scoped"/>
+        /// </summary>
         public List<MethodCallExpression> ScopedExpressions { get; }
+
+        /// <summary>
+        /// The expression to create the instance.
+        /// </summary>
         public Expression Expression { get; set; }
 
-        public ExpressionContext(Expression expression)
+        internal ExpressionContext(Expression expression)
         {
             ScopedExpressions = new List<MethodCallExpression>();
             Expression = expression ?? throw new ArgumentNullException(nameof(expression));
         }
 
-        public ExpressionContext(ReadOnlyExpressionContext context)
+        internal ExpressionContext(ReadOnlyExpressionContext context)
         {
             ScopedExpressions = context.ScopedExpressions.ToList();
             Expression = context.Expression ?? throw new ArgumentNullException("context.Expression");
@@ -29,12 +39,18 @@ namespace Singularity.Expressions
         }
     }
 
+    /// <summary>
+    /// Same as <see cref="ExpressionContext"/> but readonly.
+    /// </summary>
     public sealed class ReadOnlyExpressionContext
     {
+        /// <summary>
+        /// <see cref="ExpressionContext.ScopedExpressions"/>
+        /// </summary>
         public ReadOnlyCollection<MethodCallExpression> ScopedExpressions { get; }
-        public Expression Expression { get; }
+        internal Expression Expression { get; }
 
-        public ReadOnlyExpressionContext(ExpressionContext context)
+        internal ReadOnlyExpressionContext(ExpressionContext context)
         {
             ScopedExpressions = new ReadOnlyCollection<MethodCallExpression>(context.ScopedExpressions.ToArray());
             Expression = context.Expression ?? throw new ArgumentNullException("context.Expression");

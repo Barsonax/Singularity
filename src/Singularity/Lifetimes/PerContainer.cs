@@ -8,7 +8,7 @@ namespace Singularity
     /// <summary>
     /// The same instance will be returned as long as it is requested in the same <see cref="Container"/> or a child of this container.
     /// </summary>
-    public class PerContainer : ILifetime
+    public sealed class PerContainer : ILifetime
     {
         /// <inheritdoc />
         public void ApplyCaching(Scoped containerScope, ExpressionContext context)
@@ -37,5 +37,7 @@ namespace Singularity
                     return ((Func<Scoped, object>)Expression.Lambda(expression, ExpressionGenerator.ScopeParameter).CompileFast())(containerScope);
             }
         }
+
+        internal PerContainer() { }
     }
 }

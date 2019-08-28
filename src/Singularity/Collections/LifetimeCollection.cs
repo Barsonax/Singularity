@@ -3,13 +3,16 @@ using System.Collections.Generic;
 
 namespace Singularity.Collections
 {
+    /// <summary>
+    /// Holds a collection of <see cref="ILifetime"/>
+    /// </summary>
     public sealed class LifetimeCollection : IEnumerable<ILifetime>
     {
         public static LifetimeCollection Empty { get; } = new LifetimeCollection(new ILifetime[0]);
         internal static LifetimeComparer Comparer = new LifetimeComparer();
         private HashSet<ILifetime> Lifetimes { get; }
 
-        private LifetimeCollection(ILifetime[] lifetimes)
+        private LifetimeCollection(IEnumerable<ILifetime> lifetimes)
         {
             Lifetimes = new HashSet<ILifetime>(lifetimes, Comparer);
         }
@@ -24,6 +27,11 @@ namespace Singularity.Collections
             return new LifetimeCollection(lifetimes);
         }
 
+        /// <summary>
+        /// Returns true if this collection has a lifetime with the same type.
+        /// </summary>
+        /// <param name="lifetime"></param>
+        /// <returns></returns>
         public bool Contains(ILifetime lifetime)
         {
             return Lifetimes.Contains(lifetime);

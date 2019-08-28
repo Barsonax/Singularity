@@ -81,12 +81,12 @@ namespace Singularity.Test.Injection
         public void HandleScopeThreadCollision_AddsInstance_Once()
         {
             //ARRANGE
-            var scope = new Scoped(null);
+            var scope = new Scoped(new Container());
             var instance = new object();
 
             //ACT
             scope.HandleScopeThreadCollision(instance, typeof(object));
-            var result = scope.GetOrAddScopedInstance<object>(null, typeof(object));
+            var result = scope.GetOrAddScopedInstance<object>(scoped => throw new NotImplementedException(), typeof(object));
 
             //ASSERT
             Assert.Same(instance, result);
@@ -96,13 +96,13 @@ namespace Singularity.Test.Injection
         public void HandleScopeThreadCollision_AddsInstance_Twice_SameKey()
         {
             //ARRANGE
-            var scope = new Scoped(null);
+            var scope = new Scoped(new Container());
             var instance = new object();
 
             //ACT
             scope.HandleScopeThreadCollision(instance, typeof(object));
             scope.HandleScopeThreadCollision(instance, typeof(object));
-            var result = scope.GetOrAddScopedInstance<object>(null, typeof(object));
+            var result = scope.GetOrAddScopedInstance<object>(scoped => throw new NotImplementedException(), typeof(object));
 
             //ASSERT
             Assert.Same(instance, result);
@@ -112,15 +112,15 @@ namespace Singularity.Test.Injection
         public void HandleScopeThreadCollision_AddsInstance_Twice_DifferentKey()
         {
             //ARRANGE
-            var scope = new Scoped(null);
+            var scope = new Scoped(new Container());
             var instance1 = new object();
             var instance2 = new object();
 
             //ACT
             scope.HandleScopeThreadCollision(instance1, typeof(object));
             scope.HandleScopeThreadCollision(instance2, typeof(int));
-            var result1 = scope.GetOrAddScopedInstance<object>(null, typeof(object));
-            var result2 = scope.GetOrAddScopedInstance<object>(null, typeof(int));
+            var result1 = scope.GetOrAddScopedInstance<object>(scoped => throw new NotImplementedException(), typeof(object));
+            var result2 = scope.GetOrAddScopedInstance<object>(scoped => throw new NotImplementedException(), typeof(int));
 
             //ASSERT
             Assert.Same(instance1, result1);

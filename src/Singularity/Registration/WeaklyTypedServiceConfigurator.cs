@@ -24,7 +24,7 @@ namespace Singularity
         private readonly Type _instanceType;
         private SinglyLinkedListNode<Type> _dependencyTypes;
         private Expression? _expression;
-        private ILifetime _lifetime;
+        private ILifetime _lifetime = Lifetimes.Transient;
         private Action<object>? _finalizer;
         private ServiceAutoDispose _disposeBehavior;
 
