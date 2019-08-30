@@ -18,7 +18,7 @@
 - Supports resolving unregistered concrete types.
 - Supports decorators.
 - Supports method and property injection without forcing you to litter attributes all over your code base. All configuration is kept inside the container.
-- Auto dispose, this is off by default but can be turned on with `With(DisposeBehavior)`or by setting `SingularitySettings.AutoDispose` to true.
+- Auto dispose, this is off by default but can be turned on with `With(DisposeBehavior)`or adding the lifetimes you want to auto dispose to `SingularitySettings.AutoDisposeLifetimes`.
 - Custom finalizers with the `WithFinalizer(Action<TInstance>)` method.
 - Supports Transient, Singleton and Scope lifetimes.
 - Supports child containers.
