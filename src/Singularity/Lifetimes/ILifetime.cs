@@ -12,6 +12,6 @@ namespace Singularity
         /// </summary>
         /// <param name="containerScope"></param>
         /// <param name="context"></param>
-        void ApplyCaching(Scoped containerScope, ExpressionContext context);
+        void ApplyLifetimeOnExpression(Scoped containerScope, ExpressionContext context);
     }
 }

@@ -38,7 +38,7 @@ namespace Singularity.Expressions
                 context.Expression = Expression.Call(ScopeParameter, method, context.Expression, Expression.Constant(serviceBinding));
             }
 
-            serviceBinding.Lifetime.ApplyCaching(containerScope, context);
+            serviceBinding.Lifetime.ApplyLifetimeOnExpression(containerScope, context);
             return context;
         }
 
@@ -72,7 +72,7 @@ namespace Singularity.Expressions
 
                 if (body.Last().Type == typeof(void)) body.Add(instanceParameter);
                 context.Expression = body.Count == 1 ? context.Expression : Expression.Block(new[] { instanceParameter }, body);
-                serviceBinding.Lifetime.ApplyCaching(containerScope, context);
+                serviceBinding.Lifetime.ApplyLifetimeOnExpression(containerScope, context);
             }
 
             return context;

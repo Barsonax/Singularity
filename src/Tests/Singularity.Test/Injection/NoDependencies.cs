@@ -26,6 +26,23 @@ namespace Singularity.Test.Injection
         }
 
         [Fact]
+        public void GetInstance_CustomWrapper_CorrectDependencyIsReturned()
+        {
+            //ARRANGE
+            var container = new Container(builder =>
+            {
+                builder.Register<ITestService10, TestService10>();
+            });
+
+            //ACT
+            var value = container.GetInstance<CustomWrapper<ITestService10>>();
+
+            //ASSERT
+            Assert.IsType<CustomWrapper<ITestService10>>(value);
+            Assert.IsType<TestService10>(value.Instance);
+        }
+
+        [Fact]
         public void GetInstance_Module_CorrectDependencyIsReturned()
         {
             //ARRANGE

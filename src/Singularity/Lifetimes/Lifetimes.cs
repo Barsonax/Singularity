@@ -21,6 +21,6 @@
         /// The same instance will be used in the entire graph
         /// Not implemented
         /// </summary>
-        public static PerGraph PerGraph { get; } = new PerGraph();
+        internal static PerGraph PerGraph { get; } = new PerGraph();
     }
 }
