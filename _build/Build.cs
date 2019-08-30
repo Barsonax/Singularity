@@ -105,6 +105,8 @@ class Build : NukeBuild
             .SetWorkingDirectory(SrcPath)
             .SetFramework("netcoreapp2.0")
             .SetConfiguration(Configuration)
+            .SetDataCollector("Code Coverage")
+            .SetSettingsFile(RootDirectory / "_build" / "codecoverage.runsettings.xml")
             .SetProperties(NoWarns)
             .EnableNoBuild());
         });
