@@ -100,3 +100,6 @@ Platform=X64  IterationTime=500.0000 ms
 
 ### Donations
 Support me by buying a beer [![Beerpay](https://img.shields.io/beerpay/Barsonax/Singularity.svg)](https://beerpay.io/Barsonax/Singularity)
+
+### Licensing
+Licensed under AGPL however this might not be fit for all commercial works. If you require a different license please contact me.
