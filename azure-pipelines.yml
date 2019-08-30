@@ -2,7 +2,8 @@ trigger:
   branches:
     include:
     - '*'
-    tags:
+  tags:
+    include:
     - '*'
 
 pr:
