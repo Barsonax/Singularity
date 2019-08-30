@@ -122,26 +122,6 @@ namespace Singularity.Test.Injection
         }
 
         [Fact]
-        public void MethodInject_Scoped_InjectsCorrectDependencies()
-        {
-            //ARRANGE
-            var container = new Container(builder =>
-            {
-                builder.Register<ITestService10, TestService10>();
-                builder.LateInject<MethodInjectionClass>(c => c
-                    .UseMethod(nameof(MethodInjectionClass.Inject)));
-            });
-            var instance = new MethodInjectionClass();
-
-            //ACT
-            Scoped scope = container.BeginScope();
-            scope.LateInject(instance);
-
-            //ASSERT
-            Assert.IsType<TestService10>(instance.TestService10);
-        }
-
-        [Fact]
         public void MethodInjectAll_InjectsCorrectDependencies()
         {
             //ARRANGE

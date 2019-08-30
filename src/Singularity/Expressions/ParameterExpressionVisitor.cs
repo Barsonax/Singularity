@@ -18,7 +18,7 @@ namespace Singularity.Expressions
         {
             if (node.Type == typeof(Scoped)) return ExpressionGenerator.ScopeParameter;
             InstanceFactory factory = _factories.First(x => x.DependencyType == node.Type);
-            if (factory.Context.Expression is MethodCallExpression methodCallExpression && methodCallExpression.Method.GetGenericMethodDefinition() == Scoped.GetOrAddScopedInstanceMethod)
+            if (factory.Context.Expression is MethodCallExpression methodCallExpression && methodCallExpression.Method.IsGenericMethod && methodCallExpression.Method.GetGenericMethodDefinition() == Scoped.GetOrAddScopedInstanceMethod)
             {
                 _context.ScopedExpressions.Add(methodCallExpression);
             }
