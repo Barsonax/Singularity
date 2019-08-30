@@ -1,5 +1,10 @@
 trigger:
-- '*'
+  branches:
+    include:
+    - '*'
+    tags:
+    - '*'
+
 pr:
   branches:
     include:
