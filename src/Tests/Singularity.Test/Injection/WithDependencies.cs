@@ -24,6 +24,28 @@ namespace Singularity.Test.Injection
         }
 
         [Fact]
+        public void GetInstance_1Deep_CustomFactoryWithParameter_CorrectDependencyIsReturned()
+        {
+            //ARRANGE
+            var container = new Container(builder =>
+            {
+                builder.Register<ITestService10, TestService10>(c => c.Inject((int x) => TestService10(x)));
+                builder.Register<ITestService11, TestService11>();
+            });
+            //ACT
+            var value = container.GetInstance<ITestService11>();
+
+            //ASSERT
+            Assert.IsType<TestService11>(value);
+            Assert.IsType<TestService10>(value.TestService10);
+        }
+
+        TestService10 TestService10(int bla)
+        {
+            return new TestService10();
+        }
+
+        [Fact]
         public void GetInstance_2Deep_DependenciesAreCorrectlyInjected()
         {
             //ARRANGE
