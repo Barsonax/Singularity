@@ -7,7 +7,7 @@ namespace Singularity.Graph.Resolvers
     {
         public IEnumerable<ServiceBinding> Resolve(IResolverPipeline graph, Type type)
         {
-            if (!type.IsInterface && !type.IsGenericType)
+            if (!type.IsInterface)
             {
                 yield return new ServiceBinding(type, new BindingMetadata(), type.AutoResolveConstructorExpression());
             }
