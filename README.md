@@ -9,6 +9,7 @@
   1. `Func<T>`
   1. `Lazy<T>`
   1. `Expression<Func<T>>`
+  1. And any other generic wrapper you may have defined yourself.
 - Collection support:
   1. `IEnumerable<T>`
   1. `IReadOnlyCollection<T>`
