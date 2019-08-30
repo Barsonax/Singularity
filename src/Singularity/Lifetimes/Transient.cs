@@ -8,7 +8,7 @@ namespace Singularity
     public sealed class Transient : ILifetime
     {
         /// <inheritdoc />
-        public void ApplyCaching(Scoped containerScope, ExpressionContext context)
+        public void ApplyLifetimeOnExpression(Scoped containerScope, ExpressionContext context)
         {
             //No caching for transients.
         }

@@ -11,7 +11,7 @@ namespace Singularity
     public sealed class PerContainer : ILifetime
     {
         /// <inheritdoc />
-        public void ApplyCaching(Scoped containerScope, ExpressionContext context)
+        public void ApplyLifetimeOnExpression(Scoped containerScope, ExpressionContext context)
         {
             object singletonInstance = GetSingleton(containerScope, context.Expression);
             context.Expression = Expression.Constant(singletonInstance, context.Expression.Type);

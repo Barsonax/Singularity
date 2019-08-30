@@ -10,7 +10,7 @@ namespace Singularity
     internal sealed class PerGraph : ILifetime
     {
         /// <inheritdoc />
-        public void ApplyCaching(Scoped containerScope, ExpressionContext context)
+        public void ApplyLifetimeOnExpression(Scoped containerScope, ExpressionContext context)
         {
             throw new NotImplementedException(nameof(PerGraph));
         }

@@ -15,7 +15,7 @@ namespace Singularity
         internal static readonly MethodInfo CreateScopedExpressionMethod = typeof(PerScope).GetRuntimeMethods().Single(x => x.Name == nameof(CreateScopedExpression));
 
         /// <inheritdoc />
-        public void ApplyCaching(Scoped containerScope, ExpressionContext context)
+        public void ApplyLifetimeOnExpression(Scoped containerScope, ExpressionContext context)
         {
             MethodInfo method = CreateScopedExpressionMethod.MakeGenericMethod(context.Expression.Type);
             context.Expression = (Expression)method.Invoke(null, new object[] { context.Expression });
