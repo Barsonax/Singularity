@@ -213,8 +213,7 @@ class Build : NukeBuild
     Target BuildDocs => _ => _
     .Executes(() =>
     {
-        Environment.SetEnvironmentVariable("MSBUILD_EXE_PATH", @"C:\Program Files\dotnet\sdk\1.1.13\MSBuild.dll");
-        DocFXMetadata(s => s.SetProjects(DocFXJson));
+        DocFXMetadata(s => s.SetProjects(DocFXJson).SetMSBuildProperty("SolutionDir", $"{Solution.Directory}/"));
         DocFXBuild(s => s.SetConfigFile(DocFXJson));
     });
 
