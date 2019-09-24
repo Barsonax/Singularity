@@ -22,7 +22,7 @@ namespace Singularity
             context.ScopedExpressions.Clear();
         }
 
-        public static Expression CreateScopedExpression<T>(Expression expression)
+        private static Expression CreateScopedExpression<T>(Expression expression)
         {
             var factory = Expression.Lambda(expression, ExpressionGenerator.ScopeParameter).CompileFast<Func<Scoped, T>>();
             MethodInfo method = Scoped.GetOrAddScopedInstanceMethod.MakeGenericMethod(expression.Type);

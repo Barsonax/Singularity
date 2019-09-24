@@ -33,6 +33,10 @@ namespace Singularity.Expressions
             Expression = context.Expression ?? throw new ArgumentNullException("context.Expression");
         }
 
+        /// <summary>
+        /// Implicitly converts this context to the readonly version.
+        /// </summary>
+        /// <param name="context"></param>
         public static implicit operator ReadOnlyExpressionContext(ExpressionContext context)
         {
             return new ReadOnlyExpressionContext(context);
@@ -56,6 +60,10 @@ namespace Singularity.Expressions
             Expression = context.Expression ?? throw new ArgumentNullException("context.Expression");
         }
 
+        /// <summary>
+        /// Converts this readonly context to a context that can be modified by creating a new context.
+        /// </summary>
+        /// <param name="context"></param>
         public static explicit operator ExpressionContext(ReadOnlyExpressionContext context)
         {
             return new ExpressionContext(context);

@@ -16,5 +16,9 @@
     <ProjectReference Include="..\Singularity\Singularity.csproj" />
   </ItemGroup>
 
-  <Import Project="$(SolutionDir)DefaultLibrarySettings.targets" />
+  <ItemGroup>
+    <None Include="$(ProjectDir)..\icon.png" Pack="true" PackagePath="\"/>
+  </ItemGroup>
+
+  <Import Project="$(ProjectDir)../DefaultLibrarySettings.targets" />
 </Project>

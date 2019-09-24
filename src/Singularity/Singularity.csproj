@@ -6,11 +6,18 @@
     <PackageTags>ioc di inversion control dependency injection container</PackageTags>
   </PropertyGroup>
 
+
+
   <ItemGroup>
     <PackageReference Include="System.Reflection.Emit.Lightweight" Version="4.3.0" />
     <PackageReference Include="Microsoft.SourceLink.GitHub" Version="1.0.0-beta2-19351-01" PrivateAssets="All" />
   </ItemGroup>
 
-  <Import Project="$(SolutionDir)DefaultLibrarySettings.targets" />
-  <Import Project="$(SolutionDir)AggregateUserPlugins.targets" />
+  <ItemGroup>
+    <None Include="$(ProjectDir)..\icon.png" Pack="true" PackagePath="\"/>
+  </ItemGroup>
+
+  <Import Project="$(ProjectDir)../DefaultLibrarySettings.targets" />
+  <Import Project="$(ProjectDir)../AggregateUserPlugins.targets" />
+
 </Project>

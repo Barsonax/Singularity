@@ -6,7 +6,7 @@
     <NeutralLanguage>en</NeutralLanguage>
     <PackageProjectUrl>https://github.com/Barsonax/Singularity</PackageProjectUrl>
     <RepositoryUrl>https://github.com/Barsonax/Singularity</RepositoryUrl>
-    <PackageIconUrl>https://raw.githubusercontent.com/Barsonax/Singularity/master/Icon.png</PackageIconUrl>
+    <PackageIcon>Icon.png</PackageIcon>
     <GenerateDocumentationFile>true</GenerateDocumentationFile>
     <PackageLicenseExpression>AGPL-3.0-or-later</PackageLicenseExpression>
     <PublishRepositoryUrl>true</PublishRepositoryUrl>

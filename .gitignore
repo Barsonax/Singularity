@@ -283,3 +283,5 @@ src/Duality/Plugins/Singularity.Duality.Examples.core.dll
 .sonarqube
 src/Duality/Plugins/Singularity.Duality.Examples.core.xml
 src/Duality/Plugins/Singularity.xml
+/src/Singularity/Duality/Plugins/Singularity.xml
+/src/Singularity/Duality/Plugins/Singularity.dll

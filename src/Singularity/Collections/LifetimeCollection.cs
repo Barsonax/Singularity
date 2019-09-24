@@ -8,7 +8,7 @@ namespace Singularity.Collections
     /// </summary>
     public sealed class LifetimeCollection : IEnumerable<ILifetime>
     {
-        public static LifetimeCollection Empty { get; } = new LifetimeCollection(new ILifetime[0]);
+        internal static LifetimeCollection Empty { get; } = new LifetimeCollection(new ILifetime[0]);
         internal static LifetimeComparer Comparer = new LifetimeComparer();
         private HashSet<ILifetime> Lifetimes { get; }
 
