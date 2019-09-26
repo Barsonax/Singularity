@@ -13,7 +13,7 @@
   <ItemGroup>
     <Compile Update="@(Compile)">
       <Pack>true</Pack>
-      <PackagePath>contentFiles\</PackagePath>
+      <PackagePath>contentFiles\any\any\$(PackageId)\</PackagePath>
     </Compile>
   </ItemGroup>
 </Project>
