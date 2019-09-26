@@ -29,7 +29,8 @@ namespace Singularity.Benchmark
             //BenchmarkRunner.Run()
             //BenchmarkSwitcher.FromTypes(new[] {typeof(SimpleContainerBenchmark), typeof(AdvancedContainerBenchmark)}).RunAllJoined();
 
-            BenchmarkRunner.Run<AdvancedContainerBenchmark>();
+            BenchmarkRunner.Run<SimpleContainerBenchmark>();
+            //BenchmarkRunner.Run<AdvancedContainerBenchmark>();
             //BenchmarkRunner.Run<DisposeListBenchmarks>();
             Console.ReadKey();
         }

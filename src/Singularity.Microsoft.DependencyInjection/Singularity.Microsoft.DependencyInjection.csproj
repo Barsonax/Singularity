@@ -1,9 +1,12 @@
-﻿<Project Sdk="Microsoft.NET.Sdk">
+﻿<Project>
+
+  <Import Project="Sdk.props" Sdk="Microsoft.NET.Sdk" />
 
   <PropertyGroup>
     <TargetFramework>netstandard2.0</TargetFramework>
     <Description>The microsoft dependency injection integration library for the singularity ioc container</Description>
     <PackageTags>ioc di inversion control dependency injection container microsoftdi microsoftdependencyinjection</PackageTags>
+    <Configurations>Debug;Release;SourceOnly</Configurations>
   </PropertyGroup>
 
   <ItemGroup>
@@ -21,4 +24,8 @@
   </ItemGroup>
 
   <Import Project="$(ProjectDir)../DefaultLibrarySettings.targets" />
+
+  <Import Project="$(ProjectDir)../SourcesOnlyBefore.targets" Condition="'$(Configuration)|$(Platform)'=='SourceOnly|AnyCPU'"/>
+  <Import Project="Sdk.targets" Sdk="Microsoft.NET.Sdk" />
+  <Import Project="$(ProjectDir)../SourcesOnlyAfter.targets" Condition="'$(Configuration)|$(Platform)'=='SourceOnly|AnyCPU'"/>
 </Project>

@@ -96,6 +96,18 @@ class Build : NukeBuild
                 .EnableNoRestore());
         });
 
+    Target PackSource => _ => _
+        .Executes(() =>
+        {
+            DotNetBuild(s => s
+                .SetProjectFile(Solution)
+                .SetConfiguration("SourceOnly")
+                .SetProperties(NoWarns)
+                .SetProperty("BaseOutputPath", BaseBuildOutput + "/")
+                .SetVersion(GitVersion.NuGetVersion)
+                .EnableNoRestore());
+        });
+
     Target Test => _ => _
         .DependsOn(Compile)
         .Executes(() =>
@@ -175,7 +187,7 @@ class Build : NukeBuild
         .Executes(() =>
         {
             var source = "https://api.nuget.org/v3/index.json";
-            Parallel.ForEach(BuildOutput.GlobFiles("*.nupkg").NotEmpty(), (nupkgFile) =>
+            Parallel.ForEach(BaseBuildOutput.GlobFiles("**/*.nupkg").NotEmpty(), (nupkgFile) =>
             {
                 var errorIsWarning = false;
                 try

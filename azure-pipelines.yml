@@ -23,7 +23,7 @@ stages:
       inputs:
         targetType: filePath
         filePath: ./build.ps1
-        arguments: 'Coverage RunSonarScanner --CoberturaReport -SonarCloudLogin $env:SonarCloudLogin'
+        arguments: 'Coverage PackSource RunSonarScanner --CoberturaReport -SonarCloudLogin $env:SonarCloudLogin'
       env:
         SonarCloudLogin: $(sonar_cloud_login)
     - task: PublishBuildArtifacts@1

@@ -1,0 +1,4 @@
+<Project>
+  <Target Name="Compile" />
+  <Target Name="CopyFilesToOutputDirectory" />
+</Project>
