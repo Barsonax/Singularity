@@ -2,6 +2,7 @@
 using System.Diagnostics;
 using System.Linq;
 using System.Linq.Expressions;
+using System.Runtime.CompilerServices;
 using Singularity.Collections;
 using Singularity.Exceptions;
 using Singularity.Expressions;
@@ -37,19 +38,19 @@ namespace Singularity
             return factory != null;
         }
 
-        public ServiceBinding(SinglyLinkedListNode<Type> serviceTypes, BindingMetadata bindingMetadata, Expression expression,
+        public ServiceBinding(SinglyLinkedListNode<Type> serviceTypes, in BindingMetadata bindingMetadata, Expression expression,
             ILifetime lifetime, Action<object>? finalizer = null,
             ServiceAutoDispose needsDispose = ServiceAutoDispose.Default)
         {
             ServiceTypes = serviceTypes ?? throw new ArgumentNullException(nameof(serviceTypes));
-            BindingMetadata = bindingMetadata ?? throw new ArgumentNullException(nameof(bindingMetadata));
+            BindingMetadata = bindingMetadata;
             Lifetime = lifetime ?? throw new ArgumentNullException(nameof(lifetime));
             Expression = expression ?? throw new ArgumentNullException(nameof(expression));
             NeedsDispose = !EnumMetadata<ServiceAutoDispose>.IsValidValue(needsDispose) ? throw new InvalidEnumValueException<ServiceAutoDispose>(needsDispose) : needsDispose;
             Finalizer = finalizer;
         }
 
-        public ServiceBinding(Type dependencyType, BindingMetadata bindingMetadata, Expression expression,
+        public ServiceBinding(Type dependencyType, in BindingMetadata bindingMetadata, Expression expression,
             ILifetime? lifetime = null, Action<object>? finalizer = null,
             ServiceAutoDispose needsDispose = ServiceAutoDispose.Default) : this(new SinglyLinkedListNode<Type>(dependencyType), bindingMetadata, expression, lifetime ?? Lifetimes.Transient, finalizer, needsDispose)
         {

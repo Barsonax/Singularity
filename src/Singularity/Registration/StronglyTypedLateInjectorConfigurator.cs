@@ -17,7 +17,7 @@ namespace Singularity
         private readonly ArrayList<MethodInfo> _injectionMethods = new ArrayList<MethodInfo>();
         private readonly ArrayList<MemberInfo> _injectionMembers = new ArrayList<MemberInfo>();
 
-        internal StronglyTypedLateInjectorConfigurator(BindingMetadata bindingMetadata)
+        internal StronglyTypedLateInjectorConfigurator(in BindingMetadata bindingMetadata)
         {
             _bindingMetadata = bindingMetadata;
         }

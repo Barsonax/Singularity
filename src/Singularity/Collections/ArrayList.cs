@@ -32,6 +32,11 @@ namespace Singularity.Collections
             Array = newArray;
         }
 
+        public T Last()
+        {
+            return Array[Array.Length - 1];
+        }
+
         public IEnumerator<T> GetEnumerator()
         {
             foreach (T value in Array)

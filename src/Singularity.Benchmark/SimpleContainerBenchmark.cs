@@ -24,6 +24,12 @@ namespace Singularity.Benchmark
         }
 
         [Benchmark]
+        public void Register()
+        {
+            _benchmark.NewContainer();
+        }
+
+        [Benchmark]
         public ISingleton1 Singleton()
         {
             return _benchmark.Singleton();

@@ -9,7 +9,7 @@ namespace Singularity
     /// </summary>
     public sealed class WeaklyTypedDecoratorConfigurator
     {
-        internal WeaklyTypedDecoratorConfigurator(Type dependencyType, Type decoratorType, BindingMetadata bindingMetadata)
+        internal WeaklyTypedDecoratorConfigurator(Type dependencyType, Type decoratorType, in BindingMetadata bindingMetadata)
         {
             _bindingMetadata = bindingMetadata;
             _dependencyType = dependencyType;
