@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Linq.Expressions;
 using Singularity.Collections;
@@ -34,13 +35,13 @@ namespace Singularity.Test.Registrations
             });
 
             //ACT
-            Registration[] registrations = container.Registrations.Registrations.Values.ToArray();
+            KeyValuePair<Type, Registration>[] registrations = container.Registrations.Registrations.ToArray();
 
             //ASSERT
             Assert.Equal(3, registrations.Length);
-            Assert.Equal(typeof(ITestService10), registrations[0].DependencyType);
-            Assert.Equal(typeof(ITestService11), registrations[1].DependencyType);
-            Assert.Equal(typeof(ITestService12), registrations[2].DependencyType);
+            Assert.Equal(typeof(ITestService10), registrations[0].Key);
+            Assert.Equal(typeof(ITestService11), registrations[1].Key);
+            Assert.Equal(typeof(ITestService12), registrations[2].Key);
         }
 
         [Fact]
@@ -195,9 +196,9 @@ namespace Singularity.Test.Registrations
                 builder.Register(typeof(object),c => c.Inject(Expression.Constant(new object())));
             });
 
-            Registration registration = Assert.Single(container.Registrations.Registrations.Values);
-            Assert.Equal(typeof(object), registration.DependencyType);
-            Assert.Equal(typeof(object), registration.Bindings.Single().Expression?.Type);
+            KeyValuePair<Type, Registration> registration = Assert.Single(container.Registrations.Registrations);
+            Assert.Equal(typeof(object), registration.Key);
+            Assert.Equal(typeof(object), registration.Value.Bindings.Single().Expression?.Type);
         }
 
         [Fact]
@@ -208,9 +209,9 @@ namespace Singularity.Test.Registrations
                 builder.Register<object>(c => c.Inject<object>(obj0 => new object()));
             });
 
-            Registration registration = Assert.Single(container.Registrations.Registrations.Values);
-            Assert.Equal(typeof(object), registration.DependencyType);
-            Assert.Equal(typeof(Func<object, object>), registration.Bindings.Single().Expression?.Type);
+            KeyValuePair<Type, Registration> registration = Assert.Single(container.Registrations.Registrations);
+            Assert.Equal(typeof(object), registration.Key);
+            Assert.Equal(typeof(Func<object, object>), registration.Value.Bindings.Single().Expression?.Type);
         }
 
         [Fact]
@@ -221,9 +222,9 @@ namespace Singularity.Test.Registrations
                 builder.Register<object>(c => c.Inject<object, object>((obj0, obj1) => new object()));
             });
 
-            Registration registration = Assert.Single(container.Registrations.Registrations.Values);
-            Assert.Equal(typeof(object), registration.DependencyType);
-            Assert.Equal(typeof(Func<object, object, object>), registration.Bindings.Single().Expression?.Type);
+            KeyValuePair<Type, Registration> registration = Assert.Single(container.Registrations.Registrations);
+            Assert.Equal(typeof(object), registration.Key);
+            Assert.Equal(typeof(Func<object, object, object>), registration.Value.Bindings.Single().Expression?.Type);
         }
 
         [Fact]
@@ -234,9 +235,9 @@ namespace Singularity.Test.Registrations
                 builder.Register<object>(c => c.Inject<object, object, object>((obj0, obj1, obj2) => new object()));
             });
 
-            Registration registration = Assert.Single(container.Registrations.Registrations.Values);
-            Assert.Equal(typeof(object), registration.DependencyType);
-            Assert.Equal(typeof(Func<object, object, object, object>), registration.Bindings.Single().Expression?.Type);
+            KeyValuePair<Type, Registration> registration = Assert.Single(container.Registrations.Registrations);
+            Assert.Equal(typeof(object), registration.Key);
+            Assert.Equal(typeof(Func<object, object, object, object>), registration.Value.Bindings.Single().Expression?.Type);
         }
 
         [Fact]
@@ -247,9 +248,9 @@ namespace Singularity.Test.Registrations
                 builder.Register<object>(c => c.Inject<object, object, object, object>((obj0, obj1, obj2, obj3) => new object()));
             });
 
-            Registration registration = Assert.Single(container.Registrations.Registrations.Values);
-            Assert.Equal(typeof(object), registration.DependencyType);
-            Assert.Equal(typeof(Func<object, object, object, object, object>), registration.Bindings.Single().Expression?.Type);
+            KeyValuePair<Type, Registration> registration = Assert.Single(container.Registrations.Registrations);
+            Assert.Equal(typeof(object), registration.Key);
+            Assert.Equal(typeof(Func<object, object, object, object, object>), registration.Value.Bindings.Single().Expression?.Type);
         }
 
         [Fact]
@@ -260,9 +261,9 @@ namespace Singularity.Test.Registrations
                 builder.Register<object>(c => c.Inject<object, object, object, object, object>((obj0, obj1, obj2, obj3, obj4) => new object()));
             });
 
-            Registration registration = Assert.Single(container.Registrations.Registrations.Values);
-            Assert.Equal(typeof(object), registration.DependencyType);
-            Assert.Equal(typeof(Func<object, object, object, object, object, object>), registration.Bindings.Single().Expression?.Type);
+            KeyValuePair<Type, Registration> registration = Assert.Single(container.Registrations.Registrations);
+            Assert.Equal(typeof(object), registration.Key);
+            Assert.Equal(typeof(Func<object, object, object, object, object, object>), registration.Value.Bindings.Single().Expression?.Type);
         }
 
         [Fact]
@@ -273,9 +274,9 @@ namespace Singularity.Test.Registrations
                 builder.Register<object>(c => c.Inject<object, object, object, object, object, object>((obj0, obj1, obj2, obj3, obj4, obj5) => new object()));
             });
 
-            Registration registration = Assert.Single(container.Registrations.Registrations.Values);
-            Assert.Equal(typeof(object), registration.DependencyType);
-            Assert.Equal(typeof(Func<object, object, object, object, object, object, object>), registration.Bindings.Single().Expression?.Type);
+            KeyValuePair<Type, Registration> registration = Assert.Single(container.Registrations.Registrations);
+            Assert.Equal(typeof(object), registration.Key);
+            Assert.Equal(typeof(Func<object, object, object, object, object, object, object>), registration.Value.Bindings.Single().Expression?.Type);
         }
 
         [Fact]
@@ -286,9 +287,9 @@ namespace Singularity.Test.Registrations
                 builder.Register<object>(c => c.Inject<object, object, object, object, object, object, object>((obj0, obj1, obj2, obj3, obj4, obj5, obj6) => new object()));
             });
 
-            Registration registration = Assert.Single(container.Registrations.Registrations.Values);
-            Assert.Equal(typeof(object), registration.DependencyType);
-            Assert.Equal(typeof(Func<object, object, object, object, object, object, object, object>), registration.Bindings.Single().Expression?.Type);
+            KeyValuePair<Type, Registration> registration = Assert.Single(container.Registrations.Registrations);
+            Assert.Equal(typeof(object), registration.Key);
+            Assert.Equal(typeof(Func<object, object, object, object, object, object, object, object>), registration.Value.Bindings.Single().Expression?.Type);
         }
 
         [Fact]
@@ -299,9 +300,9 @@ namespace Singularity.Test.Registrations
                 builder.Register<object>(c => c.Inject<object, object, object, object, object, object, object, object>((obj0, obj1, obj2, obj3, obj4, obj5, obj6, obj7) => new object()));
             });
 
-            Registration registration = Assert.Single(container.Registrations.Registrations.Values);
-            Assert.Equal(typeof(object), registration.DependencyType);
-            Assert.Equal(typeof(Func<object, object, object, object, object, object, object, object, object>), registration.Bindings.Single().Expression?.Type);
+            KeyValuePair<Type, Registration> registration = Assert.Single(container.Registrations.Registrations);
+            Assert.Equal(typeof(object), registration.Key);
+            Assert.Equal(typeof(Func<object, object, object, object, object, object, object, object, object>), registration.Value.Bindings.Single().Expression?.Type);
         }
     }
 }

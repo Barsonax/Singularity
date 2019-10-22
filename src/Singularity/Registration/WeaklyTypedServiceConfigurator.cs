@@ -11,7 +11,7 @@ namespace Singularity
     /// </summary>
     public sealed class WeaklyTypedServiceConfigurator
     {
-        internal WeaklyTypedServiceConfigurator(Type dependencyType, Type instanceType, BindingMetadata bindingMetadata)
+        internal WeaklyTypedServiceConfigurator(Type dependencyType, Type instanceType, in BindingMetadata bindingMetadata)
         {
             ServiceTypeValidator.CheckIsEnumerable(dependencyType);
             ServiceTypeValidator.CheckIsAssignable(dependencyType, instanceType);

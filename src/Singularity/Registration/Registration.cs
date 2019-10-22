@@ -1,24 +1,19 @@
-﻿using System;
-using Singularity.Collections;
+﻿using Singularity.Collections;
 
 namespace Singularity
 {
-    internal sealed class Registration
+    internal readonly struct Registration
     {
-        public Type DependencyType { get; }
         public ArrayList<ServiceBinding> Bindings { get; }
-        public ServiceBinding Default { get; private set; }
+        public ServiceBinding Default => Bindings.Last();
 
-        public Registration(Type dependencyType, ServiceBinding serviceBinding)
+        public Registration(ServiceBinding serviceBinding)
         {
-            DependencyType = dependencyType;
-            Default = serviceBinding;
             Bindings = new ArrayList<ServiceBinding>(new[] { serviceBinding });
         }
 
         public void AddBinding(ServiceBinding serviceBinding)
         {
-            Default = serviceBinding;
             Bindings.Add(serviceBinding);
         }
     }

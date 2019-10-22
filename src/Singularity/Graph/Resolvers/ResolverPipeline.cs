@@ -66,7 +66,7 @@ namespace Singularity.Graph.Resolvers
         {
             Registration? registration = TryGetDependency(type);
             if (registration == null) yield break;
-            foreach (ServiceBinding registrationBinding in registration.Bindings)
+            foreach (ServiceBinding registrationBinding in registration.Value.Bindings)
             {
                 yield return ResolveDependency(type, registrationBinding);
             }
@@ -99,7 +99,7 @@ namespace Singularity.Graph.Resolvers
         {
             Registration? dependency = TryGetDependency(type);
             if (dependency == null) throw new DependencyNotFoundException(type);
-            return dependency;
+            return dependency.Value;
         }
 
         private InstanceFactory ResolveDependency(Type type, ServiceBinding dependency) => ResolveDependency(type, dependency, new CircularDependencyDetector());
@@ -178,9 +178,9 @@ namespace Singularity.Graph.Resolvers
         {
             lock (syncRoot)
             {
-                foreach (Registration registration in childRegistrations.Values)
+                foreach (KeyValuePair<Type, Registration> registration in childRegistrations)
                 {
-                    Type type = registration.DependencyType;
+                    Type type = registration.Key;
                     if (parentRegistrations.TryGetValue(type, out _))
                     {
                         throw new RegistrationAlreadyExistsException($"Dependency {type} was already registered in the parent graph!");

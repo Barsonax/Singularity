@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Linq.Expressions;
+using System.Runtime.CompilerServices;
 using Singularity.Collections;
 using Singularity.Exceptions;
 using Singularity.Graph;
@@ -14,11 +15,12 @@ namespace Singularity
     public sealed class StronglyTypedServiceConfigurator<TDependency, TInstance>
         where TInstance : class, TDependency
     {
-        internal StronglyTypedServiceConfigurator(BindingMetadata bindingMetadata)
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        internal StronglyTypedServiceConfigurator(in BindingMetadata bindingMetadata)
         {
             ServiceTypeValidator.Cache<TDependency>.CheckIsEnumerable();
             _bindingMetadata = bindingMetadata;
-            _dependencyTypes = new SinglyLinkedListNode<Type>(typeof(TDependency));
+            _dependencyTypes = SinglyLinkedListNodeTypeCache<TDependency>.Instance;
         }
 
         private readonly BindingMetadata _bindingMetadata;
@@ -32,7 +34,7 @@ namespace Singularity
         {
             if (_expression == null)
             {
-                if (typeof(TInstance).IsInterface) throw new BindingConfigException($"{typeof(TInstance)} cannot be a interface");
+                if (TypeMetadataCache<TInstance>.IsInterface) throw new BindingConfigException($"{typeof(TInstance)} cannot be a interface");
                 _expression = AutoResolveConstructorExpressionCache<TInstance>.Expression;
             }
             return new ServiceBinding(_dependencyTypes, _bindingMetadata, _expression, _lifetime, _finalizer, _disposeBehavior);

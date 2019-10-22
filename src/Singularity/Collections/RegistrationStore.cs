@@ -30,7 +30,7 @@ namespace Singularity.Collections
                 Type type = currentNode.Value;
                 if (!Registrations.TryGetValue(type, out Registration registration))
                 {
-                    registration = new Registration(type, serviceBinding);
+                    registration = new Registration(serviceBinding);
                     Registrations.Add(type, registration);
                 }
                 else

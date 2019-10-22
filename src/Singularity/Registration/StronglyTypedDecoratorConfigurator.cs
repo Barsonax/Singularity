@@ -13,7 +13,7 @@ namespace Singularity
         where TDependency : class
         where TDecorator : TDependency
     {
-        internal StronglyTypedDecoratorConfigurator(BindingMetadata bindingMetadata)
+        internal StronglyTypedDecoratorConfigurator(in BindingMetadata bindingMetadata)
         {
             _bindingMetadata = bindingMetadata;
             _dependencyType = typeof(TDependency);

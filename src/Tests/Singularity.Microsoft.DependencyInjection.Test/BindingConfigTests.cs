@@ -1,4 +1,6 @@
-﻿using Microsoft.Extensions.DependencyInjection;
+﻿using System;
+using System.Collections.Generic;
+using Microsoft.Extensions.DependencyInjection;
 using Singularity.Collections;
 using Singularity.TestClasses.TestClasses;
 using Xunit;
@@ -20,10 +22,10 @@ namespace Singularity.Microsoft.DependencyInjection.Test
 
             RegistrationStore registrationStore = container.Registrations;
 
-            Registration registration = Assert.Single(registrationStore.Registrations.Values);
+            KeyValuePair<Type, Registration> registration = Assert.Single(registrationStore.Registrations);
             Assert.Empty(registrationStore.Decorators);
-            ServiceBinding serviceBinding = Assert.Single(registration.Bindings);
-            Assert.Equal(typeof(IRepositoryTransient1), registration.DependencyType);
+            ServiceBinding serviceBinding = Assert.Single(registration.Value.Bindings);
+            Assert.Equal(typeof(IRepositoryTransient1), registration.Key);
             Assert.Equal(typeof(RepositoryTransient1), serviceBinding.Expression?.Type);
         }
     }

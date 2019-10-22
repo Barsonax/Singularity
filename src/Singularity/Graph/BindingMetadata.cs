@@ -6,8 +6,10 @@ namespace Singularity.Graph
     /// Contains useful metadata of a registered binding such as on what line its registered.
     /// Is used to provide more info in error messages
     /// </summary>
-	public sealed class BindingMetadata
+	public readonly struct BindingMetadata
     {
+        internal static BindingMetadata GeneratedInstance = new BindingMetadata(-1);
+
         /// <summary>
         /// The file path of the file in which the binding was registered.
         /// </summary>
@@ -16,7 +18,7 @@ namespace Singularity.Graph
         /// <summary>
         /// The line number in the file in which the binding was registered.
         /// </summary>
-		public int CreatorLineNumber { get; }
+        public int CreatorLineNumber { get; }
 
         /// <summary>
         /// The module in which the binding was registered.
@@ -33,12 +35,14 @@ namespace Singularity.Graph
             ModuleType = module?.GetType();
             CreatorFilePath = creatorFilePath;
             CreatorLineNumber = creatorLineNumber;
+            Generated = false;
         }
 
-        internal BindingMetadata()
+        private BindingMetadata(double dummy)
         {
             CreatorFilePath = "Generated";
             CreatorLineNumber = -1;
+            ModuleType = null;
             Generated = true;
         }
     }
