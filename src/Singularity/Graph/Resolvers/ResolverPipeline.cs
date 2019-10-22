@@ -10,17 +10,17 @@ namespace Singularity.Graph.Resolvers
 {
     internal sealed class ResolverPipeline : IResolverPipeline
     {
+        public SingularitySettings Settings { get; }
         private RegistrationStore RegistrationStore { get; }
         private object SyncRoot { get; }
         private readonly IDependencyResolver[] _resolvers;
         private readonly ResolverPipeline? _parentPipeline;
         private readonly Scoped _containerScope;
         private readonly ExpressionGenerator _expressionGenerator = new ExpressionGenerator();
-        private readonly SingularitySettings _settings;
 
         public ResolverPipeline(RegistrationStore registrationStore, Scoped containerScope, SingularitySettings settings, ResolverPipeline? parentPipeline)
         {
-            _settings = settings ?? throw new ArgumentNullException(nameof(settings));
+            Settings = settings ?? throw new ArgumentNullException(nameof(settings));
             _resolvers = new IDependencyResolver[]
             {
                 new EnumerableDependencyResolver(),
@@ -131,7 +131,7 @@ namespace Singularity.Graph.Resolvers
                         }
 
                         if (serviceBinding.ResolveError != null) throw serviceBinding.ResolveError;
-                        serviceBinding.BaseExpression = _expressionGenerator.GenerateBaseExpression(serviceBinding, factories, _containerScope, _settings);
+                        serviceBinding.BaseExpression = _expressionGenerator.GenerateBaseExpression(serviceBinding, factories, _containerScope, Settings);
                     }
                 }
             }

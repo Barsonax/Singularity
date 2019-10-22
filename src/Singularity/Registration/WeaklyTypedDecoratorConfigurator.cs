@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Linq.Expressions;
+using Singularity.Expressions;
 using Singularity.Graph;
 
 namespace Singularity
@@ -9,11 +10,11 @@ namespace Singularity
     /// </summary>
     public sealed class WeaklyTypedDecoratorConfigurator
     {
-        internal WeaklyTypedDecoratorConfigurator(Type dependencyType, Type decoratorType, in BindingMetadata bindingMetadata)
+        internal WeaklyTypedDecoratorConfigurator(Type dependencyType, Type decoratorType, in BindingMetadata bindingMetadata, SingularitySettings settings, IConstructorSelector? constructorSelector)
         {
             _bindingMetadata = bindingMetadata;
             _dependencyType = dependencyType;
-            _expression = decoratorType.AutoResolveConstructorExpression();
+            _expression = decoratorType.AutoResolveConstructorExpression(constructorSelector ?? settings.ConstructorSelector);
             DecoratorTypeValidator.CheckIsInterface(dependencyType);
             DecoratorTypeValidator.CheckParameters(_expression, dependencyType, decoratorType);
         }

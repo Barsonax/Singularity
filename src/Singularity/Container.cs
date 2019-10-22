@@ -20,12 +20,13 @@ namespace Singularity
         /// </summary>
 		public bool IsDisposed { get; private set; }
         internal RegistrationStore Registrations { get; }
+        internal SingularitySettings Options { get; }
+
         private readonly ResolverPipeline _dependencyGraph;
         private readonly ThreadSafeDictionary<Type, Action<Scoped, object>> _injectionCache = new ThreadSafeDictionary<Type, Action<Scoped, object>>();
         private readonly ThreadSafeDictionary<Type, Func<Scoped, object>> _getInstanceCache = new ThreadSafeDictionary<Type, Func<Scoped, object>>();
         private readonly Scoped _containerScope;
         private readonly Container? _parentContainer;
-        private readonly SingularitySettings _options;
 
         /// <summary>
         /// Creates a new container using all the bindings that are in the provided modules
@@ -41,23 +42,23 @@ namespace Singularity
         /// <param name="options"></param>
         public Container(Action<ContainerBuilder>? builder = null, SingularitySettings? options = null)
         {
+            Options = options ?? SingularitySettings.Default;
             var context = new ContainerBuilder(this);
             builder?.Invoke(context);
-            _options = options ?? SingularitySettings.Default;
             _containerScope = new Scoped(this);
             Registrations = context.Registrations;
-            _dependencyGraph = new ResolverPipeline(context.Registrations, _containerScope, _options, null);
+            _dependencyGraph = new ResolverPipeline(context.Registrations, _containerScope, Options, null);
         }
 
         private Container(Container parentContainer, Action<ContainerBuilder>? builder)
         {
+            Options = parentContainer.Options;
             var context = new ContainerBuilder(this);
             builder?.Invoke(context);
             _parentContainer = parentContainer;
-            _options = parentContainer._options;
             _containerScope = new Scoped(this);
             Registrations = context.Registrations;
-            _dependencyGraph = new ResolverPipeline(context.Registrations, _containerScope, _options, parentContainer._dependencyGraph);
+            _dependencyGraph = new ResolverPipeline(context.Registrations, _containerScope, Options, parentContainer._dependencyGraph);
         }
 
         /// <summary>

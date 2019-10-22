@@ -17,7 +17,7 @@ namespace Singularity.Graph.Resolvers
                 {
                     LambdaExpression baseExpression = Expression.Lambda(factory.Context.Expression);
 
-                    yield return new ServiceBinding(type, BindingMetadata.GeneratedInstance, baseExpression)
+                    yield return new ServiceBinding(type, BindingMetadata.GeneratedInstance, baseExpression, graph.Settings.ConstructorSelector)
                     {
                         BaseExpression = new ExpressionContext(baseExpression)
                     };

@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Linq.Expressions;
 using Microsoft.Extensions.DependencyInjection;
+using Singularity.Expressions;
 
 namespace Singularity.Microsoft.DependencyInjection
 {
@@ -9,6 +10,23 @@ namespace Singularity.Microsoft.DependencyInjection
     /// </summary>
     public static class Extensions
     {
+        /// <summary>
+        /// Creates a singularity <see cref="Container"/> from a <see cref="IServiceCollection"/>.
+        /// Also calls <see cref="RegisterServiceProvider"/> and <see cref="RegisterServices"/>
+        /// </summary>
+        /// <param name="services"></param>
+        /// <returns></returns>
+        public static Container BuildSingularityContainer(this IServiceCollection services)
+        {
+            var container = new Container(c =>
+            {
+                c.RegisterServiceProvider();
+                c.RegisterServices(services);
+            });
+
+            return container;
+        }
+
         /// <summary>
         /// Registers the required services to support microsoft dependency injection.
         /// </summary>
@@ -48,15 +66,15 @@ namespace Singularity.Microsoft.DependencyInjection
                             Expression.Convert(
                                     Expression.Invoke(
                                         Expression.Constant(registration.ImplementationFactory), serviceProviderParameter), registration.ServiceType), serviceProviderParameter))
-                    .With(ConvertLifetime(registration.Lifetime)));
+                    .With(ConvertLifetime(registration.Lifetime)), MultipleConstructorSelector.Instance);
             }
             else if (registration.ImplementationInstance != null)
             {
-                config.Register(registration.ServiceType, c => c.Inject(Expression.Constant(registration.ImplementationInstance)));
+                config.Register(registration.ServiceType, c => c.Inject(Expression.Constant(registration.ImplementationInstance)), MultipleConstructorSelector.Instance);
             }
             else
             {
-                config.Register(registration.ServiceType, registration.ImplementationType, c => c.With(ConvertLifetime(registration.Lifetime)));
+                config.Register(registration.ServiceType, registration.ImplementationType, c => c.With(ConvertLifetime(registration.Lifetime)), MultipleConstructorSelector.Instance);
             }
         }
 

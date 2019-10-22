@@ -11,16 +11,20 @@ namespace Singularity
     /// </summary>
     public sealed class WeaklyTypedServiceConfigurator
     {
-        internal WeaklyTypedServiceConfigurator(Type dependencyType, Type instanceType, in BindingMetadata bindingMetadata)
+        internal WeaklyTypedServiceConfigurator(Type dependencyType, Type instanceType, in BindingMetadata bindingMetadata, SingularitySettings settings, IConstructorSelector? constructorSelector)
         {
             ServiceTypeValidator.CheckIsEnumerable(dependencyType);
             ServiceTypeValidator.CheckIsAssignable(dependencyType, instanceType);
             _instanceType = instanceType;
             _bindingMetadata = bindingMetadata;
             _dependencyTypes = new SinglyLinkedListNode<Type>(dependencyType);
+            _settings = settings;
+            _constructorSelector = constructorSelector;
         }
 
         private readonly BindingMetadata _bindingMetadata;
+        private readonly SingularitySettings _settings;
+        private readonly IConstructorSelector? _constructorSelector;
         private readonly Type _instanceType;
         private SinglyLinkedListNode<Type> _dependencyTypes;
         private Expression? _expression;
@@ -28,8 +32,10 @@ namespace Singularity
         private Action<object>? _finalizer;
         private ServiceAutoDispose _disposeBehavior;
 
+
         internal ServiceBinding ToBinding()
         {
+            var constructorSelector = _constructorSelector ?? _settings.ConstructorSelector;
             if (_expression == null)
             {
                 if (_instanceType.ContainsGenericParameters)
@@ -38,10 +44,10 @@ namespace Singularity
                 }
                 else
                 {
-                    _expression = _instanceType.AutoResolveConstructorExpression();
+                    _expression = _instanceType.AutoResolveConstructorExpression(constructorSelector);
                 }
             }
-            return new ServiceBinding(_dependencyTypes, _bindingMetadata, _expression, _lifetime, _finalizer, _disposeBehavior);
+            return new ServiceBinding(_dependencyTypes, _bindingMetadata, _expression, constructorSelector, _lifetime, _finalizer, _disposeBehavior);
         }
 
         /// <summary>

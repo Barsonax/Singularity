@@ -25,7 +25,7 @@ namespace Singularity
         public ILifetime Lifetime { get; }
         public ServiceAutoDispose NeedsDispose { get; }
         public Action<object>? Finalizer { get; }
-
+        public IConstructorSelector ConstructorSelector { get; }
 
         public ReadOnlyExpressionContext? BaseExpression { get; internal set; }
         public Exception? ResolveError { get; internal set; }
@@ -38,7 +38,7 @@ namespace Singularity
             return factory != null;
         }
 
-        public ServiceBinding(SinglyLinkedListNode<Type> serviceTypes, in BindingMetadata bindingMetadata, Expression expression,
+        public ServiceBinding(SinglyLinkedListNode<Type> serviceTypes, in BindingMetadata bindingMetadata, Expression expression, IConstructorSelector constructorSelector,
             ILifetime lifetime, Action<object>? finalizer = null,
             ServiceAutoDispose needsDispose = ServiceAutoDispose.Default)
         {
@@ -48,11 +48,12 @@ namespace Singularity
             Expression = expression ?? throw new ArgumentNullException(nameof(expression));
             NeedsDispose = !EnumMetadata<ServiceAutoDispose>.IsValidValue(needsDispose) ? throw new InvalidEnumValueException<ServiceAutoDispose>(needsDispose) : needsDispose;
             Finalizer = finalizer;
+            ConstructorSelector = constructorSelector;
         }
 
-        public ServiceBinding(Type dependencyType, in BindingMetadata bindingMetadata, Expression expression,
+        public ServiceBinding(Type dependencyType, in BindingMetadata bindingMetadata, Expression expression, IConstructorSelector constructorSelector,
             ILifetime? lifetime = null, Action<object>? finalizer = null,
-            ServiceAutoDispose needsDispose = ServiceAutoDispose.Default) : this(new SinglyLinkedListNode<Type>(dependencyType), bindingMetadata, expression, lifetime ?? Lifetimes.Transient, finalizer, needsDispose)
+            ServiceAutoDispose needsDispose = ServiceAutoDispose.Default) : this(new SinglyLinkedListNode<Type>(dependencyType), bindingMetadata, expression, constructorSelector, lifetime ?? Lifetimes.Transient, finalizer, needsDispose)
         {
         }
     }
