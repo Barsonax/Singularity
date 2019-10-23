@@ -171,10 +171,7 @@ class Build : NukeBuild
 
     Target Push => _ => _
         .Requires(() => !string.IsNullOrEmpty(ApiKey))
-        .After(Test)
-        .After(Coverage)
-        .OnlyWhenDynamic(() => GitRepository.Branch == "master")
-        .After(Compile)
+        .After(Test, Coverage, Compile)
         .Executes(() =>
         {
             var source = "https://api.nuget.org/v3/index.json";
