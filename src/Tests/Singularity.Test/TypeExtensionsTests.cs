@@ -11,7 +11,7 @@ namespace Singularity.Test
         public void AutoResolveConstructor_ValueTypeWithNoConstructors()
         {
             Type type = typeof(int);
-            Expression expression = type.AutoResolveConstructorExpression(DefaultConstructorSelector.Instance);
+            Expression expression = type.AutoResolveConstructorExpression(ConstructorSelectors.Default);
             Assert.IsType<DefaultExpression>(expression);
         }
     }

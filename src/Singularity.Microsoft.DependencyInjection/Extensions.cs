@@ -66,15 +66,15 @@ namespace Singularity.Microsoft.DependencyInjection
                             Expression.Convert(
                                     Expression.Invoke(
                                         Expression.Constant(registration.ImplementationFactory), serviceProviderParameter), registration.ServiceType), serviceProviderParameter))
-                    .With(ConvertLifetime(registration.Lifetime)), MultipleConstructorSelector.Instance);
+                    .With(ConvertLifetime(registration.Lifetime)), ConstructorSelectors.Multiple);
             }
             else if (registration.ImplementationInstance != null)
             {
-                config.Register(registration.ServiceType, c => c.Inject(Expression.Constant(registration.ImplementationInstance)), MultipleConstructorSelector.Instance);
+                config.Register(registration.ServiceType, c => c.Inject(Expression.Constant(registration.ImplementationInstance)), ConstructorSelectors.Multiple);
             }
             else
             {
-                config.Register(registration.ServiceType, registration.ImplementationType, c => c.With(ConvertLifetime(registration.Lifetime)), MultipleConstructorSelector.Instance);
+                config.Register(registration.ServiceType, registration.ImplementationType, c => c.With(ConvertLifetime(registration.Lifetime)), ConstructorSelectors.Multiple);
             }
         }
 

@@ -36,6 +36,6 @@ namespace Singularity
         /// <summary>
         /// The constructor selector that will be used by default.
         /// </summary>
-        public IConstructorSelector ConstructorSelector { get; set; } = DefaultConstructorSelector.Instance;
+        public IConstructorSelector ConstructorSelector { get; set; } = ConstructorSelectors.Default;
     }
 }

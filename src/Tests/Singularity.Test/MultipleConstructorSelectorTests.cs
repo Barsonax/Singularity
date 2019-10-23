@@ -1,12 +1,11 @@
 ﻿using System;
 using Singularity.Exceptions;
-using Singularity.Expressions;
 using Singularity.TestClasses.TestClasses;
 using Xunit;
 
 namespace Singularity.Test
 {
-    public class DefaultConstructorSelectorTests
+    public class MultipleConstructorSelectorTests
     {
         [Fact]
         public void SelectConstructor_SingleConstructor_NoConstructors_Throws()
@@ -14,7 +13,7 @@ namespace Singularity.Test
             Type type = typeof(NoPublicConstructorClass);
             Assert.Throws<NoConstructorException>(() =>
             {
-                ConstructorSelectors.Default.SelectConstructor(type);
+                ConstructorSelectors.Multiple.SelectConstructor(type);
             });
         }
 
@@ -22,10 +21,11 @@ namespace Singularity.Test
         public void SelectConstructor_MultipleConstructors_Throws()
         {
             Type type = typeof(MultipleConstructorsClass);
-            Assert.Throws<CannotAutoResolveConstructorException>(() =>
-            {
-                ConstructorSelectors.Default.SelectConstructor(type);
-            });
+
+            var selectedConstructor = ConstructorSelectors.Multiple.SelectConstructor(type);
+
+            var constructorParameter = Assert.Single(selectedConstructor.GetParameters());
+            Assert.Equal(typeof(int), constructorParameter.ParameterType);
         }
     }
 }

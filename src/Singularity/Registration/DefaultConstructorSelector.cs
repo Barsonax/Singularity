@@ -2,18 +2,18 @@
 using System.Linq;
 using System.Reflection;
 using Singularity.Exceptions;
+using Singularity.Expressions;
 
-namespace Singularity.Expressions
+namespace Singularity
 {
-    public class MultipleConstructorSelector : IConstructorSelector
+    public class DefaultConstructorSelector : IConstructorSelector
     {
-        public static MultipleConstructorSelector Instance { get; } = new MultipleConstructorSelector();
-
         /// <summary>
         /// Tries to find a constructor.
         /// </summary>
         /// <param name="type"></param>
         /// <exception cref="NoConstructorException">If there is no public constructor</exception>
+        /// <exception cref="CannotAutoResolveConstructorException">If there is more than 1 public constructors</exception>
         /// <returns></returns>
         public ConstructorInfo SelectConstructor(Type type)
         {
@@ -22,11 +22,11 @@ namespace Singularity.Expressions
 
             if (constructors.Length > 1)
             {
-                return constructors.OrderByDescending(x => x.GetParameters().Length).FirstOrDefault();
+                throw new CannotAutoResolveConstructorException($"Found {constructors.Length} suitable constructors for type {type}. Please specify the constructor explicitly.");
             }
             return constructors.FirstOrDefault();
         }
 
-        private MultipleConstructorSelector() { }
+        internal DefaultConstructorSelector() { }
     }
 }
