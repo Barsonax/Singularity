@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Linq.Expressions;
-using Singularity.Expressions;
 using Xunit;
 
 namespace Singularity.Test
@@ -11,7 +10,7 @@ namespace Singularity.Test
         public void AutoResolveConstructor_ValueTypeWithNoConstructors()
         {
             Type type = typeof(int);
-            Expression expression = type.AutoResolveConstructorExpression(ConstructorSelectors.Default);
+            Expression expression = ConstructorSelectors.Default.AutoResolveConstructorExpression(type);
             Assert.IsType<DefaultExpression>(expression);
         }
     }

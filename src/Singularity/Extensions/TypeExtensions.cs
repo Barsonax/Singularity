@@ -1,8 +1,6 @@
 ﻿using System;
 using System.Linq.Expressions;
 using System.Reflection;
-using Singularity.Exceptions;
-using Singularity.Expressions;
 
 namespace Singularity
 {
@@ -12,14 +10,11 @@ namespace Singularity
         /// Tries to create a <see cref="Expression"/> representing the call to the constructor or in case of value types it may be just a default.
         /// </summary>
         /// <param name="type"></param>
-        /// <param name="constructorSelector"></param>
-        /// <exception cref="NoConstructorException">If there is no public constructor</exception>
-        /// <exception cref="CannotAutoResolveConstructorException">If there is more than 1 public constructors</exception>
+        /// <param name="constructor"></param>
+        /// <exception cref="NotSupportedException"></exception>
         /// <returns></returns>
-        public static Expression AutoResolveConstructorExpression(this Type type, IConstructorSelector constructorSelector)
+        public static Expression AutoResolveConstructorExpression(this Type type, ConstructorInfo constructor)
         {
-            ConstructorInfo constructor = constructorSelector.SelectConstructor(type);
-
             if (constructor == null && type.IsValueType)
             {
                 return Expression.Default(type);

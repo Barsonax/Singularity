@@ -7,7 +7,7 @@ using Xunit;
 
 namespace Singularity.Microsoft.DependencyInjection.Test
 {
-    public class BindingConfigTests
+    public class ContainerBuilderTests
     {
         [Fact]
         public void RegisterServices()
@@ -15,12 +15,12 @@ namespace Singularity.Microsoft.DependencyInjection.Test
             var serviceCollection = new ServiceCollection();
             serviceCollection.AddTransient<IRepositoryTransient1, RepositoryTransient1>();
 
-            var container = new Container(builder =>
+            var builder = new ContainerBuilder(builder =>
             {
                 builder.RegisterServices(serviceCollection);
             });
 
-            RegistrationStore registrationStore = container.Registrations;
+            RegistrationStore registrationStore = builder.Registrations;
 
             KeyValuePair<Type, Registration> registration = Assert.Single(registrationStore.Registrations);
             Assert.Empty(registrationStore.Decorators);

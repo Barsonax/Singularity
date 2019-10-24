@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Linq.Expressions;
 using System.Reflection;
 
 namespace Singularity.Expressions
@@ -11,5 +12,7 @@ namespace Singularity.Expressions
         /// <param name="type"></param>
         /// <returns></returns>
         ConstructorInfo SelectConstructor(Type type);
+
+        Expression AutoResolveConstructorExpression(Type type);
     }
 }

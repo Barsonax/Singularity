@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Linq.Expressions;
 using Microsoft.Extensions.DependencyInjection;
-using Singularity.Expressions;
 
 namespace Singularity.Microsoft.DependencyInjection
 {
@@ -15,16 +14,14 @@ namespace Singularity.Microsoft.DependencyInjection
         /// Also calls <see cref="RegisterServiceProvider"/> and <see cref="RegisterServices"/>
         /// </summary>
         /// <param name="services"></param>
+        /// <param name="settings"></param>
         /// <returns></returns>
-        public static Container BuildSingularityContainer(this IServiceCollection services)
+        public static ContainerBuilder CreateContainerBuilder(this IServiceCollection services, SingularitySettings? settings = null)
         {
-            var container = new Container(c =>
-            {
-                c.RegisterServiceProvider();
-                c.RegisterServices(services);
-            });
-
-            return container;
+            var builder = new ContainerBuilder(settings: settings);
+            builder.RegisterServiceProvider();
+            builder.RegisterServices(services);
+            return builder;
         }
 
         /// <summary>
@@ -33,7 +30,6 @@ namespace Singularity.Microsoft.DependencyInjection
         /// <param name="config"></param>
         public static void RegisterServiceProvider(this ContainerBuilder config)
         {
-            config.Register<Container>(c => c.Inject(() => config.Container).With(ServiceAutoDispose.Never));
             config.Register<IServiceProvider, SingularityServiceProvider>(c => c.With(Lifetimes.PerContainer));
             config.Register<IServiceScopeFactory, SingularityServiceScopeFactory>(c => c.With(Lifetimes.PerContainer));
         }
@@ -60,13 +56,7 @@ namespace Singularity.Microsoft.DependencyInjection
         {
             if (registration.ImplementationFactory != null)
             {
-                ParameterExpression serviceProviderParameter = Expression.Parameter(typeof(IServiceProvider));
-                config.Register(registration.ServiceType, c => c.Inject(
-                    Expression.Lambda(
-                            Expression.Convert(
-                                    Expression.Invoke(
-                                        Expression.Constant(registration.ImplementationFactory), serviceProviderParameter), registration.ServiceType), serviceProviderParameter))
-                    .With(ConvertLifetime(registration.Lifetime)), ConstructorSelectors.Multiple);
+                RegisterWithFactory(config, registration);
             }
             else if (registration.ImplementationInstance != null)
             {
@@ -76,6 +66,18 @@ namespace Singularity.Microsoft.DependencyInjection
             {
                 config.Register(registration.ServiceType, registration.ImplementationType, c => c.With(ConvertLifetime(registration.Lifetime)), ConstructorSelectors.Multiple);
             }
+        }
+
+        private static void RegisterWithFactory(ContainerBuilder config, ServiceDescriptor registration)
+        {
+            ParameterExpression serviceProviderParameter = Expression.Parameter(typeof(IServiceProvider));
+            config.Register(registration.ServiceType, c => c.Inject(
+                    Expression.Lambda(
+                        Expression.Convert(
+                            Expression.Invoke(
+                                Expression.Constant(registration.ImplementationFactory), serviceProviderParameter),
+                            registration.ServiceType), serviceProviderParameter))
+                .With(ConvertLifetime(registration.Lifetime)), ConstructorSelectors.Multiple);
         }
 
         private static ILifetime ConvertLifetime(ServiceLifetime serviceLifetime)

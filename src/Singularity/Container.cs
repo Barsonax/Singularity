@@ -20,7 +20,7 @@ namespace Singularity
         /// </summary>
 		public bool IsDisposed { get; private set; }
         internal RegistrationStore Registrations { get; }
-        internal SingularitySettings Options { get; }
+        internal SingularitySettings Settings { get; }
 
         private readonly ResolverPipeline _dependencyGraph;
         private readonly ThreadSafeDictionary<Type, Action<Scoped, object>> _injectionCache = new ThreadSafeDictionary<Type, Action<Scoped, object>>();
@@ -32,33 +32,49 @@ namespace Singularity
         /// Creates a new container using all the bindings that are in the provided modules
         /// </summary>
         /// <param name="modules"></param>
-        /// <param name="options"></param>
-        public Container(IEnumerable<IModule> modules, SingularitySettings? options = null) : this(ToBuilder(modules), options) { }
+        /// <param name="settings"></param>
+        public Container(IEnumerable<IModule> modules, SingularitySettings? settings = null) : this(ToBuilder(modules), settings) { }
 
         /// <summary>
-        /// Creates a new container using the provided builder.
+        /// Creates a new container using the provided configurator.
         /// </summary>
-        /// <param name="builder"></param>
-        /// <param name="options"></param>
-        public Container(Action<ContainerBuilder>? builder = null, SingularitySettings? options = null)
+        /// <param name="configurator"></param>
+        /// <param name="settings"></param>
+        public Container(Action<ContainerBuilder>? configurator = null, SingularitySettings? settings = null) : this(new ContainerBuilder(configurator, settings), settings)
         {
-            Options = options ?? SingularitySettings.Default;
-            var context = new ContainerBuilder(this);
-            builder?.Invoke(context);
-            _containerScope = new Scoped(this);
-            Registrations = context.Registrations;
-            _dependencyGraph = new ResolverPipeline(context.Registrations, _containerScope, Options, null);
         }
 
-        private Container(Container parentContainer, Action<ContainerBuilder>? builder)
+        /// <summary>
+        /// Creates a new container, consuming the provided builder.
+        /// </summary>
+        /// <param name="builder"></param>
+        /// <param name="settings"></param>
+        public Container(ContainerBuilder builder, SingularitySettings? settings = null)
         {
-            Options = parentContainer.Options;
-            var context = new ContainerBuilder(this);
-            builder?.Invoke(context);
+            builder.Register<Container>(c => c.Inject(() => this).With(ServiceAutoDispose.Never));
+            Settings = settings ?? SingularitySettings.Default;
+            _containerScope = new Scoped(this);
+            Registrations = builder.Registrations;
+            _dependencyGraph = new ResolverPipeline(builder.Registrations, _containerScope, Settings, null);
+        }
+
+        private Container(Container parentContainer, Action<ContainerBuilder>? configurator) : this(parentContainer, new ContainerBuilder(configurator, parentContainer.Settings))
+        {
+
+        }
+
+        /// <summary>
+        /// Creates a new container using the provided configurator.
+        /// </summary>
+        /// <param name="parentContainer"></param>
+        /// <param name="builder"></param>
+        private Container(Container parentContainer, ContainerBuilder builder)
+        {
+            Settings = parentContainer.Settings;
             _parentContainer = parentContainer;
             _containerScope = new Scoped(this);
-            Registrations = context.Registrations;
-            _dependencyGraph = new ResolverPipeline(context.Registrations, _containerScope, Options, parentContainer._dependencyGraph);
+            Registrations = builder.Registrations;
+            _dependencyGraph = new ResolverPipeline(builder.Registrations, _containerScope, Settings, parentContainer._dependencyGraph);
         }
 
         /// <summary>

@@ -16,9 +16,9 @@ namespace Singularity.Test.Registrations
         {
             Assert.Throws<InterfaceExpectedException>(() =>
             {
-                new Container(builder =>
+                new ContainerBuilder(cb =>
                 {
-                    builder.Decorate<TestService10, DecoratorWithNoInterface>();
+                    cb.Decorate<TestService10, DecoratorWithNoInterface>();
                 });
             });
         }
@@ -27,15 +27,15 @@ namespace Singularity.Test.Registrations
         public void GetDependencies_SingleRegistration_Enumerate()
         {
             //ARRANGE
-            var container = new Container(builder =>
+            var builder = new ContainerBuilder(cb =>
             {
-                builder.Register<ITestService10, TestService10>();
-                builder.Register<ITestService11, TestService11>();
-                builder.Register<ITestService12, TestService12>();
+                cb.Register<ITestService10, TestService10>();
+                cb.Register<ITestService11, TestService11>();
+                cb.Register<ITestService12, TestService12>();
             });
 
             //ACT
-            KeyValuePair<Type, Registration>[] registrations = container.Registrations.Registrations.ToArray();
+            KeyValuePair<Type, Registration>[] registrations = builder.Registrations.Registrations.ToArray();
 
             //ASSERT
             Assert.Equal(3, registrations.Length);
@@ -48,9 +48,9 @@ namespace Singularity.Test.Registrations
         public void GetDependencies_MultiRegistration_Enumerate()
         {
             //ARRANGE
-            var container = new Container(builder =>
+            var builder = new ContainerBuilder(cb =>
             {
-                builder.Register(typeof(IPlugin), new[]
+                cb.Register(typeof(IPlugin), new[]
                 {
                     typeof(Plugin1),
                     typeof(Plugin2),
@@ -59,7 +59,7 @@ namespace Singularity.Test.Registrations
             });
 
             //ACT
-            Registration[] registrations = container.Registrations.Registrations.Values.ToArray();
+            Registration[] registrations = builder.Registrations.Registrations.Values.ToArray();
 
             //ASSERT
             ServiceBinding[] serviceBindings = Assert.Single(registrations).Bindings.ToArray();
@@ -72,9 +72,9 @@ namespace Singularity.Test.Registrations
         public void GetDependencies_MultiRegistrationWithLifetime_Enumerate()
         {
             //ARRANGE
-            var container = new Container(builder =>
+            var builder = new ContainerBuilder(cb =>
             {
-                builder.Register(typeof(IPlugin), new[]
+                cb.Register(typeof(IPlugin), new[]
                 {
                     typeof(Plugin1),
                     typeof(Plugin2),
@@ -84,7 +84,7 @@ namespace Singularity.Test.Registrations
             });
 
             //ACT
-            Registration[] registrations = container.Registrations.Registrations.Values.ToArray();
+            Registration[] registrations = builder.Registrations.Registrations.Values.ToArray();
 
             //ASSERT
             ServiceBinding[] serviceBindings = Assert.Single(registrations).Bindings.ToArray();
@@ -98,13 +98,13 @@ namespace Singularity.Test.Registrations
         public void GetDependencies_MultiDecoratorRegistration_Enumerate()
         {
             //ARRANGE
-            var container = new Container(builder =>
+            var builder = new ContainerBuilder(cb =>
             {
-                builder.Register<IPlugin, Plugin1>();
-                builder.Register<IPlugin, Plugin2>();
-                builder.Register<IPlugin, Plugin3>();
+                cb.Register<IPlugin, Plugin1>();
+                cb.Register<IPlugin, Plugin2>();
+                cb.Register<IPlugin, Plugin3>();
 
-                builder.Decorate(typeof(IPlugin), new[]
+                cb.Decorate(typeof(IPlugin), new[]
                 {
                     typeof(PluginLogger1),
                     typeof(PluginLogger2),
@@ -113,7 +113,7 @@ namespace Singularity.Test.Registrations
             });
 
             //ACT
-            RegistrationStore readOnlyBindingConfig = container.Registrations;
+            RegistrationStore readOnlyBindingConfig = builder.Registrations;
 
             //ASSERT
             ServiceBinding[] serviceBindings = Assert.Single(readOnlyBindingConfig.Registrations).Value.Bindings.ToArray();
@@ -131,9 +131,9 @@ namespace Singularity.Test.Registrations
         {
             Assert.Throws<InvalidEnumValueException<ServiceAutoDispose>>(() =>
             {
-                new Container(builder =>
+                new ContainerBuilder(cb =>
                 {
-                    builder.Register<ITestService10, TestService10>(c => c
+                    cb.Register<ITestService10, TestService10>(c => c
                         .With((ServiceAutoDispose)234234));
                 });
             });
@@ -144,9 +144,9 @@ namespace Singularity.Test.Registrations
         {
             Assert.Throws<InvalidEnumValueException<ServiceAutoDispose>>(() =>
             {
-                new Container(builder =>
+                new ContainerBuilder(cb =>
                 {
-                    builder.Register(typeof(ITestService10), typeof(TestService10), c => c
+                    cb.Register(typeof(ITestService10), typeof(TestService10), c => c
                         .With((ServiceAutoDispose)234234));
                 });
             });
@@ -157,9 +157,9 @@ namespace Singularity.Test.Registrations
         {
             Assert.Throws<TypeNotAssignableException>(() =>
             {
-                new Container(builder =>
+                new ContainerBuilder(cb =>
                 {
-                    builder.Register(typeof(ITestService10), typeof(TestService11));
+                    cb.Register(typeof(ITestService10), typeof(TestService11));
                 });
             });
         }
@@ -169,9 +169,9 @@ namespace Singularity.Test.Registrations
         {
             Assert.Throws<InvalidExpressionArgumentsException>(() =>
             {
-                new Container(builder =>
+                new ContainerBuilder(cb =>
                 {
-                    builder.Decorate(typeof(ITestService10), typeof(DecoratorWrongConstructorArguments));
+                    cb.Decorate(typeof(ITestService10), typeof(DecoratorWrongConstructorArguments));
                 });
             });
         }
@@ -181,9 +181,9 @@ namespace Singularity.Test.Registrations
         {
             Assert.Throws<InvalidExpressionArgumentsException>(() =>
             {
-                new Container(builder =>
+                new ContainerBuilder(cb =>
                 {
-                    builder.Decorate<ITestService10, DecoratorWrongConstructorArguments>();
+                    cb.Decorate<ITestService10, DecoratorWrongConstructorArguments>();
                 });
             });
         }
@@ -191,12 +191,12 @@ namespace Singularity.Test.Registrations
         [Fact]
         public void Inject_WeaklyTyped()
         {
-            var container = new Container(builder =>
+            var builder = new ContainerBuilder(cb =>
             {
-                builder.Register(typeof(object),c => c.Inject(Expression.Constant(new object())));
+                cb.Register(typeof(object),c => c.Inject(Expression.Constant(new object())));
             });
 
-            KeyValuePair<Type, Registration> registration = Assert.Single(container.Registrations.Registrations);
+            KeyValuePair<Type, Registration> registration = Assert.Single(builder.Registrations.Registrations);
             Assert.Equal(typeof(object), registration.Key);
             Assert.Equal(typeof(object), registration.Value.Bindings.Single().Expression?.Type);
         }
@@ -204,12 +204,12 @@ namespace Singularity.Test.Registrations
         [Fact]
         public void Inject_StronglyTyped_Arity1()
         {
-            var container = new Container(builder =>
+            var builder = new ContainerBuilder(cb =>
             {
-                builder.Register<object>(c => c.Inject<object>(obj0 => new object()));
+                cb.Register<object>(c => c.Inject<object>(obj0 => new object()));
             });
 
-            KeyValuePair<Type, Registration> registration = Assert.Single(container.Registrations.Registrations);
+            KeyValuePair<Type, Registration> registration = Assert.Single(builder.Registrations.Registrations);
             Assert.Equal(typeof(object), registration.Key);
             Assert.Equal(typeof(Func<object, object>), registration.Value.Bindings.Single().Expression?.Type);
         }
@@ -217,12 +217,12 @@ namespace Singularity.Test.Registrations
         [Fact]
         public void Inject_StronglyTyped_Arity2()
         {
-            var container = new Container(builder =>
+            var builder = new ContainerBuilder(cb =>
             {
-                builder.Register<object>(c => c.Inject<object, object>((obj0, obj1) => new object()));
+                cb.Register<object>(c => c.Inject<object, object>((obj0, obj1) => new object()));
             });
 
-            KeyValuePair<Type, Registration> registration = Assert.Single(container.Registrations.Registrations);
+            KeyValuePair<Type, Registration> registration = Assert.Single(builder.Registrations.Registrations);
             Assert.Equal(typeof(object), registration.Key);
             Assert.Equal(typeof(Func<object, object, object>), registration.Value.Bindings.Single().Expression?.Type);
         }
@@ -230,12 +230,12 @@ namespace Singularity.Test.Registrations
         [Fact]
         public void Inject_StronglyTyped_Arity3()
         {
-            var container = new Container(builder =>
+            var builder = new ContainerBuilder(cb =>
             {
-                builder.Register<object>(c => c.Inject<object, object, object>((obj0, obj1, obj2) => new object()));
+                cb.Register<object>(c => c.Inject<object, object, object>((obj0, obj1, obj2) => new object()));
             });
 
-            KeyValuePair<Type, Registration> registration = Assert.Single(container.Registrations.Registrations);
+            KeyValuePair<Type, Registration> registration = Assert.Single(builder.Registrations.Registrations);
             Assert.Equal(typeof(object), registration.Key);
             Assert.Equal(typeof(Func<object, object, object, object>), registration.Value.Bindings.Single().Expression?.Type);
         }
@@ -243,12 +243,12 @@ namespace Singularity.Test.Registrations
         [Fact]
         public void Inject_StronglyTyped_Arity4()
         {
-            var container = new Container(builder =>
+            var builder = new ContainerBuilder(cb =>
             {
-                builder.Register<object>(c => c.Inject<object, object, object, object>((obj0, obj1, obj2, obj3) => new object()));
+                cb.Register<object>(c => c.Inject<object, object, object, object>((obj0, obj1, obj2, obj3) => new object()));
             });
 
-            KeyValuePair<Type, Registration> registration = Assert.Single(container.Registrations.Registrations);
+            KeyValuePair<Type, Registration> registration = Assert.Single(builder.Registrations.Registrations);
             Assert.Equal(typeof(object), registration.Key);
             Assert.Equal(typeof(Func<object, object, object, object, object>), registration.Value.Bindings.Single().Expression?.Type);
         }
@@ -256,12 +256,12 @@ namespace Singularity.Test.Registrations
         [Fact]
         public void Inject_StronglyTyped_Arity5()
         {
-            var container = new Container(builder =>
+            var builder = new ContainerBuilder(cb =>
             {
-                builder.Register<object>(c => c.Inject<object, object, object, object, object>((obj0, obj1, obj2, obj3, obj4) => new object()));
+                cb.Register<object>(c => c.Inject<object, object, object, object, object>((obj0, obj1, obj2, obj3, obj4) => new object()));
             });
 
-            KeyValuePair<Type, Registration> registration = Assert.Single(container.Registrations.Registrations);
+            KeyValuePair<Type, Registration> registration = Assert.Single(builder.Registrations.Registrations);
             Assert.Equal(typeof(object), registration.Key);
             Assert.Equal(typeof(Func<object, object, object, object, object, object>), registration.Value.Bindings.Single().Expression?.Type);
         }
@@ -269,12 +269,12 @@ namespace Singularity.Test.Registrations
         [Fact]
         public void Inject_StronglyTyped_Arity6()
         {
-            var container = new Container(builder =>
+            var builder = new ContainerBuilder(cb =>
             {
-                builder.Register<object>(c => c.Inject<object, object, object, object, object, object>((obj0, obj1, obj2, obj3, obj4, obj5) => new object()));
+                cb.Register<object>(c => c.Inject<object, object, object, object, object, object>((obj0, obj1, obj2, obj3, obj4, obj5) => new object()));
             });
 
-            KeyValuePair<Type, Registration> registration = Assert.Single(container.Registrations.Registrations);
+            KeyValuePair<Type, Registration> registration = Assert.Single(builder.Registrations.Registrations);
             Assert.Equal(typeof(object), registration.Key);
             Assert.Equal(typeof(Func<object, object, object, object, object, object, object>), registration.Value.Bindings.Single().Expression?.Type);
         }
@@ -282,12 +282,12 @@ namespace Singularity.Test.Registrations
         [Fact]
         public void Inject_StronglyTyped_Arity7()
         {
-            var container = new Container(builder =>
+            var builder = new ContainerBuilder(cb =>
             {
-                builder.Register<object>(c => c.Inject<object, object, object, object, object, object, object>((obj0, obj1, obj2, obj3, obj4, obj5, obj6) => new object()));
+                cb.Register<object>(c => c.Inject<object, object, object, object, object, object, object>((obj0, obj1, obj2, obj3, obj4, obj5, obj6) => new object()));
             });
 
-            KeyValuePair<Type, Registration> registration = Assert.Single(container.Registrations.Registrations);
+            KeyValuePair<Type, Registration> registration = Assert.Single(builder.Registrations.Registrations);
             Assert.Equal(typeof(object), registration.Key);
             Assert.Equal(typeof(Func<object, object, object, object, object, object, object, object>), registration.Value.Bindings.Single().Expression?.Type);
         }
@@ -295,12 +295,12 @@ namespace Singularity.Test.Registrations
         [Fact]
         public void Inject_StronglyTyped_Arity8()
         {
-            var container = new Container(builder =>
+            var builder = new ContainerBuilder(cb =>
             {
-                builder.Register<object>(c => c.Inject<object, object, object, object, object, object, object, object>((obj0, obj1, obj2, obj3, obj4, obj5, obj6, obj7) => new object()));
+                cb.Register<object>(c => c.Inject<object, object, object, object, object, object, object, object>((obj0, obj1, obj2, obj3, obj4, obj5, obj6, obj7) => new object()));
             });
 
-            KeyValuePair<Type, Registration> registration = Assert.Single(container.Registrations.Registrations);
+            KeyValuePair<Type, Registration> registration = Assert.Single(builder.Registrations.Registrations);
             Assert.Equal(typeof(object), registration.Key);
             Assert.Equal(typeof(Func<object, object, object, object, object, object, object, object, object>), registration.Value.Bindings.Single().Expression?.Type);
         }

@@ -14,7 +14,7 @@ namespace Singularity
         {
             _bindingMetadata = bindingMetadata;
             _dependencyType = dependencyType;
-            _expression = decoratorType.AutoResolveConstructorExpression(constructorSelector ?? settings.ConstructorSelector);
+            _expression = (constructorSelector ?? settings.ConstructorSelector).AutoResolveConstructorExpression(decoratorType);
             DecoratorTypeValidator.CheckIsInterface(dependencyType);
             DecoratorTypeValidator.CheckParameters(_expression, dependencyType, decoratorType);
         }

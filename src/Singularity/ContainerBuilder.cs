@@ -13,16 +13,18 @@ namespace Singularity
     /// </summary>
     public sealed class ContainerBuilder
     {
-        /// <summary>
-        /// The container which is being build.
-        /// </summary>
-        public Container Container { get; }
-
+        internal SingularitySettings Settings { get; }
         internal RegistrationStore Registrations { get; } = new RegistrationStore();
 
-        internal ContainerBuilder(Container container)
+        /// <summary>
+        /// Creates a new builder with the provided optional configurator and settings.
+        /// </summary>
+        /// <param name="configurator"></param>
+        /// <param name="settings"></param>
+        public ContainerBuilder(Action<ContainerBuilder>? configurator = null, SingularitySettings? settings = null)
         {
-            Container = container;
+            Settings = settings ?? SingularitySettings.Default;
+            configurator?.Invoke(this);
         }
 
         /// <summary>
@@ -175,7 +177,7 @@ namespace Singularity
             where TInstance : class, TDependency
         {
             var metadata = new BindingMetadata(callerFilePath, callerLineNumber, Registrations.CurrentModule);
-            var context = new StronglyTypedServiceConfigurator<TDependency, TInstance>(metadata, Container.Options, constructorSelector);
+            var context = new StronglyTypedServiceConfigurator<TDependency, TInstance>(metadata, Settings, constructorSelector);
             configurator?.Invoke(context);
             ServiceBinding serviceBinding = context.ToBinding();
             Registrations.AddBinding(serviceBinding);
@@ -184,7 +186,7 @@ namespace Singularity
         private void RegisterInternal(Type dependencyType, Type instanceType, Action<WeaklyTypedServiceConfigurator>? configurator, IConstructorSelector? constructorSelector, string callerFilePath, int callerLineNumber)
         {
             var metadata = new BindingMetadata(callerFilePath, callerLineNumber, Registrations.CurrentModule);
-            var context = new WeaklyTypedServiceConfigurator(dependencyType, instanceType, metadata, Container.Options, constructorSelector);
+            var context = new WeaklyTypedServiceConfigurator(dependencyType, instanceType, metadata, Settings, constructorSelector);
             configurator?.Invoke(context);
             ServiceBinding serviceBinding = context.ToBinding();
             Registrations.AddBinding(serviceBinding);
@@ -195,7 +197,7 @@ namespace Singularity
             where TDecorator : TDependency
         {
             var metadata = new BindingMetadata(callerFilePath, callerLineNumber, Registrations.CurrentModule);
-            var context = new StronglyTypedDecoratorConfigurator<TDependency, TDecorator>(metadata, Container.Options, constructorSelector);
+            var context = new StronglyTypedDecoratorConfigurator<TDependency, TDecorator>(metadata, Settings, constructorSelector);
             configurator?.Invoke(context);
             Expression binding = context.ToBinding();
             Registrations.AddDecorator(typeof(TDependency), binding);
@@ -204,7 +206,7 @@ namespace Singularity
         private void DecorateInternal(Type dependencyType, Type decoratorType, Action<WeaklyTypedDecoratorConfigurator>? configurator, IConstructorSelector? constructorSelector, string callerFilePath, int callerLineNumber)
         {
             var metadata = new BindingMetadata(callerFilePath, callerLineNumber, Registrations.CurrentModule);
-            var context = new WeaklyTypedDecoratorConfigurator(dependencyType, decoratorType, metadata, Container.Options, constructorSelector);
+            var context = new WeaklyTypedDecoratorConfigurator(dependencyType, decoratorType, metadata, Settings, constructorSelector);
             configurator?.Invoke(context);
             Expression binding = context.ToBinding();
             Registrations.AddDecorator(dependencyType, binding);

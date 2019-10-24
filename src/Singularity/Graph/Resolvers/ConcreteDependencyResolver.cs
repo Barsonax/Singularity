@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq.Expressions;
 
 namespace Singularity.Graph.Resolvers
 {
@@ -10,7 +9,7 @@ namespace Singularity.Graph.Resolvers
         {
             if (!type.IsInterface)
             {
-                yield return new ServiceBinding(type, BindingMetadata.GeneratedInstance, type.AutoResolveConstructorExpression(graph.Settings.ConstructorSelector), graph.Settings.ConstructorSelector);
+                yield return new ServiceBinding(type, BindingMetadata.GeneratedInstance, graph.Settings.ConstructorSelector.AutoResolveConstructorExpression(type), graph.Settings.ConstructorSelector);
             }
         }
     }

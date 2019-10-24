@@ -41,7 +41,7 @@ namespace Singularity
             if (_expression == null)
             {
                 if (TypeMetadataCache<TInstance>.IsInterface) throw new BindingConfigException($"{typeof(TInstance)} cannot be a interface");
-                _expression = typeof(TInstance).AutoResolveConstructorExpression(constructorSelector);
+                _expression = constructorSelector.AutoResolveConstructorExpression(typeof(TInstance));
             }
             return new ServiceBinding(_dependencyTypes, _bindingMetadata, _expression, constructorSelector, _lifetime, _finalizer, _disposeBehavior);
         }
