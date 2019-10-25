@@ -3,7 +3,7 @@
     /// <summary>
     /// Provides easy access to build in constructor selectors.
     /// </summary>
-    public static class ConstructorSelectors
+    public static class ConstructorResolvers
     {
         /// <summary>
         /// The default strict constructor injector
@@ -13,6 +13,11 @@
         /// <summary>
         /// A selector that picks the constructor with the most arguments.
         /// </summary>
-        public static MultipleConstructorResolver Multiple { get; } = new MultipleConstructorResolver();
+        public static MostArgumentsConstructorResolver MostArguments { get; } = new MostArgumentsConstructorResolver();
+
+        /// <summary>
+        /// A selector that picks the constructor with the most arguments.
+        /// </summary>
+        public static LeastArgumentsConstructorResolver LeastArguments { get; } = new LeastArgumentsConstructorResolver();
     }
 }

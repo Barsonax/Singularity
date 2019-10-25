@@ -21,7 +21,7 @@ namespace Singularity.Graph.Resolvers
                     Func<Scoped, object>[] instanceFactories = graph.TryResolveAll(elementType).Select(x => x.Factory).ToArray();
 
                     Type instanceFactoryListType = typeof(InstanceFactoryList<>).MakeGenericType(type.GenericTypeArguments);
-                    Expression expression = Expression.New(ConstructorSelectors.Default.SelectConstructor(instanceFactoryListType), ExpressionGenerator.ScopeParameter, Expression.Constant(instanceFactories));
+                    Expression expression = Expression.New(ConstructorResolvers.Default.SelectConstructor(instanceFactoryListType), ExpressionGenerator.ScopeParameter, Expression.Constant(instanceFactories));
 
                     Type[] types = {
                         typeof(IEnumerable<>).MakeGenericType(elementType),

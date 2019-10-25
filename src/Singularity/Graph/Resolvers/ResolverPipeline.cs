@@ -23,7 +23,7 @@ namespace Singularity.Graph.Resolvers
             Settings = settings ?? throw new ArgumentNullException(nameof(settings));
             _resolvers = new IDependencyResolver[]
             {
-                new ContainerDependencyResolver(), 
+                new ContainerDependencyResolver(),
                 new EnumerableDependencyResolver(),
                 new ExpressionDependencyResolver(),
                 new LazyDependencyResolver(),
@@ -45,7 +45,7 @@ namespace Singularity.Graph.Resolvers
         public InstanceFactory Resolve(Type type)
         {
             ServiceBinding serviceBinding = GetDependency(type).Default;
-            return ResolveDependency(type, serviceBinding);
+            return ResolveDependency(type, serviceBinding) ?? throw serviceBinding.ResolveError!;
         }
 
         public IEnumerable<InstanceFactory> ResolveAll(Type type)
@@ -69,7 +69,8 @@ namespace Singularity.Graph.Resolvers
             if (registration == null) yield break;
             foreach (ServiceBinding registrationBinding in registration.Value.Bindings)
             {
-                yield return ResolveDependency(type, registrationBinding);
+                var factory = ResolveDependency(type, registrationBinding);
+                if(factory != null) yield return factory;
             }
         }
 
@@ -103,15 +104,26 @@ namespace Singularity.Graph.Resolvers
             return dependency.Value;
         }
 
-        private InstanceFactory ResolveDependency(Type type, ServiceBinding dependency) => ResolveDependency(type, dependency, new CircularDependencyDetector());
+        private InstanceFactory? ResolveDependency(Type type, ServiceBinding dependency) => ResolveDependency(type, dependency, new CircularDependencyDetector());
 
-        private InstanceFactory ResolveDependency(Type type, ServiceBinding dependency, CircularDependencyDetector circularDependencyDetector)
+        private InstanceFactory? ResolveDependency(Type type, ServiceBinding dependency, CircularDependencyDetector circularDependencyDetector)
         {
-            circularDependencyDetector.Enter(type);
-            GenerateBaseExpression(dependency, circularDependencyDetector);
-            InstanceFactory factory = GenerateInstanceFactory(type, dependency, circularDependencyDetector);
-            circularDependencyDetector.Leave(type);
-            return factory;
+            try
+            {
+                circularDependencyDetector.Enter(type);
+                GenerateBaseExpression(dependency, circularDependencyDetector);
+                InstanceFactory factory = GenerateInstanceFactory(type, dependency, circularDependencyDetector);
+                return factory;
+            }
+            catch (Exception e)
+            {
+                dependency.ResolveError = e;
+                return null;
+            }
+            finally
+            {
+                circularDependencyDetector.Leave(type);
+            }
         }
 
         private void GenerateBaseExpression(ServiceBinding serviceBinding, CircularDependencyDetector circularDependencyDetector)
@@ -129,9 +141,9 @@ namespace Singularity.Graph.Resolvers
                             ParameterExpression parameter = parameters[i];
                             ServiceBinding child = GetDependency(parameter.Type).Default;
                             factories[i] = ResolveDependency(parameter.Type, child, circularDependencyDetector);
+                            if (child.ResolveError != null) throw child.ResolveError;
                         }
 
-                        if (serviceBinding.ResolveError != null) throw serviceBinding.ResolveError;
                         serviceBinding.BaseExpression = _expressionGenerator.GenerateBaseExpression(serviceBinding, factories, _containerScope, Settings);
                     }
                 }

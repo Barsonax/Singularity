@@ -22,14 +22,14 @@ namespace Singularity.Test.Benchmark
         [Fact]
         public void CombinedManual()
         {
-            Expression singleton1NewExpression = ConstructorSelectors.Default.AutoResolveConstructorExpression(typeof(Singleton1));
+            Expression singleton1NewExpression = ConstructorResolvers.Default.AutoResolveConstructorExpression(typeof(Singleton1));
             Delegate action1 = Expression.Lambda(singleton1NewExpression).Compile();
             object value = action1.DynamicInvoke();
             singleton1NewExpression = Expression.Constant(value);
 
-            Expression transient1NewExpression = ConstructorSelectors.Default.AutoResolveConstructorExpression(typeof(Transient1));
+            Expression transient1NewExpression = ConstructorResolvers.Default.AutoResolveConstructorExpression(typeof(Transient1));
 
-            NewExpression expression = Expression.New(ConstructorSelectors.Default.SelectConstructor(typeof(Combined1)), singleton1NewExpression, transient1NewExpression);
+            NewExpression expression = Expression.New(ConstructorResolvers.Default.SelectConstructor(typeof(Combined1)), singleton1NewExpression, transient1NewExpression);
             Delegate action = Expression.Lambda(expression).Compile();
             var func = (Func<object>)action;
             object instance = func.Invoke();

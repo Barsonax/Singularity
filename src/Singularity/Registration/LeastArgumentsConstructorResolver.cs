@@ -11,7 +11,7 @@ namespace Singularity
     /// <summary>
     /// Picks the public constructor with the most arguments.
     /// </summary>
-    public class MultipleConstructorResolver : IConstructorResolver
+    public class LeastArgumentsConstructorResolver : IConstructorResolver
     {
         private static ConcurrentDictionary<Type, ConstructorInfo> Cache = new ConcurrentDictionary<Type, ConstructorInfo>();
         private static ConcurrentDictionary<Type, Expression> ExpressionCache = new ConcurrentDictionary<Type, Expression>();
@@ -31,7 +31,7 @@ namespace Singularity
 
                 if (constructors.Length > 1)
                 {
-                    return constructors.OrderByDescending(x => x.GetParameters().Length).FirstOrDefault();
+                    return constructors.OrderBy(x => x.GetParameters().Length).FirstOrDefault();
                 }
                 return constructors.FirstOrDefault();
             });
@@ -42,6 +42,6 @@ namespace Singularity
             return ExpressionCache.GetOrAdd(type, t => t.AutoResolveConstructorExpression(SelectConstructor(type)));
         }
 
-        internal MultipleConstructorResolver() { }
+        internal LeastArgumentsConstructorResolver() { }
     }
 }

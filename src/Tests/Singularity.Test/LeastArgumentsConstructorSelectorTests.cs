@@ -5,7 +5,7 @@ using Xunit;
 
 namespace Singularity.Test
 {
-    public class MultipleConstructorSelectorTests
+    public class LeastArgumentsConstructorSelectorTests
     {
         [Fact]
         public void SelectConstructor_SingleConstructor_NoConstructors_Throws()
@@ -13,19 +13,18 @@ namespace Singularity.Test
             Type type = typeof(NoPublicConstructorClass);
             Assert.Throws<NoConstructorException>(() =>
             {
-                ConstructorSelectors.Multiple.SelectConstructor(type);
+                ConstructorResolvers.LeastArguments.SelectConstructor(type);
             });
         }
 
         [Fact]
-        public void SelectConstructor_MultipleConstructors_Throws()
+        public void SelectConstructor_MultipleConstructors()
         {
             Type type = typeof(MultipleConstructorsClass);
 
-            var selectedConstructor = ConstructorSelectors.Multiple.SelectConstructor(type);
+            var selectedConstructor = ConstructorResolvers.LeastArguments.SelectConstructor(type);
 
-            var constructorParameter = Assert.Single(selectedConstructor.GetParameters());
-            Assert.Equal(typeof(int), constructorParameter.ParameterType);
+            Assert.Empty(selectedConstructor.GetParameters());
         }
     }
 }
