@@ -9,6 +9,24 @@ namespace Singularity.Test.Injection
     public class EnumerableTests
     {
         [Fact]
+        public void GetInstance_AsEnumerable_MissingDependencies()
+        {
+            //ARRANGE
+            var container = new Container(c => 
+            {
+                c.Register<IPlugin, PluginWithDependencies>();
+                c.Register<IPlugin, Plugin1>();
+            });
+            //ACT
+            var plugins = container.GetInstance<IEnumerable<IPlugin>>();
+
+            //ASSERT
+            Assert.IsType<InstanceFactoryList<IPlugin>>(plugins);
+            IPlugin[] enumeratedPlugins = plugins.ToArray();
+            Assert.Single(enumeratedPlugins);
+        }
+
+        [Fact]
         public void GetInstance_AsEnumerable_NoRegistration()
         {
             //ARRANGE

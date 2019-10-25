@@ -14,7 +14,11 @@
   </ItemGroup>
 
   <ItemGroup>
-    <None Include="$(ProjectDir)..\icon.png" Pack="true" PackagePath="\"/>
+    <None Include="$(ProjectDir)..\icon.png" Pack="true" PackagePath="\" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Folder Include="Duality\Plugins\" />
   </ItemGroup>
 
   <Import Project="$(ProjectDir)../DefaultLibrarySettings.targets" />

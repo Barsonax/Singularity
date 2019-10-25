@@ -10,19 +10,20 @@ namespace Singularity.Graph.Resolvers
 {
     internal sealed class ResolverPipeline : IResolverPipeline
     {
+        public SingularitySettings Settings { get; }
         private RegistrationStore RegistrationStore { get; }
         private object SyncRoot { get; }
         private readonly IDependencyResolver[] _resolvers;
         private readonly ResolverPipeline? _parentPipeline;
         private readonly Scoped _containerScope;
         private readonly ExpressionGenerator _expressionGenerator = new ExpressionGenerator();
-        private readonly SingularitySettings _settings;
 
         public ResolverPipeline(RegistrationStore registrationStore, Scoped containerScope, SingularitySettings settings, ResolverPipeline? parentPipeline)
         {
-            _settings = settings ?? throw new ArgumentNullException(nameof(settings));
+            Settings = settings ?? throw new ArgumentNullException(nameof(settings));
             _resolvers = new IDependencyResolver[]
             {
+                new ContainerDependencyResolver(),
                 new EnumerableDependencyResolver(),
                 new ExpressionDependencyResolver(),
                 new LazyDependencyResolver(),
@@ -44,7 +45,7 @@ namespace Singularity.Graph.Resolvers
         public InstanceFactory Resolve(Type type)
         {
             ServiceBinding serviceBinding = GetDependency(type).Default;
-            return ResolveDependency(type, serviceBinding);
+            return ResolveDependency(type, serviceBinding) ?? throw serviceBinding.ResolveError!;
         }
 
         public IEnumerable<InstanceFactory> ResolveAll(Type type)
@@ -68,7 +69,8 @@ namespace Singularity.Graph.Resolvers
             if (registration == null) yield break;
             foreach (ServiceBinding registrationBinding in registration.Value.Bindings)
             {
-                yield return ResolveDependency(type, registrationBinding);
+                var factory = ResolveDependency(type, registrationBinding);
+                if(factory != null) yield return factory;
             }
         }
 
@@ -102,15 +104,26 @@ namespace Singularity.Graph.Resolvers
             return dependency.Value;
         }
 
-        private InstanceFactory ResolveDependency(Type type, ServiceBinding dependency) => ResolveDependency(type, dependency, new CircularDependencyDetector());
+        private InstanceFactory? ResolveDependency(Type type, ServiceBinding dependency) => ResolveDependency(type, dependency, new CircularDependencyDetector());
 
-        private InstanceFactory ResolveDependency(Type type, ServiceBinding dependency, CircularDependencyDetector circularDependencyDetector)
+        private InstanceFactory? ResolveDependency(Type type, ServiceBinding dependency, CircularDependencyDetector circularDependencyDetector)
         {
-            circularDependencyDetector.Enter(type);
-            GenerateBaseExpression(dependency, circularDependencyDetector);
-            InstanceFactory factory = GenerateInstanceFactory(type, dependency, circularDependencyDetector);
-            circularDependencyDetector.Leave(type);
-            return factory;
+            try
+            {
+                circularDependencyDetector.Enter(type);
+                GenerateBaseExpression(dependency, circularDependencyDetector);
+                InstanceFactory factory = GenerateInstanceFactory(type, dependency, circularDependencyDetector);
+                return factory;
+            }
+            catch (Exception e)
+            {
+                dependency.ResolveError = e;
+                return null;
+            }
+            finally
+            {
+                circularDependencyDetector.Leave(type);
+            }
         }
 
         private void GenerateBaseExpression(ServiceBinding serviceBinding, CircularDependencyDetector circularDependencyDetector)
@@ -128,10 +141,10 @@ namespace Singularity.Graph.Resolvers
                             ParameterExpression parameter = parameters[i];
                             ServiceBinding child = GetDependency(parameter.Type).Default;
                             factories[i] = ResolveDependency(parameter.Type, child, circularDependencyDetector);
+                            if (child.ResolveError != null) throw child.ResolveError;
                         }
 
-                        if (serviceBinding.ResolveError != null) throw serviceBinding.ResolveError;
-                        serviceBinding.BaseExpression = _expressionGenerator.GenerateBaseExpression(serviceBinding, factories, _containerScope, _settings);
+                        serviceBinding.BaseExpression = _expressionGenerator.GenerateBaseExpression(serviceBinding, factories, _containerScope, Settings);
                     }
                 }
             }

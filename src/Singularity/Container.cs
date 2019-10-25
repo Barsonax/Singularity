@@ -20,44 +20,60 @@ namespace Singularity
         /// </summary>
 		public bool IsDisposed { get; private set; }
         internal RegistrationStore Registrations { get; }
+        internal SingularitySettings Settings { get; }
+
+        internal readonly Scoped ContainerScope;
         private readonly ResolverPipeline _dependencyGraph;
-        private readonly ThreadSafeDictionary<Type, Action<Scoped, object>> _injectionCache = new ThreadSafeDictionary<Type, Action<Scoped, object>>();
-        private readonly ThreadSafeDictionary<Type, Func<Scoped, object>> _getInstanceCache = new ThreadSafeDictionary<Type, Func<Scoped, object>>();
-        private readonly Scoped _containerScope;
+        private readonly ThreadSafeDictionary<Type, Action<Scoped, object>?> _injectionCache = new ThreadSafeDictionary<Type, Action<Scoped, object>?>();
+        private readonly ThreadSafeDictionary<Type, Func<Scoped, object?>?> _getInstanceCache = new ThreadSafeDictionary<Type, Func<Scoped, object?>?>();
         private readonly Container? _parentContainer;
-        private readonly SingularitySettings _options;
 
         /// <summary>
         /// Creates a new container using all the bindings that are in the provided modules
         /// </summary>
         /// <param name="modules"></param>
-        /// <param name="options"></param>
-        public Container(IEnumerable<IModule> modules, SingularitySettings? options = null) : this(ToBuilder(modules), options) { }
+        /// <param name="settings"></param>
+        public Container(IEnumerable<IModule> modules, SingularitySettings? settings = null) : this(ToBuilder(modules), settings) { }
 
         /// <summary>
-        /// Creates a new container using the provided builder.
+        /// Creates a new container using the provided configurator.
         /// </summary>
-        /// <param name="builder"></param>
-        /// <param name="options"></param>
-        public Container(Action<ContainerBuilder>? builder = null, SingularitySettings? options = null)
+        /// <param name="configurator"></param>
+        /// <param name="settings"></param>
+        public Container(Action<ContainerBuilder>? configurator = null, SingularitySettings? settings = null) : this(new ContainerBuilder(configurator, settings), settings)
         {
-            var context = new ContainerBuilder(this);
-            builder?.Invoke(context);
-            _options = options ?? SingularitySettings.Default;
-            _containerScope = new Scoped(this);
-            Registrations = context.Registrations;
-            _dependencyGraph = new ResolverPipeline(context.Registrations, _containerScope, _options, null);
         }
 
-        private Container(Container parentContainer, Action<ContainerBuilder>? builder)
+        /// <summary>
+        /// Creates a new container, consuming the provided builder.
+        /// </summary>
+        /// <param name="builder"></param>
+        /// <param name="settings"></param>
+        public Container(ContainerBuilder builder, SingularitySettings? settings = null)
         {
-            var context = new ContainerBuilder(this);
-            builder?.Invoke(context);
+            Settings = settings ?? SingularitySettings.Default;
+            ContainerScope = new Scoped(this);
+            Registrations = builder.Registrations;
+            _dependencyGraph = new ResolverPipeline(builder.Registrations, ContainerScope, Settings, null);
+        }
+
+        private Container(Container parentContainer, Action<ContainerBuilder>? configurator) : this(parentContainer, new ContainerBuilder(configurator, parentContainer.Settings))
+        {
+
+        }
+
+        /// <summary>
+        /// Creates a new container using the provided configurator.
+        /// </summary>
+        /// <param name="parentContainer"></param>
+        /// <param name="builder"></param>
+        private Container(Container parentContainer, ContainerBuilder builder)
+        {
+            Settings = parentContainer.Settings;
             _parentContainer = parentContainer;
-            _options = parentContainer._options;
-            _containerScope = new Scoped(this);
-            Registrations = context.Registrations;
-            _dependencyGraph = new ResolverPipeline(context.Registrations, _containerScope, _options, parentContainer._dependencyGraph);
+            ContainerScope = new Scoped(this);
+            Registrations = builder.Registrations;
+            _dependencyGraph = new ResolverPipeline(builder.Registrations, ContainerScope, Settings, parentContainer._dependencyGraph);
         }
 
         /// <summary>
@@ -84,19 +100,19 @@ namespace Singularity
 
         /// <inheritdoc />
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public T GetInstance<T>() where T : class => GetInstance<T>(_containerScope);
+        public T GetInstance<T>() where T : class => GetInstance<T>(ContainerScope);
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         private T GetInstance<T>(Scoped scope) where T : class => (T)GetInstance(typeof(T), scope);
 
         /// <inheritdoc />
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public object GetInstance(Type type) => GetInstance(type, _containerScope);
+        public object GetInstance(Type type) => GetInstance(type, ContainerScope);
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         internal object GetInstance(Type type, Scoped scope)
         {
-            Func<Scoped, object> func = _getInstanceCache.GetOrDefault(type);
+            Func<Scoped, object>? func = _getInstanceCache.GetOrDefault(type);
             if (func == null)
             {
                 func = _dependencyGraph.Resolve(type).Factory;
@@ -107,14 +123,37 @@ namespace Singularity
 
         /// <inheritdoc />
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public void LateInjectAll<T>(IEnumerable<T> instances)
+        public T? GetInstanceOrDefault<T>() where T : class => GetInstanceOrDefault<T>(ContainerScope);
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        private T? GetInstanceOrDefault<T>(Scoped scope) where T : class => (T?)GetInstanceOrDefault(typeof(T), scope);
+
+        /// <inheritdoc />
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public object? GetInstanceOrDefault(Type type) => GetInstanceOrDefault(type, ContainerScope);
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        internal object? GetInstanceOrDefault(Type type, Scoped scope)
         {
-            LateInjectAll(instances, _containerScope);
+            Func<Scoped, object?>? func = _getInstanceCache.GetOrDefault(type);
+            if (func == null)
+            {
+                func = _dependencyGraph.TryResolve(type)?.Factory ?? (scoped => null);
+                _getInstanceCache.Add(type, func);
+            }
+            return func(scope);
         }
 
         /// <inheritdoc />
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public void LateInject(object instance) => LateInject(instance, _containerScope);
+        public void LateInjectAll<T>(IEnumerable<T> instances)
+        {
+            LateInjectAll(instances, ContainerScope);
+        }
+
+        /// <inheritdoc />
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public void LateInject(object instance) => LateInject(instance, ContainerScope);
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         internal void LateInjectAll<T>(IEnumerable<T> instances, Scoped scope)
@@ -186,7 +225,7 @@ namespace Singularity
         /// </summary>
 		public void Dispose()
         {
-            _containerScope?.Dispose();
+            ContainerScope?.Dispose();
             IsDisposed = true;
         }
 

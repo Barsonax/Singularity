@@ -15,11 +15,11 @@ namespace Singularity.Benchmark
             _benchmark = new AdvancedSingularityContainerBenchmark();
         }
 
-        [Benchmark]
-        public void AspNetCore()
-        {
-            _benchmark.AspNetCore();
-        }
+        //[Benchmark]
+        //public void AspNetCore()
+        //{
+        //    _benchmark.AspNetCore();
+        //}
 
         //[Benchmark]
         //public ISimpleAdapter[] MultiEnumerate()
@@ -49,11 +49,11 @@ namespace Singularity.Benchmark
         //    _benchmark.Register();
         //}
 
-        //[Benchmark]
-        //public Container NewContainer()
-        //{
-        //    return _benchmark.NewContainer();
-        //}
+        [Benchmark]
+        public Container NewContainer()
+        {
+            return _benchmark.NewContainer();
+        }
 
         //[Benchmark]
         //public Container NewContainerFromCachedConfig()

@@ -33,6 +33,20 @@ namespace Singularity
         void LateInject(object instance);
 
         /// <summary>
+        /// Resolves a instance for the given dependency type
+        /// </summary>
+        /// <typeparam name="T">The type of the dependency</typeparam>
+        /// <returns></returns>
+        T? GetInstanceOrDefault<T>() where T : class;
+
+        /// <summary>
+        /// Resolves a instance for the given dependency type
+        /// </summary>
+        /// <param name="type">The type of the dependency</param>
+        /// <returns></returns>
+        object? GetInstanceOrDefault(Type type);
+
+        /// <summary>
         /// Injects dependencies for all elements of the provided <paramref name="instances"/> by calling all late injection targets that were registered using <see cref="ContainerBuilder.LateInject{T}"/>
         /// </summary>
         /// <param name="instances"></param>

@@ -10,12 +10,26 @@ namespace Singularity.Microsoft.DependencyInjection
     public static class Extensions
     {
         /// <summary>
+        /// Creates a singularity <see cref="Container"/> from a <see cref="IServiceCollection"/>.
+        /// Also calls <see cref="RegisterServiceProvider"/> and <see cref="RegisterServices"/>
+        /// </summary>
+        /// <param name="services"></param>
+        /// <param name="settings"></param>
+        /// <returns></returns>
+        public static ContainerBuilder CreateContainerBuilder(this IServiceCollection services, SingularitySettings? settings = null)
+        {
+            var builder = new ContainerBuilder(settings: settings);
+            builder.RegisterServiceProvider();
+            builder.RegisterServices(services);
+            return builder;
+        }
+
+        /// <summary>
         /// Registers the required services to support microsoft dependency injection.
         /// </summary>
         /// <param name="config"></param>
         public static void RegisterServiceProvider(this ContainerBuilder config)
         {
-            config.Register<Container>(c => c.Inject(() => config.Container).With(ServiceAutoDispose.Never));
             config.Register<IServiceProvider, SingularityServiceProvider>(c => c.With(Lifetimes.PerContainer));
             config.Register<IServiceScopeFactory, SingularityServiceScopeFactory>(c => c.With(Lifetimes.PerContainer));
         }
@@ -42,22 +56,28 @@ namespace Singularity.Microsoft.DependencyInjection
         {
             if (registration.ImplementationFactory != null)
             {
-                ParameterExpression serviceProviderParameter = Expression.Parameter(typeof(IServiceProvider));
-                config.Register(registration.ServiceType, c => c.Inject(
-                    Expression.Lambda(
-                            Expression.Convert(
-                                    Expression.Invoke(
-                                        Expression.Constant(registration.ImplementationFactory), serviceProviderParameter), registration.ServiceType), serviceProviderParameter))
-                    .With(ConvertLifetime(registration.Lifetime)));
+                RegisterWithFactory(config, registration);
             }
             else if (registration.ImplementationInstance != null)
             {
-                config.Register(registration.ServiceType, c => c.Inject(Expression.Constant(registration.ImplementationInstance)));
+                config.Register(registration.ServiceType, c => c.Inject(Expression.Constant(registration.ImplementationInstance)), ConstructorResolvers.LeastArguments);
             }
             else
             {
-                config.Register(registration.ServiceType, registration.ImplementationType, c => c.With(ConvertLifetime(registration.Lifetime)));
+                config.Register(registration.ServiceType, registration.ImplementationType, c => c.With(ConvertLifetime(registration.Lifetime)), ConstructorResolvers.LeastArguments);
             }
+        }
+
+        private static void RegisterWithFactory(ContainerBuilder config, ServiceDescriptor registration)
+        {
+            ParameterExpression serviceProviderParameter = Expression.Parameter(typeof(IServiceProvider));
+            config.Register(registration.ServiceType, c => c.Inject(
+                    Expression.Lambda(
+                        Expression.Convert(
+                            Expression.Invoke(
+                                Expression.Constant(registration.ImplementationFactory), serviceProviderParameter),
+                            registration.ServiceType), serviceProviderParameter))
+                .With(ConvertLifetime(registration.Lifetime)), ConstructorResolvers.LeastArguments);
         }
 
         private static ILifetime ConvertLifetime(ServiceLifetime serviceLifetime)

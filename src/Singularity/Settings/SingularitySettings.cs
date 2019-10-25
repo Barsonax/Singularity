@@ -1,5 +1,6 @@
 ﻿using System;
 using Singularity.Collections;
+using Singularity.Expressions;
 
 namespace Singularity
 {
@@ -31,5 +32,10 @@ namespace Singularity
         /// Specifies what lifetimes should be auto disposed if the instance is a <see cref="IDisposable"/> and the service is registered with <see cref="ServiceAutoDispose.Default"/>.
         /// </summary>
         public LifetimeCollection AutoDisposeLifetimes { get; set; } = LifetimeCollection.Empty;
+
+        /// <summary>
+        /// The constructor selector that will be used by default.
+        /// </summary>
+        public IConstructorResolver ConstructorResolver { get; set; } = ConstructorResolvers.Default;
     }
 }

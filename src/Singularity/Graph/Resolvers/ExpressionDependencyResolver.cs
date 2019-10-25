@@ -21,7 +21,7 @@ namespace Singularity.Graph.Resolvers
                     MethodInfo method = GenericCreateLambdaMethod.MakeGenericMethod(dependencyType);
                     foreach (InstanceFactory instanceFactory in graph.ResolveAll(dependencyType))
                     {
-                        var newBinding = new ServiceBinding(type, BindingMetadata.GeneratedInstance, instanceFactory.Context.Expression);
+                        var newBinding = new ServiceBinding(type, BindingMetadata.GeneratedInstance, instanceFactory.Context.Expression, graph.Settings.ConstructorResolver);
 
                         var expression = (Expression)method.Invoke(null, new object[] { instanceFactory.Context });
                         var factory = new InstanceFactory(type, new ExpressionContext(expression), scoped => expression);

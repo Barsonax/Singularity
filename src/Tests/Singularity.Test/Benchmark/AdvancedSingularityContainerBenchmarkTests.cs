@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Linq.Expressions;
+using Singularity.Expressions;
 using Singularity.TestClasses.Benchmark;
 using Singularity.TestClasses.TestClasses;
 using Xunit;
@@ -21,14 +22,14 @@ namespace Singularity.Test.Benchmark
         [Fact]
         public void CombinedManual()
         {
-            Expression singleton1NewExpression = AutoResolveConstructorExpressionCache<Singleton1>.Expression;
+            Expression singleton1NewExpression = ConstructorResolvers.Default.AutoResolveConstructorExpression(typeof(Singleton1));
             Delegate action1 = Expression.Lambda(singleton1NewExpression).Compile();
             object value = action1.DynamicInvoke();
             singleton1NewExpression = Expression.Constant(value);
 
-            Expression transient1NewExpression = AutoResolveConstructorExpressionCache<Transient1>.Expression;
+            Expression transient1NewExpression = ConstructorResolvers.Default.AutoResolveConstructorExpression(typeof(Transient1));
 
-            NewExpression expression = Expression.New(typeof(Combined1).AutoResolveConstructor(), singleton1NewExpression, transient1NewExpression);
+            NewExpression expression = Expression.New(ConstructorResolvers.Default.SelectConstructor(typeof(Combined1)), singleton1NewExpression, transient1NewExpression);
             Delegate action = Expression.Lambda(expression).Compile();
             var func = (Func<object>)action;
             object instance = func.Invoke();

@@ -3,6 +3,7 @@ using System.Linq.Expressions;
 using System.Runtime.CompilerServices;
 using Singularity.Collections;
 using Singularity.Exceptions;
+using Singularity.Expressions;
 using Singularity.Graph;
 
 namespace Singularity
@@ -16,14 +17,18 @@ namespace Singularity
         where TInstance : class, TDependency
     {
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        internal StronglyTypedServiceConfigurator(in BindingMetadata bindingMetadata)
+        internal StronglyTypedServiceConfigurator(in BindingMetadata bindingMetadata, SingularitySettings settings, IConstructorResolver? constructorSelector)
         {
             ServiceTypeValidator.Cache<TDependency>.CheckIsEnumerable();
             _bindingMetadata = bindingMetadata;
             _dependencyTypes = SinglyLinkedListNodeTypeCache<TDependency>.Instance;
+            _settings = settings;
+            _constructorSelector = constructorSelector;
         }
 
         private readonly BindingMetadata _bindingMetadata;
+        private readonly SingularitySettings _settings;
+        private readonly IConstructorResolver? _constructorSelector;
         private SinglyLinkedListNode<Type> _dependencyTypes;
         private Expression? _expression;
         private ILifetime _lifetime = Lifetimes.Transient;
@@ -32,12 +37,13 @@ namespace Singularity
 
         internal ServiceBinding ToBinding()
         {
+            var constructorSelector = _constructorSelector ?? _settings.ConstructorResolver;
             if (_expression == null)
             {
                 if (TypeMetadataCache<TInstance>.IsInterface) throw new BindingConfigException($"{typeof(TInstance)} cannot be a interface");
-                _expression = AutoResolveConstructorExpressionCache<TInstance>.Expression;
+                _expression = constructorSelector.AutoResolveConstructorExpression(typeof(TInstance));
             }
-            return new ServiceBinding(_dependencyTypes, _bindingMetadata, _expression, _lifetime, _finalizer, _disposeBehavior);
+            return new ServiceBinding(_dependencyTypes, _bindingMetadata, _expression, constructorSelector, _lifetime, _finalizer, _disposeBehavior);
         }
 
         /// <summary>

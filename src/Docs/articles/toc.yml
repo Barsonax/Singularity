@@ -10,6 +10,10 @@
       href: Modules.md
     - name: Method injection
       href: Method injection.md
+- name: ASP.NET Core
+  items:
+    - name: Setup
+      href: ASP.NET Core setup.md
 - name: Duality
   items:
     - name: Using Singularity in Duality

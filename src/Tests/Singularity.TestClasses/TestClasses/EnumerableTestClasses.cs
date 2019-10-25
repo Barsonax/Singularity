@@ -11,6 +11,22 @@ namespace Singularity.TestClasses.TestClasses
         int DisposeInvocations { get; }
     }
 
+    public class PluginWithDependencies : IPlugin
+    {
+        public int DisposeInvocations => disposeInvocations;
+        private int disposeInvocations;
+
+        public PluginWithDependencies(ITransient1 transient1)
+        {
+
+        }
+
+        public void Dispose()
+        {
+            Interlocked.Increment(ref disposeInvocations);
+        }
+    }
+
     public class Plugin1 : IPlugin
     {
         public int DisposeInvocations => disposeInvocations;

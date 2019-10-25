@@ -17,7 +17,7 @@ namespace Singularity.Microsoft.DependencyInjection.Test
             serviceCollection.AddTransient<IRepositoryTransient3, RepositoryTransient3>();
             serviceCollection.AddTransient<IRepositoryTransient4, RepositoryTransient4>();
             serviceCollection.AddTransient<IRepositoryTransient5, RepositoryTransient5>();
-            serviceCollection.AddTransient<ISingleton1, Singleton1>();
+            serviceCollection.AddSingleton(typeof(ISingleton1), new Singleton1());
             serviceCollection.AddScoped<IScopedService1, ScopedService1>();
             serviceCollection.AddScoped<IScopedService2, ScopedService2>();
             serviceCollection.AddScoped<IScopedService3, ScopedService3>();
@@ -48,6 +48,23 @@ namespace Singularity.Microsoft.DependencyInjection.Test
             {
                 builder.RegisterServiceProvider();
             });
+
+            //ACT
+            IServiceProvider serviceProvider = container.GetInstance<IServiceProvider>();
+
+            //ASSERT
+            Assert.IsType<SingularityServiceProvider>(serviceProvider);
+        }
+
+        [Fact]
+        public void CreateContainerBuilder()
+        {
+            var serviceCollection = new ServiceCollection();
+            serviceCollection.AddTransient<ISingleton1, Singleton1>();
+
+            //ARRANGE
+            var builder = serviceCollection.CreateContainerBuilder();
+            var container = new Container(builder);
 
             //ACT
             IServiceProvider serviceProvider = container.GetInstance<IServiceProvider>();
