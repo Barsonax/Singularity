@@ -14,11 +14,11 @@ namespace Singularity
         where TDependency : class
         where TDecorator : TDependency
     {
-        internal StronglyTypedDecoratorConfigurator(in BindingMetadata bindingMetadata, SingularitySettings settings, IConstructorSelector? constructorSelector)
+        internal StronglyTypedDecoratorConfigurator(in BindingMetadata bindingMetadata, SingularitySettings settings, IConstructorResolver? constructorSelector)
         {
             _bindingMetadata = bindingMetadata;
             _dependencyType = typeof(TDependency);
-            _expression = (constructorSelector ?? settings.ConstructorSelector).AutoResolveConstructorExpression(typeof(TDecorator));
+            _expression = (constructorSelector ?? settings.ConstructorResolver).AutoResolveConstructorExpression(typeof(TDecorator));
             DecoratorTypeValidator.CheckIsInterface(typeof(TDependency));
             DecoratorTypeValidator.CheckParameters(_expression, typeof(TDependency), typeof(TDecorator));
         }

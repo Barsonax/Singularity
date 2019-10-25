@@ -21,7 +21,7 @@ namespace Singularity.Graph.Resolvers
                 {
                     var context = (ExpressionContext)factory.Context;
                     context.Expression = Expression.New(constructor, factory.Context.Expression);
-                    var newBinding = new ServiceBinding(type, BindingMetadata.GeneratedInstance, context.Expression, graph.Settings.ConstructorSelector);
+                    var newBinding = new ServiceBinding(type, BindingMetadata.GeneratedInstance, context.Expression, graph.Settings.ConstructorResolver);
                     newBinding.Factories.Add(new InstanceFactory(type, context));
                     yield return newBinding;
                 }

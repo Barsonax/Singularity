@@ -20,11 +20,11 @@ namespace Singularity
         private SinglyLinkedListKeyNode<ServiceBinding, ActionList<object>>? _finalizers;
         private SinglyLinkedListNode<IDisposable>? _disposables;
         private SinglyLinkedListKeyNode<Type, object>? _scopedInstances;
-        private readonly Container _container;
+        internal readonly Container Container;
 
         internal Scoped(Container container)
         {
-            _container = container;
+            Container = container;
         }
 
         /// <summary>
@@ -46,27 +46,27 @@ namespace Singularity
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public object GetInstance(Type type)
         {
-            return _container.GetInstance(type, this);
+            return Container.GetInstance(type, this);
         }
 
         /// <summary>
-        /// <see cref="Container.LateInject(object)"/>
+        /// <see cref="Singularity.Container.LateInject(object)"/>
         /// </summary>
         /// <param name="instance"></param>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public void LateInject(object instance)
         {
-            _container.LateInject(instance, this);
+            Container.LateInject(instance, this);
         }
 
         /// <summary>
-        /// <see cref="Container.LateInjectAll{T}(IEnumerable{T})"/>
+        /// <see cref="Singularity.Container.LateInjectAll{T}(IEnumerable{T})"/>
         /// </summary>
         /// <typeparam name="T"></typeparam>
         /// <param name="instances"></param>
         public void LateInjectAll<T>(IEnumerable<T> instances)
         {
-            _container.LateInjectAll(instances, this);
+            Container.LateInjectAll(instances, this);
         }
 
         internal T GetOrAddScopedInstance<T>(Func<Scoped, T> factory, Type key)

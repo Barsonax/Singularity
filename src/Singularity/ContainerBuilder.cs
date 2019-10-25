@@ -35,7 +35,7 @@ namespace Singularity
         /// <param name="constructorSelector"></param>
         /// <param name="callerFilePath"></param>
         /// <param name="callerLineNumber"></param>
-        public void Register<TInstance>(Action<StronglyTypedServiceConfigurator<TInstance, TInstance>>? configurator = null, IConstructorSelector? constructorSelector = null, [CallerFilePath]string callerFilePath = "", [CallerLineNumber] int callerLineNumber = -1)
+        public void Register<TInstance>(Action<StronglyTypedServiceConfigurator<TInstance, TInstance>>? configurator = null, IConstructorResolver? constructorSelector = null, [CallerFilePath]string callerFilePath = "", [CallerLineNumber] int callerLineNumber = -1)
             where TInstance : class
         {
             RegisterInternal(configurator, constructorSelector, callerFilePath, callerLineNumber);
@@ -50,7 +50,7 @@ namespace Singularity
         /// <param name="constructorSelector"></param>
         /// <param name="callerFilePath"></param>
         /// <param name="callerLineNumber"></param>
-        public void Register<TDependency, TInstance>(Action<StronglyTypedServiceConfigurator<TDependency, TInstance>>? configurator = null, IConstructorSelector? constructorSelector = null, [CallerFilePath]string callerFilePath = "", [CallerLineNumber] int callerLineNumber = -1)
+        public void Register<TDependency, TInstance>(Action<StronglyTypedServiceConfigurator<TDependency, TInstance>>? configurator = null, IConstructorResolver? constructorSelector = null, [CallerFilePath]string callerFilePath = "", [CallerLineNumber] int callerLineNumber = -1)
             where TInstance : class, TDependency
         {
             RegisterInternal(configurator, constructorSelector, callerFilePath, callerLineNumber);
@@ -64,7 +64,7 @@ namespace Singularity
         /// <param name="constructorSelector"></param>
         /// <param name="callerFilePath"></param>
         /// <param name="callerLineNumber"></param>
-        public void Register(Type instanceType, Action<WeaklyTypedServiceConfigurator>? configurator = null, IConstructorSelector? constructorSelector = null, [CallerFilePath]string callerFilePath = "", [CallerLineNumber] int callerLineNumber = -1)
+        public void Register(Type instanceType, Action<WeaklyTypedServiceConfigurator>? configurator = null, IConstructorResolver? constructorSelector = null, [CallerFilePath]string callerFilePath = "", [CallerLineNumber] int callerLineNumber = -1)
         {
             RegisterInternal(instanceType, instanceType, configurator, constructorSelector, callerFilePath, callerLineNumber);
         }
@@ -78,7 +78,7 @@ namespace Singularity
         /// <param name="constructorSelector"></param>
         /// <param name="callerFilePath"></param>
         /// <param name="callerLineNumber"></param>
-        public void Register(Type dependencyType, Type instanceType, Action<WeaklyTypedServiceConfigurator>? configurator = null, IConstructorSelector? constructorSelector = null, [CallerFilePath]string callerFilePath = "", [CallerLineNumber] int callerLineNumber = -1)
+        public void Register(Type dependencyType, Type instanceType, Action<WeaklyTypedServiceConfigurator>? configurator = null, IConstructorResolver? constructorSelector = null, [CallerFilePath]string callerFilePath = "", [CallerLineNumber] int callerLineNumber = -1)
         {
             RegisterInternal(dependencyType, instanceType, configurator, constructorSelector, callerFilePath, callerLineNumber);
         }
@@ -93,7 +93,7 @@ namespace Singularity
         /// <param name="callerFilePath"></param>
         /// <param name="callerLineNumber"></param>
         /// <returns></returns>
-        public void Register(Type dependencyType, Type[] instanceTypes, Action<WeaklyTypedServiceConfigurator>? configurator = null, IConstructorSelector? constructorSelector = null, [CallerFilePath] string callerFilePath = "", [CallerLineNumber] int callerLineNumber = -1)
+        public void Register(Type dependencyType, Type[] instanceTypes, Action<WeaklyTypedServiceConfigurator>? configurator = null, IConstructorResolver? constructorSelector = null, [CallerFilePath] string callerFilePath = "", [CallerLineNumber] int callerLineNumber = -1)
         {
             foreach (Type instanceType in instanceTypes)
             {
@@ -109,7 +109,7 @@ namespace Singularity
         /// <typeparam name="TDecorator">The type of the decorator</typeparam>
         /// <exception cref="InterfaceExpectedException">If <typeparamref name="TDependency"/> is not a interface</exception>
         /// <returns></returns>
-        public void Decorate<TDependency, TDecorator>(Action<StronglyTypedDecoratorConfigurator<TDependency, TDecorator>>? configurator = null, IConstructorSelector? constructorSelector = null, [CallerFilePath]string callerFilePath = "", [CallerLineNumber] int callerLineNumber = -1)
+        public void Decorate<TDependency, TDecorator>(Action<StronglyTypedDecoratorConfigurator<TDependency, TDecorator>>? configurator = null, IConstructorResolver? constructorSelector = null, [CallerFilePath]string callerFilePath = "", [CallerLineNumber] int callerLineNumber = -1)
             where TDependency : class
             where TDecorator : TDependency
         {
@@ -126,7 +126,7 @@ namespace Singularity
         /// <param name="callerFilePath"></param>
         /// <param name="callerLineNumber"></param>
         /// <returns></returns>
-        public void Decorate(Type dependencyType, Type decoratorType, Action<WeaklyTypedDecoratorConfigurator>? configurator = null, IConstructorSelector? constructorSelector = null, [CallerFilePath]string callerFilePath = "", [CallerLineNumber] int callerLineNumber = -1)
+        public void Decorate(Type dependencyType, Type decoratorType, Action<WeaklyTypedDecoratorConfigurator>? configurator = null, IConstructorResolver? constructorSelector = null, [CallerFilePath]string callerFilePath = "", [CallerLineNumber] int callerLineNumber = -1)
         {
             DecorateInternal(dependencyType, decoratorType, configurator, constructorSelector, callerFilePath, callerLineNumber);
         }
@@ -141,7 +141,7 @@ namespace Singularity
         /// <param name="callerFilePath"></param>
         /// <param name="callerLineNumber"></param>
         /// <returns></returns>
-        public void Decorate(Type dependencyType, Type[] decoratorTypes, Action<WeaklyTypedDecoratorConfigurator>? configurator = null, IConstructorSelector? constructorSelector = null, [CallerFilePath]string callerFilePath = "", [CallerLineNumber] int callerLineNumber = -1)
+        public void Decorate(Type dependencyType, Type[] decoratorTypes, Action<WeaklyTypedDecoratorConfigurator>? configurator = null, IConstructorResolver? constructorSelector = null, [CallerFilePath]string callerFilePath = "", [CallerLineNumber] int callerLineNumber = -1)
         {
             foreach (Type decoratorType in decoratorTypes)
             {
@@ -173,7 +173,7 @@ namespace Singularity
             LateInjectInternal(instanceType, configurator, callerFilePath, callerLineNumber);
         }
 
-        private void RegisterInternal<TDependency, TInstance>(Action<StronglyTypedServiceConfigurator<TDependency, TInstance>>? configurator, IConstructorSelector? constructorSelector, string callerFilePath, int callerLineNumber)
+        private void RegisterInternal<TDependency, TInstance>(Action<StronglyTypedServiceConfigurator<TDependency, TInstance>>? configurator, IConstructorResolver? constructorSelector, string callerFilePath, int callerLineNumber)
             where TInstance : class, TDependency
         {
             var metadata = new BindingMetadata(callerFilePath, callerLineNumber, Registrations.CurrentModule);
@@ -183,7 +183,7 @@ namespace Singularity
             Registrations.AddBinding(serviceBinding);
         }
 
-        private void RegisterInternal(Type dependencyType, Type instanceType, Action<WeaklyTypedServiceConfigurator>? configurator, IConstructorSelector? constructorSelector, string callerFilePath, int callerLineNumber)
+        private void RegisterInternal(Type dependencyType, Type instanceType, Action<WeaklyTypedServiceConfigurator>? configurator, IConstructorResolver? constructorSelector, string callerFilePath, int callerLineNumber)
         {
             var metadata = new BindingMetadata(callerFilePath, callerLineNumber, Registrations.CurrentModule);
             var context = new WeaklyTypedServiceConfigurator(dependencyType, instanceType, metadata, Settings, constructorSelector);
@@ -192,7 +192,7 @@ namespace Singularity
             Registrations.AddBinding(serviceBinding);
         }
 
-        private void DecorateInternal<TDependency, TDecorator>(Action<StronglyTypedDecoratorConfigurator<TDependency, TDecorator>>? configurator, IConstructorSelector? constructorSelector, string callerFilePath, int callerLineNumber)
+        private void DecorateInternal<TDependency, TDecorator>(Action<StronglyTypedDecoratorConfigurator<TDependency, TDecorator>>? configurator, IConstructorResolver? constructorSelector, string callerFilePath, int callerLineNumber)
             where TDependency : class
             where TDecorator : TDependency
         {
@@ -203,7 +203,7 @@ namespace Singularity
             Registrations.AddDecorator(typeof(TDependency), binding);
         }
 
-        private void DecorateInternal(Type dependencyType, Type decoratorType, Action<WeaklyTypedDecoratorConfigurator>? configurator, IConstructorSelector? constructorSelector, string callerFilePath, int callerLineNumber)
+        private void DecorateInternal(Type dependencyType, Type decoratorType, Action<WeaklyTypedDecoratorConfigurator>? configurator, IConstructorResolver? constructorSelector, string callerFilePath, int callerLineNumber)
         {
             var metadata = new BindingMetadata(callerFilePath, callerLineNumber, Registrations.CurrentModule);
             var context = new WeaklyTypedDecoratorConfigurator(dependencyType, decoratorType, metadata, Settings, constructorSelector);

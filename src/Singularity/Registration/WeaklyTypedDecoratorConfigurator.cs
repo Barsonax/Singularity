@@ -10,11 +10,11 @@ namespace Singularity
     /// </summary>
     public sealed class WeaklyTypedDecoratorConfigurator
     {
-        internal WeaklyTypedDecoratorConfigurator(Type dependencyType, Type decoratorType, in BindingMetadata bindingMetadata, SingularitySettings settings, IConstructorSelector? constructorSelector)
+        internal WeaklyTypedDecoratorConfigurator(Type dependencyType, Type decoratorType, in BindingMetadata bindingMetadata, SingularitySettings settings, IConstructorResolver? constructorSelector)
         {
             _bindingMetadata = bindingMetadata;
             _dependencyType = dependencyType;
-            _expression = (constructorSelector ?? settings.ConstructorSelector).AutoResolveConstructorExpression(decoratorType);
+            _expression = (constructorSelector ?? settings.ConstructorResolver).AutoResolveConstructorExpression(decoratorType);
             DecoratorTypeValidator.CheckIsInterface(dependencyType);
             DecoratorTypeValidator.CheckParameters(_expression, dependencyType, decoratorType);
         }

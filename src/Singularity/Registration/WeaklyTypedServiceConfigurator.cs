@@ -11,7 +11,7 @@ namespace Singularity
     /// </summary>
     public sealed class WeaklyTypedServiceConfigurator
     {
-        internal WeaklyTypedServiceConfigurator(Type dependencyType, Type instanceType, in BindingMetadata bindingMetadata, SingularitySettings settings, IConstructorSelector? constructorSelector)
+        internal WeaklyTypedServiceConfigurator(Type dependencyType, Type instanceType, in BindingMetadata bindingMetadata, SingularitySettings settings, IConstructorResolver? constructorSelector)
         {
             ServiceTypeValidator.CheckIsEnumerable(dependencyType);
             ServiceTypeValidator.CheckIsAssignable(dependencyType, instanceType);
@@ -24,7 +24,7 @@ namespace Singularity
 
         private readonly BindingMetadata _bindingMetadata;
         private readonly SingularitySettings _settings;
-        private readonly IConstructorSelector? _constructorSelector;
+        private readonly IConstructorResolver? _constructorSelector;
         private readonly Type _instanceType;
         private SinglyLinkedListNode<Type> _dependencyTypes;
         private Expression? _expression;
@@ -35,7 +35,7 @@ namespace Singularity
 
         internal ServiceBinding ToBinding()
         {
-            var constructorSelector = _constructorSelector ?? _settings.ConstructorSelector;
+            var constructorSelector = _constructorSelector ?? _settings.ConstructorResolver;
             if (_expression == null)
             {
                 if (_instanceType.ContainsGenericParameters)

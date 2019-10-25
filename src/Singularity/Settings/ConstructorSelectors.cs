@@ -8,11 +8,11 @@
         /// <summary>
         /// The default strict constructor injector
         /// </summary>
-        public static DefaultConstructorSelector Default { get; } = new DefaultConstructorSelector();
+        public static DefaultConstructorResolver Default { get; } = new DefaultConstructorResolver();
 
         /// <summary>
         /// A selector that picks the constructor with the most arguments.
         /// </summary>
-        public static MultipleConstructorSelector Multiple { get; } = new MultipleConstructorSelector();
+        public static MultipleConstructorResolver Multiple { get; } = new MultipleConstructorResolver();
     }
 }

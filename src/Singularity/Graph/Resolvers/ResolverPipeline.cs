@@ -23,6 +23,7 @@ namespace Singularity.Graph.Resolvers
             Settings = settings ?? throw new ArgumentNullException(nameof(settings));
             _resolvers = new IDependencyResolver[]
             {
+                new ContainerDependencyResolver(), 
                 new EnumerableDependencyResolver(),
                 new ExpressionDependencyResolver(),
                 new LazyDependencyResolver(),

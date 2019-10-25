@@ -9,7 +9,7 @@ namespace Singularity.Graph.Resolvers
         {
             if (!type.IsInterface)
             {
-                yield return new ServiceBinding(type, BindingMetadata.GeneratedInstance, graph.Settings.ConstructorSelector.AutoResolveConstructorExpression(type), graph.Settings.ConstructorSelector);
+                yield return new ServiceBinding(type, BindingMetadata.GeneratedInstance, graph.Settings.ConstructorResolver.AutoResolveConstructorExpression(type), graph.Settings.ConstructorResolver);
             }
         }
     }

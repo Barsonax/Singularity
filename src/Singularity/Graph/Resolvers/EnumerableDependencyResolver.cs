@@ -31,7 +31,7 @@ namespace Singularity.Graph.Resolvers
 
                     foreach (Type newType in types)
                     {
-                        yield return new ServiceBinding(newType, BindingMetadata.GeneratedInstance, expression, graph.Settings.ConstructorSelector);
+                        yield return new ServiceBinding(newType, BindingMetadata.GeneratedInstance, expression, graph.Settings.ConstructorResolver);
                     }
                 }
             }

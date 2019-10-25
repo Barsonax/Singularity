@@ -25,14 +25,14 @@ namespace Singularity.TestClasses.Benchmark
                 var controller = scope.ServiceProvider.GetService(typeof(TestController1));
             }
 
-            //factory = (IServiceScopeFactory)_container.GetInstance(typeof(IServiceScopeFactory));
+            //factory = (IServiceScopeFactory)Container.GetInstance(typeof(IServiceScopeFactory));
 
             //using (var scope = factory.CreateScope())
             //{
             //    var controller = scope.ServiceProvider.GetService(typeof(TestController2));
             //}
 
-            //factory = (IServiceScopeFactory)_container.GetInstance(typeof(IServiceScopeFactory));
+            //factory = (IServiceScopeFactory)Container.GetInstance(typeof(IServiceScopeFactory));
 
             //using (var scope = factory.CreateScope())
             //{

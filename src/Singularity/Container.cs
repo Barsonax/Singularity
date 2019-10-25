@@ -22,10 +22,10 @@ namespace Singularity
         internal RegistrationStore Registrations { get; }
         internal SingularitySettings Settings { get; }
 
+        internal readonly Scoped ContainerScope;
         private readonly ResolverPipeline _dependencyGraph;
         private readonly ThreadSafeDictionary<Type, Action<Scoped, object>> _injectionCache = new ThreadSafeDictionary<Type, Action<Scoped, object>>();
         private readonly ThreadSafeDictionary<Type, Func<Scoped, object>> _getInstanceCache = new ThreadSafeDictionary<Type, Func<Scoped, object>>();
-        private readonly Scoped _containerScope;
         private readonly Container? _parentContainer;
 
         /// <summary>
@@ -51,11 +51,10 @@ namespace Singularity
         /// <param name="settings"></param>
         public Container(ContainerBuilder builder, SingularitySettings? settings = null)
         {
-            builder.Register<Container>(c => c.Inject(() => this).With(ServiceAutoDispose.Never));
             Settings = settings ?? SingularitySettings.Default;
-            _containerScope = new Scoped(this);
+            ContainerScope = new Scoped(this);
             Registrations = builder.Registrations;
-            _dependencyGraph = new ResolverPipeline(builder.Registrations, _containerScope, Settings, null);
+            _dependencyGraph = new ResolverPipeline(builder.Registrations, ContainerScope, Settings, null);
         }
 
         private Container(Container parentContainer, Action<ContainerBuilder>? configurator) : this(parentContainer, new ContainerBuilder(configurator, parentContainer.Settings))
@@ -72,9 +71,9 @@ namespace Singularity
         {
             Settings = parentContainer.Settings;
             _parentContainer = parentContainer;
-            _containerScope = new Scoped(this);
+            ContainerScope = new Scoped(this);
             Registrations = builder.Registrations;
-            _dependencyGraph = new ResolverPipeline(builder.Registrations, _containerScope, Settings, parentContainer._dependencyGraph);
+            _dependencyGraph = new ResolverPipeline(builder.Registrations, ContainerScope, Settings, parentContainer._dependencyGraph);
         }
 
         /// <summary>
@@ -101,14 +100,14 @@ namespace Singularity
 
         /// <inheritdoc />
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public T GetInstance<T>() where T : class => GetInstance<T>(_containerScope);
+        public T GetInstance<T>() where T : class => GetInstance<T>(ContainerScope);
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         private T GetInstance<T>(Scoped scope) where T : class => (T)GetInstance(typeof(T), scope);
 
         /// <inheritdoc />
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public object GetInstance(Type type) => GetInstance(type, _containerScope);
+        public object GetInstance(Type type) => GetInstance(type, ContainerScope);
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         internal object GetInstance(Type type, Scoped scope)
@@ -126,12 +125,12 @@ namespace Singularity
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public void LateInjectAll<T>(IEnumerable<T> instances)
         {
-            LateInjectAll(instances, _containerScope);
+            LateInjectAll(instances, ContainerScope);
         }
 
         /// <inheritdoc />
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public void LateInject(object instance) => LateInject(instance, _containerScope);
+        public void LateInject(object instance) => LateInject(instance, ContainerScope);
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         internal void LateInjectAll<T>(IEnumerable<T> instances, Scoped scope)
@@ -203,7 +202,7 @@ namespace Singularity
         /// </summary>
 		public void Dispose()
         {
-            _containerScope?.Dispose();
+            ContainerScope?.Dispose();
             IsDisposed = true;
         }
 

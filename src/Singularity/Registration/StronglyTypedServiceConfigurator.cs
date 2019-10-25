@@ -17,7 +17,7 @@ namespace Singularity
         where TInstance : class, TDependency
     {
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        internal StronglyTypedServiceConfigurator(in BindingMetadata bindingMetadata, SingularitySettings settings, IConstructorSelector? constructorSelector)
+        internal StronglyTypedServiceConfigurator(in BindingMetadata bindingMetadata, SingularitySettings settings, IConstructorResolver? constructorSelector)
         {
             ServiceTypeValidator.Cache<TDependency>.CheckIsEnumerable();
             _bindingMetadata = bindingMetadata;
@@ -28,7 +28,7 @@ namespace Singularity
 
         private readonly BindingMetadata _bindingMetadata;
         private readonly SingularitySettings _settings;
-        private readonly IConstructorSelector? _constructorSelector;
+        private readonly IConstructorResolver? _constructorSelector;
         private SinglyLinkedListNode<Type> _dependencyTypes;
         private Expression? _expression;
         private ILifetime _lifetime = Lifetimes.Transient;
@@ -37,7 +37,7 @@ namespace Singularity
 
         internal ServiceBinding ToBinding()
         {
-            var constructorSelector = _constructorSelector ?? _settings.ConstructorSelector;
+            var constructorSelector = _constructorSelector ?? _settings.ConstructorResolver;
             if (_expression == null)
             {
                 if (TypeMetadataCache<TInstance>.IsInterface) throw new BindingConfigException($"{typeof(TInstance)} cannot be a interface");

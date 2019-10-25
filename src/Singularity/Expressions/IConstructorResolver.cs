@@ -4,7 +4,7 @@ using System.Reflection;
 
 namespace Singularity.Expressions
 {
-    public interface IConstructorSelector
+    public interface IConstructorResolver
     {
         /// <summary>
         /// Selects a constructor for a type.
