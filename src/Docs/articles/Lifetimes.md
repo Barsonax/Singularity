@@ -3,14 +3,14 @@ Lifetimes allow you to control when new instances are created. You can set lifet
 ```cs
 var container = new Container(builder =>
 {
-    builder.Register<ITestService10, TestService10>(c => c.With(Lifetime.Transient));
+    builder.Register<ITestService10, TestService10>(c => c.With(Lifetimes.Transient));
 });
 ```
 And
 ```cs
 var container = new Container(builder =>
 {
-    builder.Register<ITestService10, TestService10>(c => c.With(Lifetime.Singleton));
+    builder.Register<ITestService10, TestService10>(c => c.With(Lifetimes.Singleton));
 });
 ```
 
@@ -19,14 +19,14 @@ There are a few different lifetimes:
 - `Lifetime.PerContainer`
 - `Lifetime.PerScope`  
 
-The `Lifetime.Transient` is the default setting which means singularity will return a new instance everytime a instance is requested. For more info see [Lifetime](~/api/Singularity.Lifetime.yml)
+The `Lifetime.Transient` is the default setting which means singularity will return a new instance everytime a instance is requested. For more info see [Lifetimes](~/api/Singularity.Lifetimes.yml)
 
 The following example illustrates how lifetimes can be used:
 ```cs
 var container = new Container(builder =>
 {
-    builder.Register<IScopedService, ScopedService>().With(Lifetime.PerScope));
-	builder.Register<ISingleton, Singleton>().With(Lifetime.Singleton));
+    builder.Register<IScopedService, ScopedService>().With(Lifetimes.PerScope));
+	builder.Register<ISingleton, Singleton>().With(Lifetimes.Singleton));
 });
 
 Scoped scope1 = container.BeginScope();

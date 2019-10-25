@@ -1,11 +1,28 @@
-# Home
-[![Discord](https://img.shields.io/discord/569232642105540608.svg)](https://discord.gg/9x9J3y) [![NuGet Badge](https://buildstats.info/nuget/Singularity)](https://www.nuget.org/packages/Singularity/) [![Build Status](https://dev.azure.com/Barsonax/Singularity/_apis/build/status/Singularity-CI?branchName=master)](https://dev.azure.com/Barsonax/Singularity/_build/latest?definitionId=7&branchName=master) ![Azure DevOps tests (branch)](https://img.shields.io/azure-devops/tests/Barsonax/Singularity/7/master.svg) ![coverage](https://img.shields.io/azure-devops/coverage/Barsonax/Singularity/7/master.svg) [![Beerpay](https://img.shields.io/beerpay/Barsonax/Singularity.svg)](https://beerpay.io/Barsonax/Singularity)
+# Singularity
+[![Discord](https://img.shields.io/discord/569232642105540608.svg)](https://discord.gg/cKFnjjk) [![NuGet Badge](https://buildstats.info/nuget/Singularity)](https://www.nuget.org/packages/Singularity/) [![Build Status](https://dev.azure.com/Barsonax/Singularity/_apis/build/status/Singularity-CI?branchName=master&stageName=Build)](https://dev.azure.com/Barsonax/Singularity/_build/latest?definitionId=7&branchName=master) ![Azure DevOps tests (branch)](https://img.shields.io/azure-devops/tests/Barsonax/Singularity/7/master.svg) [![Maintainability Rating](https://sonarcloud.io/api/project_badges/measure?project=Barsonax_Singularity&metric=sqale_rating)](https://sonarcloud.io/dashboard?id=Barsonax_Singularity) [![Reliability Rating](https://sonarcloud.io/api/project_badges/measure?project=Barsonax_Singularity&metric=reliability_rating)](https://sonarcloud.io/dashboard?id=Barsonax_Singularity) [![Security Rating](https://sonarcloud.io/api/project_badges/measure?project=Barsonax_Singularity&metric=security_rating)](https://sonarcloud.io/dashboard?id=Barsonax_Singularity) ![coverage](https://img.shields.io/azure-devops/coverage/Barsonax/Singularity/7/master.svg) [![Beerpay](https://img.shields.io/beerpay/Barsonax/Singularity.svg)](https://beerpay.io/Barsonax/Singularity)
 
-Singularity is a ioc container that focuses on the following things
-- Performance, Singularity is one of the fastest if not the fastest dependency injection container out there. Don't believe me? Check out my [benchmarks](#Benchmarks) or if you want a second opinion check out the benchmarks that Daniel Palme made [here](https://github.com/danielpalme/IocPerformance).
-- Not invasive. For instance `Dispose` wont be automatically called by default, instead you can configure Singularity to do so through the `With(DisposeBehavior)` method or tell singularity to automatically call `Dispose` by simply changing the settings. Is calling Dispose not enough and you want to invoke your own custom logic? The `WithFinalizer(Action<TInstance>)` method might be of help here.
+## Features
+- Extreme performance, Singularity is one of the fastest if not the fastest dependency injection container out there. Don't believe me? Check out my [benchmarks](#Benchmarks) or if you want a second opinion check out the benchmarks that Daniel Palme made [here](https://github.com/danielpalme/IocPerformance).
+- Clean fluent API.
+- [Source Link](https://github.com/dotnet/sourcelink) enabled
+- Generic wrappers:
+  1. `Func<T>`
+  1. `Lazy<T>`
+  1. `Expression<Func<T>>`
+  1. And any other generic wrapper you may have defined yourself.
+- Collection support:
+  1. `IEnumerable<T>`
+  1. `IReadOnlyCollection<T>`
+  1. `IReadOnlyList`
+- Supports open generics.
+- Supports resolving unregistered concrete types.
+- Supports decorators.
+- Supports method and property injection without forcing you to litter attributes all over your code base. All configuration is kept inside the container.
+- Auto dispose, this is off by default but can be turned on with `With(DisposeBehavior)`or adding the lifetimes you want to auto dispose to `SingularitySettings.AutoDisposeLifetimes`.
+- Custom finalizers with the `WithFinalizer(Action<TInstance>)` method.
+- Supports Transient, Singleton and Scope lifetimes.
+- Supports child containers.
 - Clear error messages and fail fast to point you in the right direction as fast as possible.
-
 
 ## Getting started
 ### Installation
@@ -40,3 +57,33 @@ Ofcourse its possible to combine these with for instance a collection type such 
 ```cs
 var instanceExpressions = container.GetInstance<IReadOnlyList<Expression<Func<IPlugin>>>>(); //Returns all expressions for IPlugin registrations
 ```
+
+### Benchmarks
+The code used in the benchmark can be found [here](https://github.com/Barsonax/Singularity/blob/master/Singularity.TestClasses/Benchmark/SimpleSingularityContainerBenchmark.cs)
+```
+BenchmarkDotNet=v0.11.4, OS=Windows 10.0.17763.437 (1809/October2018Update/Redstone5)
+Intel Core i7-4790K CPU 4.00GHz (Haswell), 1 CPU, 8 logical and 4 physical cores
+.NET Core SDK=3.0.100-preview3-010431
+  [Host]       : .NET Core 2.1.9 (CoreCLR 4.6.27414.06, CoreFX 4.6.27415.01), 64bit RyuJIT
+  LegacyJitX64 : .NET Framework 4.7.2 (CLR 4.0.30319.42000), 64bit RyuJIT-v4.7.3324.0
+  RyuJitX64    : .NET Core 2.1.9 (CoreCLR 4.6.27414.06, CoreFX 4.6.27415.01), 64bit RyuJIT
+
+Platform=X64  IterationTime=500.0000 ms
+
+|    Method |          Job |       Jit | Runtime |      Mean |     Error |    StdDev | Gen 0/1k Op | Gen 1/1k Op | Gen 2/1k Op | Allocated Memory/Op |
+|---------- |------------- |---------- |-------- |----------:|----------:|----------:|------------:|------------:|------------:|--------------------:|
+| Singleton | LegacyJitX64 | LegacyJit |     Clr |  7.700 ns | 0.0722 ns | 0.0675 ns |           - |           - |           - |                   - |
+| Transient | LegacyJitX64 | LegacyJit |     Clr | 10.086 ns | 0.0220 ns | 0.0195 ns |      0.0057 |           - |           - |                24 B |
+|  Combined | LegacyJitX64 | LegacyJit |     Clr | 15.067 ns | 0.0568 ns | 0.0532 ns |      0.0133 |           - |           - |                56 B |
+|   Complex | LegacyJitX64 | LegacyJit |     Clr | 26.822 ns | 0.1198 ns | 0.1121 ns |      0.0229 |           - |           - |                96 B |
+| Singleton |    RyuJitX64 |    RyuJit |    Core |  7.744 ns | 0.0743 ns | 0.0695 ns |           - |           - |           - |                   - |
+| Transient |    RyuJitX64 |    RyuJit |    Core | 10.031 ns | 0.0172 ns | 0.0161 ns |      0.0057 |           - |           - |                24 B |
+|  Combined |    RyuJitX64 |    RyuJit |    Core | 16.454 ns | 0.0564 ns | 0.0500 ns |      0.0133 |           - |           - |                56 B |
+|   Complex |    RyuJitX64 |    RyuJit |    Core | 23.667 ns | 0.0410 ns | 0.0342 ns |      0.0229 |           - |           - |                96 B |
+```
+
+### Donations
+Support me by buying a beer [![Beerpay](https://img.shields.io/beerpay/Barsonax/Singularity.svg)](https://beerpay.io/Barsonax/Singularity)
+
+### Licensing
+Licensed under AGPL however this might not be fit for all commercial works as it requires you to open source your work. If you require a different license please contact me.
