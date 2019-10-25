@@ -1,4 +1,6 @@
-﻿using Xunit;
+﻿using System;
+using Singularity.TestClasses.TestClasses;
+using Xunit;
 
 namespace Singularity.Test.Injection
 {
@@ -37,6 +39,44 @@ namespace Singularity.Test.Injection
 
             Assert.Single(container.Registrations.Registrations);
             Assert.Single(childContainer.Registrations.Registrations);
+        }
+
+        [Fact]
+        public void GetInstance_ResolveDisposable_Child_Dispose()
+        {
+            //ARRANGE
+            var container = new Container(c => { }, SingularitySettings.Microsoft);
+            var childContainer = container.GetNestedContainer();
+
+            //ACT
+            var disposable = container.GetInstance<Disposable>();
+            var disposableFromChild = childContainer.GetInstance<Disposable>();
+
+            //ASSERT
+            Assert.False(disposable.IsDisposed);
+            Assert.False(disposableFromChild.IsDisposed);
+            childContainer.Dispose();
+            Assert.False(disposable.IsDisposed);
+            Assert.True(disposableFromChild.IsDisposed);
+        }
+
+        [Fact]
+        public void GetInstance_ResolveDisposable_Scope_Dispose()
+        {
+            //ARRANGE
+            var container = new Container(c => { }, SingularitySettings.Microsoft);
+            var scope = container.BeginScope();
+
+            //ACT
+            var disposable = container.GetInstance<Disposable>();
+            var disposableFromScope = scope.GetInstance<Disposable>();
+
+            //ASSERT
+            Assert.False(disposable.IsDisposed);
+            Assert.False(disposableFromScope.IsDisposed);
+            scope.Dispose();
+            Assert.False(disposable.IsDisposed);
+            Assert.True(disposableFromScope.IsDisposed);
         }
 
         [Fact]

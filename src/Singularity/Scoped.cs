@@ -59,6 +59,18 @@ namespace Singularity
             Container.LateInject(instance, this);
         }
 
+        /// <inheritdoc />
+        public T? GetInstanceOrDefault<T>() where T : class
+        {
+            return Container.GetInstanceOrDefault<T>();
+        }
+
+        /// <inheritdoc />
+        public object? GetInstanceOrDefault(Type type)
+        {
+            return Container.GetInstanceOrDefault(type, this);
+        }
+
         /// <summary>
         /// <see cref="Singularity.Container.LateInjectAll{T}(IEnumerable{T})"/>
         /// </summary>

@@ -24,8 +24,8 @@ namespace Singularity
 
         internal readonly Scoped ContainerScope;
         private readonly ResolverPipeline _dependencyGraph;
-        private readonly ThreadSafeDictionary<Type, Action<Scoped, object>> _injectionCache = new ThreadSafeDictionary<Type, Action<Scoped, object>>();
-        private readonly ThreadSafeDictionary<Type, Func<Scoped, object>> _getInstanceCache = new ThreadSafeDictionary<Type, Func<Scoped, object>>();
+        private readonly ThreadSafeDictionary<Type, Action<Scoped, object>?> _injectionCache = new ThreadSafeDictionary<Type, Action<Scoped, object>?>();
+        private readonly ThreadSafeDictionary<Type, Func<Scoped, object?>?> _getInstanceCache = new ThreadSafeDictionary<Type, Func<Scoped, object?>?>();
         private readonly Container? _parentContainer;
 
         /// <summary>
@@ -112,10 +112,33 @@ namespace Singularity
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         internal object GetInstance(Type type, Scoped scope)
         {
-            Func<Scoped, object> func = _getInstanceCache.GetOrDefault(type);
+            Func<Scoped, object>? func = _getInstanceCache.GetOrDefault(type);
             if (func == null)
             {
                 func = _dependencyGraph.Resolve(type).Factory;
+                _getInstanceCache.Add(type, func);
+            }
+            return func(scope);
+        }
+
+        /// <inheritdoc />
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public T? GetInstanceOrDefault<T>() where T : class => GetInstanceOrDefault<T>(ContainerScope);
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        private T? GetInstanceOrDefault<T>(Scoped scope) where T : class => (T?)GetInstanceOrDefault(typeof(T), scope);
+
+        /// <inheritdoc />
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public object? GetInstanceOrDefault(Type type) => GetInstanceOrDefault(type, ContainerScope);
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        internal object? GetInstanceOrDefault(Type type, Scoped scope)
+        {
+            Func<Scoped, object?>? func = _getInstanceCache.GetOrDefault(type);
+            if (func == null)
+            {
+                func = _dependencyGraph.TryResolve(type)?.Factory ?? (scoped => null);
                 _getInstanceCache.Add(type, func);
             }
             return func(scope);
