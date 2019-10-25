@@ -10,7 +10,7 @@ And
 ```cs
 var container = new Container(builder =>
 {
-    builder.Register<ITestService10, TestService10>(c => c.With(Lifetimes.Singleton));
+    builder.Register<ITestService10, TestService10>(c => c.With(Lifetimes.PerContainer));
 });
 ```
 
@@ -26,7 +26,7 @@ The following example illustrates how lifetimes can be used:
 var container = new Container(builder =>
 {
     builder.Register<IScopedService, ScopedService>().With(Lifetimes.PerScope));
-	builder.Register<ISingleton, Singleton>().With(Lifetimes.Singleton));
+	builder.Register<ISingleton, Singleton>().With(Lifetimes.PerContainer));
 });
 
 Scoped scope1 = container.BeginScope();
