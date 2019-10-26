@@ -31,6 +31,7 @@ using System.Linq.Expressions;
 using System.Reflection;
 using System.Reflection.Emit;
 
+#pragma warning disable
 #nullable disable
 #if LIGHT_EXPRESSION
 namespace FastExpressionCompiler.LightExpression
