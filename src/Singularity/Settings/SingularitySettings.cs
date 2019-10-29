@@ -1,6 +1,8 @@
 ﻿using System;
 using Singularity.Collections;
 using Singularity.Expressions;
+using Singularity.Logging;
+using Singularity.Settings;
 
 namespace Singularity
 {
@@ -37,5 +39,9 @@ namespace Singularity
         /// The constructor selector that will be used by default.
         /// </summary>
         public IConstructorResolver ConstructorResolver { get; set; } = ConstructorResolvers.Default;
+        /// <summary>
+        /// The logger that will be used.
+        /// </summary>
+        public ISingularityLogger Logger { get; set; } = Loggers.Default;
     }
 }

@@ -110,6 +110,7 @@ namespace Singularity.Graph.Resolvers
         {
             try
             {
+                Settings.Logger.Log($"{nameof(ResolveDependency)} for {type}", circularDependencyDetector.Count);
                 circularDependencyDetector.Enter(type);
                 GenerateBaseExpression(dependency, circularDependencyDetector);
                 InstanceFactory factory = GenerateInstanceFactory(type, dependency, circularDependencyDetector);

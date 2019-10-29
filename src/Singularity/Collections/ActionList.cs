@@ -1,8 +1,7 @@
 ﻿using System;
 using System.Threading;
-using Singularity.Collections;
 
-namespace Singularity
+namespace Singularity.Collections
 {
     internal sealed class ActionList<T>
         where T : class
