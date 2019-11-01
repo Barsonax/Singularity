@@ -2,16 +2,16 @@
 
 namespace Singularity.Graph.Resolvers
 {
-    public class PatternResolverExclusion : IResolverExclusion
+    public class PatternMatch : IMatch
     {
         private readonly string _pattern;
 
-        public PatternResolverExclusion(string pattern)
+        public PatternMatch(string pattern)
         {
             _pattern = pattern;
         }
 
-        public bool IsExcluded(Type type)
+        public bool Match(Type type)
         {
             if (_pattern.StartsWith("*"))
             {

@@ -8,6 +8,9 @@ using Microsoft.AspNetCore.HttpsPolicy;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
+using Singularity.Graph.Resolvers;
+using Singularity.Settings;
+using Singularity.TestClasses.TestClasses;
 
 namespace Singularity.Aspnet.MVC.Examples
 {
@@ -28,6 +31,13 @@ namespace Singularity.Aspnet.MVC.Examples
 
         public void ConfigureContainer(ContainerBuilder builder)
         {
+            builder.ConfigureSettings(s =>
+            {
+                s.With(Loggers.ConsoleLogger);
+                s.IgnoreResolveError(new PatternMatch("Microsoft.*"));
+            });
+
+            builder.Register<ITransient1, Transient1>();
             //Register services using singularities ContainerBuilder here
         }
 

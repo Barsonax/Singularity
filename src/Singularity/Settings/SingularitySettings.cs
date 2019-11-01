@@ -3,6 +3,8 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using Singularity.Expressions;
 using Singularity.Graph.Resolvers;
+using Singularity.Logging;
+using Singularity.Settings;
 
 namespace Singularity
 {
@@ -45,7 +47,39 @@ namespace Singularity
         [EditorBrowsable(EditorBrowsableState.Never)]
         public IConstructorResolver ConstructorResolver { get; private set; } = ConstructorResolvers.Default;
 
+        [EditorBrowsable(EditorBrowsableState.Never)]
+        public ISingularityLogger Logger { get; private set; } = Loggers.Default;
+
+        [EditorBrowsable(EditorBrowsableState.Never)]
+        public List<IMatch> ResolveErrorsExclusions { get; } = new List<IMatch>();
+
+        [EditorBrowsable(EditorBrowsableState.Never)]
+        public Dictionary<Type, List<IMatch>> ResolverExclusions { get; } = new Dictionary<Type, List<IMatch>>();
+
         private SingularitySettings() { }
+
+        public SingularitySettings IgnoreResolveError(IMatch match)
+        {
+            ResolveErrorsExclusions.Add(match);
+            return this;
+        }
+
+        public SingularitySettings ExcludeAutoRegistration(Type type, IMatch match)
+        {
+            if (!ResolverExclusions.TryGetValue(type, out var exclusions))
+            {
+                exclusions = new List<IMatch>();
+                ResolverExclusions.Add(type, exclusions);
+            }
+            exclusions.Add(match);
+            return this;
+        }
+
+        public SingularitySettings With(ISingularityLogger logger)
+        {
+            Logger = logger;
+            return this;
+        }
 
         public SingularitySettings With(IDependencyResolver[] resolvers)
         {

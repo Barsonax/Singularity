@@ -11,13 +11,13 @@ namespace Singularity.Graph.Resolvers
         private static readonly MethodInfo _getContainer = typeof(ContainerDependencyResolver).GetMethod(nameof(GetContainer), BindingFlags.NonPublic | BindingFlags.Static);
         private static readonly MethodInfo _getScope = typeof(ContainerDependencyResolver).GetMethod(nameof(GetScope), BindingFlags.NonPublic | BindingFlags.Static);
 
-        private readonly List<IResolverExclusion> Exclusions = new List<IResolverExclusion>();
+        private readonly List<IMatch> Exclusions = new List<IMatch>();
 
         public IEnumerable<ServiceBinding> Resolve(IResolverPipeline graph, Type type)
         {
-            foreach (IResolverExclusion resolverExclusion in Exclusions)
+            foreach (IMatch resolverExclusion in Exclusions)
             {
-                if (resolverExclusion.IsExcluded(type)) yield break;
+                if (resolverExclusion.Match(type)) yield break;
             }
             if (type == typeof(Container))
             {
@@ -34,7 +34,7 @@ namespace Singularity.Graph.Resolvers
 
         public void Exclude(string pattern)
         {
-            Exclusions.Add(new PatternResolverExclusion(pattern));
+            Exclusions.Add(new PatternMatch(pattern));
         }
 
         private static Container GetContainer(Scoped scope)

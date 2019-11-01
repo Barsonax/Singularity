@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using Singularity.Aspnet.MVC.Examples.Models;
+using Singularity.TestClasses.TestClasses;
 
 namespace Singularity.Aspnet.MVC.Examples.Controllers
 {
@@ -13,7 +14,7 @@ namespace Singularity.Aspnet.MVC.Examples.Controllers
     {
         private readonly ILogger<HomeController> _logger;
 
-        public HomeController(ILogger<HomeController> logger)
+        public HomeController(ILogger<HomeController> logger, ITransient1 transient1)
         {
             _logger = logger;
         }

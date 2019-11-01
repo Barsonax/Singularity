@@ -6,6 +6,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\..\Singularity.Microsoft.DependencyInjection\Singularity.Microsoft.DependencyInjection.csproj" />
+    <ProjectReference Include="..\..\Tests\Singularity.TestClasses\Singularity.TestClasses.csproj" />
   </ItemGroup>
 
 </Project>

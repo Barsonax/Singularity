@@ -117,7 +117,7 @@ namespace Singularity
             Func<Scoped, object>? func = _getInstanceCache.GetOrDefault(type);
             if (func == null)
             {
-                func = _dependencyGraph.Resolve(type).Factory;
+                func = _dependencyGraph.Resolve(type)?.Factory ?? (s => null);
                 _getInstanceCache.Add(type, func);
             }
             return func(scope);

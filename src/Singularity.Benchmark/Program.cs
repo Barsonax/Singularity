@@ -9,11 +9,12 @@ namespace Singularity.Benchmark
     {
         static void Main()
         {
-            var _benchmark = new SimpleContainerBenchmark();
-            _benchmark.Setup();
-            _benchmark.Complex();
+            //var _benchmark = new SimpleContainerBenchmark();
+            //_benchmark.Setup();
+            //_benchmark.Complex();
             //BenchmarkRunner.Run<ImmutableDictionaryBenchmarks>();
             //BenchmarkRunner.Run<SimpleContainerBenchmark>();
+            BenchmarkRunner.Run<AdvancedContainerBenchmark>();
             //BenchmarkRunner.Run()
             //BenchmarkSwitcher.FromTypes(new[] {typeof(SimpleContainerBenchmark), typeof(AdvancedContainerBenchmark)}).RunAllJoined();
 

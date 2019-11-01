@@ -17,7 +17,7 @@ namespace Singularity.Graph.Resolvers
 
                 ConstructorInfo constructor = lazyType.GetConstructor(new[] { funcType });
 
-                foreach (InstanceFactory factory in graph.ResolveAll(funcType))
+                foreach (InstanceFactory factory in graph.TryResolveAll(funcType))
                 {
                     var context = (ExpressionContext)factory.Context;
                     context.Expression = Expression.New(constructor, factory.Context.Expression);

@@ -13,7 +13,7 @@ namespace Singularity.Graph.Resolvers
             {
                 Type dependencyType = type.GenericTypeArguments[0];
 
-                foreach (InstanceFactory factory in graph.ResolveAll(dependencyType))
+                foreach (InstanceFactory factory in graph.TryResolveAll(dependencyType))
                 {
                     LambdaExpression baseExpression = Expression.Lambda(factory.Context.Expression);
 
