@@ -30,7 +30,6 @@ namespace Singularity.Microsoft.DependencyInjection
         /// <param name="config"></param>
         public static void RegisterServiceProvider(this ContainerBuilder config)
         {
-            config.Register<IServiceProvider, SingularityServiceProvider>(c => c.With(Lifetimes.PerContainer));
             config.Register<IServiceScopeFactory, SingularityServiceScopeFactory>(c => c.With(Lifetimes.PerContainer));
         }
 

@@ -32,15 +32,13 @@ namespace Singularity
         /// Creates a new container using all the bindings that are in the provided modules
         /// </summary>
         /// <param name="modules"></param>
-        /// <param name="settings"></param>
-        public Container(IEnumerable<IModule> modules, SingularitySettings? settings = null) : this(ToBuilder(modules), settings) { }
+        public Container(IEnumerable<IModule> modules) : this(ToBuilder(modules)) { }
 
         /// <summary>
         /// Creates a new container using the provided configurator.
         /// </summary>
         /// <param name="configurator"></param>
-        /// <param name="settings"></param>
-        public Container(Action<ContainerBuilder>? configurator = null, SingularitySettings? settings = null) : this(new ContainerBuilder(configurator, settings), settings)
+        public Container(Action<ContainerBuilder>? configurator = null) : this(new ContainerBuilder(configurator))
         {
         }
 
@@ -48,22 +46,26 @@ namespace Singularity
         /// Creates a new container, consuming the provided builder.
         /// </summary>
         /// <param name="builder"></param>
-        /// <param name="settings"></param>
-        public Container(ContainerBuilder builder, SingularitySettings? settings = null)
+        public Container(ContainerBuilder builder)
         {
-            Settings = settings ?? SingularitySettings.Default;
             ContainerScope = new Scoped(this);
             Registrations = builder.Registrations;
+            Settings = builder.Settings;
             _dependencyGraph = new ResolverPipeline(builder.Registrations, ContainerScope, Settings, null);
         }
 
+        /// <summary>
+        /// Creates a new child container using the provided configurator.
+        /// </summary>
+        /// <param name="parentContainer"></param>
+        /// <param name="configurator"></param>
         private Container(Container parentContainer, Action<ContainerBuilder>? configurator) : this(parentContainer, new ContainerBuilder(configurator, parentContainer.Settings))
         {
 
         }
 
         /// <summary>
-        /// Creates a new container using the provided configurator.
+        /// Creates a new child container using the provided builder.
         /// </summary>
         /// <param name="parentContainer"></param>
         /// <param name="builder"></param>
@@ -240,6 +242,12 @@ namespace Singularity
                     module.Register(builder);
                 }
             };
+        }
+
+        /// <inheritdoc />
+        object IServiceProvider.GetService(Type serviceType)
+        {
+            return GetInstance(serviceType);
         }
     }
 }

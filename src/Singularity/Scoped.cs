@@ -71,6 +71,12 @@ namespace Singularity
             return Container.GetInstanceOrDefault(type, this);
         }
 
+        /// <inheritdoc />
+        public object GetService(Type serviceType)
+        {
+            return Container.GetInstance(serviceType, this);
+        }
+
         /// <summary>
         /// <see cref="Singularity.Container.LateInjectAll{T}(IEnumerable{T})"/>
         /// </summary>

@@ -27,7 +27,7 @@ namespace Singularity.Microsoft.DependencyInjection
         }
 
         /// <inheritdoc />
-        public IServiceProvider ServiceProvider => this;
+        public IServiceProvider ServiceProvider => _scope;
 
         /// <inheritdoc />
         public object? GetService(Type serviceType)

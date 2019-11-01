@@ -7,7 +7,7 @@ namespace Singularity
     /// <summary>
     /// Interface for a singularity container.
     /// </summary>
-    public interface IContainer : IDisposable
+    public interface IContainer : IDisposable, IServiceProvider
     {
         /// <summary>
         /// Resolves a instance for the given dependency type

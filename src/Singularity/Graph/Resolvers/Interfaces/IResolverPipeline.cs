@@ -3,7 +3,7 @@ using System.Collections.Generic;
 
 namespace Singularity.Graph.Resolvers
 {
-    internal interface IResolverPipeline
+    public interface IResolverPipeline
     {
         SingularitySettings Settings { get; }
         InstanceFactory Resolve(Type type);

@@ -1,4 +1,5 @@
 ﻿using BenchmarkDotNet.Attributes;
+using Singularity.Collections;
 
 namespace Singularity.Benchmark
 {

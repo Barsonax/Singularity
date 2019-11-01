@@ -7,6 +7,7 @@ namespace Singularity.Graph.Resolvers
 {
     internal sealed class CircularDependencyDetector
     {
+        public int Count => _visitedDependencies.Count;
         private readonly HashSet<Type> _visitedDependencies = new HashSet<Type>();
 
         public void Enter(Type type)

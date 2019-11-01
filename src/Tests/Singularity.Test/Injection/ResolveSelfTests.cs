@@ -45,7 +45,7 @@ namespace Singularity.Test.Injection
         public void GetInstance_ResolveDisposable_Child_Dispose()
         {
             //ARRANGE
-            var container = new Container(c => { }, SingularitySettings.Microsoft);
+            var container = new Container(c => { c.ConfigureSettings(SingularitySettings.Microsoft); });
             var childContainer = container.GetNestedContainer();
 
             //ACT
@@ -64,7 +64,7 @@ namespace Singularity.Test.Injection
         public void GetInstance_ResolveDisposable_Scope_Dispose()
         {
             //ARRANGE
-            var container = new Container(c => { }, SingularitySettings.Microsoft);
+            var container = new Container(c => { c.ConfigureSettings(SingularitySettings.Microsoft); });
             var scope = container.BeginScope();
 
             //ACT

@@ -21,16 +21,7 @@ namespace Singularity.Graph.Resolvers
         public ResolverPipeline(RegistrationStore registrationStore, Scoped containerScope, SingularitySettings settings, ResolverPipeline? parentPipeline)
         {
             Settings = settings ?? throw new ArgumentNullException(nameof(settings));
-            _resolvers = new IDependencyResolver[]
-            {
-                new ContainerDependencyResolver(),
-                new EnumerableDependencyResolver(),
-                new ExpressionDependencyResolver(),
-                new LazyDependencyResolver(),
-                new FactoryDependencyResolver(),
-                new ConcreteDependencyResolver(),
-                new OpenGenericResolver()
-            };
+            _resolvers = Settings.Resolvers;
             _parentPipeline = parentPipeline;
             SyncRoot = parentPipeline?.SyncRoot ?? new object();
             _containerScope = containerScope ?? throw new ArgumentNullException(nameof(containerScope));
@@ -110,6 +101,7 @@ namespace Singularity.Graph.Resolvers
         {
             try
             {
+                Settings.Logger.Log($"{nameof(ResolveDependency)} for {type}", circularDependencyDetector.Count);
                 circularDependencyDetector.Enter(type);
                 GenerateBaseExpression(dependency, circularDependencyDetector);
                 InstanceFactory factory = GenerateInstanceFactory(type, dependency, circularDependencyDetector);
