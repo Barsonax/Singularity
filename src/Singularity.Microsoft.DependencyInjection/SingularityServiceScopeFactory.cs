@@ -1,6 +1,6 @@
 ﻿using Microsoft.Extensions.DependencyInjection;
 
-namespace Singularity.Microsoft.DependencyInjection
+namespace Singularity
 {
     /// <summary>
     /// <see cref="IServiceScopeFactory"/> implementation for the singularity container.

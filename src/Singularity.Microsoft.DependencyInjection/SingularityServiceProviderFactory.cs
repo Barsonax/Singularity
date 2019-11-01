@@ -1,7 +1,7 @@
 ﻿using System;
 using Microsoft.Extensions.DependencyInjection;
 
-namespace Singularity.Microsoft.DependencyInjection
+namespace Singularity
 {
     /// <inheritdoc />
     public class SingularityServiceProviderFactory : IServiceProviderFactory<ContainerBuilder>

@@ -1,14 +1,10 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Diagnostics;
-using System.Linq;
-using System.Threading.Tasks;
+﻿using System.Diagnostics;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
-using Singularity.Aspnet.MVC.Examples.Models;
+using Singularity.AspNetCore.MVC.Examples.Models;
 using Singularity.TestClasses.TestClasses;
 
-namespace Singularity.Aspnet.MVC.Examples.Controllers
+namespace Singularity.AspNetCore.MVC.Examples.Controllers
 {
     public class HomeController : Controller
     {

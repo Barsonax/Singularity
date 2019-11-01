@@ -2,7 +2,6 @@
 using System.Collections.Generic;
 using System.Linq;
 using Microsoft.Extensions.DependencyInjection;
-using Singularity.Microsoft.DependencyInjection;
 using Singularity.TestClasses.TestClasses;
 
 namespace Singularity.TestClasses.Benchmark

@@ -1,6 +1,4 @@
-using System;
-
-namespace Singularity.Aspnet.MVC.Examples.Models
+namespace Singularity.AspNetCore.MVC.Examples.Models
 {
     public class ErrorViewModel
     {

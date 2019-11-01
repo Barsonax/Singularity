@@ -1,6 +1,6 @@
 ﻿using Singularity.Logging;
 
-namespace Singularity.Settings
+namespace Singularity
 {
     public class Loggers
     {

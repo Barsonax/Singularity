@@ -1,7 +1,7 @@
 ﻿using System;
 using Microsoft.Extensions.DependencyInjection;
 
-namespace Singularity.Microsoft.DependencyInjection
+namespace Singularity
 {
     /// <summary>
     /// <see cref="IServiceScope"/> implementation for the singularity container.
@@ -32,7 +32,7 @@ namespace Singularity.Microsoft.DependencyInjection
         /// <inheritdoc />
         public object? GetService(Type serviceType)
         {
-            return _scope.GetInstanceOrDefault(serviceType);
+            return _scope.GetInstance(serviceType);
         }
     }
 }

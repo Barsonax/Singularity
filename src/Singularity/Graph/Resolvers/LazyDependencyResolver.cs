@@ -6,7 +6,7 @@ using Singularity.Expressions;
 
 namespace Singularity.Graph.Resolvers
 {
-    internal sealed class LazyDependencyResolver : IDependencyResolver
+    public sealed class LazyDependencyResolver : IDependencyResolver
     {
         public IEnumerable<ServiceBinding> Resolve(IResolverPipeline graph, Type type)
         {

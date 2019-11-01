@@ -1,6 +1,7 @@
 ﻿using System;
+using Singularity.Graph.Resolvers;
 
-namespace Singularity.Graph.Resolvers
+namespace Singularity
 {
     public class PatternMatch : IMatch
     {

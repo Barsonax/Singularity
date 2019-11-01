@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using Singularity.Exceptions;
 
-namespace Singularity.Graph.Resolvers
+namespace Singularity.Graph
 {
     internal sealed class CircularDependencyDetector
     {

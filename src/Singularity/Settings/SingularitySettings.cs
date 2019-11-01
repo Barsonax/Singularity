@@ -4,7 +4,6 @@ using System.ComponentModel;
 using Singularity.Expressions;
 using Singularity.Graph.Resolvers;
 using Singularity.Logging;
-using Singularity.Settings;
 
 namespace Singularity
 {
@@ -21,8 +20,8 @@ namespace Singularity
         /// <summary>
         /// Settings for microsoft dependency injection.
         /// </summary>
-        public static SingularitySettings Microsoft => new SingularitySettings()
-            .AutoDispose(Lifetimes.Transient, Lifetimes.PerContainer, Lifetimes.PerScope, Lifetimes.PerGraph);
+        public static SingularitySettings Microsoft => new SingularitySettings(c =>
+                                                         c.AutoDispose(Lifetimes.Transient, Lifetimes.PerContainer, Lifetimes.PerScope, Lifetimes.PerGraph));
 
         [EditorBrowsable(EditorBrowsableState.Never)]
         public IDependencyResolver[] Resolvers { get; private set; } = {
@@ -56,15 +55,14 @@ namespace Singularity
         [EditorBrowsable(EditorBrowsableState.Never)]
         public Dictionary<Type, List<IMatch>> ResolverExclusions { get; } = new Dictionary<Type, List<IMatch>>();
 
-        private SingularitySettings() { }
+        private SingularitySettings(Action<SingularitySettings> configurator = null) { }
 
-        public SingularitySettings IgnoreResolveError(IMatch match)
+        public void IgnoreResolveError(IMatch match)
         {
             ResolveErrorsExclusions.Add(match);
-            return this;
         }
 
-        public SingularitySettings ExcludeAutoRegistration(Type type, IMatch match)
+        public void ExcludeAutoRegistration(Type type, IMatch match)
         {
             if (!ResolverExclusions.TryGetValue(type, out var exclusions))
             {
@@ -72,41 +70,21 @@ namespace Singularity
                 ResolverExclusions.Add(type, exclusions);
             }
             exclusions.Add(match);
-            return this;
         }
 
-        public SingularitySettings With(ISingularityLogger logger)
-        {
-            Logger = logger;
-            return this;
-        }
+        public void With(ISingularityLogger logger) => Logger = logger;
 
-        public SingularitySettings With(IDependencyResolver[] resolvers)
-        {
-            Resolvers = resolvers;
-            return this;
-        }
+        public void With(IDependencyResolver[] resolvers) => Resolvers = resolvers;
 
-        public SingularitySettings With(IConstructorResolver constructorResolver)
-        {
-            ConstructorResolver = constructorResolver;
-            return this;
-        }
+        public void With(IConstructorResolver constructorResolver) => ConstructorResolver = constructorResolver;
 
-        public SingularitySettings AutoDispose(params ILifetime[] autoDisposeLifetimes)
+        public void AutoDispose(params ILifetime[] autoDisposeLifetimes)
         {
             foreach (ILifetime autoDisposeLifetime in autoDisposeLifetimes)
             {
                 AutoDispose(autoDisposeLifetime);
             }
-
-            return this;
         }
-
-        public SingularitySettings AutoDispose(ILifetime lifetime)
-        {
-            AutoDisposeLifetimes.Add(lifetime.GetType());
-            return this;
-        }
+        public void AutoDispose(ILifetime lifetime) => AutoDisposeLifetimes.Add(lifetime.GetType());
     }
 }

@@ -1,14 +1,7 @@
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
 using Microsoft.AspNetCore.Hosting;
-using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Hosting;
-using Microsoft.Extensions.Logging;
-using Singularity.Microsoft.DependencyInjection;
 
-namespace Singularity.Aspnet.MVC.Examples
+namespace Singularity.AspNetCore.MVC.Examples
 {
     public class Program
     {
@@ -22,6 +15,7 @@ namespace Singularity.Aspnet.MVC.Examples
                 .ConfigureWebHostDefaults(webBuilder =>
                 {
                     webBuilder.UseStartup<Startup>();
-                }).UseServiceProviderFactory(new SingularityServiceProviderFactory());
+                })
+                .UseSingularity();
     }
 }

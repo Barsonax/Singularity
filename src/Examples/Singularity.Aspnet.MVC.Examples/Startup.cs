@@ -1,18 +1,11 @@
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
-using Microsoft.AspNetCore.HttpsPolicy;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
-using Singularity.Graph.Resolvers;
-using Singularity.Settings;
 using Singularity.TestClasses.TestClasses;
 
-namespace Singularity.Aspnet.MVC.Examples
+namespace Singularity.AspNetCore.MVC.Examples
 {
     public class Startup
     {
@@ -31,14 +24,14 @@ namespace Singularity.Aspnet.MVC.Examples
 
         public void ConfigureContainer(ContainerBuilder builder)
         {
+            //Register services using singularities ContainerBuilder here
+            builder.SetupMvc();
             builder.ConfigureSettings(s =>
             {
                 s.With(Loggers.ConsoleLogger);
-                s.IgnoreResolveError(new PatternMatch("Microsoft.*"));
             });
 
             builder.Register<ITransient1, Transient1>();
-            //Register services using singularities ContainerBuilder here
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

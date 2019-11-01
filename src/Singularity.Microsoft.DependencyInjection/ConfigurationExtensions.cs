@@ -2,12 +2,12 @@
 using System.Linq.Expressions;
 using Microsoft.Extensions.DependencyInjection;
 
-namespace Singularity.Microsoft.DependencyInjection
+namespace Singularity
 {
     /// <summary>
     /// Extensions for microsoft dependency injection.
     /// </summary>
-    public static class Extensions
+    public static class ConfigurationExtensions
     {
         /// <summary>
         /// Creates a singularity <see cref="Container"/> from a <see cref="IServiceCollection"/>.

@@ -5,7 +5,7 @@ using Singularity.Expressions;
 
 namespace Singularity.Graph.Resolvers
 {
-    internal sealed class OpenGenericResolver : IDependencyResolver
+    public sealed class OpenGenericResolver : IDependencyResolver
     {
         public IEnumerable<ServiceBinding> Resolve(IResolverPipeline graph, Type type)
         {

@@ -114,7 +114,7 @@ namespace Singularity
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         internal object GetInstance(Type type, Scoped scope)
         {
-            Func<Scoped, object>? func = _getInstanceCache.GetOrDefault(type);
+            Func<Scoped, object?>? func = _getInstanceCache.GetOrDefault(type);
             if (func == null)
             {
                 func = _dependencyGraph.Resolve(type)?.Factory ?? (s => null);

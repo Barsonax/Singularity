@@ -6,7 +6,7 @@ using Singularity.Expressions;
 
 namespace Singularity.Graph.Resolvers
 {
-    internal class ContainerDependencyResolver : IDependencyResolver
+    public class ContainerDependencyResolver : IDependencyResolver
     {
         private static readonly MethodInfo _getContainer = typeof(ContainerDependencyResolver).GetMethod(nameof(GetContainer), BindingFlags.NonPublic | BindingFlags.Static);
         private static readonly MethodInfo _getScope = typeof(ContainerDependencyResolver).GetMethod(nameof(GetScope), BindingFlags.NonPublic | BindingFlags.Static);

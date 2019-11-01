@@ -6,7 +6,7 @@ using Singularity.Expressions;
 
 namespace Singularity.Graph.Resolvers
 {
-    internal sealed class ExpressionDependencyResolver : IDependencyResolver
+    public sealed class ExpressionDependencyResolver : IDependencyResolver
     {
         private static readonly MethodInfo GenericCreateLambdaMethod = typeof(ExpressionDependencyResolver).GetMethod(nameof(CreateLambda));
 
