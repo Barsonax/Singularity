@@ -20,8 +20,11 @@ namespace Singularity
         /// <summary>
         /// Settings for microsoft dependency injection.
         /// </summary>
-        public static SingularitySettings Microsoft => new SingularitySettings(c =>
-                                                         c.AutoDispose(Lifetimes.Transient, Lifetimes.PerContainer, Lifetimes.PerScope, Lifetimes.PerGraph));
+        public static SingularitySettings Microsoft => new SingularitySettings(s =>
+        {
+            s.AutoDispose(Lifetimes.Transient, Lifetimes.PerContainer, Lifetimes.PerScope, Lifetimes.PerGraph);
+            s.IgnoreResolveError(new PatternTypeMatcher("Microsoft.*"));
+        });
 
         [EditorBrowsable(EditorBrowsableState.Never)]
         public IDependencyResolver[] Resolvers { get; private set; } = {

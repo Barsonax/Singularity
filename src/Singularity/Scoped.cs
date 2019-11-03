@@ -62,7 +62,7 @@ namespace Singularity
         /// <inheritdoc />
         public T? GetInstanceOrDefault<T>() where T : class
         {
-            return Container.GetInstanceOrDefault<T>();
+            return (T?)GetInstanceOrDefault(typeof(T));
         }
 
         /// <inheritdoc />
@@ -72,7 +72,7 @@ namespace Singularity
         }
 
         /// <inheritdoc />
-        public object GetService(Type serviceType)
+        object IServiceProvider.GetService(Type serviceType)
         {
             return Container.GetInstance(serviceType, this);
         }

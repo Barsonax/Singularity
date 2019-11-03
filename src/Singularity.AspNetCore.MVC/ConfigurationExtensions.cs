@@ -16,11 +16,6 @@ namespace Singularity
         {
             builder.Register<IControllerActivator, SingularityControllerActivator>();
             builder.Register<IViewComponentActivator, SingularityViewActivator>();
-
-            builder.ConfigureSettings(s =>
-            {
-                s.IgnoreResolveError(new PatternTypeMatcher("Microsoft.*"));
-            });
         }
     }
 }
