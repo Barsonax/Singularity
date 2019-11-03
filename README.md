@@ -92,6 +92,8 @@ Platform=X64  IterationTime=500.0000 ms
 | Singularity      | [![NuGet Badge](https://buildstats.info/nuget/Singularity)](https://www.nuget.org/packages/Singularity/) |
 | Singularity.Duality.core      | [![NuGet Badge](https://buildstats.info/nuget/Singularity.Duality.core)](https://www.nuget.org/packages/Singularity.Duality.core/)|
 | Singularity.Microsoft.DependencyInjection      | [![NuGet Badge](https://buildstats.info/nuget/Singularity.Microsoft.DependencyInjection)](https://www.nuget.org/packages/Singularity.Microsoft.DependencyInjection/)|
+| Singularity.AspNetCore.Hosting      | [![NuGet Badge](https://buildstats.info/nuget/Singularity.AspNetCore.Hosting)](https://www.nuget.org/packages/Singularity.AspNetCore.Hosting/)|
+| Singularity.AspNetCore.MVC      | [![NuGet Badge](https://buildstats.info/nuget/Singularity.AspNetCore.MVC)](https://www.nuget.org/packages/Singularity.AspNetCore.MVC/)|
 
 ### Random info
 ![GitHub repo size](https://img.shields.io/github/repo-size/Barsonax/Singularity.svg) ![GitHub code size in bytes](https://img.shields.io/github/languages/code-size/barsonax/singularity.svg) [![Lines of Code](https://sonarcloud.io/api/project_badges/measure?project=Barsonax_Singularity&metric=ncloc)](https://sonarcloud.io/dashboard?id=Barsonax_Singularity) [![Duplicated Lines (%)](https://sonarcloud.io/api/project_badges/measure?project=Barsonax_Singularity&metric=duplicated_lines_density)](https://sonarcloud.io/dashboard?id=Barsonax_Singularity)
