@@ -5,8 +5,12 @@ using Singularity.Expressions;
 
 namespace Singularity.Graph.Resolvers
 {
+    /// <summary>
+    /// Creates bindings so that the factory itself of a binding can be resolved
+    /// </summary>
     public sealed class FactoryDependencyResolver : IDependencyResolver
     {
+        /// <inheritdoc />
         public IEnumerable<ServiceBinding> Resolve(IResolverPipeline graph, Type type)
         {
             if (type.IsGenericType && type.GetGenericTypeDefinition() == typeof(Func<>))

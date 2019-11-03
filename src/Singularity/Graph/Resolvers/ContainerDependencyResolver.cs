@@ -6,19 +6,17 @@ using Singularity.Expressions;
 
 namespace Singularity.Graph.Resolvers
 {
+    /// <summary>
+    /// Creates bindings for resolving the container or scope itself.
+    /// </summary>
     public class ContainerDependencyResolver : IDependencyResolver
     {
         private static readonly MethodInfo _getContainer = typeof(ContainerDependencyResolver).GetMethod(nameof(GetContainer), BindingFlags.NonPublic | BindingFlags.Static);
         private static readonly MethodInfo _getScope = typeof(ContainerDependencyResolver).GetMethod(nameof(GetScope), BindingFlags.NonPublic | BindingFlags.Static);
 
-        private readonly List<IMatch> Exclusions = new List<IMatch>();
-
+        /// <inheritdoc />
         public IEnumerable<ServiceBinding> Resolve(IResolverPipeline graph, Type type)
         {
-            foreach (IMatch resolverExclusion in Exclusions)
-            {
-                if (resolverExclusion.Match(type)) yield break;
-            }
             if (type == typeof(Container))
             {
                 Expression expression = Expression.Call(null, _getContainer, ExpressionGenerator.ScopeParameter);
@@ -30,11 +28,6 @@ namespace Singularity.Graph.Resolvers
                 Expression expression = Expression.Call(null, _getScope, ExpressionGenerator.ScopeParameter);
                 yield return new ServiceBinding(type, BindingMetadata.GeneratedInstance, expression, graph.Settings.ConstructorResolver, Lifetimes.PerContainer, null, ServiceAutoDispose.Never);
             }
-        }
-
-        public void Exclude(string pattern)
-        {
-            Exclusions.Add(new PatternMatch(pattern));
         }
 
         private static Container GetContainer(Scoped scope)

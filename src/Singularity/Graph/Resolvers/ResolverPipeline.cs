@@ -53,7 +53,7 @@ namespace Singularity.Graph.Resolvers
         {
             Registration? registration = TryGetDependency(type);
             if (registration == null) yield break;
-            foreach (ServiceBinding registrationBinding in registration.Value.Bindings)
+            foreach (ServiceBinding registrationBinding in registration.Value.Bindings.Array)
             {
                 var factory = TryResolveDependency(type, registrationBinding);
                 if (factory != null) yield return factory;

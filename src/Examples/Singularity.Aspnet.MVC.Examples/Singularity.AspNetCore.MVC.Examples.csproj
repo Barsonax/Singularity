@@ -8,7 +8,6 @@
   <ItemGroup>
     <ProjectReference Include="..\..\Singularity.AspNetCore.Hosting\Singularity.AspNetCore.Hosting.csproj" />
     <ProjectReference Include="..\..\Singularity.AspNetCore.MVC\Singularity.AspNetCore.MVC.csproj" />
-    <ProjectReference Include="..\..\Singularity.Microsoft.DependencyInjection\Singularity.Microsoft.DependencyInjection.csproj" />
     <ProjectReference Include="..\..\Tests\Singularity.TestClasses\Singularity.TestClasses.csproj" />
   </ItemGroup>
 

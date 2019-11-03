@@ -6,10 +6,14 @@ using Singularity.Expressions;
 
 namespace Singularity.Graph.Resolvers
 {
+    /// <summary>
+    /// Creates bindings so that the expression itself of a binding can be resolved
+    /// </summary>
     public sealed class ExpressionDependencyResolver : IDependencyResolver
     {
         private static readonly MethodInfo GenericCreateLambdaMethod = typeof(ExpressionDependencyResolver).GetMethod(nameof(CreateLambda));
 
+        /// <inheritdoc />
         public IEnumerable<ServiceBinding> Resolve(IResolverPipeline graph, Type type)
         {
             if (type.IsGenericType && type.GetGenericTypeDefinition() == typeof(Expression<>) && type.GenericTypeArguments.Length == 1)

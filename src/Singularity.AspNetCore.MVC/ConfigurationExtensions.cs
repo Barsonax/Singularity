@@ -3,8 +3,15 @@ using Microsoft.AspNetCore.Mvc.ViewComponents;
 
 namespace Singularity
 {
+    /// <summary>
+    /// Configuration extensions for <see cref="Microsoft.AspNetCore.Mvc"/>
+    /// </summary>
     public static class ConfigurationExtensions
     {
+        /// <summary>
+        /// Setups services and configuration for using Singularity with AspNetCore MVC
+        /// </summary>
+        /// <param name="builder"></param>
         public static void SetupMvc(this ContainerBuilder builder)
         {
             builder.Register<IControllerActivator, SingularityControllerActivator>();
@@ -12,7 +19,7 @@ namespace Singularity
 
             builder.ConfigureSettings(s =>
             {
-                s.IgnoreResolveError(new PatternMatch("Microsoft.*"));
+                s.IgnoreResolveError(new PatternTypeMatcher("Microsoft.*"));
             });
         }
     }

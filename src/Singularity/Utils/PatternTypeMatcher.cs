@@ -3,11 +3,11 @@ using Singularity.Graph.Resolvers;
 
 namespace Singularity
 {
-    public class PatternMatch : IMatch
+    public class PatternTypeMatcher : ITypeMatcher
     {
         private readonly string _pattern;
 
-        public PatternMatch(string pattern)
+        public PatternTypeMatcher(string pattern)
         {
             _pattern = pattern;
         }

@@ -46,6 +46,7 @@ namespace Singularity.Graph
             Generated = true;
         }
 
+        /// <inheritdoc />
         public override string ToString()
         {
             if (Generated)

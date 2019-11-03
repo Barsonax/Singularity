@@ -50,23 +50,23 @@ namespace Singularity
         public ISingularityLogger Logger { get; private set; } = Loggers.Default;
 
         [EditorBrowsable(EditorBrowsableState.Never)]
-        public List<IMatch> ResolveErrorsExclusions { get; } = new List<IMatch>();
+        public List<ITypeMatcher> ResolveErrorsExclusions { get; } = new List<ITypeMatcher>();
 
         [EditorBrowsable(EditorBrowsableState.Never)]
-        public Dictionary<Type, List<IMatch>> ResolverExclusions { get; } = new Dictionary<Type, List<IMatch>>();
+        public Dictionary<Type, List<ITypeMatcher>> ResolverExclusions { get; } = new Dictionary<Type, List<ITypeMatcher>>();
 
         private SingularitySettings(Action<SingularitySettings>? configurator = null) { configurator?.Invoke(this); }
 
-        public void IgnoreResolveError(IMatch match)
+        public void IgnoreResolveError(ITypeMatcher match)
         {
             ResolveErrorsExclusions.Add(match);
         }
 
-        public void ExcludeAutoRegistration(Type type, IMatch match)
+        public void ExcludeAutoRegistration(Type type, ITypeMatcher match)
         {
-            if (!ResolverExclusions.TryGetValue(type, out List<IMatch> exclusions))
+            if (!ResolverExclusions.TryGetValue(type, out List<ITypeMatcher> exclusions))
             {
-                exclusions = new List<IMatch>();
+                exclusions = new List<ITypeMatcher>();
                 ResolverExclusions.Add(type, exclusions);
             }
             exclusions.Add(match);

@@ -27,11 +27,19 @@ namespace Singularity
             configurator?.Invoke(this);
         }
 
+        /// <summary>
+        /// Replaces the <see cref="SingularitySettings"/>
+        /// </summary>
+        /// <param name="settings"></param>
         public void ConfigureSettings(SingularitySettings settings)
         {
             Settings = settings;
         }
 
+        /// <summary>
+        /// Configures the <see cref="SingularitySettings"/>
+        /// </summary>
+        /// <param name="settings"></param>
         public void ConfigureSettings(Action<SingularitySettings> settings)
         {
             settings.Invoke(Settings);

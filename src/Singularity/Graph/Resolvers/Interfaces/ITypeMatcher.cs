@@ -2,7 +2,7 @@
 
 namespace Singularity.Graph.Resolvers
 {
-    public interface IMatch
+    public interface ITypeMatcher
     {
         bool Match(Type type);
     }

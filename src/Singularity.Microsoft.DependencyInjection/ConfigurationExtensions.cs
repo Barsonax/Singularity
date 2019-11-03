@@ -5,7 +5,7 @@ using Microsoft.Extensions.DependencyInjection;
 namespace Singularity
 {
     /// <summary>
-    /// Extensions for microsoft dependency injection.
+    /// Configuration extensions for <see cref="Microsoft.Extensions.DependencyInjection"/>.
     /// </summary>
     public static class ConfigurationExtensions
     {

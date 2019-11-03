@@ -188,7 +188,7 @@ namespace Singularity
                 var body = new List<Expression>();
 
                 Expression instanceCasted = Expression.Convert(instanceParameter, type);
-                foreach (MethodInfo methodInfo in lateInjectorBindings.SelectMany(x => x.InjectionMethods))
+                foreach (MethodInfo methodInfo in lateInjectorBindings.Array.SelectMany(x => x.InjectionMethods.Array))
                 {
                     ParameterInfo[] parameterTypes = methodInfo.GetParameters();
                     var parameterExpressions = new Expression[parameterTypes.Length];
@@ -200,7 +200,7 @@ namespace Singularity
                     body.Add(Expression.Call(instanceCasted, methodInfo, parameterExpressions));
                 }
 
-                foreach (MemberInfo memberInfo in lateInjectorBindings.SelectMany(x => x.InjectionProperties))
+                foreach (MemberInfo memberInfo in lateInjectorBindings.Array.SelectMany(x => x.InjectionProperties.Array))
                 {
                     MemberExpression memberAccessExpression = Expression.MakeMemberAccess(instanceCasted, memberInfo);
                     body.Add(Expression.Assign(memberAccessExpression, _dependencyGraph.Resolve(memberAccessExpression.Type).Context.Expression));
