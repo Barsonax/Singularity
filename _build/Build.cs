@@ -123,7 +123,7 @@ class Build : NukeBuild
              .SetTargetExecutable(dotnetPath)
              .SetTargetWorkingDirectory(RootDirectory)
              .SetTargetArguments(targetArgs)
-             .SetFilters("+:Singularity*;-:Class=Singularity.FastExpressionCompiler*;-:*Test*;-:*Benchmark*")
+             .SetFilters("+:Singularity*;-:Class=Singularity.FastExpressionCompiler*;-:*Test*;-:*Example*;-:*Benchmark*")
              .SetOutputFile(coverageSnapshot));
 
         DotCoverReport(c => c
@@ -154,7 +154,7 @@ class Build : NukeBuild
             var server = "https://sonarcloud.io";
             var projectKey = "Barsonax_Singularity";
             var organisation = "barsonax-github";
-            var exclusions = "src/Singularity/FastExpressionCompiler/*,src/Tests/Singularity.TestClasses/**/*";
+            var exclusions = "src/Singularity/FastExpressionCompiler/*,src/Tests/Singularity.TestClasses/**/*,src/Examples/**/*";
             var branch = GitVersion.BranchName;
             var version = GitVersion.AssemblySemVer;
             SonarScanner($"begin /k:{projectKey} /o:{organisation} /v:{version} /d:sonar.login={SonarCloudLogin} /d:sonar.host.url={server} /d:sonar.exclusions={exclusions} /d:sonar.cs.dotcover.reportsPaths={CoverageHtml} /d:sonar.branch.name={branch}");
