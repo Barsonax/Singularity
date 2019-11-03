@@ -23,7 +23,7 @@ namespace Singularity.Test.Exceptions
             var deserializedException = (Exception)formatter.Deserialize(ms2);
 
             //ASSERT
-            Assert.Equal(originalException.InnerException.Message, deserializedException.InnerException.Message);
+            Assert.Equal(originalException.InnerException?.Message, deserializedException.InnerException?.Message);
             Assert.Equal(originalException.Message, deserializedException.Message);
         }
     }

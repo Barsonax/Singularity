@@ -117,10 +117,10 @@ namespace Singularity
             Func<Scoped, object?>? func = _getInstanceCache.GetOrDefault(type);
             if (func == null)
             {
-                func = _dependencyGraph.Resolve(type)?.Factory ?? (s => null);
+                func = _dependencyGraph.Resolve(type)?.Factory ?? (s => null!);
                 _getInstanceCache.Add(type, func);
             }
-            return func(scope);
+            return func(scope)!;
         }
 
         /// <inheritdoc />
@@ -140,7 +140,7 @@ namespace Singularity
             Func<Scoped, object?>? func = _getInstanceCache.GetOrDefault(type);
             if (func == null)
             {
-                func = _dependencyGraph.TryResolve(type)?.Factory ?? (scoped => null);
+                func = _dependencyGraph.TryResolve(type)?.Factory ?? (s => null!);
                 _getInstanceCache.Add(type, func);
             }
             return func(scope);
@@ -170,7 +170,7 @@ namespace Singularity
         internal void LateInject(object instance, Scoped scope)
         {
             Type type = instance.GetType();
-            Action<Scoped, object> action = _injectionCache.GetOrDefault(type);
+            Action<Scoped, object>? action = _injectionCache.GetOrDefault(type);
             if (action == null)
             {
                 action = GenerateLateInjector(type);

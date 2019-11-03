@@ -96,7 +96,7 @@ namespace Singularity.Graph.Resolvers
 
         private InstanceFactory ResolveDependency(Type type, ServiceBinding dependency)
         {
-            InstanceFactory factory = TryResolveDependency(type, dependency);
+            InstanceFactory? factory = TryResolveDependency(type, dependency);
             if (factory != null)
             {
                 return factory;
@@ -146,8 +146,8 @@ namespace Singularity.Graph.Resolvers
                         {
                             ParameterExpression parameter = parameters[i];
                             ServiceBinding child = GetDependency(parameter.Type).Default;
-                            factories[i] = TryResolveDependency(parameter.Type, child, circularDependencyDetector);
-                            if (child.ResolveError != null) throw child.ResolveError;
+                            InstanceFactory? factory = TryResolveDependency(parameter.Type, child, circularDependencyDetector);
+                            factories[i] = factory ?? throw (child.ResolveError ?? throw new NotImplementedException());
                         }
 
                         serviceBinding.BaseExpression = _expressionGenerator.GenerateBaseExpression(serviceBinding, factories, _containerScope, Settings);
@@ -177,7 +177,8 @@ namespace Singularity.Graph.Resolvers
                     {
                         ParameterExpression parameter = parameters[i];
                         ServiceBinding child = GetDependency(parameter.Type).Default;
-                        childFactories[i] = TryResolveDependency(parameter.Type, child, circularDependencyDetector);
+                        var childFactory = TryResolveDependency(parameter.Type, child, circularDependencyDetector);
+                        childFactories[i] = childFactory ?? throw (child.ResolveError ?? throw new NotImplementedException());
                     }
 
                     ReadOnlyExpressionContext context = _expressionGenerator.ApplyDecorators(type, serviceBinding, childFactories, decorators, _containerScope);
