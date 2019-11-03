@@ -81,17 +81,13 @@ namespace Singularity
 
         private static ILifetime ConvertLifetime(ServiceLifetime serviceLifetime)
         {
-            switch (serviceLifetime)
+            return serviceLifetime switch
             {
-                case ServiceLifetime.Singleton:
-                    return Lifetimes.PerContainer;
-                case ServiceLifetime.Scoped:
-                    return Lifetimes.PerScope;
-                case ServiceLifetime.Transient:
-                    return Lifetimes.Transient;
-                default:
-                    throw new ArgumentOutOfRangeException(nameof(serviceLifetime), serviceLifetime, null);
-            }
+                ServiceLifetime.Singleton => (ILifetime) Lifetimes.PerContainer,
+                ServiceLifetime.Scoped => Lifetimes.PerScope,
+                ServiceLifetime.Transient => Lifetimes.Transient,
+                _ => throw new ArgumentOutOfRangeException(nameof(serviceLifetime), serviceLifetime, null)
+            };
         }
     }
 }
