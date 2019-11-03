@@ -18,20 +18,25 @@ namespace Singularity.Test.Injection
 
             //ACT
             //ASSERT
-            var cycleError1 = Assert.Throws<CircularDependencyException>(() =>
+            var dependencyResolveException1 = Assert.Throws<DependencyResolveException>(() =>
             {
                 var circularDependency = container.GetInstance<ISimpleCircularDependency1>();
             });
+            var cycleError1 = Assert.IsType<CircularDependencyException>(dependencyResolveException1.InnerException);
+
+            var dependencyResolveException2 = Assert.Throws<DependencyResolveException>(() =>
+            {
+                var circularDependency = container.GetInstance<ISimpleCircularDependency2>();
+            });
+            var cycleError2 = Assert.IsType<CircularDependencyException>(dependencyResolveException2.InnerException);
+
+
             Assert.Equal(3, cycleError1.Cycle.Length);
             Assert.Equal(typeof(ISimpleCircularDependency1).AssemblyQualifiedName, cycleError1.Cycle[0]);
             Assert.Equal(typeof(ISimpleCircularDependency2).AssemblyQualifiedName, cycleError1.Cycle[1]);
             Assert.Equal(typeof(ISimpleCircularDependency1).AssemblyQualifiedName, cycleError1.Cycle[2]);
 
-            var cycleError2 = Assert.Throws<CircularDependencyException>(() =>
-            {
-                var circularDependency = container.GetInstance<ISimpleCircularDependency2>();
-            });
-            Assert.Equal(3, cycleError1.Cycle.Length);
+            Assert.Equal(3, cycleError2.Cycle.Length);
             Assert.Equal(typeof(ISimpleCircularDependency2).AssemblyQualifiedName, cycleError2.Cycle[0]);
             Assert.Equal(typeof(ISimpleCircularDependency1).AssemblyQualifiedName, cycleError2.Cycle[1]);
             Assert.Equal(typeof(ISimpleCircularDependency2).AssemblyQualifiedName, cycleError2.Cycle[2]);
@@ -50,30 +55,38 @@ namespace Singularity.Test.Injection
 
             //ACT
             //ASSERT
-            var cycleError1 = Assert.Throws<CircularDependencyException>(() =>
+            var dependencyResolveException1 = Assert.Throws<DependencyResolveException>(() =>
             {
                 var circularDependency = container.GetInstance<IComplexCircularDependency1>();
             });
+            var cycleError1 = Assert.IsType<CircularDependencyException>(dependencyResolveException1.InnerException);
+
+            var dependencyResolveException2 = Assert.Throws<DependencyResolveException>(() =>
+            {
+                var circularDependency = container.GetInstance<IComplexCircularDependency2>();
+            });
+            var cycleError2 = Assert.IsType<CircularDependencyException>(dependencyResolveException2.InnerException);
+
+            var dependencyResolveException3 = Assert.Throws<DependencyResolveException>(() =>
+            {
+                var circularDependency = container.GetInstance<IComplexCircularDependency3>();
+            });
+            var cycleError3 = Assert.IsType<CircularDependencyException>(dependencyResolveException3.InnerException);
+
             Assert.Equal(4, cycleError1.Cycle.Length);
             Assert.Equal(typeof(IComplexCircularDependency1).AssemblyQualifiedName, cycleError1.Cycle[0]);
             Assert.Equal(typeof(IComplexCircularDependency2).AssemblyQualifiedName, cycleError1.Cycle[1]);
             Assert.Equal(typeof(IComplexCircularDependency3).AssemblyQualifiedName, cycleError1.Cycle[2]);
             Assert.Equal(typeof(IComplexCircularDependency1).AssemblyQualifiedName, cycleError1.Cycle[3]);
 
-            var cycleError2 = Assert.Throws<CircularDependencyException>(() =>
-            {
-                var circularDependency = container.GetInstance<IComplexCircularDependency2>();
-            });
+
             Assert.Equal(4, cycleError2.Cycle.Length);
             Assert.Equal(typeof(IComplexCircularDependency2).AssemblyQualifiedName, cycleError2.Cycle[0]);
             Assert.Equal(typeof(IComplexCircularDependency3).AssemblyQualifiedName, cycleError2.Cycle[1]);
             Assert.Equal(typeof(IComplexCircularDependency1).AssemblyQualifiedName, cycleError2.Cycle[2]);
             Assert.Equal(typeof(IComplexCircularDependency2).AssemblyQualifiedName, cycleError2.Cycle[3]);
 
-            var cycleError3 = Assert.Throws<CircularDependencyException>(() =>
-            {
-                var circularDependency = container.GetInstance<IComplexCircularDependency3>();
-            });
+
             Assert.Equal(4, cycleError3.Cycle.Length);
             Assert.Equal(typeof(IComplexCircularDependency3).AssemblyQualifiedName, cycleError3.Cycle[0]);
             Assert.Equal(typeof(IComplexCircularDependency1).AssemblyQualifiedName, cycleError3.Cycle[1]);

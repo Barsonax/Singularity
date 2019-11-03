@@ -119,6 +119,10 @@ namespace Singularity.Graph.Resolvers
             }
             catch (Exception e)
             {
+                if (e is DependencyResolveException dependencyResolveException)
+                {
+                    e = dependencyResolveException.InnerException;
+                }
                 dependency.ResolveError = new DependencyResolveException(type, dependency, e);
                 return null;
             }

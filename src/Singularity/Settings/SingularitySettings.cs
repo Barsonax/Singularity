@@ -55,7 +55,7 @@ namespace Singularity
         [EditorBrowsable(EditorBrowsableState.Never)]
         public Dictionary<Type, List<IMatch>> ResolverExclusions { get; } = new Dictionary<Type, List<IMatch>>();
 
-        private SingularitySettings(Action<SingularitySettings> configurator = null) { }
+        private SingularitySettings(Action<SingularitySettings>? configurator = null) { configurator?.Invoke(this); }
 
         public void IgnoreResolveError(IMatch match)
         {
@@ -64,7 +64,7 @@ namespace Singularity
 
         public void ExcludeAutoRegistration(Type type, IMatch match)
         {
-            if (!ResolverExclusions.TryGetValue(type, out var exclusions))
+            if (!ResolverExclusions.TryGetValue(type, out List<IMatch> exclusions))
             {
                 exclusions = new List<IMatch>();
                 ResolverExclusions.Add(type, exclusions);

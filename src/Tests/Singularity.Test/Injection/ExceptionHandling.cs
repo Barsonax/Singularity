@@ -12,10 +12,11 @@ namespace Singularity.Test.Injection
         public void GetInstance_GetDependencyByConcreteType_WithMixedConcreteDependency_2Deep_ReturnsCorrectDependency()
         {
             var container = new Container();
-            var e = Assert.Throws<DependencyNotFoundException>(() =>
+            var e = Assert.Throws<DependencyResolveException>(() =>
             {
                 var value = container.GetInstance<TestService12WithMixedConcreteDependency>();
             });
+            Assert.IsType<DependencyNotFoundException>(e.InnerException);
         }
 
         [Fact]
