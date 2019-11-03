@@ -45,5 +45,22 @@ namespace Singularity.Graph
             ModuleType = null;
             Generated = true;
         }
+
+        /// <inheritdoc />
+        public override string ToString()
+        {
+            if (Generated)
+            {
+                return "generated";
+            }
+            else if (ModuleType != null)
+            {
+                return ModuleType.AssemblyQualifiedName;
+            }
+            else
+            {
+                return $"file: {CreatorFilePath}, line {CreatorLineNumber}";
+            }
+        }
     }
 }

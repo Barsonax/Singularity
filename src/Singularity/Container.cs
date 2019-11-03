@@ -32,15 +32,13 @@ namespace Singularity
         /// Creates a new container using all the bindings that are in the provided modules
         /// </summary>
         /// <param name="modules"></param>
-        /// <param name="settings"></param>
-        public Container(IEnumerable<IModule> modules, SingularitySettings? settings = null) : this(ToBuilder(modules), settings) { }
+        public Container(IEnumerable<IModule> modules) : this(ToBuilder(modules)) { }
 
         /// <summary>
         /// Creates a new container using the provided configurator.
         /// </summary>
         /// <param name="configurator"></param>
-        /// <param name="settings"></param>
-        public Container(Action<ContainerBuilder>? configurator = null, SingularitySettings? settings = null) : this(new ContainerBuilder(configurator, settings), settings)
+        public Container(Action<ContainerBuilder>? configurator = null) : this(new ContainerBuilder(configurator))
         {
         }
 
@@ -48,22 +46,26 @@ namespace Singularity
         /// Creates a new container, consuming the provided builder.
         /// </summary>
         /// <param name="builder"></param>
-        /// <param name="settings"></param>
-        public Container(ContainerBuilder builder, SingularitySettings? settings = null)
+        public Container(ContainerBuilder builder)
         {
-            Settings = settings ?? SingularitySettings.Default;
             ContainerScope = new Scoped(this);
             Registrations = builder.Registrations;
+            Settings = builder.Settings;
             _dependencyGraph = new ResolverPipeline(builder.Registrations, ContainerScope, Settings, null);
         }
 
+        /// <summary>
+        /// Creates a new child container using the provided configurator.
+        /// </summary>
+        /// <param name="parentContainer"></param>
+        /// <param name="configurator"></param>
         private Container(Container parentContainer, Action<ContainerBuilder>? configurator) : this(parentContainer, new ContainerBuilder(configurator, parentContainer.Settings))
         {
 
         }
 
         /// <summary>
-        /// Creates a new container using the provided configurator.
+        /// Creates a new child container using the provided builder.
         /// </summary>
         /// <param name="parentContainer"></param>
         /// <param name="builder"></param>
@@ -112,13 +114,13 @@ namespace Singularity
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         internal object GetInstance(Type type, Scoped scope)
         {
-            Func<Scoped, object>? func = _getInstanceCache.GetOrDefault(type);
+            Func<Scoped, object?>? func = _getInstanceCache.GetOrDefault(type);
             if (func == null)
             {
-                func = _dependencyGraph.Resolve(type).Factory;
+                func = _dependencyGraph.Resolve(type)?.Factory ?? (s => null!);
                 _getInstanceCache.Add(type, func);
             }
-            return func(scope);
+            return func(scope)!;
         }
 
         /// <inheritdoc />
@@ -138,7 +140,7 @@ namespace Singularity
             Func<Scoped, object?>? func = _getInstanceCache.GetOrDefault(type);
             if (func == null)
             {
-                func = _dependencyGraph.TryResolve(type)?.Factory ?? (scoped => null);
+                func = _dependencyGraph.TryResolve(type)?.Factory ?? (s => null!);
                 _getInstanceCache.Add(type, func);
             }
             return func(scope);
@@ -168,7 +170,7 @@ namespace Singularity
         internal void LateInject(object instance, Scoped scope)
         {
             Type type = instance.GetType();
-            Action<Scoped, object> action = _injectionCache.GetOrDefault(type);
+            Action<Scoped, object>? action = _injectionCache.GetOrDefault(type);
             if (action == null)
             {
                 action = GenerateLateInjector(type);
@@ -186,7 +188,7 @@ namespace Singularity
                 var body = new List<Expression>();
 
                 Expression instanceCasted = Expression.Convert(instanceParameter, type);
-                foreach (MethodInfo methodInfo in lateInjectorBindings.SelectMany(x => x.InjectionMethods))
+                foreach (MethodInfo methodInfo in lateInjectorBindings.Array.SelectMany(x => x.InjectionMethods.Array))
                 {
                     ParameterInfo[] parameterTypes = methodInfo.GetParameters();
                     var parameterExpressions = new Expression[parameterTypes.Length];
@@ -198,7 +200,7 @@ namespace Singularity
                     body.Add(Expression.Call(instanceCasted, methodInfo, parameterExpressions));
                 }
 
-                foreach (MemberInfo memberInfo in lateInjectorBindings.SelectMany(x => x.InjectionProperties))
+                foreach (MemberInfo memberInfo in lateInjectorBindings.Array.SelectMany(x => x.InjectionProperties.Array))
                 {
                     MemberExpression memberAccessExpression = Expression.MakeMemberAccess(instanceCasted, memberInfo);
                     body.Add(Expression.Assign(memberAccessExpression, _dependencyGraph.Resolve(memberAccessExpression.Type).Context.Expression));
@@ -240,6 +242,12 @@ namespace Singularity
                     module.Register(builder);
                 }
             };
+        }
+
+        /// <inheritdoc />
+        object IServiceProvider.GetService(Type serviceType)
+        {
+            return GetInstance(serviceType);
         }
     }
 }

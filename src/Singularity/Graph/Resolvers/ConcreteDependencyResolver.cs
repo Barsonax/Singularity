@@ -3,8 +3,12 @@ using System.Collections.Generic;
 
 namespace Singularity.Graph.Resolvers
 {
-    internal sealed class ConcreteDependencyResolver : IDependencyResolver
+    /// <summary>
+    /// Creates a binding if the type is a concrete type.
+    /// </summary>
+    public sealed class ConcreteDependencyResolver : IDependencyResolver
     {
+        /// <inheritdoc />
         public IEnumerable<ServiceBinding> Resolve(IResolverPipeline graph, Type type)
         {
             if (!type.IsInterface)

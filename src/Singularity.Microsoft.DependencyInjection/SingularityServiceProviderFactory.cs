@@ -1,7 +1,7 @@
 ﻿using System;
 using Microsoft.Extensions.DependencyInjection;
 
-namespace Singularity.Microsoft.DependencyInjection
+namespace Singularity
 {
     /// <inheritdoc />
     public class SingularityServiceProviderFactory : IServiceProviderFactory<ContainerBuilder>
@@ -9,12 +9,12 @@ namespace Singularity.Microsoft.DependencyInjection
         private readonly SingularitySettings? _settings;
 
         /// <summary>
-        /// Creates a new factory with the optionally provided settings
+        /// Creates a new factory with the provided settings
         /// </summary>
         /// <param name="settings"></param>
         public SingularityServiceProviderFactory(SingularitySettings? settings = null)
         {
-            _settings = settings;
+            _settings = settings ?? SingularitySettings.Microsoft;
         }
 
         /// <inheritdoc />

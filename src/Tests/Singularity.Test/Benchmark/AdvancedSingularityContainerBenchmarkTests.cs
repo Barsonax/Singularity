@@ -24,7 +24,7 @@ namespace Singularity.Test.Benchmark
         {
             Expression singleton1NewExpression = ConstructorResolvers.Default.AutoResolveConstructorExpression(typeof(Singleton1));
             Delegate action1 = Expression.Lambda(singleton1NewExpression).Compile();
-            object value = action1.DynamicInvoke();
+            object? value = action1.DynamicInvoke();
             singleton1NewExpression = Expression.Constant(value);
 
             Expression transient1NewExpression = ConstructorResolvers.Default.AutoResolveConstructorExpression(typeof(Transient1));

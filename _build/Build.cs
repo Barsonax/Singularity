@@ -101,9 +101,9 @@ class Build : NukeBuild
         .Executes(() =>
         {
             DotNetTest(s => s
-            .SetOutput(BuildOutput / "netcoreapp2.0")
+            .SetOutput(BuildOutput / "netcoreapp3.0")
             .SetWorkingDirectory(SrcPath)
-            .SetFramework("netcoreapp2.0")
+            .SetFramework("netcoreapp3.0")
             .SetConfiguration(Configuration)
             .SetProperties(NoWarns)
             .EnableNoBuild());
@@ -113,7 +113,7 @@ class Build : NukeBuild
         .DependsOn(Compile)
         .Executes(() =>
     {
-        string testdlls = GlobFiles(BuildOutput / "netcoreapp2.0", "*.Test.dll").Join(" ");
+        string testdlls = GlobFiles(BuildOutput / "netcoreapp3.0", "*.Test.dll").Join(" ");
         string targetArgs = $"vstest {testdlls} /logger:trx;LogFileName=testresults.trx";
         string dotnetPath = ToolPathResolver.GetPathExecutable("dotnet");
         AbsolutePath coverageSnapshot = CoverageDirectory / "coverage.dcvr";
@@ -156,7 +156,7 @@ class Build : NukeBuild
             var organisation = "barsonax-github";
             var exclusions = "src/Singularity/FastExpressionCompiler/*,src/Tests/Singularity.TestClasses/**/*";
             var branch = GitVersion.BranchName;
-            var version = GitVersion.GetNormalizedAssemblyVersion();
+            var version = GitVersion.AssemblySemVer;
             SonarScanner($"begin /k:{projectKey} /o:{organisation} /v:{version} /d:sonar.login={SonarCloudLogin} /d:sonar.host.url={server} /d:sonar.exclusions={exclusions} /d:sonar.cs.dotcover.reportsPaths={CoverageHtml} /d:sonar.branch.name={branch}");
         });
 

@@ -28,7 +28,9 @@ namespace Singularity.Microsoft.DependencyInjection.Test
             {
                 builder.RegisterServices(serviceCollection);
                 builder.RegisterServiceProvider();
-            }, SingularitySettings.Microsoft).GetInstance<IServiceProvider>();
+
+                builder.ConfigureSettings(SingularitySettings.Microsoft);
+            }).GetInstance<IServiceProvider>();
 
             var factory = (IServiceScopeFactory)container.GetService(typeof(IServiceScopeFactory));
 
@@ -53,7 +55,7 @@ namespace Singularity.Microsoft.DependencyInjection.Test
             IServiceProvider serviceProvider = container.GetInstance<IServiceProvider>();
 
             //ASSERT
-            Assert.IsType<SingularityServiceProvider>(serviceProvider);
+            Assert.IsType<Scoped>(serviceProvider);
         }
 
         [Fact]
@@ -70,7 +72,7 @@ namespace Singularity.Microsoft.DependencyInjection.Test
             IServiceProvider serviceProvider = container.GetInstance<IServiceProvider>();
 
             //ASSERT
-            Assert.IsType<SingularityServiceProvider>(serviceProvider);
+            Assert.IsType<Scoped>(serviceProvider);
         }
 
         [Fact]
@@ -86,7 +88,9 @@ namespace Singularity.Microsoft.DependencyInjection.Test
             {
                 builder.Register<ITracker>(c => c.Inject(() => tracker));
                 builder.RegisterServices(serviceCollection);
-            }, SingularitySettings.Microsoft);
+
+                builder.ConfigureSettings(SingularitySettings.Microsoft);
+            });
 
             //ACT
             var instance = container.GetInstance<IDisposable>();
@@ -112,7 +116,9 @@ namespace Singularity.Microsoft.DependencyInjection.Test
             {
                 builder.Register<ITracker>(c => c.Inject(() => tracker));
                 builder.RegisterServices(serviceCollection);
-            }, SingularitySettings.Microsoft);
+
+                builder.ConfigureSettings(SingularitySettings.Microsoft);
+            });
 
             //ACT
             int disposeCountBefore;
@@ -145,7 +151,9 @@ namespace Singularity.Microsoft.DependencyInjection.Test
             {
                 builder.Register<ITracker>(c => c.Inject(() => tracker));
                 builder.RegisterServices(serviceCollection);
-            }, SingularitySettings.Microsoft);
+
+                builder.ConfigureSettings(SingularitySettings.Microsoft);
+            });
 
             //ACT
 
@@ -175,7 +183,9 @@ namespace Singularity.Microsoft.DependencyInjection.Test
                 builder.RegisterServices(serviceCollection);
                 builder.RegisterServiceProvider();
 
-            }, SingularitySettings.Microsoft);
+                builder.ConfigureSettings(SingularitySettings.Microsoft);
+
+            });
 
             //ACT
             var instance = container.GetInstance<IDisposable>();

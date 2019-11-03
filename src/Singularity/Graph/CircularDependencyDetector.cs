@@ -3,10 +3,11 @@ using System.Collections.Generic;
 using System.Linq;
 using Singularity.Exceptions;
 
-namespace Singularity.Graph.Resolvers
+namespace Singularity.Graph
 {
     internal sealed class CircularDependencyDetector
     {
+        public int Count => _visitedDependencies.Count;
         private readonly HashSet<Type> _visitedDependencies = new HashSet<Type>();
 
         public void Enter(Type type)

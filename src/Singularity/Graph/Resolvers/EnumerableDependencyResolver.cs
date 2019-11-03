@@ -7,8 +7,12 @@ using Singularity.Expressions;
 
 namespace Singularity.Graph.Resolvers
 {
-    internal sealed class EnumerableDependencyResolver : IDependencyResolver
+    /// <summary>
+    /// Creates bindings for resolving all services of a given type.
+    /// </summary>
+    public sealed class EnumerableDependencyResolver : IDependencyResolver
     {
+        /// <inheritdoc />
         public IEnumerable<ServiceBinding> Resolve(IResolverPipeline graph, Type type)
         {
             if (type.IsGenericType)

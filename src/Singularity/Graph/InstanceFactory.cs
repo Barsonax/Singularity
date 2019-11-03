@@ -3,7 +3,7 @@ using Singularity.Expressions;
 
 namespace Singularity.Graph
 {
-    internal sealed class InstanceFactory
+    public sealed class InstanceFactory
     {
         public Type DependencyType { get; }
         public ReadOnlyExpressionContext Context { get; }

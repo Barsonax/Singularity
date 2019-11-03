@@ -1,0 +1,14 @@
+﻿<Project Sdk="Microsoft.NET.Sdk.Web">
+
+  <PropertyGroup>
+    <TargetFramework>netcoreapp3.0</TargetFramework>
+    <IsPackable>False</IsPackable>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\..\Singularity.AspNetCore.Hosting\Singularity.AspNetCore.Hosting.csproj" />
+    <ProjectReference Include="..\..\Singularity.AspNetCore.MVC\Singularity.AspNetCore.MVC.csproj" />
+    <ProjectReference Include="..\..\Tests\Singularity.TestClasses\Singularity.TestClasses.csproj" />
+  </ItemGroup>
+
+</Project>

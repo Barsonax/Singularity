@@ -2,12 +2,12 @@
 using System.Linq.Expressions;
 using Microsoft.Extensions.DependencyInjection;
 
-namespace Singularity.Microsoft.DependencyInjection
+namespace Singularity
 {
     /// <summary>
-    /// Extensions for microsoft dependency injection.
+    /// Configuration extensions for <see cref="Microsoft.Extensions.DependencyInjection"/>.
     /// </summary>
-    public static class Extensions
+    public static class ConfigurationExtensions
     {
         /// <summary>
         /// Creates a singularity <see cref="Container"/> from a <see cref="IServiceCollection"/>.
@@ -30,7 +30,6 @@ namespace Singularity.Microsoft.DependencyInjection
         /// <param name="config"></param>
         public static void RegisterServiceProvider(this ContainerBuilder config)
         {
-            config.Register<IServiceProvider, SingularityServiceProvider>(c => c.With(Lifetimes.PerContainer));
             config.Register<IServiceScopeFactory, SingularityServiceScopeFactory>(c => c.With(Lifetimes.PerContainer));
         }
 
@@ -82,17 +81,13 @@ namespace Singularity.Microsoft.DependencyInjection
 
         private static ILifetime ConvertLifetime(ServiceLifetime serviceLifetime)
         {
-            switch (serviceLifetime)
+            return serviceLifetime switch
             {
-                case ServiceLifetime.Singleton:
-                    return Lifetimes.PerContainer;
-                case ServiceLifetime.Scoped:
-                    return Lifetimes.PerScope;
-                case ServiceLifetime.Transient:
-                    return Lifetimes.Transient;
-                default:
-                    throw new ArgumentOutOfRangeException(nameof(serviceLifetime), serviceLifetime, null);
-            }
+                ServiceLifetime.Singleton => (ILifetime) Lifetimes.PerContainer,
+                ServiceLifetime.Scoped => Lifetimes.PerScope,
+                ServiceLifetime.Transient => Lifetimes.Transient,
+                _ => throw new ArgumentOutOfRangeException(nameof(serviceLifetime), serviceLifetime, null)
+            };
         }
     }
 }

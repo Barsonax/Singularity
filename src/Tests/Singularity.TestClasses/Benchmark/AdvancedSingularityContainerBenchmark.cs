@@ -2,7 +2,6 @@
 using System.Collections.Generic;
 using System.Linq;
 using Microsoft.Extensions.DependencyInjection;
-using Singularity.Microsoft.DependencyInjection;
 using Singularity.TestClasses.TestClasses;
 
 namespace Singularity.TestClasses.Benchmark
@@ -52,12 +51,12 @@ namespace Singularity.TestClasses.Benchmark
 
         public Container Register()
         {
-            return new Container(Register, SingularitySettings.Microsoft);
+            return new Container(Register);
         }
 
         public Container NewContainer()
         {
-            return new Container(Register, SingularitySettings.Microsoft);
+            return new Container(Register);
         }
 
         public IComplex1 NewContainerAndResolve()
@@ -129,6 +128,8 @@ namespace Singularity.TestClasses.Benchmark
             builder.Register<IScopedService3, ScopedService3>(c => c.With(Lifetimes.PerScope));
             builder.Register<IScopedService4, ScopedService4>(c => c.With(Lifetimes.PerScope));
             builder.Register<IScopedService5, ScopedService5>(c => c.With(Lifetimes.PerScope));
+
+            builder.ConfigureSettings(SingularitySettings.Microsoft);
         }
     }
 }

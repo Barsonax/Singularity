@@ -3,9 +3,17 @@ using System.Collections.Generic;
 
 namespace Singularity.Collections
 {
-    internal sealed class ArrayList<T> : IEnumerable<T>
+    /// <summary>
+    /// A simple generic array list that allocates a new array for every new element that is added.
+    /// </summary>
+    /// <typeparam name="T"></typeparam>
+    public sealed class ArrayList<T> : IEnumerable<T>
     {
         public static readonly T[] Empty = new T[0];
+
+        /// <summary>
+        /// The wrapped array.
+        /// </summary>
         public T[] Array { get; private set; }
 
         public ArrayList(T[] values)
@@ -18,6 +26,11 @@ namespace Singularity.Collections
             Array = Empty;
         }
 
+        /// <summary>
+        /// Adds a new element to the array.
+        /// Allocates a new array on every call.
+        /// </summary>
+        /// <param name="obj"></param>
         public void Add(T obj)
         {
             var newArray = new T[Array.Length + 1];
@@ -32,11 +45,16 @@ namespace Singularity.Collections
             Array = newArray;
         }
 
+        /// <summary>
+        /// Returns the last element in the array.
+        /// </summary>
+        /// <returns></returns>
         public T Last()
         {
             return Array[Array.Length - 1];
         }
 
+        /// <inheritdoc />
         public IEnumerator<T> GetEnumerator()
         {
             foreach (T value in Array)

@@ -2,7 +2,6 @@
 using System.Diagnostics;
 using System.Linq;
 using System.Linq.Expressions;
-using System.Runtime.CompilerServices;
 using Singularity.Collections;
 using Singularity.Exceptions;
 using Singularity.Expressions;
@@ -11,7 +10,7 @@ using Singularity.Graph;
 namespace Singularity
 {
     [DebuggerDisplay("{Expression?.Type}")]
-    internal sealed class ServiceBinding
+    public sealed class ServiceBinding
     {
         public BindingMetadata BindingMetadata { get; }
 

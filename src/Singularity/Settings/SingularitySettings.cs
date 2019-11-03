@@ -1,6 +1,9 @@
 ﻿using System;
-using Singularity.Collections;
+using System.Collections.Generic;
+using System.ComponentModel;
 using Singularity.Expressions;
+using Singularity.Graph.Resolvers;
+using Singularity.Logging;
 
 namespace Singularity
 {
@@ -12,30 +15,79 @@ namespace Singularity
         /// <summary>
         /// The default singularity settings.
         /// </summary>
-        public static readonly SingularitySettings Default = new SingularitySettings();
+        public static SingularitySettings Default => new SingularitySettings();
 
         /// <summary>
         /// Settings for microsoft dependency injection.
         /// </summary>
-        public static readonly SingularitySettings Microsoft = new SingularitySettings
+        public static SingularitySettings Microsoft => new SingularitySettings(s =>
         {
-            AutoDisposeLifetimes = new ILifetime[]
-            {
-                Lifetimes.Transient,
-                Lifetimes.PerContainer,
-                Lifetimes.PerScope,
-                Lifetimes.PerGraph,
-            }
+            s.AutoDispose(Lifetimes.Transient, Lifetimes.PerContainer, Lifetimes.PerScope, Lifetimes.PerGraph);
+            s.IgnoreResolveError(new PatternTypeMatcher("Microsoft.*"));
+        });
+
+        [EditorBrowsable(EditorBrowsableState.Never)]
+        public IDependencyResolver[] Resolvers { get; private set; } = {
+            new ContainerDependencyResolver(),
+            new EnumerableDependencyResolver(),
+            new ExpressionDependencyResolver(),
+            new LazyDependencyResolver(),
+            new FactoryDependencyResolver(),
+            new ConcreteDependencyResolver(),
+            new OpenGenericResolver()
         };
 
         /// <summary>
         /// Specifies what lifetimes should be auto disposed if the instance is a <see cref="IDisposable"/> and the service is registered with <see cref="ServiceAutoDispose.Default"/>.
         /// </summary>
-        public LifetimeCollection AutoDisposeLifetimes { get; set; } = LifetimeCollection.Empty;
+        [EditorBrowsable(EditorBrowsableState.Never)]
+        public HashSet<Type> AutoDisposeLifetimes { get; } = new HashSet<Type>();
 
         /// <summary>
         /// The constructor selector that will be used by default.
         /// </summary>
-        public IConstructorResolver ConstructorResolver { get; set; } = ConstructorResolvers.Default;
+        [EditorBrowsable(EditorBrowsableState.Never)]
+        public IConstructorResolver ConstructorResolver { get; private set; } = ConstructorResolvers.Default;
+
+        [EditorBrowsable(EditorBrowsableState.Never)]
+        public ISingularityLogger Logger { get; private set; } = Loggers.Default;
+
+        [EditorBrowsable(EditorBrowsableState.Never)]
+        public List<ITypeMatcher> ResolveErrorsExclusions { get; } = new List<ITypeMatcher>();
+
+        [EditorBrowsable(EditorBrowsableState.Never)]
+        public Dictionary<Type, List<ITypeMatcher>> ResolverExclusions { get; } = new Dictionary<Type, List<ITypeMatcher>>();
+
+        private SingularitySettings(Action<SingularitySettings>? configurator = null) { configurator?.Invoke(this); }
+
+        public void IgnoreResolveError(ITypeMatcher match)
+        {
+            ResolveErrorsExclusions.Add(match);
+        }
+
+        public void ExcludeAutoRegistration(Type type, ITypeMatcher match)
+        {
+            if (!ResolverExclusions.TryGetValue(type, out List<ITypeMatcher> exclusions))
+            {
+                exclusions = new List<ITypeMatcher>();
+                ResolverExclusions.Add(type, exclusions);
+            }
+            exclusions.Add(match);
+        }
+
+        public void With(ISingularityLogger logger) => Logger = logger;
+
+        public void With(IDependencyResolver[] resolvers) => Resolvers = resolvers;
+
+        public void With(IConstructorResolver constructorResolver) => ConstructorResolver = constructorResolver;
+
+        public void AutoDispose(params ILifetime[] autoDisposeLifetimes)
+        {
+            foreach (ILifetime autoDisposeLifetime in autoDisposeLifetimes)
+            {
+                AutoDispose(autoDisposeLifetime);
+            }
+        }
+        public void AutoDispose(ILifetime lifetime) => AutoDisposeLifetimes.Add(lifetime.GetType());
     }
 }

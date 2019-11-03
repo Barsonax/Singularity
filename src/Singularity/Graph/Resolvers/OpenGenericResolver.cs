@@ -5,8 +5,12 @@ using Singularity.Expressions;
 
 namespace Singularity.Graph.Resolvers
 {
-    internal sealed class OpenGenericResolver : IDependencyResolver
+    /// <summary>
+    /// Creates bindings so that open generic registrations can be properly resolved.
+    /// </summary>
+    public sealed class OpenGenericResolver : IDependencyResolver
     {
+        /// <inheritdoc />
         public IEnumerable<ServiceBinding> Resolve(IResolverPipeline graph, Type type)
         {
             if (type.IsGenericType && !type.ContainsGenericParameters)

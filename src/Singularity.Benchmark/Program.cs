@@ -9,27 +9,19 @@ namespace Singularity.Benchmark
     {
         static void Main()
         {
-            //var constant = Expression.Constant(new Program());
+            //var _benchmark = new SimpleContainerBenchmark();
+            //_benchmark.Setup();
+            //_benchmark.Complex();
 
-            //var del1 = Expression.Lambda<Func<Program>>(constant).CompileFast<Func<Program>>();
-            ////var del = Expression.Lambda<Func<Program>>(constant).TryCompileWithoutClosure<Func<Program>>();
-
-            //var del = Expression.Lambda<Func<Program>>(constant).TryCompileWithPreCreatedClosure<Func<Program>>(ExpressionCompiler.Closure.Create(constant.Value), constant);
-
-            //var value = del.Invoke();
-            //Console.WriteLine(value);
-            //AdvancedSingularityContainerBenchmark _benchmark = new AdvancedSingularityContainerBenchmark();
-
-            //while (true)
-            //{
-            //    _benchmark.AspNetCore();
-            //}
+            //var benchmark = new AdvancedContainerBenchmark();
+            //benchmark.Setup();
+            //benchmark.AspNetCore();
             //BenchmarkRunner.Run<ImmutableDictionaryBenchmarks>();
             //BenchmarkRunner.Run<SimpleContainerBenchmark>();
+            //BenchmarkRunner.Run<AdvancedContainerBenchmark>();
             //BenchmarkRunner.Run()
             //BenchmarkSwitcher.FromTypes(new[] {typeof(SimpleContainerBenchmark), typeof(AdvancedContainerBenchmark)}).RunAllJoined();
 
-            BenchmarkRunner.Run<AdvancedContainerBenchmark>();
             //BenchmarkRunner.Run<DisposeListBenchmarks>();
             Console.ReadKey();
         }

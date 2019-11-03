@@ -13,7 +13,7 @@ namespace Singularity
     /// </summary>
     public sealed class ContainerBuilder
     {
-        internal SingularitySettings Settings { get; }
+        internal SingularitySettings Settings { get; private set; }
         internal RegistrationStore Registrations { get; } = new RegistrationStore();
 
         /// <summary>
@@ -25,6 +25,24 @@ namespace Singularity
         {
             Settings = settings ?? SingularitySettings.Default;
             configurator?.Invoke(this);
+        }
+
+        /// <summary>
+        /// Replaces the <see cref="SingularitySettings"/>
+        /// </summary>
+        /// <param name="settings"></param>
+        public void ConfigureSettings(SingularitySettings settings)
+        {
+            Settings = settings;
+        }
+
+        /// <summary>
+        /// Configures the <see cref="SingularitySettings"/>
+        /// </summary>
+        /// <param name="settings"></param>
+        public void ConfigureSettings(Action<SingularitySettings> settings)
+        {
+            settings.Invoke(Settings);
         }
 
         /// <summary>
