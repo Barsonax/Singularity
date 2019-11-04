@@ -7,7 +7,66 @@ namespace Singularity.Test.Injection
     public class ScopeTests
     {
         [Fact]
-        public void BeginScope_GetInstance_DisposeScope()
+        public void GetInstance_ReturnsCorrectDependency()
+        {
+            //ARRANGE
+            var container = new Container(builder =>
+            {
+                builder.Register<ITestService10, TestService10>();
+            });
+            var scope = container.BeginScope();
+
+            //ACT
+            var value = scope.GetInstance<ITestService10>();
+
+            //ASSERT
+            Assert.IsType<TestService10>(value);
+        }
+
+        [Fact]
+        public void GetInstance_GetDependencyByConcreteType_ReturnsCorrectDependency()
+        {
+            //ARRANGE
+            var container = new Container();
+            var scope = container.BeginScope();
+
+            //ACT
+            var value = scope.GetInstance<TestService10>();
+
+            //ASSERT
+            Assert.IsType<TestService10>(value);
+        }
+
+        [Fact]
+        public void GetInstanceOrDefault_Generic_NotRegistered_ReturnsNull()
+        {
+            //ARRANGE
+            var container = new Container();
+            var scope = container.BeginScope();
+
+            //ACT
+            var value = scope.GetInstanceOrDefault<ITestService10>();
+
+            //ASSERT
+            Assert.Null(value);
+        }
+
+        [Fact]
+        public void GetInstanceOrDefault_NotRegistered_ReturnsNull()
+        {
+            //ARRANGE
+            var container = new Container();
+            var scope = container.BeginScope();
+
+            //ACT
+            var value = scope.GetInstanceOrDefault(typeof(ITestService10));
+
+            //ASSERT
+            Assert.Null(value);
+        }
+
+        [Fact]
+        public void GetInstance_DisposeScope()
         {
             //ARRANGE
             var container = new Container(builder =>
@@ -31,7 +90,7 @@ namespace Singularity.Test.Injection
         }
 
         [Fact]
-        public void BeginScope_GetInstance_AlwaysReturnsSameInstanceForTheSameScope()
+        public void GetInstance_AlwaysReturnsSameInstanceForTheSameScope()
         {
             //ARRANGE
             var container = new Container(builder =>
@@ -58,7 +117,7 @@ namespace Singularity.Test.Injection
         }
 
         [Fact]
-        public void BeginScope_GetInstance_Nested()
+        public void GetInstance_Nested()
         {
             //ARRANGE
             var container = new Container(builder =>

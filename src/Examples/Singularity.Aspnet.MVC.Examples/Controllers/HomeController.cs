@@ -1,8 +1,8 @@
-﻿using System.Diagnostics;
+﻿using System;
+using System.Diagnostics;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using Singularity.AspNetCore.MVC.Examples.Models;
-using Singularity.TestClasses.TestClasses;
 
 namespace Singularity.AspNetCore.MVC.Examples.Controllers
 {
@@ -10,7 +10,7 @@ namespace Singularity.AspNetCore.MVC.Examples.Controllers
     {
         private readonly ILogger<HomeController> _logger;
 
-        public HomeController(ILogger<HomeController> logger, ITransient1 transient1)
+        public HomeController(ILogger<HomeController> logger, IDisposable disposable)
         {
             _logger = logger;
         }

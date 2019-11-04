@@ -65,12 +65,18 @@ namespace Singularity
             ResolveErrorsExclusions.Add(match);
         }
 
-        public void ExcludeAutoRegistration(Type type, ITypeMatcher match)
+        public void ExcludeAutoRegistration<TResolverType>(ITypeMatcher match)
+            where TResolverType : IDependencyResolver
         {
-            if (!ResolverExclusions.TryGetValue(type, out List<ITypeMatcher> exclusions))
+            ExcludeAutoRegistration(typeof(TResolverType), match);
+        }
+
+        public void ExcludeAutoRegistration(Type resolverType, ITypeMatcher match)
+        {
+            if (!ResolverExclusions.TryGetValue(resolverType, out List<ITypeMatcher> exclusions))
             {
                 exclusions = new List<ITypeMatcher>();
-                ResolverExclusions.Add(type, exclusions);
+                ResolverExclusions.Add(resolverType, exclusions);
             }
             exclusions.Add(match);
         }
