@@ -1,11 +1,12 @@
 ﻿using System;
 using System.Runtime.Serialization;
 using System.Security.Permissions;
+using Singularity.Graph.Resolvers;
 
 namespace Singularity.Exceptions
 {
     /// <summary>
-    /// Thrown when a dependency cannot be found.
+    /// Thrown when a service cannot be found and its not possible for the <see cref="IDependencyResolver"/>'s to generate a <see cref="ServiceBinding"/>.
     /// </summary>
     [Serializable]
     public sealed class DependencyNotFoundException : SingularityException

@@ -1,6 +1,6 @@
 ﻿namespace Singularity
 {
-    public class TypeMetadataCache<T>
+    internal class TypeMetadataCache<T>
     {
         public static readonly bool IsInterface = typeof(T).IsInterface;
     }

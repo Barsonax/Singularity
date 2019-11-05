@@ -6,6 +6,7 @@ using Singularity.Collections;
 using Singularity.Exceptions;
 using Singularity.Expressions;
 using Singularity.Graph;
+using Singularity.Graph.Resolvers;
 
 namespace Singularity
 {
@@ -26,7 +27,7 @@ namespace Singularity
         public SinglyLinkedListNode<Type> ServiceTypes { get; }
 
         /// <summary>
-        /// A expression that creates the service but all its dependencies are not yet resolved.
+        /// A expression that creates the service instance but all its dependencies are not yet resolved.
         /// </summary>
         public Expression Expression { get; }
 
@@ -36,7 +37,7 @@ namespace Singularity
         public ILifetime Lifetime { get; }
 
         /// <summary>
-        /// Denotes if this service should be automatically disposed. <see cref="ServiceAutoDispose"/> for more info.
+        /// Denotes if the service instance should be automatically disposed. See <see cref="ServiceAutoDispose"/> for more info.
         /// </summary>
         public ServiceAutoDispose NeedsDispose { get; }
 
@@ -52,8 +53,8 @@ namespace Singularity
         public IConstructorResolver ConstructorResolver { get; }
 
         /// <summary>
-        /// The base expression of to create a instance of this service. Dependencies are resolved and the lifetime has been applied.
-        /// However decorators have not been applied.
+        /// The base expression of to create a instance of this service. Dependencies are resolved and the lifetime has been applied, however decorators have not yet been applied.
+        /// Do not use this directly but use <see cref="Factories"/> instead.
         /// </summary>
         public ReadOnlyExpressionContext? BaseExpression { get; internal set; }
 
@@ -65,7 +66,7 @@ namespace Singularity
         /// <summary>
         /// A list of factories for different service types.
         /// These factories are generated using the <see cref="BaseExpression"/> as input.
-        /// Decorators are applied at this point.
+        /// Decorators are applied at this point and its safe to use this to resolve dependencies of other services with <see cref="TryGetInstanceFactory"/>
         /// </summary>
         public ArrayList<InstanceFactory> Factories { get; } = new ArrayList<InstanceFactory>();
 
@@ -81,6 +82,18 @@ namespace Singularity
             return factory != null;
         }
 
+        /// <summary>
+        /// Creates a new service binding using the provided data.
+        /// </summary>
+        /// <param name="serviceTypes"></param>
+        /// <param name="bindingMetadata"></param>
+        /// <param name="expression"></param>
+        /// <param name="constructorResolver"></param>
+        /// <param name="lifetime"></param>
+        /// <param name="finalizer"></param>
+        /// <param name="needsDispose"></param>
+        /// <exception cref="ArgumentNullException"></exception>
+        /// <exception cref="InvalidEnumValueException{T}"></exception>
         public ServiceBinding(SinglyLinkedListNode<Type> serviceTypes, in BindingMetadata bindingMetadata, Expression expression, IConstructorResolver constructorResolver,
             ILifetime lifetime, Action<object>? finalizer = null,
             ServiceAutoDispose needsDispose = ServiceAutoDispose.Default)
@@ -94,6 +107,16 @@ namespace Singularity
             ConstructorResolver = constructorResolver;
         }
 
+        /// <summary>
+        /// Constructor that fills in some default values to make it more easier to use in <see cref="IDependencyResolver"/>'s
+        /// </summary>
+        /// <param name="dependencyType"></param>
+        /// <param name="bindingMetadata"></param>
+        /// <param name="expression"></param>
+        /// <param name="constructorResolver"></param>
+        /// <param name="lifetime"></param>
+        /// <param name="finalizer"></param>
+        /// <param name="needsDispose"></param>
         public ServiceBinding(Type dependencyType, in BindingMetadata bindingMetadata, Expression expression, IConstructorResolver constructorResolver,
             ILifetime? lifetime = null, Action<object>? finalizer = null,
             ServiceAutoDispose needsDispose = ServiceAutoDispose.Default) : this(new SinglyLinkedListNode<Type>(dependencyType), bindingMetadata, expression, constructorResolver, lifetime ?? Lifetimes.Transient, finalizer, needsDispose)

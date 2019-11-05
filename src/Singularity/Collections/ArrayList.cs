@@ -9,18 +9,25 @@ namespace Singularity.Collections
     /// <typeparam name="T"></typeparam>
     public sealed class ArrayList<T> : IEnumerable<T>
     {
-        public static readonly T[] Empty = new T[0];
+        internal static readonly T[] Empty = new T[0];
 
         /// <summary>
         /// The wrapped array.
         /// </summary>
         public T[] Array { get; private set; }
 
+        /// <summary>
+        /// Creates a new <see cref="ArrayList{T}"/> using the provided array.
+        /// </summary>
+        /// <param name="values"></param>
         public ArrayList(T[] values)
         {
             Array = values;
         }
 
+        /// <summary>
+        /// Creates a empty <see cref="ArrayList{T}"/>
+        /// </summary>
         public ArrayList()
         {
             Array = Empty;

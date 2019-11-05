@@ -3,6 +3,10 @@ using System.Runtime.Serialization;
 
 namespace Singularity.Exceptions
 {
+    /// <summary>
+    /// Thrown if the service was found but it was not possible to resolve it.
+    /// This could be due to missing dependencies of this service.
+    /// </summary>
     [Serializable]
     public class DependencyResolveException : SingularityException
     {

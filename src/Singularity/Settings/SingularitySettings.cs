@@ -49,12 +49,21 @@ namespace Singularity
         [EditorBrowsable(EditorBrowsableState.Never)]
         public IConstructorResolver ConstructorResolver { get; private set; } = ConstructorResolvers.Default;
 
+        /// <summary>
+        /// The logger that is used.
+        /// </summary>
         [EditorBrowsable(EditorBrowsableState.Never)]
         public ISingularityLogger Logger { get; private set; } = Loggers.Default;
 
+        /// <summary>
+        /// Prevents Singularity to throw errors in some cases
+        /// </summary>
         [EditorBrowsable(EditorBrowsableState.Never)]
         public List<ITypeMatcher> ResolveErrorsExclusions { get; } = new List<ITypeMatcher>();
 
+        /// <summary>
+        /// Excludes some types from a <see cref="IDependencyResolver"/>
+        /// </summary>
         [EditorBrowsable(EditorBrowsableState.Never)]
         public Dictionary<Type, List<ITypeMatcher>> ResolverExclusions { get; } = new Dictionary<Type, List<ITypeMatcher>>();
 
