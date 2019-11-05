@@ -49,12 +49,21 @@ namespace Singularity
         [EditorBrowsable(EditorBrowsableState.Never)]
         public IConstructorResolver ConstructorResolver { get; private set; } = ConstructorResolvers.Default;
 
+        /// <summary>
+        /// The logger that is used.
+        /// </summary>
         [EditorBrowsable(EditorBrowsableState.Never)]
         public ISingularityLogger Logger { get; private set; } = Loggers.Default;
 
+        /// <summary>
+        /// Prevents Singularity to throw errors in some cases
+        /// </summary>
         [EditorBrowsable(EditorBrowsableState.Never)]
         public List<ITypeMatcher> ResolveErrorsExclusions { get; } = new List<ITypeMatcher>();
 
+        /// <summary>
+        /// Excludes some types from a <see cref="IDependencyResolver"/>
+        /// </summary>
         [EditorBrowsable(EditorBrowsableState.Never)]
         public Dictionary<Type, List<ITypeMatcher>> ResolverExclusions { get; } = new Dictionary<Type, List<ITypeMatcher>>();
 
@@ -65,12 +74,18 @@ namespace Singularity
             ResolveErrorsExclusions.Add(match);
         }
 
-        public void ExcludeAutoRegistration(Type type, ITypeMatcher match)
+        public void ExcludeAutoRegistration<TResolverType>(ITypeMatcher match)
+            where TResolverType : IDependencyResolver
         {
-            if (!ResolverExclusions.TryGetValue(type, out List<ITypeMatcher> exclusions))
+            ExcludeAutoRegistration(typeof(TResolverType), match);
+        }
+
+        public void ExcludeAutoRegistration(Type resolverType, ITypeMatcher match)
+        {
+            if (!ResolverExclusions.TryGetValue(resolverType, out List<ITypeMatcher> exclusions))
             {
                 exclusions = new List<ITypeMatcher>();
-                ResolverExclusions.Add(type, exclusions);
+                ResolverExclusions.Add(resolverType, exclusions);
             }
             exclusions.Add(match);
         }

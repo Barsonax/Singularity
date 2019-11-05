@@ -5,6 +5,7 @@ namespace Singularity.Graph.Resolvers
 {
     /// <summary>
     /// Interface for creating new bindings.
+    /// Singularity uses this to provide advanced dependency injection features such as generic wrappers and open generics.
     /// </summary>
     public interface IDependencyResolver
     {
