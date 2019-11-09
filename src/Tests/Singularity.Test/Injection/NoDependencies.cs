@@ -134,7 +134,7 @@ namespace Singularity.Test.Injection
             //ARRANGE
             var container = new Container(c => c.ConfigureSettings(s =>
             {
-                s.ExcludeAutoRegistration<ConcreteDependencyResolver>(new PatternTypeMatcher($"*{nameof(TestService10)}*"));
+                s.ExcludeAutoRegistration<ConcreteServiceBindingGenerator>(new PatternTypeMatcher($"*{nameof(TestService10)}*"));
             }));
 
             //ACT

@@ -9,9 +9,9 @@ namespace Singularity.Graph.Resolvers
     /// <summary>
     /// Creates bindings so that the expression itself of a binding can be resolved
     /// </summary>
-    public sealed class ExpressionDependencyResolver : IDependencyResolver
+    public sealed class ExpressionServiceBindingGenerator : IServiceBindingGenerator
     {
-        private static readonly MethodInfo GenericCreateLambdaMethod = typeof(ExpressionDependencyResolver).GetMethod(nameof(CreateLambda));
+        private static readonly MethodInfo GenericCreateLambdaMethod = typeof(ExpressionServiceBindingGenerator).GetMethod(nameof(CreateLambda));
 
         /// <inheritdoc />
         public IEnumerable<ServiceBinding> Resolve(IResolverPipeline graph, Type type)

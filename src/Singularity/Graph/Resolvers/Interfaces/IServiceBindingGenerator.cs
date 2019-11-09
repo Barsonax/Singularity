@@ -7,10 +7,11 @@ namespace Singularity.Graph.Resolvers
     /// Interface for creating new bindings.
     /// Singularity uses this to provide advanced dependency injection features such as generic wrappers and open generics.
     /// </summary>
-    public interface IDependencyResolver
+    public interface IServiceBindingGenerator
     {
         /// <summary>
         /// Dynamically creates bindings for a given type.
+        /// If this returns <c>null</c> or a empty <see cref="IEnumerable{T}"/> then the next <see cref="IServiceBindingGenerator"/> in <see cref="SingularitySettings.ServiceBindingGenerators"/> will be used.
         /// </summary>
         /// <param name="graph"></param>
         /// <param name="type"></param>

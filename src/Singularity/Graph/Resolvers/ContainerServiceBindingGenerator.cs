@@ -9,10 +9,10 @@ namespace Singularity.Graph.Resolvers
     /// <summary>
     /// Creates bindings for resolving the container or scope itself.
     /// </summary>
-    public class ContainerDependencyResolver : IDependencyResolver
+    public class ContainerServiceBindingGenerator : IServiceBindingGenerator
     {
-        private static readonly MethodInfo _getContainer = typeof(ContainerDependencyResolver).GetMethod(nameof(GetContainer), BindingFlags.NonPublic | BindingFlags.Static);
-        private static readonly MethodInfo _getScope = typeof(ContainerDependencyResolver).GetMethod(nameof(GetScope), BindingFlags.NonPublic | BindingFlags.Static);
+        private static readonly MethodInfo _getContainer = typeof(ContainerServiceBindingGenerator).GetMethod(nameof(GetContainer), BindingFlags.NonPublic | BindingFlags.Static);
+        private static readonly MethodInfo _getScope = typeof(ContainerServiceBindingGenerator).GetMethod(nameof(GetScope), BindingFlags.NonPublic | BindingFlags.Static);
 
         /// <inheritdoc />
         public IEnumerable<ServiceBinding> Resolve(IResolverPipeline graph, Type type)

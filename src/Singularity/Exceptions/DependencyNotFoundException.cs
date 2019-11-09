@@ -6,7 +6,7 @@ using Singularity.Graph.Resolvers;
 namespace Singularity.Exceptions
 {
     /// <summary>
-    /// Thrown when a service cannot be found and its not possible for the <see cref="IDependencyResolver"/>'s to generate a <see cref="ServiceBinding"/>.
+    /// Thrown when a service cannot be found and its not possible for the <see cref="IServiceBindingGenerator"/>'s to generate a <see cref="ServiceBinding"/>.
     /// </summary>
     [Serializable]
     public sealed class DependencyNotFoundException : SingularityException

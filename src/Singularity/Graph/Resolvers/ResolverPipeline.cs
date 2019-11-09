@@ -13,7 +13,7 @@ namespace Singularity.Graph.Resolvers
         public SingularitySettings Settings { get; }
         private RegistrationStore RegistrationStore { get; }
         private object SyncRoot { get; }
-        private readonly IDependencyResolver[] _resolvers;
+        private readonly IServiceBindingGenerator[] _resolvers;
         private readonly ResolverPipeline? _parentPipeline;
         private readonly Scoped _containerScope;
         private readonly ExpressionGenerator _expressionGenerator = new ExpressionGenerator();
@@ -21,7 +21,7 @@ namespace Singularity.Graph.Resolvers
         public ResolverPipeline(RegistrationStore registrationStore, Scoped containerScope, SingularitySettings settings, ResolverPipeline? parentPipeline)
         {
             Settings = settings ?? throw new ArgumentNullException(nameof(settings));
-            _resolvers = Settings.Resolvers;
+            _resolvers = Settings.ServiceBindingGenerators.ToArray();
             _parentPipeline = parentPipeline;
             SyncRoot = parentPipeline?.SyncRoot ?? new object();
             _containerScope = containerScope ?? throw new ArgumentNullException(nameof(containerScope));
@@ -66,7 +66,7 @@ namespace Singularity.Graph.Resolvers
             {
                 if (RegistrationStore.Registrations.TryGetValue(type, out Registration parent)) return parent;
 
-                foreach (IDependencyResolver dependencyResolver in _resolvers)
+                foreach (IServiceBindingGenerator dependencyResolver in _resolvers)
                 {
                     if (Settings.ResolverExclusions.TryGetValue(dependencyResolver.GetType(), out var exclusions))
                     {

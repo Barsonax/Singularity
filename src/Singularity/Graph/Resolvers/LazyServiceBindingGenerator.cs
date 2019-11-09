@@ -9,7 +9,7 @@ namespace Singularity.Graph.Resolvers
     /// <summary>
     /// Creates bindings so that the binding can be resolved as a <see cref="Lazy{T}"/>
     /// </summary>
-    public sealed class LazyDependencyResolver : IDependencyResolver
+    public sealed class LazyServiceBindingGenerator : IServiceBindingGenerator
     {
         /// <inheritdoc />
         public IEnumerable<ServiceBinding> Resolve(IResolverPipeline graph, Type type)

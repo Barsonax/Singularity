@@ -8,7 +8,7 @@ namespace Singularity.Graph.Resolvers
     /// <summary>
     /// Creates bindings so that open generic registrations can be properly resolved.
     /// </summary>
-    public sealed class OpenGenericResolver : IDependencyResolver
+    public sealed class OpenGenericResolver : IServiceBindingGenerator
     {
         /// <inheritdoc />
         public IEnumerable<ServiceBinding> Resolve(IResolverPipeline graph, Type type)

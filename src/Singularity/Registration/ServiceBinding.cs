@@ -108,7 +108,7 @@ namespace Singularity
         }
 
         /// <summary>
-        /// Constructor that fills in some default values to make it more easier to use in <see cref="IDependencyResolver"/>'s
+        /// Constructor that fills in some default values to make it more easier to use in <see cref="IServiceBindingGenerator"/>'s
         /// </summary>
         /// <param name="dependencyType"></param>
         /// <param name="bindingMetadata"></param>

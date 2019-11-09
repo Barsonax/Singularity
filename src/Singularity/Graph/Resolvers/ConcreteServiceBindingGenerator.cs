@@ -6,7 +6,7 @@ namespace Singularity.Graph.Resolvers
     /// <summary>
     /// Creates a binding if the type is a concrete type.
     /// </summary>
-    public sealed class ConcreteDependencyResolver : IDependencyResolver
+    public sealed class ConcreteServiceBindingGenerator : IServiceBindingGenerator
     {
         /// <inheritdoc />
         public IEnumerable<ServiceBinding> Resolve(IResolverPipeline graph, Type type)

@@ -8,7 +8,7 @@ namespace Singularity.Graph.Resolvers
     /// <summary>
     /// Creates bindings so that the factory itself of a binding can be resolved
     /// </summary>
-    public sealed class FactoryDependencyResolver : IDependencyResolver
+    public sealed class FactoryServiceBindingGenerator : IServiceBindingGenerator
     {
         /// <inheritdoc />
         public IEnumerable<ServiceBinding> Resolve(IResolverPipeline graph, Type type)

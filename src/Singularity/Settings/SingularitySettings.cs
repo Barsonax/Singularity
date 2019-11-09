@@ -26,14 +26,17 @@ namespace Singularity
             s.IgnoreResolveError(new PatternTypeMatcher("Microsoft.*"));
         });
 
+        /// <summary>
+        /// The <see cref="IServiceBindingGenerator"/>s that are used to dynamically generate bindings.
+        /// </summary>
         [EditorBrowsable(EditorBrowsableState.Never)]
-        public IDependencyResolver[] Resolvers { get; private set; } = {
-            new ContainerDependencyResolver(),
-            new EnumerableDependencyResolver(),
-            new ExpressionDependencyResolver(),
-            new LazyDependencyResolver(),
-            new FactoryDependencyResolver(),
-            new ConcreteDependencyResolver(),
+        public List<IServiceBindingGenerator> ServiceBindingGenerators { get; private set; } = new List<IServiceBindingGenerator> {
+            new ContainerServiceBindingGenerator(),
+            new EnumerableServiceBindingGenerator(),
+            new ExpressionServiceBindingGenerator(),
+            new LazyServiceBindingGenerator(),
+            new FactoryServiceBindingGenerator(),
+            new ConcreteServiceBindingGenerator(),
             new OpenGenericResolver()
         };
 
@@ -62,7 +65,7 @@ namespace Singularity
         public List<ITypeMatcher> ResolveErrorsExclusions { get; } = new List<ITypeMatcher>();
 
         /// <summary>
-        /// Excludes some types from a <see cref="IDependencyResolver"/>
+        /// Excludes some types from a <see cref="IServiceBindingGenerator"/>
         /// </summary>
         [EditorBrowsable(EditorBrowsableState.Never)]
         public Dictionary<Type, List<ITypeMatcher>> ResolverExclusions { get; } = new Dictionary<Type, List<ITypeMatcher>>();
@@ -75,7 +78,7 @@ namespace Singularity
         }
 
         public void ExcludeAutoRegistration<TResolverType>(ITypeMatcher match)
-            where TResolverType : IDependencyResolver
+            where TResolverType : IServiceBindingGenerator
         {
             ExcludeAutoRegistration(typeof(TResolverType), match);
         }
@@ -92,7 +95,57 @@ namespace Singularity
 
         public void With(ISingularityLogger logger) => Logger = logger;
 
-        public void With(IDependencyResolver[] resolvers) => Resolvers = resolvers;
+        /// <summary>
+        /// Replaces all <see cref="IServiceBindingGenerator"/>s with the provided list.
+        /// </summary>
+        /// <param name="serviceBindingGenerators"></param>
+        public void Replace(List<IServiceBindingGenerator> serviceBindingGenerators)
+        {
+            ServiceBindingGenerators = serviceBindingGenerators;
+        }
+
+        /// <summary>
+        /// Appends a <see cref="IServiceBindingGenerator"/>
+        /// </summary>
+        /// <param name="serviceBindingGenerator"></param>
+        public void Append(IServiceBindingGenerator serviceBindingGenerator)
+        {
+            ServiceBindingGenerators.Add(serviceBindingGenerator);
+        }
+
+        /// <summary>
+        /// Inserts a <see cref="IServiceBindingGenerator"/> before <typeparamref name="TServiceBindingGenerator"/>
+        /// </summary>
+        /// <param name="serviceBindingGenerator"></param>
+        public void Before<TServiceBindingGenerator>(IServiceBindingGenerator serviceBindingGenerator)
+            where TServiceBindingGenerator : IServiceBindingGenerator
+        {
+            for (int i = 0; i < ServiceBindingGenerators.Count; i++)
+            {
+                if (ServiceBindingGenerators[i].GetType() == typeof(TServiceBindingGenerator))
+                {
+                    ServiceBindingGenerators.Insert(i, serviceBindingGenerator);
+                    break;
+                }
+            }
+        }
+
+        /// <summary>
+        /// Inserts a <see cref="IServiceBindingGenerator"/> after <typeparamref name="TServiceBindingGenerator"/>
+        /// </summary>
+        /// <param name="serviceBindingGenerator"></param>
+        public void After<TServiceBindingGenerator>(IServiceBindingGenerator serviceBindingGenerator)
+            where TServiceBindingGenerator : IServiceBindingGenerator
+        {
+            for (int i = 0; i < ServiceBindingGenerators.Count; i++)
+            {
+                if (ServiceBindingGenerators[i].GetType() == typeof(TServiceBindingGenerator))
+                {
+                    ServiceBindingGenerators.Insert(i + 1, serviceBindingGenerator);
+                    break;
+                }
+            }
+        }
 
         public void With(IConstructorResolver constructorResolver) => ConstructorResolver = constructorResolver;
 

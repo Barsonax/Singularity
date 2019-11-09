@@ -10,7 +10,7 @@ namespace Singularity.Graph.Resolvers
     /// <summary>
     /// Creates bindings for resolving all services of a given type.
     /// </summary>
-    public sealed class EnumerableDependencyResolver : IDependencyResolver
+    public sealed class EnumerableServiceBindingGenerator : IServiceBindingGenerator
     {
         /// <inheritdoc />
         public IEnumerable<ServiceBinding> Resolve(IResolverPipeline graph, Type type)
