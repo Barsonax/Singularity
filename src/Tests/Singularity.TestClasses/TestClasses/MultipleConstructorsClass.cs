@@ -7,7 +7,7 @@
 
         }
 
-        public MultipleConstructorsClass(int dummy)
+        public MultipleConstructorsClass(ITestService10 dummy)
         {
 
         }

@@ -48,7 +48,7 @@
 	{
 		public ITestService10 TestService10 { get; }
 
-		public TestService10_Decorator1(ITestService10 testService10, int dummyValue)
+		public TestService10_Decorator1(ITestService10 testService10, DummyOne dummyValue)
 		{
 			TestService10 = testService10;
 		}

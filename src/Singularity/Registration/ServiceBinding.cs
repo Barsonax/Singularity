@@ -29,7 +29,12 @@ namespace Singularity
         /// <summary>
         /// A expression that creates the service instance but all its dependencies are not yet resolved.
         /// </summary>
-        public Expression Expression { get; }
+        public Expression? Expression { get; internal set; }
+
+        /// <summary>
+        /// The concrete type of this service.
+        /// </summary>
+        public Type ConcreteType { get; }
 
         /// <summary>
         /// The lifetime of the service.
@@ -85,23 +90,17 @@ namespace Singularity
         /// <summary>
         /// Creates a new service binding using the provided data.
         /// </summary>
-        /// <param name="serviceTypes"></param>
-        /// <param name="bindingMetadata"></param>
-        /// <param name="expression"></param>
-        /// <param name="constructorResolver"></param>
-        /// <param name="lifetime"></param>
-        /// <param name="finalizer"></param>
-        /// <param name="needsDispose"></param>
         /// <exception cref="ArgumentNullException"></exception>
         /// <exception cref="InvalidEnumValueException{T}"></exception>
-        public ServiceBinding(SinglyLinkedListNode<Type> serviceTypes, in BindingMetadata bindingMetadata, Expression expression, IConstructorResolver constructorResolver,
+        public ServiceBinding(SinglyLinkedListNode<Type> serviceTypes, in BindingMetadata bindingMetadata, Expression? expression, Type concreteType, IConstructorResolver constructorResolver,
             ILifetime lifetime, Action<object>? finalizer = null,
             ServiceAutoDispose needsDispose = ServiceAutoDispose.Default)
         {
             ServiceTypes = serviceTypes ?? throw new ArgumentNullException(nameof(serviceTypes));
             BindingMetadata = bindingMetadata;
             Lifetime = lifetime ?? throw new ArgumentNullException(nameof(lifetime));
-            Expression = expression ?? throw new ArgumentNullException(nameof(expression));
+            Expression = expression;
+            ConcreteType = concreteType ?? throw new ArgumentNullException(nameof(concreteType));
             NeedsDispose = !EnumMetadata<ServiceAutoDispose>.IsValidValue(needsDispose) ? throw new InvalidEnumValueException<ServiceAutoDispose>(needsDispose) : needsDispose;
             Finalizer = finalizer;
             ConstructorResolver = constructorResolver;
@@ -110,16 +109,9 @@ namespace Singularity
         /// <summary>
         /// Constructor that fills in some default values to make it more easier to use in <see cref="IServiceBindingGenerator"/>'s
         /// </summary>
-        /// <param name="dependencyType"></param>
-        /// <param name="bindingMetadata"></param>
-        /// <param name="expression"></param>
-        /// <param name="constructorResolver"></param>
-        /// <param name="lifetime"></param>
-        /// <param name="finalizer"></param>
-        /// <param name="needsDispose"></param>
-        public ServiceBinding(Type dependencyType, in BindingMetadata bindingMetadata, Expression expression, IConstructorResolver constructorResolver,
+        public ServiceBinding(Type dependencyType, in BindingMetadata bindingMetadata, Expression? expression, Type concreteType, IConstructorResolver constructorResolver,
             ILifetime? lifetime = null, Action<object>? finalizer = null,
-            ServiceAutoDispose needsDispose = ServiceAutoDispose.Default) : this(new SinglyLinkedListNode<Type>(dependencyType), bindingMetadata, expression, constructorResolver, lifetime ?? Lifetimes.Transient, finalizer, needsDispose)
+            ServiceAutoDispose needsDispose = ServiceAutoDispose.Default) : this(new SinglyLinkedListNode<Type>(dependencyType), bindingMetadata, expression, concreteType, constructorResolver, lifetime ?? Lifetimes.Transient, finalizer, needsDispose)
         {
         }
     }

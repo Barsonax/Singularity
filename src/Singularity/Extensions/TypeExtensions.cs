@@ -9,20 +9,16 @@ namespace Singularity
         /// <summary>
         /// Tries to create a <see cref="Expression"/> representing the call to the constructor or in case of value types it may be just a default.
         /// </summary>
-        /// <param name="type"></param>
         /// <param name="constructor"></param>
         /// <exception cref="NotSupportedException"></exception>
         /// <returns></returns>
-        public static Expression AutoResolveConstructorExpression(this Type type, ConstructorInfo constructor)
+        public static Expression ResolveConstructorExpression(this Type type, ConstructorInfo constructor)
         {
             if (constructor == null && type.IsValueType)
             {
                 return Expression.Default(type);
             }
-            else if (constructor == null)
-            {
-                throw new NotSupportedException();
-            }
+
             ParameterInfo[] parameters = constructor.GetParameters();
             if (parameters.Length == 0) return Expression.New(constructor);
             var parameterExpressions = new Expression[parameters.Length];

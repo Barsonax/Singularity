@@ -23,7 +23,7 @@ namespace Singularity
         internal SingularitySettings Settings { get; }
 
         internal readonly Scoped ContainerScope;
-        private readonly ResolverPipeline _dependencyGraph;
+        internal readonly ResolverPipeline DependencyGraph;
         private readonly ThreadSafeDictionary<Type, Action<Scoped, object>?> _injectionCache = new ThreadSafeDictionary<Type, Action<Scoped, object>?>();
         private readonly ThreadSafeDictionary<Type, Func<Scoped, object?>?> _getInstanceCache = new ThreadSafeDictionary<Type, Func<Scoped, object?>?>();
         private readonly Container? _parentContainer;
@@ -51,7 +51,7 @@ namespace Singularity
             ContainerScope = new Scoped(this);
             Registrations = builder.Registrations;
             Settings = builder.Settings;
-            _dependencyGraph = new ResolverPipeline(builder.Registrations, ContainerScope, Settings, null);
+            DependencyGraph = new ResolverPipeline(builder.Registrations, ContainerScope, Settings, null);
         }
 
         /// <summary>
@@ -75,7 +75,7 @@ namespace Singularity
             _parentContainer = parentContainer;
             ContainerScope = new Scoped(this);
             Registrations = builder.Registrations;
-            _dependencyGraph = new ResolverPipeline(builder.Registrations, ContainerScope, Settings, parentContainer._dependencyGraph);
+            DependencyGraph = new ResolverPipeline(builder.Registrations, ContainerScope, Settings, parentContainer.DependencyGraph);
         }
 
         /// <summary>
@@ -117,7 +117,7 @@ namespace Singularity
             Func<Scoped, object?>? func = _getInstanceCache.GetOrDefault(type);
             if (func == null)
             {
-                func = _dependencyGraph.Resolve(type)?.Factory ?? (s => null!);
+                func = DependencyGraph.Resolve(type)?.Factory ?? (s => null!);
                 _getInstanceCache.Add(type, func);
             }
             return func(scope)!;
@@ -140,7 +140,7 @@ namespace Singularity
             Func<Scoped, object?>? func = _getInstanceCache.GetOrDefault(type);
             if (func == null)
             {
-                func = _dependencyGraph.TryResolve(type)?.Factory ?? (s => null!);
+                func = DependencyGraph.TryResolve(type)?.Factory ?? (s => null!);
                 _getInstanceCache.Add(type, func);
             }
             return func(scope);
@@ -195,7 +195,7 @@ namespace Singularity
                     for (var i = 0; i < parameterTypes.Length; i++)
                     {
                         Type parameterType = parameterTypes[i].ParameterType;
-                        parameterExpressions[i] = _dependencyGraph.Resolve(parameterType).Context.Expression;
+                        parameterExpressions[i] = DependencyGraph.Resolve(parameterType).Context.Expression;
                     }
                     body.Add(Expression.Call(instanceCasted, methodInfo, parameterExpressions));
                 }
@@ -203,7 +203,7 @@ namespace Singularity
                 foreach (MemberInfo memberInfo in lateInjectorBindings.Array.SelectMany(x => x.InjectionProperties.Array))
                 {
                     MemberExpression memberAccessExpression = Expression.MakeMemberAccess(instanceCasted, memberInfo);
-                    body.Add(Expression.Assign(memberAccessExpression, _dependencyGraph.Resolve(memberAccessExpression.Type).Context.Expression));
+                    body.Add(Expression.Assign(memberAccessExpression, DependencyGraph.Resolve(memberAccessExpression.Type).Context.Expression));
                 }
 
                 if (body.Count == 0) return (scope, instance) => { };

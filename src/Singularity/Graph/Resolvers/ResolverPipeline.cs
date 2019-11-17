@@ -140,6 +140,11 @@ namespace Singularity.Graph.Resolvers
                 {
                     if (serviceBinding.BaseExpression == null)
                     {
+                        if (serviceBinding.Expression == null)
+                        {
+                            var constructor = serviceBinding.ConstructorResolver.DynamicSelectConstructor(serviceBinding.ConcreteType, this);
+                            serviceBinding.Expression = serviceBinding.ConcreteType.ResolveConstructorExpression(constructor);
+                        }
                         ParameterExpression[] parameters = serviceBinding.Expression.GetParameterExpressions().Where(x => x.Type != ExpressionGenerator.ScopeParameter.Type).ToArray();
                         var factories = new InstanceFactory[parameters.Length];
                         for (var i = 0; i < parameters.Length; i++)
