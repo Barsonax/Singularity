@@ -41,7 +41,7 @@ namespace Singularity
             return constructors.FirstOrDefault();
         }
 
-        public Expression? ResolveConstructorExpression(Type type, ConstructorInfo constructorInfo)
+        public Expression? ResolveConstructorExpression(Type type, ConstructorInfo? constructorInfo)
         {
             if (constructorInfo == null) return null;
             return type.ResolveConstructorExpression(constructorInfo);

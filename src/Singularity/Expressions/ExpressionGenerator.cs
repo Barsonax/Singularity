@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Linq.Expressions;
 using System.Reflection;
-using Singularity.FastExpressionCompiler;
 using Singularity.Graph;
 
 namespace Singularity.Expressions
@@ -21,7 +20,7 @@ namespace Singularity.Expressions
                 context.Expression = Expression.Constant(serviceBinding);
                 return context;
             }
-            context.Expression = serviceBinding.Expression! is LambdaExpression lambdaExpression ? lambdaExpression.Body : serviceBinding.Expression;
+            context.Expression = serviceBinding.Expression! is LambdaExpression lambdaExpression ? lambdaExpression.Body : serviceBinding.Expression ?? throw new ArgumentNullException(nameof(serviceBinding.Expression));
             var parameterExpressionVisitor = new ParameterExpressionVisitor(context, children!);
             context.Expression = parameterExpressionVisitor.Visit(context.Expression);
 

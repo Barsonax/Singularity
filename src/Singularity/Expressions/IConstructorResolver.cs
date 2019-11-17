@@ -22,6 +22,6 @@ namespace Singularity.Expressions
         /// <returns></returns>
         ConstructorInfo DynamicSelectConstructor(Type type, IResolverPipeline resolverPipeline);
 
-        Expression? ResolveConstructorExpression(Type type, ConstructorInfo constructorInfo);
+        Expression? ResolveConstructorExpression(Type type, ConstructorInfo? constructorInfo);
     }
 }

@@ -23,7 +23,7 @@ namespace Singularity.Graph.Resolvers
 
                     Type openGenericType = ((AbstractBindingExpression) openGenericBinding.Expression!).Type;
                     Type closedGenericType = openGenericType.MakeGenericType(type.GenericTypeArguments);
-                    Expression newExpression = openGenericBinding.ConstructorResolver.ResolveConstructorExpression(closedGenericType);
+                    Expression? newExpression = openGenericBinding.ConstructorResolver.ResolveConstructorExpression(closedGenericType);
 
                     yield return new ServiceBinding(type, openGenericBinding.BindingMetadata, newExpression, closedGenericType,
                         openGenericBinding.ConstructorResolver, openGenericBinding.Lifetime, openGenericBinding.Finalizer,

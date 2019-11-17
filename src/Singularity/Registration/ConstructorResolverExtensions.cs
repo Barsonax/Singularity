@@ -21,7 +21,7 @@ namespace Singularity
                 }));
         }
 
-        public static Expression ResolveConstructorExpression(this IConstructorResolver resolver, Type type)
+        public static Expression? ResolveConstructorExpression(this IConstructorResolver resolver, Type type)
         {
             return resolver.ResolveConstructorExpression(type, resolver.StaticSelectConstructor(type));
         }
