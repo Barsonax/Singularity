@@ -18,14 +18,14 @@ namespace Singularity
         {
             _bindingMetadata = bindingMetadata;
             _dependencyType = typeof(TDependency);
-            _expression = (constructorSelector ?? settings.ConstructorResolver).AutoResolveConstructorExpression(typeof(TDecorator));
+            _expression = (constructorSelector ?? settings.ConstructorResolver).ResolveConstructorExpression(typeof(TDecorator));
             DecoratorTypeValidator.CheckIsInterface(typeof(TDependency));
             DecoratorTypeValidator.CheckParameters(_expression, typeof(TDependency), typeof(TDecorator));
         }
 
         private readonly BindingMetadata _bindingMetadata;
         private readonly Type _dependencyType;
-        private readonly Expression _expression;
+        private readonly Expression? _expression;
 
         internal Expression ToBinding()
         {

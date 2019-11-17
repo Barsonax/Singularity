@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Linq.Expressions;
 using System.Reflection;
+using Singularity.Graph.Resolvers;
 
 namespace Singularity.Expressions
 {
@@ -11,8 +12,16 @@ namespace Singularity.Expressions
         /// </summary>
         /// <param name="type"></param>
         /// <returns></returns>
-        ConstructorInfo SelectConstructor(Type type);
+        ConstructorInfo? StaticSelectConstructor(Type type);
 
-        Expression AutoResolveConstructorExpression(Type type);
+        /// <summary>
+        /// Selects a constructor for a type.
+        /// </summary>
+        /// <param name="resolverPipeline"></param>
+        /// <param name="type"></param>
+        /// <returns></returns>
+        ConstructorInfo DynamicSelectConstructor(Type type, IResolverPipeline resolverPipeline);
+
+        Expression? ResolveConstructorExpression(Type type, ConstructorInfo? constructorInfo);
     }
 }

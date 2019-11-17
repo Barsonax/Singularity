@@ -59,11 +59,11 @@ namespace Singularity
             }
             else if (registration.ImplementationInstance != null)
             {
-                config.Register(registration.ServiceType, c => c.Inject(Expression.Constant(registration.ImplementationInstance)), ConstructorResolvers.LeastArguments);
+                config.Register(registration.ServiceType, c => c.Inject(Expression.Constant(registration.ImplementationInstance)), ConstructorResolvers.BestMatch);
             }
             else
             {
-                config.Register(registration.ServiceType, registration.ImplementationType, c => c.With(ConvertLifetime(registration.Lifetime)), ConstructorResolvers.LeastArguments);
+                config.Register(registration.ServiceType, registration.ImplementationType, c => c.With(ConvertLifetime(registration.Lifetime)), ConstructorResolvers.BestMatch);
             }
         }
 
@@ -76,7 +76,7 @@ namespace Singularity
                             Expression.Invoke(
                                 Expression.Constant(registration.ImplementationFactory), serviceProviderParameter),
                             registration.ServiceType), serviceProviderParameter))
-                .With(ConvertLifetime(registration.Lifetime)), ConstructorResolvers.LeastArguments);
+                .With(ConvertLifetime(registration.Lifetime)), ConstructorResolvers.BestMatch);
         }
 
         private static ILifetime ConvertLifetime(ServiceLifetime serviceLifetime)

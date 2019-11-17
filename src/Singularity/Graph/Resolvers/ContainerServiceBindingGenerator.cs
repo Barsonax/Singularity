@@ -20,13 +20,13 @@ namespace Singularity.Graph.Resolvers
             if (type == typeof(Container))
             {
                 Expression expression = Expression.Call(null, _getContainer, ExpressionGenerator.ScopeParameter);
-                yield return new ServiceBinding(type, BindingMetadata.GeneratedInstance, expression, graph.Settings.ConstructorResolver, Lifetimes.PerContainer, null, ServiceAutoDispose.Never);
+                yield return new ServiceBinding(type, BindingMetadata.GeneratedInstance, expression, type, graph.Settings.ConstructorResolver, Lifetimes.PerContainer, null, ServiceAutoDispose.Never);
             }
 
             if (type == typeof(Scoped) || type == typeof(IServiceProvider))
             {
                 Expression expression = Expression.Call(null, _getScope, ExpressionGenerator.ScopeParameter);
-                yield return new ServiceBinding(type, BindingMetadata.GeneratedInstance, expression, graph.Settings.ConstructorResolver, Lifetimes.PerContainer, null, ServiceAutoDispose.Never);
+                yield return new ServiceBinding(type, BindingMetadata.GeneratedInstance, expression, type, graph.Settings.ConstructorResolver, Lifetimes.PerContainer, null, ServiceAutoDispose.Never);
             }
         }
 
