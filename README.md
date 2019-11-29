@@ -23,6 +23,7 @@
 - Custom finalizers with the `WithFinalizer(Action<TInstance>)` method.
 - Supports Transient, Singleton and Scope lifetimes.
 - Supports child containers.
+- Supports best fit constructor selection
 - Clear error messages and fail fast to point you in the right direction as fast as possible.
 
 ## Getting started
