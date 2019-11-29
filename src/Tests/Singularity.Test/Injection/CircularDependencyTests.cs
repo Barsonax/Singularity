@@ -22,13 +22,13 @@ namespace Singularity.Test.Injection
             {
                 var circularDependency = container.GetInstance<ISimpleCircularDependency1>();
             });
-            var cycleError1 = Assert.IsType<CircularDependencyException>(dependencyResolveException1.InnerException);
+            var cycleError1 = Assert.IsType<CircularDependencyException>(dependencyResolveException1.InnerException?.InnerException?.InnerException);
 
             var dependencyResolveException2 = Assert.Throws<DependencyResolveException>(() =>
             {
                 var circularDependency = container.GetInstance<ISimpleCircularDependency2>();
             });
-            var cycleError2 = Assert.IsType<CircularDependencyException>(dependencyResolveException2.InnerException);
+            var cycleError2 = Assert.IsType<CircularDependencyException>(dependencyResolveException2.InnerException?.InnerException?.InnerException);
 
 
             Assert.Equal(3, cycleError1.Cycle.Length);
@@ -59,19 +59,19 @@ namespace Singularity.Test.Injection
             {
                 var circularDependency = container.GetInstance<IComplexCircularDependency1>();
             });
-            var cycleError1 = Assert.IsType<CircularDependencyException>(dependencyResolveException1.InnerException);
+            var cycleError1 = Assert.IsType<CircularDependencyException>(dependencyResolveException1.InnerException?.InnerException?.InnerException?.InnerException);
 
             var dependencyResolveException2 = Assert.Throws<DependencyResolveException>(() =>
             {
                 var circularDependency = container.GetInstance<IComplexCircularDependency2>();
             });
-            var cycleError2 = Assert.IsType<CircularDependencyException>(dependencyResolveException2.InnerException);
+            var cycleError2 = Assert.IsType<CircularDependencyException>(dependencyResolveException2.InnerException?.InnerException?.InnerException?.InnerException);
 
             var dependencyResolveException3 = Assert.Throws<DependencyResolveException>(() =>
             {
                 var circularDependency = container.GetInstance<IComplexCircularDependency3>();
             });
-            var cycleError3 = Assert.IsType<CircularDependencyException>(dependencyResolveException3.InnerException);
+            var cycleError3 = Assert.IsType<CircularDependencyException>(dependencyResolveException3.InnerException?.InnerException?.InnerException?.InnerException);
 
             Assert.Equal(4, cycleError1.Cycle.Length);
             Assert.Equal(typeof(IComplexCircularDependency1).AssemblyQualifiedName, cycleError1.Cycle[0]);
