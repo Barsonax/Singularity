@@ -5,6 +5,14 @@ trigger:
   tags:
     include:
     - '*'
+  paths:
+    include:
+      - /src
+      - /_build
+      - nuke
+      - build.ps1
+      - azure-pipelines.yml
+      - gitversion.yml
 
 pr:
   branches:
