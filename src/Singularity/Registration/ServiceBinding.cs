@@ -110,8 +110,8 @@ namespace Singularity
         /// Constructor that fills in some default values to make it more easier to use in <see cref="IServiceBindingGenerator"/>'s
         /// </summary>
         public ServiceBinding(Type dependencyType, in BindingMetadata bindingMetadata, Expression? expression, Type concreteType, IConstructorResolver constructorResolver,
-            ILifetime? lifetime = null, Action<object>? finalizer = null,
-            ServiceAutoDispose needsDispose = ServiceAutoDispose.Default) : this(new SinglyLinkedListNode<Type>(dependencyType), bindingMetadata, expression, concreteType, constructorResolver, lifetime ?? Lifetimes.Transient, finalizer, needsDispose)
+            ILifetime lifetime, Action<object>? finalizer = null,
+            ServiceAutoDispose needsDispose = ServiceAutoDispose.Default) : this(new SinglyLinkedListNode<Type>(dependencyType), bindingMetadata, expression, concreteType, constructorResolver, lifetime, finalizer, needsDispose)
         {
         }
     }

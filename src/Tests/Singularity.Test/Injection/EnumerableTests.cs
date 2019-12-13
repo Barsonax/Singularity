@@ -92,7 +92,7 @@ namespace Singularity.Test.Injection
         }
 
         [Fact]
-        public void GetInstance_AsCollection_SingleRegistration()
+        public void GetInstance_AsReadOnlyCollection_SingleRegistration()
         {
             //ARRANGE
             var container = new Container(builder =>
@@ -112,7 +112,61 @@ namespace Singularity.Test.Injection
         }
 
         [Fact]
+        public void GetInstance_AsArray_SingleRegistration()
+        {
+            //ARRANGE
+            var container = new Container(builder =>
+            {
+                builder.Register<IPlugin, Plugin1>();
+            });
+
+            //ACT
+            var plugins = container.GetInstance<IPlugin[]>();
+
+            //ASSERT
+            Assert.IsType<IPlugin[]>(plugins);
+            Assert.Single(plugins);
+            Assert.IsType<Plugin1>(plugins[0]);
+        }
+
+        [Fact]
         public void GetInstance_AsList_SingleRegistration()
+        {
+            //ARRANGE
+            var container = new Container(builder =>
+            {
+                builder.Register<IPlugin, Plugin1>();
+            });
+
+            //ACT
+            var plugins = container.GetInstance<List<IPlugin>>();
+
+            //ASSERT
+            Assert.IsType<List<IPlugin>>(plugins);
+            Assert.Single(plugins);
+            Assert.IsType<Plugin1>(plugins[0]);
+        }
+
+        [Fact]
+        public void GetInstance_AsHashSet_SingleRegistration()
+        {
+            //ARRANGE
+            var container = new Container(builder =>
+            {
+                builder.Register<IPlugin, Plugin1>();
+            });
+
+            //ACT
+            var plugins = container.GetInstance<HashSet<IPlugin>>();
+
+            //ASSERT
+            Assert.IsType<HashSet<IPlugin>>(plugins);
+            Assert.Single(plugins);
+            Assert.IsType<Plugin1>(plugins.First());
+        }
+
+        [Fact]
+        public void GetInstance_AsReadOnlyList_SingleRegistration()
         {
             //ARRANGE
             var container = new Container(builder =>
