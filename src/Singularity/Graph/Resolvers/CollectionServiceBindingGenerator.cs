@@ -64,40 +64,36 @@ namespace Singularity.Graph.Resolvers
 
             Expression expression = Expression.New(ConstructorResolvers.Default.StaticSelectConstructor(typeof(InstanceFactoryList<TElement>)), ExpressionGenerator.ScopeParameter, Expression.Constant(instanceFactories));
 
-            Type[] immutableCollectionTypes = {
+            yield return new ServiceBinding(new []
+            {
                 typeof(IEnumerable<TElement>),
                 typeof(IReadOnlyCollection<TElement>),
                 typeof(IReadOnlyList<TElement>),
-            };
-
-            yield return new ServiceBinding(immutableCollectionTypes!, BindingMetadata.GeneratedInstance, expression, expression.GetReturnType(), ConstructorResolvers.Default, Lifetimes.Transient);
+            }, BindingMetadata.GeneratedInstance, expression, expression.GetReturnType(), ConstructorResolvers.Default, Lifetimes.Transient);
 
             //lists
-            Type[] listCollectionTypes = {
+            Expression<Func<Scoped, List<TElement>>> listExpression = scope => CreateList<TElement>(scope, instanceFactories);
+            yield return new ServiceBinding(new[]
+            {
                 typeof(List<TElement>),
                 typeof(ICollection<TElement>),
-            };
-
-            Expression<Func<Scoped, List<TElement>>> listExpression = scope => CreateList<TElement>(scope, instanceFactories);
-            yield return new ServiceBinding(listCollectionTypes!, BindingMetadata.GeneratedInstance, listExpression, expression.GetReturnType(), ConstructorResolvers.Default, Lifetimes.Transient);
+            }, BindingMetadata.GeneratedInstance, listExpression, expression.GetReturnType(), ConstructorResolvers.Default, Lifetimes.Transient);
 
             //sets
-            Type[] setCollectionTypes = {
+            Expression<Func<Scoped, HashSet<TElement>>> setExpression = scope => CreateSet<TElement>(scope, instanceFactories);
+            yield return new ServiceBinding(new []
+            {
                 typeof(HashSet<TElement>),
                 typeof(ISet<TElement>),
-            };
-
-            Expression<Func<Scoped, HashSet<TElement>>> setExpression = scope => CreateSet<TElement>(scope, instanceFactories);
-            yield return new ServiceBinding(setCollectionTypes!, BindingMetadata.GeneratedInstance, setExpression, expression.GetReturnType(), ConstructorResolvers.Default, Lifetimes.Transient);
+            }, BindingMetadata.GeneratedInstance, setExpression, expression.GetReturnType(), ConstructorResolvers.Default, Lifetimes.Transient);
 
             //arrays
-            Type[] arrayCollectionTypes = {
+            Expression<Func<Scoped, TElement[]>> arrayExpression = scope => CreateArray<TElement>(scope, instanceFactories);
+            yield return new ServiceBinding(new []
+            {
                 typeof(TElement[]),
                 typeof(IList<TElement>),
-            };
-
-            Expression<Func<Scoped, TElement[]>> arrayExpression = scope => CreateArray<TElement>(scope, instanceFactories);
-            yield return new ServiceBinding(arrayCollectionTypes!, BindingMetadata.GeneratedInstance, arrayExpression, expression.GetReturnType(), ConstructorResolvers.Default, Lifetimes.Transient);
+            }, BindingMetadata.GeneratedInstance, arrayExpression, expression.GetReturnType(), ConstructorResolvers.Default, Lifetimes.Transient);
         }
 
         private static List<TElement> CreateList<TElement>(Scoped scope, Func<Scoped, object>[] instanceFactories)
