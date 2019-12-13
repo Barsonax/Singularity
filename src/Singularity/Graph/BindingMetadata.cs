@@ -8,7 +8,7 @@ namespace Singularity.Graph
     /// </summary>
 	public readonly struct BindingMetadata
     {
-        internal static BindingMetadata GeneratedInstance = new BindingMetadata(-1);
+        public static BindingMetadata GeneratedInstance = new BindingMetadata(-1);
 
         /// <summary>
         /// The file path of the file in which the binding was registered.
@@ -30,7 +30,7 @@ namespace Singularity.Graph
         /// </summary>
         public bool Generated { get; }
 
-        internal BindingMetadata(string creatorFilePath, int creatorLineNumber, IModule? module)
+        public BindingMetadata(string creatorFilePath, int creatorLineNumber, IModule? module)
         {
             ModuleType = module?.GetType();
             CreatorFilePath = creatorFilePath;

@@ -7,12 +7,11 @@ using Singularity.Graph;
 
 namespace Singularity.Expressions
 {
-    internal sealed class ExpressionGenerator
+    public sealed class ExpressionGenerator
     {
         public static readonly ParameterExpression ScopeParameter = Expression.Parameter(typeof(Scoped));
 
-
-        public ReadOnlyExpressionContext GenerateBaseExpression(ServiceBinding serviceBinding, InstanceFactory[] children, Scoped containerScope, SingularitySettings settings)
+        internal ReadOnlyExpressionContext GenerateBaseExpression(ServiceBinding serviceBinding, InstanceFactory[] children, Scoped containerScope, SingularitySettings settings)
         {
             var context = new ExpressionContext(serviceBinding.Expression);
             if (serviceBinding.Expression is AbstractBindingExpression)
@@ -47,7 +46,7 @@ namespace Singularity.Expressions
                    serviceBinding.NeedsDispose != ServiceAutoDispose.Never && typeof(IDisposable).IsAssignableFrom(context.Expression.Type) && settings.AutoDisposeLifetimes.Contains(serviceBinding.Lifetime.GetType());
  }
 
-        public ReadOnlyExpressionContext ApplyDecorators(Type dependencyType, ServiceBinding serviceBinding, InstanceFactory[] children, Expression[] decorators, Scoped containerScope)
+        internal ReadOnlyExpressionContext ApplyDecorators(Type dependencyType, ServiceBinding serviceBinding, InstanceFactory[] children, Expression[] decorators, Scoped containerScope)
         {
             ExpressionContext context = (ExpressionContext)(serviceBinding.BaseExpression ?? throw new ArgumentNullException($"{nameof(serviceBinding)}.{nameof(serviceBinding.BaseExpression)}"));
             if (decorators.Length > 0)
