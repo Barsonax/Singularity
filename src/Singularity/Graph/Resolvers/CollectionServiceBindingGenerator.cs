@@ -64,47 +64,43 @@ namespace Singularity.Graph.Resolvers
 
             Expression expression = Expression.New(ConstructorResolvers.Default.StaticSelectConstructor(typeof(InstanceFactoryList<TElement>)), ExpressionGenerator.ScopeParameter, Expression.Constant(instanceFactories));
 
-            SinglyLinkedListNode<Type>? immutableCollectionTypes = new[]
-            {
+            Type[] immutableCollectionTypes = {
                 typeof(IEnumerable<TElement>),
                 typeof(IReadOnlyCollection<TElement>),
                 typeof(IReadOnlyList<TElement>),
-            }.ToSinglyLinkedList();
+            };
 
             yield return new ServiceBinding(immutableCollectionTypes!, BindingMetadata.GeneratedInstance, expression, expression.GetReturnType(), ConstructorResolvers.Default, Lifetimes.Transient);
 
             //lists
-            SinglyLinkedListNode<Type>? listCollectionTypes = new[]
-            {
+            Type[] listCollectionTypes = {
                 typeof(List<TElement>),
                 typeof(ICollection<TElement>),
-            }.ToSinglyLinkedList();
+            };
 
-            Expression<Func<Scoped, List<TElement>>> listExpression = (scope) => CreateList<TElement>(scope, instanceFactories);
+            Expression<Func<Scoped, List<TElement>>> listExpression = scope => CreateList<TElement>(scope, instanceFactories);
             yield return new ServiceBinding(listCollectionTypes!, BindingMetadata.GeneratedInstance, listExpression, expression.GetReturnType(), ConstructorResolvers.Default, Lifetimes.Transient);
 
             //sets
-            SinglyLinkedListNode<Type>? setCollectionTypes = new[]
-            {
+            Type[] setCollectionTypes = {
                 typeof(HashSet<TElement>),
                 typeof(ISet<TElement>),
-            }.ToSinglyLinkedList();
+            };
 
-            Expression<Func<Scoped, HashSet<TElement>>> setExpression = (scope) => CreateSet<TElement>(scope, instanceFactories);
+            Expression<Func<Scoped, HashSet<TElement>>> setExpression = scope => CreateSet<TElement>(scope, instanceFactories);
             yield return new ServiceBinding(setCollectionTypes!, BindingMetadata.GeneratedInstance, setExpression, expression.GetReturnType(), ConstructorResolvers.Default, Lifetimes.Transient);
 
             //arrays
-            SinglyLinkedListNode<Type>? arrayCollectionTypes = new[]
-            {
+            Type[] arrayCollectionTypes = {
                 typeof(TElement[]),
                 typeof(IList<TElement>),
-            }.ToSinglyLinkedList();
+            };
 
-            Expression<Func<Scoped, TElement[]>> arrayExpression = (scope) => CreateArray<TElement>(scope, instanceFactories);
+            Expression<Func<Scoped, TElement[]>> arrayExpression = scope => CreateArray<TElement>(scope, instanceFactories);
             yield return new ServiceBinding(arrayCollectionTypes!, BindingMetadata.GeneratedInstance, arrayExpression, expression.GetReturnType(), ConstructorResolvers.Default, Lifetimes.Transient);
         }
 
-        private List<TElement> CreateList<TElement>(Scoped scope, Func<Scoped, object>[] instanceFactories)
+        private static List<TElement> CreateList<TElement>(Scoped scope, Func<Scoped, object>[] instanceFactories)
         {
             var list = new List<TElement>(instanceFactories.Length);
 
@@ -116,7 +112,7 @@ namespace Singularity.Graph.Resolvers
             return list;
         }
 
-        private HashSet<TElement> CreateSet<TElement>(Scoped scope, Func<Scoped, object>[] instanceFactories)
+        private static HashSet<TElement> CreateSet<TElement>(Scoped scope, Func<Scoped, object>[] instanceFactories)
         {
             var list = new HashSet<TElement>();
 
@@ -128,7 +124,7 @@ namespace Singularity.Graph.Resolvers
             return list;
         }
 
-        private TElement[] CreateArray<TElement>(Scoped scope, Func<Scoped, object>[] instanceFactories)
+        private static TElement[] CreateArray<TElement>(Scoped scope, Func<Scoped, object>[] instanceFactories)
         {
             var list = new TElement[instanceFactories.Length];
 
