@@ -33,7 +33,6 @@ namespace Singularity
 				case ConstantExpression _:
                 case DefaultExpression _:
                 case UnaryExpression _:
-                case AbstractBindingExpression _:
                     return new ParameterExpression[0];
                 case LambdaExpression lambdaExpression:
 					return lambdaExpression.Parameters.ToArray();

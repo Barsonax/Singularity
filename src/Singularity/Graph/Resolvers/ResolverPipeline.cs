@@ -39,14 +39,25 @@ namespace Singularity.Graph.Resolvers
             {
                 return TryResolve(type)!;
             }
-            ServiceBinding serviceBinding = GetDependency(type).Default;
+
+            ServiceBinding serviceBinding = GetBinding(type);
             return ResolveDependency(type, serviceBinding);
         }
 
         public InstanceFactory? TryResolve(Type type)
         {
-            ServiceBinding? serviceBinding = TryGetDependency(type)?.Default;
+            ServiceBinding? serviceBinding = TryGetBinding(type);
             return serviceBinding == null ? null : TryResolveDependency(type, serviceBinding);
+        }
+
+        public ServiceBinding? TryGetBinding(Type type)
+        {
+            return TryGetDependency(type)?.Default;
+        }
+
+        public ServiceBinding GetBinding(Type type)
+        {
+            return GetDependency(type).Default;
         }
 
         public IEnumerable<InstanceFactory> TryResolveAll(Type type)
@@ -113,6 +124,10 @@ namespace Singularity.Graph.Resolvers
             {
                 Settings.Logger.Log($"{nameof(TryResolveDependency)} for {type}", circularDependencyDetector.Count);
                 circularDependencyDetector.Enter(type);
+                if (type.IsGenericType && type.ContainsGenericParameters)
+                {
+                    throw new OpenGenericTypeResolveException($"Cannot create a instance for type {type} since its registered as a abstract binding and not meant to be used directly.");
+                }
                 GenerateBaseExpression(dependency, circularDependencyDetector);
                 InstanceFactory factory = GenerateInstanceFactory(type, dependency, circularDependencyDetector);
                 return factory;
@@ -164,13 +179,6 @@ namespace Singularity.Graph.Resolvers
             {
                 if (!serviceBinding.TryGetInstanceFactory(type, out InstanceFactory factory))
                 {
-                    if (serviceBinding.Expression is AbstractBindingExpression)
-                    {
-                        factory = new InstanceFactory(type, (ExpressionContext)serviceBinding.BaseExpression!, scoped => throw new AbstractTypeResolveException($"Cannot create a instance for type {type} since its registered as a abstract binding and not meant to be used directly."));
-                        serviceBinding.Factories.Add(factory);
-                        return factory;
-                    }
-
                     Expression[] decorators = FindDecorators(type);
                     ParameterExpression[] parameters = decorators.GetParameterExpressions().Where(x => x.Type != ExpressionGenerator.ScopeParameter.Type && x.Type != type).ToArray();
                     var childFactories = new InstanceFactory[parameters.Length];
