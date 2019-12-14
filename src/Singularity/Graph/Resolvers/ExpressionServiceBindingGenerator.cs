@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Linq.Expressions;
 using System.Reflection;
 using Singularity.Expressions;
@@ -11,7 +12,7 @@ namespace Singularity.Graph.Resolvers
     /// </summary>
     public sealed class ExpressionServiceBindingGenerator : IServiceBindingGenerator
     {
-        private static readonly MethodInfo GenericCreateLambdaMethod = typeof(ExpressionServiceBindingGenerator).GetMethod(nameof(CreateLambda));
+        private static readonly MethodInfo GenericResolveMethod = typeof(ExpressionServiceBindingGenerator).GetRuntimeMethods().Single(x => x.Name == nameof(Resolve) && x.ContainsGenericParameters);
 
         /// <inheritdoc />
         public IEnumerable<ServiceBinding> Resolve(IResolverPipeline graph, Type type)
@@ -22,24 +23,29 @@ namespace Singularity.Graph.Resolvers
                 if (funcType.GetGenericTypeDefinition() == typeof(Func<>) && funcType.GenericTypeArguments.Length == 1)
                 {
                     Type dependencyType = funcType.GenericTypeArguments[0];
-                    MethodInfo method = GenericCreateLambdaMethod.MakeGenericMethod(dependencyType);
-                    foreach (InstanceFactory instanceFactory in graph.TryResolveAll(dependencyType))
-                    {
-                        var newBinding = new ServiceBinding(type, BindingMetadata.GeneratedInstance, instanceFactory.Context.Expression, instanceFactory.Context.Expression.Type, graph.Settings.ConstructorResolver, Lifetimes.Transient);
+                    MethodInfo resolveMethod = GenericResolveMethod.MakeGenericMethod(dependencyType);
 
-                        var expression = (Expression)method.Invoke(null, new object[] { instanceFactory.Context });
-                        var factory = new InstanceFactory(type, new ExpressionContext(expression), scoped => expression);
-                        newBinding.Factories.Add(factory);
-                        yield return newBinding;
+                    var bindings = (IEnumerable<ServiceBinding>)resolveMethod.Invoke(this, new object[] { graph, type });
+                    foreach (var binding in bindings)
+                    {
+                        yield return binding;
                     }
                 }
             }
         }
 
-        public static LambdaExpression CreateLambda<T>(ReadOnlyExpressionContext context)
+        private IEnumerable<ServiceBinding> Resolve<TElement>(IResolverPipeline graph, Type type)
         {
-            Expression expression = ExpressionCompiler.OptimizeExpression(context);
-            return Expression.Lambda<Func<T>>(expression);
+            foreach (InstanceFactory instanceFactory in graph.TryResolveAll(typeof(TElement)))
+            {
+                var newBinding = new ServiceBinding(type, BindingMetadata.GeneratedInstance, instanceFactory.Context.Expression, instanceFactory.Context.Expression.Type, ConstructorResolvers.Default, Lifetimes.Transient);
+
+                var expression = Expression.Lambda<Func<TElement>>(ExpressionCompiler.OptimizeExpression(instanceFactory.Context));
+                Func<Scoped, Expression<Func<TElement>>> del = scoped => expression; // we need to put this in a variable of this type or cast it else the static return type of the delegate will turn into a object..
+                var factory = new InstanceFactory(type, new ExpressionContext(expression), del);
+                newBinding.Factories.Add(factory);
+                yield return newBinding;
+            }
         }
     }
 }
