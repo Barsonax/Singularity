@@ -13,7 +13,13 @@
 - Collection support:
   1. `IEnumerable<T>`
   1. `IReadOnlyCollection<T>`
-  1. `IReadOnlyList`
+  1. `IReadOnlyList<T>`
+  1. `T[]`
+  1. `List<T>`
+  1. `ICollection<T>`
+  1. `IList<T>`
+  1. `HashSet<T>`
+  1. `ISet<T>`
 - Supports open generics.
 - Supports resolving unregistered concrete types.
 - Supports decorators.
