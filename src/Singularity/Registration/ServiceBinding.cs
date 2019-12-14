@@ -107,11 +107,24 @@ namespace Singularity
         }
 
         /// <summary>
-        /// Constructor that fills in some default values to make it more easier to use in <see cref="IServiceBindingGenerator"/>'s
+        /// Creates a new service binding using the provided data.
         /// </summary>
+        /// <exception cref="ArgumentNullException"></exception>
+        /// <exception cref="InvalidEnumValueException{T}"></exception>
+        public ServiceBinding(Type[] dependencyTypes, in BindingMetadata bindingMetadata, Expression? expression, Type concreteType, IConstructorResolver constructorResolver,
+            ILifetime lifetime, Action<object>? finalizer = null,
+            ServiceAutoDispose needsDispose = ServiceAutoDispose.Default) : this(dependencyTypes.ToSinglyLinkedList() ?? throw new ArgumentException("there should be atleast 1 dependency type", nameof(dependencyTypes)), bindingMetadata, expression, concreteType, constructorResolver, lifetime, finalizer, needsDispose)
+        {
+        }
+
+        /// <summary>
+        /// Creates a new service binding using the provided data.
+        /// </summary>
+        /// <exception cref="ArgumentNullException"></exception>
+        /// <exception cref="InvalidEnumValueException{T}"></exception>
         public ServiceBinding(Type dependencyType, in BindingMetadata bindingMetadata, Expression? expression, Type concreteType, IConstructorResolver constructorResolver,
-            ILifetime? lifetime = null, Action<object>? finalizer = null,
-            ServiceAutoDispose needsDispose = ServiceAutoDispose.Default) : this(new SinglyLinkedListNode<Type>(dependencyType), bindingMetadata, expression, concreteType, constructorResolver, lifetime ?? Lifetimes.Transient, finalizer, needsDispose)
+            ILifetime lifetime, Action<object>? finalizer = null,
+            ServiceAutoDispose needsDispose = ServiceAutoDispose.Default) : this(new SinglyLinkedListNode<Type>(dependencyType), bindingMetadata, expression, concreteType, constructorResolver, lifetime, finalizer, needsDispose)
         {
         }
     }

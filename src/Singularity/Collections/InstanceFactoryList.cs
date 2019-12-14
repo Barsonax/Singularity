@@ -6,20 +6,20 @@ namespace Singularity.Collections
 {
     internal sealed class InstanceFactoryList<T> : IReadOnlyList<T>
     {
-        private readonly Func<Scoped, object>[] _instanceFactories;
+        private readonly Func<Scoped, T>[] _instanceFactories;
         private readonly Scoped _scope;
 
-        public InstanceFactoryList(Scoped scope, Func<Scoped, object>[] instanceFactories)
+        public InstanceFactoryList(Scoped scope, Func<Scoped, T>[] instanceFactories)
         {
-            _instanceFactories = instanceFactories ?? throw new ArgumentNullException(nameof(instanceFactories));
-            _scope = scope ?? throw new ArgumentNullException(nameof(scope));
+            _instanceFactories = instanceFactories;
+            _scope = scope;
         }
 
         public IEnumerator<T> GetEnumerator()
         {
-            foreach (Func<Scoped, object> instanceFactory in _instanceFactories)
+            foreach (Func<Scoped, T> instanceFactory in _instanceFactories)
             {
-                yield return (T)instanceFactory(_scope);
+                yield return instanceFactory(_scope);
             }
         }
 
@@ -30,6 +30,6 @@ namespace Singularity.Collections
 
         public int Count => _instanceFactories.Length;
 
-        public T this[int index] => (T)_instanceFactories[index](_scope);
+        public T this[int index] => _instanceFactories[index](_scope);
     }
 }

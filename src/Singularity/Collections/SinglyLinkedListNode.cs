@@ -107,12 +107,23 @@ namespace Singularity.Collections
         }
     }
 
-    internal static class SinglyLinkedListNodeExtensions
+    public static class SinglyLinkedListNodeExtensions
     {
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static SinglyLinkedListNode<T> Add<T>(this SinglyLinkedListNode<T>? previous, in T value)
         {
             return new SinglyLinkedListNode<T>(previous, in value);
+        }
+
+        public static SinglyLinkedListNode<T>? ToSinglyLinkedList<T>(this IEnumerable<T> collection)
+        {
+            SinglyLinkedListNode<T>? previous = null;
+            foreach (var element in collection)
+            {
+                previous = new SinglyLinkedListNode<T>(previous, element);
+            }
+
+            return previous;
         }
     }
 }
