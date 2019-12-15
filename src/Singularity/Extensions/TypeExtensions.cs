@@ -1,4 +1,6 @@
 ﻿using System;
+using System.Collections.Generic;
+using System.Linq;
 using System.Linq.Expressions;
 using System.Reflection;
 
@@ -30,6 +32,15 @@ namespace Singularity
                 parameterExpressions[i] = Expression.Parameter(parameters[i].ParameterType);
             }
             return Expression.New(constructor, parameterExpressions);
+        }
+
+        public static IEnumerable<ConstructorInfo> GetConstructorCandidates(this Type type)
+        {
+            return type.GetTypeInfo().DeclaredConstructors
+                .Where(x => x.IsPublic)
+                .Where(x => x.GetParameters().All(p => !p.ParameterType.IsEnum &&
+                                                       !p.ParameterType.IsPrimitive &&
+                                                       p.ParameterType != typeof(string)));
         }
     }
 }

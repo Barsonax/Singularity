@@ -1,6 +1,6 @@
 ﻿using System.Linq;
 using System.Linq.Expressions;
-using Singularity.Graph;
+using Singularity.Resolvers;
 
 namespace Singularity.Expressions
 {

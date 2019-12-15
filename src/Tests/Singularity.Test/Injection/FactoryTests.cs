@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using Singularity.Collections;
 using Singularity.TestClasses.TestClasses;
 using Xunit;
 
@@ -41,7 +40,6 @@ namespace Singularity.Test.Injection
             var factories = container.GetInstance<IReadOnlyList<Func<IPlugin>>>();
 
             //ASSERT
-            Assert.IsType<InstanceFactoryList<Func<IPlugin>>>(factories);
             Assert.Equal(3, factories.Count);
             Assert.IsType<Plugin1>(factories[0].Invoke());
             Assert.IsType<Plugin2>(factories[1].Invoke());

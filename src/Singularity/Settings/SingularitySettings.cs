@@ -1,9 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel;
-using Singularity.Expressions;
-using Singularity.Graph.Resolvers;
+using Singularity.Generators;
+using Singularity.Lifetime;
 using Singularity.Logging;
+using Singularity.Resolvers;
 
 namespace Singularity
 {
@@ -37,7 +38,7 @@ namespace Singularity
             new LazyServiceBindingGenerator(),
             new FactoryServiceBindingGenerator(),
             new ConcreteServiceBindingGenerator(),
-            new OpenGenericResolver()
+            new OpenGenericBindingGenerator()
         };
 
         /// <summary>

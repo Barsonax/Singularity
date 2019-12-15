@@ -1,4 +1,4 @@
-﻿using Singularity.Expressions;
+﻿using Singularity.Resolvers;
 
 namespace Singularity
 {

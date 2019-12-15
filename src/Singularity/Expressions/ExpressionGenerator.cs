@@ -3,7 +3,8 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Linq.Expressions;
 using System.Reflection;
-using Singularity.Graph;
+using Singularity.Bindings;
+using Singularity.Resolvers;
 
 namespace Singularity.Expressions
 {

@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using Microsoft.Extensions.DependencyInjection;
+using Singularity.Bindings;
 using Singularity.Collections;
 using Singularity.TestClasses.TestClasses;
 using Xunit;

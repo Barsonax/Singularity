@@ -1,6 +1,6 @@
 ﻿using System;
 using System.Linq.Expressions;
-using Singularity.Expressions;
+using Singularity.Resolvers;
 using Singularity.TestClasses.Benchmark;
 using Singularity.TestClasses.TestClasses;
 using Xunit;

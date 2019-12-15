@@ -1,13 +1,13 @@
 ﻿using System;
 using System.Collections.Generic;
-using Singularity.Graph.Resolvers;
+using Singularity.Resolvers;
 
 namespace Singularity
 {
     /// <summary>
     /// Extensions for <see cref="ITypeMatcher"/>
     /// </summary>
-    public static class MatchExtensions
+    internal static class MatchExtensions
     {
         /// <summary>
         /// Returns true if any of the matches match with the <paramref name="type"/>

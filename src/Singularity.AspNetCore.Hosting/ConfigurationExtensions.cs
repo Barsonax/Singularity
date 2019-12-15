@@ -1,11 +1,14 @@
 ﻿using System;
+using System.ComponentModel;
 using Microsoft.Extensions.Hosting;
+using Singularity.Microsoft.DependencyInjection;
 
 namespace Singularity
 {
     /// <summary>
     /// Configuration extensions for <see cref="Microsoft.Extensions.Hosting"/>
     /// </summary>
+    [EditorBrowsable(EditorBrowsableState.Never)]
     public static class ConfigurationExtensions
     {
         /// <summary>

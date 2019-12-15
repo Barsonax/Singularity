@@ -1,7 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-using Singularity.Graph.Resolvers;
+﻿using System.Collections.Generic;
+using Singularity.Resolvers;
 using Xunit;
 
 namespace Singularity.Test.Utils

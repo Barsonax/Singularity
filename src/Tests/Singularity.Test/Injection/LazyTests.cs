@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using Singularity.Collections;
 using Singularity.TestClasses.TestClasses;
 using Xunit;
 
@@ -41,7 +40,6 @@ namespace Singularity.Test.Injection
             var lazyInstances = container.GetInstance<IReadOnlyList<Lazy<IPlugin>>>();
 
             //ASSERT
-            Assert.IsType<InstanceFactoryList<Lazy<IPlugin>>>(lazyInstances);
             Assert.Equal(3, lazyInstances.Count);
             Assert.IsType<Plugin1>(lazyInstances[0].Value);
             Assert.IsType<Plugin2>(lazyInstances[1].Value);

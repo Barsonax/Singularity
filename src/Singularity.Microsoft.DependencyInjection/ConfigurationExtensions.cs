@@ -1,12 +1,16 @@
 ﻿using System;
+using System.ComponentModel;
 using System.Linq.Expressions;
 using Microsoft.Extensions.DependencyInjection;
+using Singularity.Lifetime;
+using Singularity.Microsoft.DependencyInjection;
 
 namespace Singularity
 {
     /// <summary>
     /// Configuration extensions for <see cref="Microsoft.Extensions.DependencyInjection"/>.
     /// </summary>
+    [EditorBrowsable(EditorBrowsableState.Never)]
     public static class ConfigurationExtensions
     {
         /// <summary>

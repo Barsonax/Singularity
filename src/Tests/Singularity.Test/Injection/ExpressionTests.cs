@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq.Expressions;
-using Singularity.Collections;
 using Singularity.TestClasses.TestClasses;
 using Xunit;
 
@@ -61,7 +60,6 @@ namespace Singularity.Test.Injection
             var expressions = container.GetInstance<IReadOnlyList<Expression<Func<IPlugin>>>>();
 
             //ASSERT
-            Assert.IsType<InstanceFactoryList<Expression<Func<IPlugin>>>>(expressions);
             Assert.Equal(3, expressions.Count);
         }
     }

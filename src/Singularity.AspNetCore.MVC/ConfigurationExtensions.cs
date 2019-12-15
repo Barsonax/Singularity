@@ -1,11 +1,14 @@
-﻿using Microsoft.AspNetCore.Mvc.Controllers;
+﻿using System.ComponentModel;
+using Microsoft.AspNetCore.Mvc.Controllers;
 using Microsoft.AspNetCore.Mvc.ViewComponents;
+using Singularity.AspNetCore.MVC;
 
 namespace Singularity
 {
     /// <summary>
     /// Configuration extensions for <see cref="Microsoft.AspNetCore.Mvc"/>
     /// </summary>
+    [EditorBrowsable(EditorBrowsableState.Never)]
     public static class ConfigurationExtensions
     {
         /// <summary>

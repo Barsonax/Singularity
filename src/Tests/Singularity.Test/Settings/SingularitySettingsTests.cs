@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
-using Singularity.Graph.Resolvers;
+using Singularity.Generators;
+using Singularity.Resolvers;
 using Xunit;
 
 namespace Singularity.Test.Settings
@@ -35,7 +36,7 @@ namespace Singularity.Test.Settings
             var settings = SingularitySettings.Default;
 
             var insertElement = new ConcreteServiceBindingGenerator();
-            settings.Before<OpenGenericResolver>(insertElement);
+            settings.Before<OpenGenericBindingGenerator>(insertElement);
 
             Assert.Equal(insertElement, settings.ServiceBindingGenerators[6]);
         }
@@ -46,7 +47,7 @@ namespace Singularity.Test.Settings
             var settings = SingularitySettings.Default;
 
             var insertElement = new ConcreteServiceBindingGenerator();
-            settings.After<OpenGenericResolver>(insertElement);
+            settings.After<OpenGenericBindingGenerator>(insertElement);
 
             Assert.Equal(insertElement, settings.ServiceBindingGenerators[7]);
         }

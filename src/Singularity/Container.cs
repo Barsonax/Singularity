@@ -4,9 +4,10 @@ using System.Linq;
 using System.Linq.Expressions;
 using System.Reflection;
 using System.Runtime.CompilerServices;
+using Singularity.Bindings;
 using Singularity.Collections;
 using Singularity.Expressions;
-using Singularity.Graph.Resolvers;
+using Singularity.Resolvers;
 
 namespace Singularity
 {
@@ -23,7 +24,7 @@ namespace Singularity
         internal SingularitySettings Settings { get; }
 
         internal readonly Scoped ContainerScope;
-        internal readonly ResolverPipeline DependencyGraph;
+        internal readonly ContainerContext Context;
         private readonly ThreadSafeDictionary<Type, Action<Scoped, object>?> _injectionCache = new ThreadSafeDictionary<Type, Action<Scoped, object>?>();
         private readonly ThreadSafeDictionary<Type, Func<Scoped, object?>?> _getInstanceCache = new ThreadSafeDictionary<Type, Func<Scoped, object?>?>();
         private readonly Container? _parentContainer;
@@ -40,6 +41,7 @@ namespace Singularity
         /// <param name="configurator"></param>
         public Container(Action<ContainerBuilder>? configurator = null) : this(new ContainerBuilder(configurator))
         {
+
         }
 
         /// <summary>
@@ -51,7 +53,7 @@ namespace Singularity
             ContainerScope = new Scoped(this);
             Registrations = builder.Registrations;
             Settings = builder.Settings;
-            DependencyGraph = new ResolverPipeline(builder.Registrations, ContainerScope, Settings, null);
+            Context = new ContainerContext(builder.Registrations, ContainerScope, Settings, null);
         }
 
         /// <summary>
@@ -75,7 +77,7 @@ namespace Singularity
             _parentContainer = parentContainer;
             ContainerScope = new Scoped(this);
             Registrations = builder.Registrations;
-            DependencyGraph = new ResolverPipeline(builder.Registrations, ContainerScope, Settings, parentContainer.DependencyGraph);
+            Context = new ContainerContext(builder.Registrations, ContainerScope, Settings, parentContainer.Context);
         }
 
         /// <summary>
@@ -117,7 +119,7 @@ namespace Singularity
             Func<Scoped, object?>? func = _getInstanceCache.GetOrDefault(type);
             if (func == null)
             {
-                func = DependencyGraph.Resolve(type)?.Factory ?? (s => null!);
+                func = Context.Resolve(type)?.Factory ?? (s => null!);
                 _getInstanceCache.Add(type, func);
             }
             return func(scope)!;
@@ -140,7 +142,7 @@ namespace Singularity
             Func<Scoped, object?>? func = _getInstanceCache.GetOrDefault(type);
             if (func == null)
             {
-                func = DependencyGraph.TryResolve(type)?.Factory ?? (s => null!);
+                func = Context.TryResolve(type)?.Factory ?? (s => null!);
                 _getInstanceCache.Add(type, func);
             }
             return func(scope);
@@ -195,7 +197,7 @@ namespace Singularity
                     for (var i = 0; i < parameterTypes.Length; i++)
                     {
                         Type parameterType = parameterTypes[i].ParameterType;
-                        parameterExpressions[i] = DependencyGraph.Resolve(parameterType).Context.Expression;
+                        parameterExpressions[i] = Context.Resolve(parameterType).Context.Expression;
                     }
                     body.Add(Expression.Call(instanceCasted, methodInfo, parameterExpressions));
                 }
@@ -203,7 +205,7 @@ namespace Singularity
                 foreach (MemberInfo memberInfo in lateInjectorBindings.Array.SelectMany(x => x.InjectionProperties.Array))
                 {
                     MemberExpression memberAccessExpression = Expression.MakeMemberAccess(instanceCasted, memberInfo);
-                    body.Add(Expression.Assign(memberAccessExpression, DependencyGraph.Resolve(memberAccessExpression.Type).Context.Expression));
+                    body.Add(Expression.Assign(memberAccessExpression, Context.Resolve(memberAccessExpression.Type).Context.Expression));
                 }
 
                 if (body.Count == 0) return (scope, instance) => { };

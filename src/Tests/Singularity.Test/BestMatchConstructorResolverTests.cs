@@ -1,5 +1,6 @@
 ﻿using System;
 using Singularity.Exceptions;
+using Singularity.Resolvers;
 using Singularity.TestClasses.TestClasses;
 using Xunit;
 
@@ -53,7 +54,7 @@ namespace Singularity.Test
             });
 
             //ACT
-            var dynamicSelectedConstructor = resolver.DynamicSelectConstructor(type, container.DependencyGraph);
+            var dynamicSelectedConstructor = resolver.DynamicSelectConstructor(type, container.Context);
 
             //ASSERT
             Assert.NotNull(dynamicSelectedConstructor);
@@ -72,7 +73,7 @@ namespace Singularity.Test
             });
 
             //ACT
-            var dynamicSelectedConstructor = resolver.DynamicSelectConstructor(type, container.DependencyGraph);
+            var dynamicSelectedConstructor = resolver.DynamicSelectConstructor(type, container.Context);
 
             //ASSERT
             Assert.NotNull(dynamicSelectedConstructor);

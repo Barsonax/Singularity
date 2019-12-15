@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Linq.Expressions;
+using Singularity.Resolvers;
 using Xunit;
 
 namespace Singularity.Test
