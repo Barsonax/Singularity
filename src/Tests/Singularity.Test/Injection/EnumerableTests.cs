@@ -27,6 +27,20 @@ namespace Singularity.Test.Injection
         }
 
         [Fact]
+        public void GetInstance_AsEnumerable_NoPublicConstructor()
+        {
+            //ARRANGE
+            var container = new Container();
+            //ACT
+            var plugins = container.GetInstance<IEnumerable<NoPublicConstructorClass>>();
+
+            //ASSERT
+            Assert.IsType<InstanceFactoryList<NoPublicConstructorClass>>(plugins);
+            var enumeratedPlugins = plugins.ToArray();
+            Assert.Empty(enumeratedPlugins);
+        }
+
+        [Fact]
         public void GetInstance_AsEnumerable_NoRegistration()
         {
             //ARRANGE

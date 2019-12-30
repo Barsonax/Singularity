@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 
 namespace Singularity.Graph.Resolvers
 {
@@ -11,9 +12,12 @@ namespace Singularity.Graph.Resolvers
         /// <inheritdoc />
         public IEnumerable<ServiceBinding> Resolve(IResolverPipeline graph, Type type)
         {
-            if (!type.IsInterface)
+            if (!type.IsInterface && !type.IsAbstract && !type.IsPrimitive && type != typeof(string))
             {
-                yield return new ServiceBinding(type, BindingMetadata.GeneratedInstance, graph.Settings.ConstructorResolver.ResolveConstructorExpression(type), type, graph.Settings.ConstructorResolver, Lifetimes.Transient);
+                if (type.GetConstructorCandidates().Any())
+                {
+                    yield return new ServiceBinding(type, BindingMetadata.GeneratedInstance, graph.Settings.ConstructorResolver.ResolveConstructorExpression(type), type, graph.Settings.ConstructorResolver, Lifetimes.Transient);
+                }
             }
         }
     }
