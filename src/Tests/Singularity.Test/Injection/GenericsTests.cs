@@ -34,10 +34,12 @@ namespace Singularity.Test.Injection
 
             //ACT
             //ASSERT
-            Assert.Throws<AbstractTypeResolveException>(() =>
+            var ex = Assert.Throws<DependencyResolveException>(() =>
             {
                 object serializer = container.GetInstance(typeof(ISerializer<>));
             });
+
+            var inner = Assert.IsType<OpenGenericTypeResolveException>(ex.InnerException);
         }
 
         [Fact]

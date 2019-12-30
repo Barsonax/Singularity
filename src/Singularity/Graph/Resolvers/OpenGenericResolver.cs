@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq.Expressions;
-using Singularity.Expressions;
 
 namespace Singularity.Graph.Resolvers
 {
@@ -16,12 +15,10 @@ namespace Singularity.Graph.Resolvers
             if (type.IsGenericType && !type.ContainsGenericParameters)
             {
                 Type genericTypeDefinition = type.GetGenericTypeDefinition();
-                InstanceFactory? openGenericFactory = graph.TryResolve(genericTypeDefinition);
-                if (openGenericFactory != null)
+                ServiceBinding? openGenericBinding = graph.TryGetBinding(genericTypeDefinition);
+                if (openGenericBinding != null)
                 {
-                    var openGenericBinding = (ServiceBinding) ((ConstantExpression) openGenericFactory.Context.Expression).Value;
-
-                    Type openGenericType = ((AbstractBindingExpression) openGenericBinding.Expression!).Type;
+                    Type openGenericType = openGenericBinding.ConcreteType;
                     Type closedGenericType = openGenericType.MakeGenericType(type.GenericTypeArguments);
                     Expression? newExpression = openGenericBinding.ConstructorResolver.ResolveConstructorExpression(closedGenericType);
 

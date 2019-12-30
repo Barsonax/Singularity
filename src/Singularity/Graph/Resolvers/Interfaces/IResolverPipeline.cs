@@ -39,5 +39,8 @@ namespace Singularity.Graph.Resolvers
         /// <param name="type"></param>
         /// <returns></returns>
         IEnumerable<InstanceFactory> TryResolveAll(Type type);
+
+        ServiceBinding GetBinding(Type type);
+        ServiceBinding? TryGetBinding(Type type);
     }
 }

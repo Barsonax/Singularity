@@ -47,7 +47,7 @@ namespace Singularity.Test.Exceptions
             Add(new SingularityException(message, inner));
             Add(new SingularityAggregateException(message, new[] { inner }));
             Add(new TypeNotAssignableException(message, inner));
-            Add(new AbstractTypeResolveException(message, inner));
+            Add(new OpenGenericTypeResolveException(message, inner));
         }
     }
 }

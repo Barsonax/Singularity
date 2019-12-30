@@ -40,7 +40,7 @@ namespace Singularity
             {
                 if (_instanceType.ContainsGenericParameters)
                 {
-                    _expression = new AbstractBindingExpression(_instanceType);
+                    return new ServiceBinding(_dependencyTypes, _bindingMetadata, null, _instanceType, constructorSelector, _lifetime, _finalizer, _disposeBehavior);
                 }
                 else
                 {
