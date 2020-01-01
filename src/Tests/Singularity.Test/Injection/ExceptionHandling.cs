@@ -9,7 +9,27 @@ namespace Singularity.Test.Injection
     public class ExceptionHandling
     {
         [Fact]
-        public void GetInstance_GetDependencyByConcreteType_WithMixedConcreteDependency_2Deep_ReturnsCorrectDependency()
+        public void GetInstance_GetDependencyByConcreteType_Abstract_Throws()
+        {
+            var container = new Container();
+            var e = Assert.Throws<DependencyNotFoundException>(() =>
+            {
+                var value = container.GetInstance<AbstractClass>();
+            });
+        }
+
+        [Fact]
+        public void GetInstance_GetDependencyByConcreteType_Primitive_Throws()
+        {
+            var container = new Container();
+            var e = Assert.Throws<DependencyNotFoundException>(() =>
+            {
+                var value = container.GetInstance(typeof(int));
+            });
+        }
+
+        [Fact]
+        public void GetInstance_GetDependencyByConcreteType_WithUnregisteredDependency_Throws()
         {
             var container = new Container();
             var e = Assert.Throws<DependencyResolveException>(() =>
