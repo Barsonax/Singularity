@@ -19,6 +19,16 @@ namespace Singularity.Test.Injection
         }
 
         [Fact]
+        public void GetInstance_GetDependencyByConcreteType_String_Throws()
+        {
+            var container = new Container();
+            var e = Assert.Throws<DependencyNotFoundException>(() =>
+            {
+                var value = container.GetInstance<string>();
+            });
+        }
+
+        [Fact]
         public void GetInstance_GetDependencyByConcreteType_Primitive_Throws()
         {
             var container = new Container();
