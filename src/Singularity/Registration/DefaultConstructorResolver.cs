@@ -2,9 +2,10 @@
 using System.Linq;
 using System.Linq.Expressions;
 using System.Reflection;
+
 using Singularity.Exceptions;
 using Singularity.Expressions;
-using Singularity.Graph.Resolvers;
+using Singularity.Resolvers;
 
 namespace Singularity
 {
@@ -33,7 +34,7 @@ namespace Singularity
             return constructors.FirstOrDefault();
         }
 
-        public ConstructorInfo DynamicSelectConstructor(Type type, IResolverPipeline resolverPipeline)
+        public ConstructorInfo DynamicSelectConstructor(Type type, IInstanceFactoryResolver instanceFactoryResolver)
         {
             throw new NotImplementedException();
         }

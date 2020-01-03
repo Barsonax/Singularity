@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Linq.Expressions;
+
 using Singularity.Expressions;
-using Singularity.Graph;
 
 namespace Singularity
 {

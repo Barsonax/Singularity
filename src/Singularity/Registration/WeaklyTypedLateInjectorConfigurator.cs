@@ -1,8 +1,8 @@
 ﻿using System;
 using System.Linq;
 using System.Reflection;
+
 using Singularity.Collections;
-using Singularity.Graph;
 
 namespace Singularity
 {

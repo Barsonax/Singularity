@@ -2,8 +2,9 @@
 using System.Collections.Concurrent;
 using System.Linq.Expressions;
 using System.Reflection;
+
 using Singularity.Expressions;
-using Singularity.Graph.Resolvers;
+using Singularity.Resolvers;
 
 namespace Singularity
 {
@@ -18,9 +19,9 @@ namespace Singularity
             _constructorResolver = constructorResolver;
         }
 
-        public ConstructorInfo DynamicSelectConstructor(Type type, IResolverPipeline resolverPipeline)
+        public ConstructorInfo DynamicSelectConstructor(Type type, IInstanceFactoryResolver instanceFactoryResolver)
         {
-            return _constructorResolver.DynamicSelectConstructor(type, resolverPipeline);
+            return _constructorResolver.DynamicSelectConstructor(type, instanceFactoryResolver);
         }
 
         public ConstructorInfo? StaticSelectConstructor(Type type)

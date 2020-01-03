@@ -3,9 +3,10 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Linq.Expressions;
 using System.Reflection;
+
 using Singularity.Expressions;
 
-namespace Singularity.Graph.Resolvers
+namespace Singularity.Resolvers.Generators
 {
     /// <summary>
     /// Creates bindings so that the expression itself of a binding can be resolved
@@ -15,7 +16,7 @@ namespace Singularity.Graph.Resolvers
         private static readonly MethodInfo GenericResolveMethod = typeof(ExpressionServiceBindingGenerator).GetRuntimeMethods().Single(x => x.Name == nameof(Resolve) && x.ContainsGenericParameters);
 
         /// <inheritdoc />
-        public IEnumerable<ServiceBinding> Resolve(IResolverPipeline graph, Type type)
+        public IEnumerable<ServiceBinding> Resolve(IInstanceFactoryResolver resolver, Type type)
         {
             if (type.IsGenericType && type.GetGenericTypeDefinition() == typeof(Expression<>) && type.GenericTypeArguments.Length == 1)
             {
@@ -25,7 +26,7 @@ namespace Singularity.Graph.Resolvers
                     Type dependencyType = funcType.GenericTypeArguments[0];
                     MethodInfo resolveMethod = GenericResolveMethod.MakeGenericMethod(dependencyType);
 
-                    var bindings = (IEnumerable<ServiceBinding>)resolveMethod.Invoke(this, new object[] { graph, type });
+                    var bindings = (IEnumerable<ServiceBinding>)resolveMethod.Invoke(this, new object[] { resolver, type });
                     foreach (var binding in bindings)
                     {
                         yield return binding;
@@ -34,9 +35,9 @@ namespace Singularity.Graph.Resolvers
             }
         }
 
-        private IEnumerable<ServiceBinding> Resolve<TElement>(IResolverPipeline graph, Type type)
+        private IEnumerable<ServiceBinding> Resolve<TElement>(IInstanceFactoryResolver resolver, Type type)
         {
-            foreach (InstanceFactory instanceFactory in graph.TryResolveAll(typeof(TElement)))
+            foreach (InstanceFactory instanceFactory in resolver.TryResolveAll(typeof(TElement)))
             {
                 var newBinding = new ServiceBinding(type, BindingMetadata.GeneratedInstance, instanceFactory.Context.Expression, instanceFactory.Context.Expression.Type, ConstructorResolvers.Default, Lifetimes.Transient);
 

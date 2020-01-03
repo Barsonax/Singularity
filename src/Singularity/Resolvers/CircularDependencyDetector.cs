@@ -1,9 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+
 using Singularity.Exceptions;
 
-namespace Singularity.Graph
+namespace Singularity.Resolvers
 {
     internal sealed class CircularDependencyDetector
     {

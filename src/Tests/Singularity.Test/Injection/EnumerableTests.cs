@@ -1,7 +1,9 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
+
 using Singularity.Collections;
 using Singularity.TestClasses.TestClasses;
+
 using Xunit;
 
 namespace Singularity.Test.Injection
@@ -9,10 +11,10 @@ namespace Singularity.Test.Injection
     public class EnumerableTests
     {
         [Fact]
-        public void GetInstance_AsEnumerable_MissingDependencies()
+        public void GetInstance_AsIEnumerable_MissingDependencies()
         {
             //ARRANGE
-            var container = new Container(c => 
+            var container = new Container(c =>
             {
                 c.Register<IPlugin, PluginWithDependencies>();
                 c.Register<IPlugin, Plugin1>();
@@ -27,7 +29,7 @@ namespace Singularity.Test.Injection
         }
 
         [Fact]
-        public void GetInstance_AsEnumerable_NoPublicConstructor()
+        public void GetInstance_AsIEnumerable_NoPublicConstructor()
         {
             //ARRANGE
             var container = new Container();
@@ -41,7 +43,7 @@ namespace Singularity.Test.Injection
         }
 
         [Fact]
-        public void GetInstance_AsEnumerable_NoRegistration()
+        public void GetInstance_AsIEnumerable_NoRegistration()
         {
             //ARRANGE
             var container = new Container();
@@ -56,7 +58,7 @@ namespace Singularity.Test.Injection
         }
 
         [Fact]
-        public void GetInstance_AsCollection_NoRegistration()
+        public void GetInstance_AsIReadOnlyCollection_NoRegistration()
         {
             //ARRANGE
             var container = new Container();
@@ -72,7 +74,7 @@ namespace Singularity.Test.Injection
         }
 
         [Fact]
-        public void GetInstance_AsList_NoRegistration()
+        public void GetInstance_AsIReadOnlyList_NoRegistration()
         {
             //ARRANGE
             var container = new Container();
@@ -87,7 +89,7 @@ namespace Singularity.Test.Injection
         }
 
         [Fact]
-        public void GetInstance_AsEnumerable_SingleRegistration()
+        public void GetInstance_AsIEnumerable_SingleRegistration()
         {
             //ARRANGE
             var container = new Container(builder =>
@@ -106,7 +108,7 @@ namespace Singularity.Test.Injection
         }
 
         [Fact]
-        public void GetInstance_AsReadOnlyCollection_SingleRegistration()
+        public void GetInstance_AsIReadOnlyCollection_SingleRegistration()
         {
             //ARRANGE
             var container = new Container(builder =>
@@ -144,6 +146,28 @@ namespace Singularity.Test.Injection
         }
 
         [Fact]
+        public void GetInstance_AsIList_SingleRegistration()
+        {
+            //ARRANGE
+            var container = new Container(builder =>
+            {
+                builder.Register<IPlugin, Plugin1>();
+            });
+
+            //ACT
+            var plugins1 = container.GetInstance<IList<IPlugin>>();
+            var plugins2 = container.GetInstance<IList<IPlugin>>();
+            plugins2.Add(new Plugin1());
+
+            //ASSERT
+            Assert.IsType<List<IPlugin>>(plugins1);
+            Assert.Single(plugins1);
+            Assert.IsType<Plugin1>(plugins1[0]);
+
+            Assert.Equal(plugins1.Count + 1, plugins2.Count);
+        }
+
+        [Fact]
         public void GetInstance_AsList_SingleRegistration()
         {
             //ARRANGE
@@ -153,12 +177,16 @@ namespace Singularity.Test.Injection
             });
 
             //ACT
-            var plugins = container.GetInstance<List<IPlugin>>();
+            var plugins1 = container.GetInstance<List<IPlugin>>();
+            var plugins2 = container.GetInstance<IList<IPlugin>>();
+            plugins2.Add(new Plugin1());
 
             //ASSERT
-            Assert.IsType<List<IPlugin>>(plugins);
-            Assert.Single(plugins);
-            Assert.IsType<Plugin1>(plugins[0]);
+            Assert.IsType<List<IPlugin>>(plugins1);
+            Assert.Single(plugins1);
+            Assert.IsType<Plugin1>(plugins1[0]);
+
+            Assert.Equal(plugins1.Count + 1, plugins2.Count);
         }
 
         [Fact]

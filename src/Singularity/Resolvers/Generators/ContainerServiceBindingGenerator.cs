@@ -2,9 +2,10 @@
 using System.Collections.Generic;
 using System.Linq.Expressions;
 using System.Reflection;
+
 using Singularity.Expressions;
 
-namespace Singularity.Graph.Resolvers
+namespace Singularity.Resolvers.Generators
 {
     /// <summary>
     /// Creates bindings for resolving the container or scope itself.
@@ -15,7 +16,7 @@ namespace Singularity.Graph.Resolvers
         private static readonly MethodInfo _getScope = typeof(ContainerServiceBindingGenerator).GetMethod(nameof(GetScope), BindingFlags.NonPublic | BindingFlags.Static);
 
         /// <inheritdoc />
-        public IEnumerable<ServiceBinding> Resolve(IResolverPipeline graph, Type type)
+        public IEnumerable<ServiceBinding> Resolve(IInstanceFactoryResolver resolver, Type type)
         {
             if (type == typeof(Container))
             {

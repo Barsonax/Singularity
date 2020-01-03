@@ -1,7 +1,8 @@
 ﻿using System;
+
 using Singularity.Expressions;
 
-namespace Singularity.Graph
+namespace Singularity.Resolvers
 {
     /// <summary>
     /// Factory for creating instances of a service for a service type.

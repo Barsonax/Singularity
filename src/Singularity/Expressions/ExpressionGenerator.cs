@@ -3,7 +3,8 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Linq.Expressions;
 using System.Reflection;
-using Singularity.Graph;
+
+using Singularity.Resolvers;
 
 namespace Singularity.Expressions
 {
@@ -40,7 +41,7 @@ namespace Singularity.Expressions
         {
             return serviceBinding.NeedsDispose == ServiceAutoDispose.Always ||
                    serviceBinding.NeedsDispose != ServiceAutoDispose.Never && typeof(IDisposable).IsAssignableFrom(context.Expression.Type) && settings.AutoDisposeLifetimes.Contains(serviceBinding.Lifetime.GetType());
- }
+        }
 
         public ReadOnlyExpressionContext ApplyDecorators(Type dependencyType, ServiceBinding serviceBinding, InstanceFactory[] children, Expression[] decorators, Scoped containerScope)
         {

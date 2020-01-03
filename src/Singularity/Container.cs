@@ -4,9 +4,10 @@ using System.Linq;
 using System.Linq.Expressions;
 using System.Reflection;
 using System.Runtime.CompilerServices;
+
 using Singularity.Collections;
 using Singularity.Expressions;
-using Singularity.Graph.Resolvers;
+using Singularity.Resolvers;
 
 namespace Singularity
 {
@@ -23,7 +24,7 @@ namespace Singularity
         internal SingularitySettings Settings { get; }
 
         internal readonly Scoped ContainerScope;
-        internal readonly ResolverPipeline DependencyGraph;
+        internal readonly InstanceFactoryResolver DependencyGraph;
         private readonly ThreadSafeDictionary<Type, Action<Scoped, object>?> _injectionCache = new ThreadSafeDictionary<Type, Action<Scoped, object>?>();
         private readonly ThreadSafeDictionary<Type, Func<Scoped, object?>?> _getInstanceCache = new ThreadSafeDictionary<Type, Func<Scoped, object?>?>();
         private readonly Container? _parentContainer;
@@ -51,7 +52,7 @@ namespace Singularity
             ContainerScope = new Scoped(this);
             Registrations = builder.Registrations;
             Settings = builder.Settings;
-            DependencyGraph = new ResolverPipeline(builder.Registrations, ContainerScope, Settings, null);
+            DependencyGraph = new InstanceFactoryResolver(builder.Registrations, ContainerScope, Settings, null);
         }
 
         /// <summary>
@@ -75,7 +76,7 @@ namespace Singularity
             _parentContainer = parentContainer;
             ContainerScope = new Scoped(this);
             Registrations = builder.Registrations;
-            DependencyGraph = new ResolverPipeline(builder.Registrations, ContainerScope, Settings, parentContainer.DependencyGraph);
+            DependencyGraph = new InstanceFactoryResolver(builder.Registrations, ContainerScope, Settings, parentContainer.DependencyGraph);
         }
 
         /// <summary>

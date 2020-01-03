@@ -2,23 +2,25 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Linq.Expressions;
+
 using Singularity.Collections;
 using Singularity.Exceptions;
 using Singularity.Expressions;
+using Singularity.Resolvers.Generators;
 
-namespace Singularity.Graph.Resolvers
+namespace Singularity.Resolvers
 {
-    internal sealed class ResolverPipeline : IResolverPipeline
+    internal sealed class InstanceFactoryResolver : IInstanceFactoryResolver
     {
         public SingularitySettings Settings { get; }
         private RegistrationStore RegistrationStore { get; }
         private object SyncRoot { get; }
         private readonly IServiceBindingGenerator[] _resolvers;
-        private readonly ResolverPipeline? _parentPipeline;
+        private readonly InstanceFactoryResolver? _parentPipeline;
         private readonly Scoped _containerScope;
         private readonly ExpressionGenerator _expressionGenerator = new ExpressionGenerator();
 
-        public ResolverPipeline(RegistrationStore registrationStore, Scoped containerScope, SingularitySettings settings, ResolverPipeline? parentPipeline)
+        public InstanceFactoryResolver(RegistrationStore registrationStore, Scoped containerScope, SingularitySettings settings, InstanceFactoryResolver? parentPipeline)
         {
             Settings = settings ?? throw new ArgumentNullException(nameof(settings));
             _resolvers = Settings.ServiceBindingGenerators.ToArray();

@@ -3,10 +3,10 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Linq.Expressions;
 using System.Reflection;
-using Singularity.Collections;
-using Singularity.Expressions;
 
-namespace Singularity.Graph.Resolvers
+using Singularity.Collections;
+
+namespace Singularity.Resolvers.Generators
 {
     /// <summary>
     /// Creates bindings for resolving all services of a given type.
@@ -16,7 +16,7 @@ namespace Singularity.Graph.Resolvers
         private static readonly MethodInfo GenericResolveMethod = typeof(CollectionServiceBindingGenerator).GetRuntimeMethods().Single(x => x.Name == nameof(Resolve) && x.ContainsGenericParameters);
 
         /// <inheritdoc />
-        public IEnumerable<ServiceBinding> Resolve(IResolverPipeline graph, Type type)
+        public IEnumerable<ServiceBinding> Resolve(IInstanceFactoryResolver resolver, Type type)
         {
             Type? elementType = null;
             if (type.IsArray)
@@ -34,9 +34,8 @@ namespace Singularity.Graph.Resolvers
                     typeof(IReadOnlyList<>),
 
                     typeof(List<>),
-                    typeof(ICollection<>),
-
                     typeof(IList<>),
+                    typeof(ICollection<>),
 
                     typeof(HashSet<>),
                     typeof(ISet<>),
@@ -52,7 +51,7 @@ namespace Singularity.Graph.Resolvers
             {
                 MethodInfo resolveMethod = GenericResolveMethod.MakeGenericMethod(elementType);
 
-                var bindings = (IEnumerable<ServiceBinding>)resolveMethod.Invoke(this, new object[] { graph, type });
+                var bindings = (IEnumerable<ServiceBinding>)resolveMethod.Invoke(this, new object[] { resolver, type });
                 foreach (var binding in bindings)
                 {
                     yield return binding;
@@ -60,9 +59,9 @@ namespace Singularity.Graph.Resolvers
             }
         }
 
-        private IEnumerable<ServiceBinding> Resolve<TElement>(IResolverPipeline graph, Type type)
+        private IEnumerable<ServiceBinding> Resolve<TElement>(IInstanceFactoryResolver resolver, Type type)
         {
-            Func<Scoped, TElement>[] instanceFactories = graph.TryResolveAll(typeof(TElement)).Select(x => (Func<Scoped, TElement>)(Delegate)x.Factory).ToArray();
+            Func<Scoped, TElement>[] instanceFactories = resolver.TryResolveAll(typeof(TElement)).Select(x => (Func<Scoped, TElement>)(Delegate)x.Factory).ToArray();
 
             yield return new ServiceBinding(new[]
             {
@@ -83,6 +82,7 @@ namespace Singularity.Graph.Resolvers
             yield return new ServiceBinding(new[]
             {
                 typeof(List<TElement>),
+                typeof(IList<TElement>),
                 typeof(ICollection<TElement>),
             }, BindingMetadata.GeneratedInstance, listExpression, listExpression.GetReturnType(), ConstructorResolvers.Default, Lifetimes.Transient);
 
@@ -99,7 +99,6 @@ namespace Singularity.Graph.Resolvers
             yield return new ServiceBinding(new[]
             {
                 typeof(TElement[]),
-                typeof(IList<TElement>),
             }, BindingMetadata.GeneratedInstance, arrayExpression, arrayExpression.GetReturnType(), ConstructorResolvers.Default, Lifetimes.Transient);
         }
 
