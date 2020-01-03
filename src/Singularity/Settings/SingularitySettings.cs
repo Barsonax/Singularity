@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.ComponentModel;
 
+using Singularity.Collections;
 using Singularity.Expressions;
 using Singularity.Logging;
 using Singularity.Resolvers.Generators;
@@ -31,7 +32,7 @@ namespace Singularity
         /// The <see cref="IServiceBindingGenerator"/>s that are used to dynamically generate bindings.
         /// </summary>
         [EditorBrowsable(EditorBrowsableState.Never)]
-        public List<IServiceBindingGenerator> ServiceBindingGenerators { get; private set; } = new List<IServiceBindingGenerator> {
+        public ConfigurationList<IServiceBindingGenerator> ServiceBindingGenerators { get; } = new ConfigurationList<IServiceBindingGenerator> {
             new ContainerServiceBindingGenerator(),
             new CollectionServiceBindingGenerator(),
             new ExpressionServiceBindingGenerator(),
@@ -73,6 +74,11 @@ namespace Singularity
 
         private SingularitySettings(Action<SingularitySettings>? configurator = null) { configurator?.Invoke(this); }
 
+        public void ConfigureServiceBindingGenerators(Action<ConfigurationList<IServiceBindingGenerator>> configurator)
+        {
+            configurator.Invoke(ServiceBindingGenerators);
+        }
+
         public void IgnoreResolveError(ITypeMatcher match)
         {
             ResolveErrorsExclusions.Add(match);
@@ -95,58 +101,6 @@ namespace Singularity
         }
 
         public void With(ISingularityLogger logger) => Logger = logger;
-
-        /// <summary>
-        /// Replaces all <see cref="IServiceBindingGenerator"/>s with the provided list.
-        /// </summary>
-        /// <param name="serviceBindingGenerators"></param>
-        public void Replace(List<IServiceBindingGenerator> serviceBindingGenerators)
-        {
-            ServiceBindingGenerators = serviceBindingGenerators;
-        }
-
-        /// <summary>
-        /// Appends a <see cref="IServiceBindingGenerator"/>
-        /// </summary>
-        /// <param name="serviceBindingGenerator"></param>
-        public void Append(IServiceBindingGenerator serviceBindingGenerator)
-        {
-            ServiceBindingGenerators.Add(serviceBindingGenerator);
-        }
-
-        /// <summary>
-        /// Inserts a <see cref="IServiceBindingGenerator"/> before <typeparamref name="TServiceBindingGenerator"/>
-        /// </summary>
-        /// <param name="serviceBindingGenerator"></param>
-        public void Before<TServiceBindingGenerator>(IServiceBindingGenerator serviceBindingGenerator)
-            where TServiceBindingGenerator : IServiceBindingGenerator
-        {
-            for (int i = 0; i < ServiceBindingGenerators.Count; i++)
-            {
-                if (ServiceBindingGenerators[i].GetType() == typeof(TServiceBindingGenerator))
-                {
-                    ServiceBindingGenerators.Insert(i, serviceBindingGenerator);
-                    break;
-                }
-            }
-        }
-
-        /// <summary>
-        /// Inserts a <see cref="IServiceBindingGenerator"/> after <typeparamref name="TServiceBindingGenerator"/>
-        /// </summary>
-        /// <param name="serviceBindingGenerator"></param>
-        public void After<TServiceBindingGenerator>(IServiceBindingGenerator serviceBindingGenerator)
-            where TServiceBindingGenerator : IServiceBindingGenerator
-        {
-            for (int i = 0; i < ServiceBindingGenerators.Count; i++)
-            {
-                if (ServiceBindingGenerators[i].GetType() == typeof(TServiceBindingGenerator))
-                {
-                    ServiceBindingGenerators.Insert(i + 1, serviceBindingGenerator);
-                    break;
-                }
-            }
-        }
 
         public void With(IConstructorResolver constructorResolver) => ConstructorResolver = constructorResolver;
 

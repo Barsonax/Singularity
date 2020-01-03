@@ -4,6 +4,8 @@
       href: Configuring Dependencies.md
     - name: Lifetimes
       href: Lifetimes.md
+    - name: ServiceBindingGenerators
+      href: ServiceBindingGenerators.md
     - name: Scopes
       href: Scopes.md
     - name: Modules
