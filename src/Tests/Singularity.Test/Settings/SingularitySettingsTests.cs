@@ -31,6 +31,27 @@ namespace Singularity.Test.Settings
         }
 
         [Fact]
+        public void Remove_ServiceBindingGenerator()
+        {
+            var settings = SingularitySettings.Default;
+
+            settings.ConfigureServiceBindingGenerators(generators =>
+            {
+                generators.Remove(x => x is ContainerServiceBindingGenerator);
+            });
+
+            Assert.Equal(settings.ServiceBindingGenerators, new IServiceBindingGenerator[]
+            {
+                new CollectionServiceBindingGenerator(),
+                new ExpressionServiceBindingGenerator(),
+                new LazyServiceBindingGenerator(),
+                new FactoryServiceBindingGenerator(),
+                new ConcreteServiceBindingGenerator(),
+                new OpenGenericBindingGenerator()
+            }, new TypeEqualityComparer<IServiceBindingGenerator>());
+        }
+
+        [Fact]
         public void Add_ServiceBindingGenerator()
         {
             var settings = SingularitySettings.Default;
