@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace Singularity.Graph.Resolvers
+namespace Singularity
 {
     /// <summary>
     /// Interface for matching a type

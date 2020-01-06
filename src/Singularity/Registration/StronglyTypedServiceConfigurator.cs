@@ -1,10 +1,10 @@
 ﻿using System;
 using System.Linq.Expressions;
 using System.Runtime.CompilerServices;
+
 using Singularity.Collections;
 using Singularity.Exceptions;
 using Singularity.Expressions;
-using Singularity.Graph;
 
 namespace Singularity
 {

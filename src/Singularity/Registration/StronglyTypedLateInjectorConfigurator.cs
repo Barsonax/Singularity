@@ -2,8 +2,8 @@
 using System.Linq;
 using System.Linq.Expressions;
 using System.Reflection;
+
 using Singularity.Collections;
-using Singularity.Graph;
 
 namespace Singularity
 {

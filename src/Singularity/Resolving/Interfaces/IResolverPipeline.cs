@@ -1,13 +1,14 @@
 ﻿using System;
 using System.Collections.Generic;
+
 using Singularity.Exceptions;
 
-namespace Singularity.Graph.Resolvers
+namespace Singularity.Resolving
 {
     /// <summary>
     /// Interface resolving services.
     /// </summary>
-    public interface IResolverPipeline
+    public interface IInstanceFactoryResolver
     {
         /// <summary>
         /// The settings

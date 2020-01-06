@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace Singularity.Graph
+namespace Singularity
 {
     /// <summary>
     /// Contains useful metadata of a registered binding such as on what line its registered.

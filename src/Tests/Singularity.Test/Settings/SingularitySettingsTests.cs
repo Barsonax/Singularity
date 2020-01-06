@@ -1,5 +1,5 @@
-﻿using System.Collections.Generic;
-using Singularity.Graph.Resolvers;
+﻿using Singularity.Resolving.Generators;
+
 using Xunit;
 
 namespace Singularity.Test.Settings
@@ -11,22 +11,68 @@ namespace Singularity.Test.Settings
         {
             var settings = SingularitySettings.Default;
 
-            var insertElement = new ConcreteServiceBindingGenerator();
-            settings.Replace(new List<IServiceBindingGenerator>{ insertElement });
+            var concreteServiceBindingGenerator = new ConcreteServiceBindingGenerator();
 
-            var element = Assert.Single(settings.ServiceBindingGenerators);
-            Assert.Equal(insertElement, element);
+            settings.ConfigureServiceBindingGenerators(generators =>
+            {
+                generators.Replace(x => x is ContainerServiceBindingGenerator, concreteServiceBindingGenerator);
+            });
+
+            Assert.Equal(settings.ServiceBindingGenerators, new IServiceBindingGenerator[]
+            {
+                new ConcreteServiceBindingGenerator(),
+                new CollectionServiceBindingGenerator(),
+                new ExpressionServiceBindingGenerator(),
+                new LazyServiceBindingGenerator(),
+                new FactoryServiceBindingGenerator(),
+                new ConcreteServiceBindingGenerator(),
+                new OpenGenericBindingGenerator()
+            }, new TypeEqualityComparer<IServiceBindingGenerator>());
         }
 
         [Fact]
-        public void Append_ServiceBindingGenerator()
+        public void Remove_ServiceBindingGenerator()
+        {
+            var settings = SingularitySettings.Default;
+
+            settings.ConfigureServiceBindingGenerators(generators =>
+            {
+                generators.Remove(x => x is ContainerServiceBindingGenerator);
+            });
+
+            Assert.Equal(settings.ServiceBindingGenerators, new IServiceBindingGenerator[]
+            {
+                new CollectionServiceBindingGenerator(),
+                new ExpressionServiceBindingGenerator(),
+                new LazyServiceBindingGenerator(),
+                new FactoryServiceBindingGenerator(),
+                new ConcreteServiceBindingGenerator(),
+                new OpenGenericBindingGenerator()
+            }, new TypeEqualityComparer<IServiceBindingGenerator>());
+        }
+
+        [Fact]
+        public void Add_ServiceBindingGenerator()
         {
             var settings = SingularitySettings.Default;
 
             var insertElement = new ConcreteServiceBindingGenerator();
-            settings.Append(insertElement);
+            settings.ConfigureServiceBindingGenerators(generators =>
+            {
+                generators.Add(insertElement);
+            });
 
-            Assert.Equal(insertElement, settings.ServiceBindingGenerators[7]);
+            Assert.Equal(settings.ServiceBindingGenerators, new IServiceBindingGenerator[]
+            {
+                new ContainerServiceBindingGenerator(),
+                new CollectionServiceBindingGenerator(),
+                new ExpressionServiceBindingGenerator(),
+                new LazyServiceBindingGenerator(),
+                new FactoryServiceBindingGenerator(),
+                new ConcreteServiceBindingGenerator(),
+                new OpenGenericBindingGenerator(),
+                new ConcreteServiceBindingGenerator(),
+            }, new TypeEqualityComparer<IServiceBindingGenerator>());
         }
 
         [Fact]
@@ -35,9 +81,23 @@ namespace Singularity.Test.Settings
             var settings = SingularitySettings.Default;
 
             var insertElement = new ConcreteServiceBindingGenerator();
-            settings.Before<OpenGenericResolver>(insertElement);
+            settings.ConfigureServiceBindingGenerators(generators =>
+            {
+                generators.Before(x => x is OpenGenericBindingGenerator, insertElement);
+            });
 
-            Assert.Equal(insertElement, settings.ServiceBindingGenerators[6]);
+
+            Assert.Equal(settings.ServiceBindingGenerators, new IServiceBindingGenerator[]
+            {
+                new ContainerServiceBindingGenerator(),
+                new CollectionServiceBindingGenerator(),
+                new ExpressionServiceBindingGenerator(),
+                new LazyServiceBindingGenerator(),
+                new FactoryServiceBindingGenerator(),
+                new ConcreteServiceBindingGenerator(),
+                new ConcreteServiceBindingGenerator(),
+                new OpenGenericBindingGenerator(),
+            }, new TypeEqualityComparer<IServiceBindingGenerator>());
         }
 
         [Fact]
@@ -46,9 +106,23 @@ namespace Singularity.Test.Settings
             var settings = SingularitySettings.Default;
 
             var insertElement = new ConcreteServiceBindingGenerator();
-            settings.After<OpenGenericResolver>(insertElement);
+            settings.ConfigureServiceBindingGenerators(generators =>
+            {
+                generators.After(x => x is OpenGenericBindingGenerator, insertElement);
+            });
 
-            Assert.Equal(insertElement, settings.ServiceBindingGenerators[7]);
+
+            Assert.Equal(settings.ServiceBindingGenerators, new IServiceBindingGenerator[]
+            {
+                new ContainerServiceBindingGenerator(),
+                new CollectionServiceBindingGenerator(),
+                new ExpressionServiceBindingGenerator(),
+                new LazyServiceBindingGenerator(),
+                new FactoryServiceBindingGenerator(),
+                new ConcreteServiceBindingGenerator(),
+                new OpenGenericBindingGenerator(),
+                new ConcreteServiceBindingGenerator(),
+            }, new TypeEqualityComparer<IServiceBindingGenerator>());
         }
     }
 }

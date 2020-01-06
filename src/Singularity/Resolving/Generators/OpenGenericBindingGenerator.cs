@@ -2,20 +2,20 @@
 using System.Collections.Generic;
 using System.Linq.Expressions;
 
-namespace Singularity.Graph.Resolvers
+namespace Singularity.Resolving.Generators
 {
     /// <summary>
     /// Creates bindings so that open generic registrations can be properly resolved.
     /// </summary>
-    public sealed class OpenGenericResolver : IServiceBindingGenerator
+    public sealed class OpenGenericBindingGenerator : IServiceBindingGenerator
     {
         /// <inheritdoc />
-        public IEnumerable<ServiceBinding> Resolve(IResolverPipeline graph, Type type)
+        public IEnumerable<ServiceBinding> Resolve(IInstanceFactoryResolver resolver, Type type)
         {
             if (type.IsGenericType && !type.ContainsGenericParameters)
             {
                 Type genericTypeDefinition = type.GetGenericTypeDefinition();
-                ServiceBinding? openGenericBinding = graph.TryGetBinding(genericTypeDefinition);
+                ServiceBinding? openGenericBinding = resolver.TryGetBinding(genericTypeDefinition);
                 if (openGenericBinding != null)
                 {
                     Type openGenericType = openGenericBinding.ConcreteType;

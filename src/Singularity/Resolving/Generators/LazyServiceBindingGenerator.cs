@@ -2,9 +2,10 @@
 using System.Collections.Generic;
 using System.Linq.Expressions;
 using System.Reflection;
+
 using Singularity.Expressions;
 
-namespace Singularity.Graph.Resolvers
+namespace Singularity.Resolving.Generators
 {
     /// <summary>
     /// Creates bindings so that the binding can be resolved as a <see cref="Lazy{T}"/>
@@ -12,7 +13,7 @@ namespace Singularity.Graph.Resolvers
     public sealed class LazyServiceBindingGenerator : IServiceBindingGenerator
     {
         /// <inheritdoc />
-        public IEnumerable<ServiceBinding> Resolve(IResolverPipeline graph, Type type)
+        public IEnumerable<ServiceBinding> Resolve(IInstanceFactoryResolver resolver, Type type)
         {
             if (type.IsGenericType && type.GetGenericTypeDefinition() == typeof(Lazy<>))
             {
@@ -21,7 +22,7 @@ namespace Singularity.Graph.Resolvers
 
                 ConstructorInfo constructor = lazyType.GetConstructor(new[] { funcType });
 
-                foreach (InstanceFactory factory in graph.TryResolveAll(funcType))
+                foreach (InstanceFactory factory in resolver.TryResolveAll(funcType))
                 {
                     var context = (ExpressionContext)factory.Context;
                     context.Expression = Expression.New(constructor, factory.Context.Expression);

@@ -2,23 +2,25 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Linq.Expressions;
+
 using Singularity.Collections;
 using Singularity.Exceptions;
 using Singularity.Expressions;
+using Singularity.Resolving.Generators;
 
-namespace Singularity.Graph.Resolvers
+namespace Singularity.Resolving
 {
-    internal sealed class ResolverPipeline : IResolverPipeline
+    internal sealed class InstanceFactoryResolver : IInstanceFactoryResolver
     {
         public SingularitySettings Settings { get; }
         private RegistrationStore RegistrationStore { get; }
         private object SyncRoot { get; }
         private readonly IServiceBindingGenerator[] _resolvers;
-        private readonly ResolverPipeline? _parentPipeline;
+        private readonly InstanceFactoryResolver? _parentPipeline;
         private readonly Scoped _containerScope;
         private readonly ExpressionGenerator _expressionGenerator = new ExpressionGenerator();
 
-        public ResolverPipeline(RegistrationStore registrationStore, Scoped containerScope, SingularitySettings settings, ResolverPipeline? parentPipeline)
+        public InstanceFactoryResolver(RegistrationStore registrationStore, Scoped containerScope, SingularitySettings settings, InstanceFactoryResolver? parentPipeline)
         {
             Settings = settings ?? throw new ArgumentNullException(nameof(settings));
             _resolvers = Settings.ServiceBindingGenerators.ToArray();
@@ -157,14 +159,7 @@ namespace Singularity.Graph.Resolvers
                             serviceBinding.Expression = serviceBinding.ConcreteType.ResolveConstructorExpression(constructor);
                         }
                         ParameterExpression[] parameters = serviceBinding.Expression.GetParameterExpressions().Where(x => x.Type != ExpressionGenerator.ScopeParameter.Type).ToArray();
-                        var factories = new InstanceFactory[parameters.Length];
-                        for (var i = 0; i < parameters.Length; i++)
-                        {
-                            ParameterExpression parameter = parameters[i];
-                            ServiceBinding child = GetDependency(parameter.Type).Default;
-                            InstanceFactory? factory = TryResolveDependency(parameter.Type, child, circularDependencyDetector);
-                            factories[i] = factory ?? throw (child.ResolveError ?? throw new NotImplementedException());
-                        }
+                        InstanceFactory[] factories = ResolveParameters(parameters, circularDependencyDetector);
 
                         serviceBinding.BaseExpression = _expressionGenerator.GenerateBaseExpression(serviceBinding, factories, _containerScope, Settings);
                     }
@@ -181,21 +176,27 @@ namespace Singularity.Graph.Resolvers
                 {
                     Expression[] decorators = FindDecorators(type);
                     ParameterExpression[] parameters = decorators.GetParameterExpressions().Where(x => x.Type != ExpressionGenerator.ScopeParameter.Type && x.Type != type).ToArray();
-                    var childFactories = new InstanceFactory[parameters.Length];
-                    for (var i = 0; i < parameters.Length; i++)
-                    {
-                        ParameterExpression parameter = parameters[i];
-                        ServiceBinding child = GetDependency(parameter.Type).Default;
-                        var childFactory = TryResolveDependency(parameter.Type, child, circularDependencyDetector);
-                        childFactories[i] = childFactory ?? throw (child.ResolveError ?? throw new NotImplementedException());
-                    }
-
-                    ReadOnlyExpressionContext context = _expressionGenerator.ApplyDecorators(type, serviceBinding, childFactories, decorators, _containerScope);
+                    InstanceFactory[] factories = ResolveParameters(parameters, circularDependencyDetector);
+                    ReadOnlyExpressionContext context = _expressionGenerator.ApplyDecorators(type, serviceBinding, factories, decorators, _containerScope);
                     factory = new InstanceFactory(type, context);
                     serviceBinding.Factories.Add(factory);
                 }
                 return factory;
             }
+        }
+
+        private InstanceFactory[] ResolveParameters(ParameterExpression[] parameters, CircularDependencyDetector circularDependencyDetector)
+        {
+            var factories = new InstanceFactory[parameters.Length];
+            for (var i = 0; i < parameters.Length; i++)
+            {
+                ParameterExpression parameter = parameters[i];
+                ServiceBinding child = GetDependency(parameter.Type).Default;
+                InstanceFactory? factory = TryResolveDependency(parameter.Type, child, circularDependencyDetector);
+                factories[i] = factory ?? throw (child.ResolveError ?? throw new NotImplementedException());
+            }
+
+            return factories;
         }
 
         private Expression[] FindDecorators(Type type)

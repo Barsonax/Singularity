@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Reflection;
+
 using Singularity.Collections;
-using Singularity.Graph;
 
 namespace Singularity
 {

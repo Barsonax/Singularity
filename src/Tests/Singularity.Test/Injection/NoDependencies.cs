@@ -1,7 +1,9 @@
 ﻿using System;
+
 using Singularity.Exceptions;
-using Singularity.Graph.Resolvers;
+using Singularity.Resolving.Generators;
 using Singularity.TestClasses.TestClasses;
+
 using Xunit;
 
 namespace Singularity.Test.Injection

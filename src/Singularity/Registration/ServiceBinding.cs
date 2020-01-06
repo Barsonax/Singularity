@@ -2,11 +2,11 @@
 using System.Diagnostics;
 using System.Linq;
 using System.Linq.Expressions;
+
 using Singularity.Collections;
 using Singularity.Exceptions;
 using Singularity.Expressions;
-using Singularity.Graph;
-using Singularity.Graph.Resolvers;
+using Singularity.Resolving;
 
 namespace Singularity
 {

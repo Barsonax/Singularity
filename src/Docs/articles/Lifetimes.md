@@ -46,3 +46,6 @@ var service4 = scope2.GetInstance<IScopedService>();
 //singleton1 and singleton2 will point to the same instance due to the Singleton lifetime
 var singleton2 = scope2.GetInstance<ISingleton>();
 ```
+
+## Implementing your own
+If for whatever reason the built in lifetimes are not fit for your use case you can implement your own by implementing the `ILifetime` interface and then registering a service with it.

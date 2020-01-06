@@ -1,5 +1,4 @@
 ﻿using System;
-using Singularity.Graph.Resolvers;
 
 namespace Singularity
 {
