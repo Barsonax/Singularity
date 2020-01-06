@@ -2,7 +2,7 @@
 using System.Linq;
 using System.Linq.Expressions;
 
-using Singularity.Resolvers;
+using Singularity.Resolving;
 
 namespace Singularity.Expressions
 {

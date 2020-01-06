@@ -4,7 +4,7 @@ using System.Linq;
 
 using Singularity.Exceptions;
 
-namespace Singularity.Resolvers
+namespace Singularity
 {
     internal sealed class CircularDependencyDetector
     {

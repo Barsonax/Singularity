@@ -7,7 +7,7 @@ using System.Runtime.CompilerServices;
 
 using Singularity.Collections;
 using Singularity.Expressions;
-using Singularity.Resolvers;
+using Singularity.Resolving;
 
 namespace Singularity
 {

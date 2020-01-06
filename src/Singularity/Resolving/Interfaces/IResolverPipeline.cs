@@ -3,7 +3,7 @@ using System.Collections.Generic;
 
 using Singularity.Exceptions;
 
-namespace Singularity.Resolvers
+namespace Singularity.Resolving
 {
     /// <summary>
     /// Interface resolving services.

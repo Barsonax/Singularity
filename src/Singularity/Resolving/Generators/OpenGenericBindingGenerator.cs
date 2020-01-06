@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Linq.Expressions;
 
-namespace Singularity.Resolvers.Generators
+namespace Singularity.Resolving.Generators
 {
     /// <summary>
     /// Creates bindings so that open generic registrations can be properly resolved.

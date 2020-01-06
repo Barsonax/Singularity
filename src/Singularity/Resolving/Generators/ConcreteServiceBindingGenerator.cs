@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 
-namespace Singularity.Resolvers.Generators
+namespace Singularity.Resolving.Generators
 {
     /// <summary>
     /// Creates a binding if the type is a concrete type.

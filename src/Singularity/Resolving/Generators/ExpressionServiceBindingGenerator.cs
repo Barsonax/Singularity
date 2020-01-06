@@ -6,7 +6,7 @@ using System.Reflection;
 
 using Singularity.Expressions;
 
-namespace Singularity.Resolvers.Generators
+namespace Singularity.Resolving.Generators
 {
     /// <summary>
     /// Creates bindings so that the expression itself of a binding can be resolved

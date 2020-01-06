@@ -5,7 +5,7 @@ using System.Reflection;
 
 using Singularity.Exceptions;
 using Singularity.Expressions;
-using Singularity.Resolvers;
+using Singularity.Resolving;
 
 namespace Singularity
 {

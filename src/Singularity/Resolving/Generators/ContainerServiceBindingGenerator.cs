@@ -5,7 +5,7 @@ using System.Reflection;
 
 using Singularity.Expressions;
 
-namespace Singularity.Resolvers.Generators
+namespace Singularity.Resolving.Generators
 {
     /// <summary>
     /// Creates bindings for resolving the container or scope itself.

@@ -2,7 +2,7 @@
 
 using Singularity.Expressions;
 
-namespace Singularity.Resolvers
+namespace Singularity.Resolving
 {
     /// <summary>
     /// Factory for creating instances of a service for a service type.

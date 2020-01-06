@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 
-namespace Singularity.Resolvers.Generators
+namespace Singularity.Resolving.Generators
 {
     /// <summary>
     /// Interface for creating new bindings.

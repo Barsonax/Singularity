@@ -4,7 +4,7 @@ using System.Linq.Expressions;
 using System.Reflection;
 
 using Singularity.Expressions;
-using Singularity.Resolvers;
+using Singularity.Resolving;
 
 namespace Singularity
 {

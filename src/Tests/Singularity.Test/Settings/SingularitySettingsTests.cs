@@ -1,4 +1,4 @@
-﻿using Singularity.Resolvers.Generators;
+﻿using Singularity.Resolving.Generators;
 
 using Xunit;
 

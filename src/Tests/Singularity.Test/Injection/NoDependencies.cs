@@ -1,7 +1,7 @@
 ﻿using System;
 
 using Singularity.Exceptions;
-using Singularity.Resolvers.Generators;
+using Singularity.Resolving.Generators;
 using Singularity.TestClasses.TestClasses;
 
 using Xunit;

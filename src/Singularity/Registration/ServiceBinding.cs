@@ -6,7 +6,7 @@ using System.Linq.Expressions;
 using Singularity.Collections;
 using Singularity.Exceptions;
 using Singularity.Expressions;
-using Singularity.Resolvers;
+using Singularity.Resolving;
 
 namespace Singularity
 {

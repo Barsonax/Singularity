@@ -5,7 +5,7 @@ using System.ComponentModel;
 using Singularity.Collections;
 using Singularity.Expressions;
 using Singularity.Logging;
-using Singularity.Resolvers.Generators;
+using Singularity.Resolving.Generators;
 
 namespace Singularity
 {

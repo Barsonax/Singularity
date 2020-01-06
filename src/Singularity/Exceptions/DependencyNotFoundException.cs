@@ -2,7 +2,7 @@
 using System.Runtime.Serialization;
 using System.Security.Permissions;
 
-using Singularity.Resolvers.Generators;
+using Singularity.Resolving.Generators;
 
 namespace Singularity.Exceptions
 {

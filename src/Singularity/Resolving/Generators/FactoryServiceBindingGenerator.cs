@@ -4,7 +4,7 @@ using System.Linq.Expressions;
 
 using Singularity.Expressions;
 
-namespace Singularity.Resolvers.Generators
+namespace Singularity.Resolving.Generators
 {
     /// <summary>
     /// Creates bindings so that the factory itself of a binding can be resolved

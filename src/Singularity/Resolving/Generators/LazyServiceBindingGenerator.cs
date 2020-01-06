@@ -5,7 +5,7 @@ using System.Reflection;
 
 using Singularity.Expressions;
 
-namespace Singularity.Resolvers.Generators
+namespace Singularity.Resolving.Generators
 {
     /// <summary>
     /// Creates bindings so that the binding can be resolved as a <see cref="Lazy{T}"/>

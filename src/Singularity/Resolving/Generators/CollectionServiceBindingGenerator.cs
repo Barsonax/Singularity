@@ -6,7 +6,7 @@ using System.Reflection;
 
 using Singularity.Collections;
 
-namespace Singularity.Resolvers.Generators
+namespace Singularity.Resolving.Generators
 {
     /// <summary>
     /// Creates bindings for resolving all services of a given type.

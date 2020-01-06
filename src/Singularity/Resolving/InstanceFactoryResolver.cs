@@ -6,9 +6,9 @@ using System.Linq.Expressions;
 using Singularity.Collections;
 using Singularity.Exceptions;
 using Singularity.Expressions;
-using Singularity.Resolvers.Generators;
+using Singularity.Resolving.Generators;
 
-namespace Singularity.Resolvers
+namespace Singularity.Resolving
 {
     internal sealed class InstanceFactoryResolver : IInstanceFactoryResolver
     {
