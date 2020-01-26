@@ -115,4 +115,4 @@ Platform=X64  IterationTime=500.0000 ms
 |[![paypal](https://www.paypalobjects.com/en_US/NL/i/btn/btn_donateCC_LG.gif)](https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_id=VTXT9EBQ3CF5E)|[![Beerpay](https://img.shields.io/beerpay/Barsonax/Singularity.svg)](https://beerpay.io/Barsonax/Singularity)|
 
 ### Licensing
-Licensed under LGPL. Basically as long as you do not modify the source you can use this library however you want.
+Licensed under LGPL.
