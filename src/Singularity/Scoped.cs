@@ -177,14 +177,14 @@ namespace Singularity
         /// </summary>
         public void Dispose()
         {
-            SinglyLinkedListNode<IDisposable>? disposables = _disposables;
+            SinglyLinkedListNode<IDisposable>? disposables = Interlocked.Exchange(ref _disposables, null);
             while (disposables != null)
             {
                 disposables.Value.Dispose();
                 disposables = disposables.Next!;
             }
 
-            SinglyLinkedListKeyNode<ServiceBinding, ActionList<object>>? finalizers = _finalizers;
+            SinglyLinkedListKeyNode<ServiceBinding, ActionList<object>>? finalizers = Interlocked.Exchange(ref _finalizers, null);;
             while (finalizers != null)
             {
                 finalizers.Value.Invoke();
