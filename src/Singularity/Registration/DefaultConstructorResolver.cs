@@ -11,7 +11,7 @@ namespace Singularity
 {
     /// <summary>
     /// Assumes there is only 1 public constructor. Throws a error if there are multiple public constructors.
-    /// If this is undesired take a look at other resolves in <see cref="ConstructorResolvers"/>/>
+    /// If this is undesired take a look at other resolvers in <see cref="ConstructorResolvers"/>/>
     /// </summary>
     public class DefaultConstructorResolver : IConstructorResolver
     {
@@ -34,16 +34,16 @@ namespace Singularity
             return constructors.FirstOrDefault();
         }
 
+        /// <inheritdoc />
         public ConstructorInfo DynamicSelectConstructor(Type type, IInstanceFactoryResolver instanceFactoryResolver)
         {
             throw new NotImplementedException();
         }
 
-        public Expression ResolveConstructorExpression(Type type, ConstructorInfo constructorInfo)
+        /// <inheritdoc />
+        public Expression ResolveConstructorExpression(Type type, ConstructorInfo? constructorInfo)
         {
             return type.ResolveConstructorExpression(constructorInfo);
         }
-
-        internal DefaultConstructorResolver() { }
     }
 }
