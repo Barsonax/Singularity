@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Diagnostics.CodeAnalysis;
 using System.Runtime.CompilerServices;
 
 namespace Singularity.Collections
@@ -74,14 +75,16 @@ namespace Singularity.Collections
             /// <summary>
             /// The value of the current node.
             /// </summary>
+            [AllowNull]
+            [MaybeNull]
             public T Current { get; private set; }
 
-            object IEnumerator.Current => Current!;
+            object? IEnumerator.Current => Current;
 
             internal Enumerator(SinglyLinkedListNode<T> list)
             {
                 _node = list;
-                Current = default!;
+                Current = default;
             }
 
             /// <inheritdoc />

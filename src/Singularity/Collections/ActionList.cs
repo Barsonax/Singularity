@@ -19,8 +19,8 @@ namespace Singularity.Collections
             SinglyLinkedListNode<T>? root = _root;
             while (root != null)
             {
-                Action(root.Value!);
-                root = root.Next!;
+                Action(root.Value);
+                root = root.Next;
             }
         }
 

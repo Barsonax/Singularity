@@ -30,14 +30,25 @@ namespace Singularity
         }
 
         /// <summary>
+        /// Tries to return the expression to call the constructor that is selected by <paramref name="resolver"/> for the passed <paramref name="type"/>
+        /// </summary>
+        /// <param name="resolver"></param>
+        /// <param name="type"></param>
+        /// <returns></returns>
+        public static Expression? TryResolveConstructorExpression(this IConstructorResolver resolver, Type type)
+        {
+            return resolver.ResolveConstructorExpression(type, resolver.StaticSelectConstructor(type));
+        }
+
+        /// <summary>
         /// Returns the expression to call the constructor that is selected by <paramref name="resolver"/> for the passed <paramref name="type"/>
         /// </summary>
         /// <param name="resolver"></param>
         /// <param name="type"></param>
         /// <returns></returns>
-        public static Expression? ResolveConstructorExpression(this IConstructorResolver resolver, Type type)
+        public static Expression ResolveConstructorExpression(this IConstructorResolver resolver, Type type)
         {
-            return resolver.ResolveConstructorExpression(type, resolver.StaticSelectConstructor(type));
+            return TryResolveConstructorExpression(resolver, type) ?? throw new ArgumentException(nameof(type), $"Could not resolve {type} with {resolver}");
         }
     }
 }

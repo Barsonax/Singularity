@@ -68,7 +68,7 @@ namespace Singularity.Test.Extensions
 		[Fact]
 		public void GetParameterExpressions_MethodCallExpression_NoError()
 		{
-			MethodInfo methodInfo = typeof(ExpressionExtensionsTests).GetRuntimeMethod(nameof(GetParameterExpressions_MethodCallExpression_NoError), new Type[0])!;
+			MethodInfo methodInfo = typeof(ExpressionExtensionsTests).GetRuntimeMethod(nameof(GetParameterExpressions_MethodCallExpression_NoError), new Type[0]);
 			MethodCallExpression expression = Expression.Call(Expression.Constant(this), methodInfo);
 			ParameterExpression[] parameters = expression.GetParameterExpressions();
             Assert.Empty(parameters);

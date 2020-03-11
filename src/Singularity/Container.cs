@@ -118,10 +118,10 @@ namespace Singularity
             Func<Scoped, object?>? func = _getInstanceCache.GetOrDefault(type);
             if (func == null)
             {
-                func = DependencyGraph.Resolve(type)?.Factory ?? (s => null!);
+                func = DependencyGraph.Resolve(type).Factory;
                 _getInstanceCache.Add(type, func);
             }
-            return func(scope)!;
+            return func(scope);
         }
 
         /// <inheritdoc />
@@ -141,7 +141,7 @@ namespace Singularity
             Func<Scoped, object?>? func = _getInstanceCache.GetOrDefault(type);
             if (func == null)
             {
-                func = DependencyGraph.TryResolve(type)?.Factory ?? (s => null!);
+                func = DependencyGraph.TryResolve(type)?.Factory ?? (s => null);
                 _getInstanceCache.Add(type, func);
             }
             return func(scope);

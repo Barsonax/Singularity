@@ -10,7 +10,7 @@ namespace Singularity.Test
         public void AutoResolveConstructor_ValueTypeWithNoConstructors()
         {
             Type type = typeof(int);
-            Expression? expression = new DefaultConstructorResolver().ResolveConstructorExpression(type);
+            Expression? expression = new DefaultConstructorResolver().TryResolveConstructorExpression(type);
             Assert.IsType<DefaultExpression>(expression);
         }
     }

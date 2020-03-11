@@ -1,5 +1,6 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
+using System.Diagnostics.CodeAnalysis;
 using System.Runtime.CompilerServices;
 
 namespace Singularity.Collections
@@ -17,6 +18,7 @@ namespace Singularity.Collections
             return new ImmutableHashTable<TKey, TValue>(this, new HashedKeyValue<TKey, TValue>(key, value));
         }
 
+        [return: MaybeNull]
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         internal TValue GetOrDefault(TKey key)
         {
@@ -31,7 +33,7 @@ namespace Singularity.Collections
                 current = current.Next;
             }
 
-            return default!;
+            return default;
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]

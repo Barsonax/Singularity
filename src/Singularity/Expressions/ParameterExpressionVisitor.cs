@@ -30,7 +30,7 @@ namespace Singularity.Expressions
                     _context.ScopedExpressions.Add(scopedExpression);
                 }
             }
-            return factory.Context.Expression!;
+            return factory.Context.Expression;
         }
     }
 }

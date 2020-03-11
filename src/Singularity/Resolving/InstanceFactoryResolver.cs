@@ -39,7 +39,7 @@ namespace Singularity.Resolving
         {
             if (Settings.ResolveErrorsExclusions.Match(type))
             {
-                return TryResolve(type)!;
+                return TryResolve(type);
             }
 
             ServiceBinding serviceBinding = GetBinding(type);

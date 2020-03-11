@@ -188,7 +188,7 @@ namespace Singularity.FastExpressionCompiler
             TryCompile<TDelegate>(lambdaExpr.Body, lambdaExpr.Parameters, Tools.GetParamTypes(lambdaExpr.Parameters),
                 lambdaExpr.ReturnType);
 
-        /// <summary>Tries to compile lambda expression to <typeparamref name="TDelegate"/> 
+        /// <summary>Tries to compile lambda expression to <typeparamref name="TDelegate"/>
         /// with the provided closure object and constant expressions (or lack there of) -
         /// Constant expression should be the in order of Fields in closure object!
         /// Note 1: Use it on your own risk - FEC won't verify the expression is compile-able with passed closure, it is up to you!
@@ -207,7 +207,7 @@ namespace Singularity.FastExpressionCompiler
         public static TDelegate TryCompileWithoutClosure<TDelegate>(this LambdaExpression lambdaExpr)
             where TDelegate : class => lambdaExpr.TryCompileWithPreCreatedClosure<TDelegate>(null, null);
 
-        /// <summary>Compiles expression to delegate by emitting the IL. 
+        /// <summary>Compiles expression to delegate by emitting the IL.
         /// If sub-expressions are not supported by emitter, then the method returns null.
         /// The usage should be calling the method, if result is null then calling the Expression.Compile.</summary>
         public static TDelegate TryCompile<TDelegate>(
@@ -270,7 +270,7 @@ namespace Singularity.FastExpressionCompiler
         private static void CopyNestedClosureInfo(IReadOnlyList<ParameterExpression> lambdaParamExprs,
             ref ClosureInfo info, ref ClosureInfo nestedInfo)
         {
-            // if nested non passed parameter is no matched with any outer passed parameter, 
+            // if nested non passed parameter is no matched with any outer passed parameter,
             // then ensure it goes to outer non passed parameter.
             // But check that having a non-passed parameter in root expression is invalid.
             var nestedNonPassedParams = nestedInfo.NonPassedParameters;
@@ -363,7 +363,7 @@ namespace Singularity.FastExpressionCompiler
             public ConstantExpression[] Constants;
 
             // Parameters not passed through lambda parameter list But used inside lambda body.
-            // The top expression should not! contain non passed parameters. 
+            // The top expression should not! contain non passed parameters.
             public ParameterExpression[] NonPassedParameters;
 
             // All nested lambdas recursively nested in expression
@@ -1382,7 +1382,7 @@ namespace Singularity.FastExpressionCompiler
                 return expr.DefaultValue == null || TryEmit(expr.DefaultValue, paramExprs, il, ref closure, parent);
             }
 
-            // todo: GotoExpression.Value 
+            // todo: GotoExpression.Value
             private static bool TryEmitGoto(GotoExpression expr, ILGenerator il, ref ClosureInfo closure)
             {
                 var index = closure.Labels.GetFirstIndex(x => x.Key == expr.Target);
@@ -2866,7 +2866,7 @@ namespace Singularity.FastExpressionCompiler
             private static bool TryEmitInvoke(InvocationExpression expr,
                 IReadOnlyList<ParameterExpression> paramExprs, ILGenerator il, ref ClosureInfo closure, ParentFlags parent)
             {
-                // optimization #138: we are inlining invoked lambda body (only for lambdas without arguments) 
+                // optimization #138: we are inlining invoked lambda body (only for lambdas without arguments)
                 var lambda = expr.Expression;
                 if (lambda is LambdaExpression lambdaExpr && lambdaExpr.Parameters.Count == 0)
                     return TryEmit(lambdaExpr.Body, paramExprs, il, ref closure, parent);
@@ -3444,7 +3444,7 @@ namespace Singularity.FastExpressionCompiler
         }
     }
 
-    // Helpers targeting the performance. Extensions method names may be a bit funny (non standard), 
+    // Helpers targeting the performance. Extensions method names may be a bit funny (non standard),
     // in order to prevent conflicts with YOUR helpers with standard names
     internal static class Tools
     {

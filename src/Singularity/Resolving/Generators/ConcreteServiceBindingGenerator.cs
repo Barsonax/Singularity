@@ -16,7 +16,7 @@ namespace Singularity.Resolving.Generators
             {
                 if (type.GetConstructorCandidates().Any())
                 {
-                    yield return new ServiceBinding(type, BindingMetadata.GeneratedInstance, resolver.Settings.ConstructorResolver.ResolveConstructorExpression(type), type, resolver.Settings.ConstructorResolver, Lifetimes.Transient);
+                    yield return new ServiceBinding(type, BindingMetadata.GeneratedInstance, resolver.Settings.ConstructorResolver.TryResolveConstructorExpression(type), type, resolver.Settings.ConstructorResolver, Lifetimes.Transient);
                 }
             }
         }

@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Diagnostics.CodeAnalysis;
 using System.Runtime.CompilerServices;
 
 namespace Singularity.Collections
@@ -67,14 +68,16 @@ namespace Singularity.Collections
             /// <summary>
             /// The value of the current node.
             /// </summary>
+            [AllowNull]
+            [MaybeNull]
             public TValue Current { get; private set; }
 
-            object IEnumerator.Current => Current!;
+            object? IEnumerator.Current => Current;
 
             internal Enumerator(SinglyLinkedListKeyNode<TKey, TValue> list)
             {
                 _node = list;
-                Current = default!;
+                Current = default;
             }
 
             /// <inheritdoc />
@@ -108,16 +111,17 @@ namespace Singularity.Collections
             return new SinglyLinkedListKeyNode<TKey, TValue>(previous, in key, in value);
         }
 
+        [return: MaybeNull]
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static TValue GetOrDefault<TKey, TValue>(this SinglyLinkedListKeyNode<TKey, TValue>? list, TKey key)
         {
             while (list != null)
             {
                 if (ReferenceEquals(list.Key, key)) return list.Value;
-                list = list.Next!;
+                list = list.Next;
             }
 
-            return default!;
+            return default;
         }
     }
 }

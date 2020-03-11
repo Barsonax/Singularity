@@ -15,9 +15,8 @@ namespace Singularity.Expressions
 
         public ReadOnlyExpressionContext GenerateBaseExpression(ServiceBinding serviceBinding, InstanceFactory[] children, Scoped containerScope, SingularitySettings settings)
         {
-            var context = new ExpressionContext(serviceBinding.Expression);
-            context.Expression = serviceBinding.Expression! is LambdaExpression lambdaExpression ? lambdaExpression.Body : serviceBinding.Expression ?? throw new ArgumentNullException(nameof(serviceBinding.Expression));
-            var parameterExpressionVisitor = new ParameterExpressionVisitor(context, children!);
+            var context = new ExpressionContext(serviceBinding.Expression is LambdaExpression lambdaExpression ? lambdaExpression.Body : serviceBinding.Expression ?? throw new ArgumentNullException(nameof(serviceBinding.Expression)));
+            var parameterExpressionVisitor = new ParameterExpressionVisitor(context, children);
             context.Expression = parameterExpressionVisitor.Visit(context.Expression);
 
             if (ShouldBeAutoDisposed(serviceBinding, context, settings))
@@ -52,7 +51,7 @@ namespace Singularity.Expressions
                 ParameterExpression instanceParameter = Expression.Variable(dependencyType, $"{dependencyType} instance");
                 body.Add(Expression.Assign(instanceParameter, Expression.Convert(context.Expression, dependencyType)));
 
-                var decoratorExpressionVisitor = new DecoratorExpressionVisitor(children!, instanceParameter.Type);
+                var decoratorExpressionVisitor = new DecoratorExpressionVisitor(children, instanceParameter.Type);
                 decoratorExpressionVisitor.PreviousDecorator = instanceParameter;
                 foreach (Expression decorator in decorators)
                 {

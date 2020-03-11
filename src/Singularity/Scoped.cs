@@ -88,19 +88,20 @@ namespace Singularity
         }
 
         internal T GetOrAddScopedInstance<T>(Func<Scoped, T> factory, Type key)
+            where T : notnull
         {
             SinglyLinkedListKeyNode<Type, object>? initialValue = _scopedInstances;
             SinglyLinkedListKeyNode<Type, object>? current = initialValue;
             while (current != null)
             {
                 if (ReferenceEquals(current.Key, key)) return (T)current.Value;
-                current = current.Next!;
+                current = current.Next;
             }
 
             //There is a very slight chance that this instance is created more than once under heavy load.
             //In that case the duplicate will be discarded.
             T obj = factory(this);
-            SinglyLinkedListKeyNode<Type, object> computedValue = initialValue.Add(key, obj!);
+            SinglyLinkedListKeyNode<Type, object> computedValue = initialValue.Add(key, obj);
             if (ReferenceEquals(Interlocked.CompareExchange(ref _scopedInstances, computedValue, initialValue), initialValue))
             {
                 return obj;
@@ -120,6 +121,7 @@ namespace Singularity
         /// <param name="key"></param>
         /// <returns></returns>
         internal T HandleScopeThreadCollision<T>(T obj, Type key)
+            where T : notnull
         {
             SinglyLinkedListKeyNode<Type, object>? initialValue, computedValue;
             do
@@ -129,9 +131,9 @@ namespace Singularity
                 while (current != null)
                 {
                     if (ReferenceEquals(current.Key, key)) return (T)current.Value;
-                    current = current.Next!;
+                    current = current.Next;
                 }
-                computedValue = initialValue.Add(key, obj!);
+                computedValue = initialValue.Add(key, obj);
             }
             while (!ReferenceEquals(Interlocked.CompareExchange(ref _scopedInstances, computedValue, initialValue), initialValue));
 
@@ -158,14 +160,14 @@ namespace Singularity
             do
             {
                 initialValue = _finalizers;
-                ActionList<object> list = initialValue.GetOrDefault(key);
+                ActionList<object>? list = initialValue.GetOrDefault(key);
                 if (list != null)
                 {
                     list.Add(obj);
                     return obj;
                 }
 
-                computedValue = initialValue.Add(key, new ActionList<object>(key.Finalizer!));
+                computedValue = initialValue.Add(key, new ActionList<object>(key.Finalizer));
             }
             while (!ReferenceEquals(Interlocked.CompareExchange(ref _finalizers, computedValue, initialValue), initialValue));
             computedValue.Value.Add(obj);
@@ -181,7 +183,7 @@ namespace Singularity
             while (disposables != null)
             {
                 disposables.Value.Dispose();
-                disposables = disposables.Next!;
+                disposables = disposables.Next;
             }
 
             SinglyLinkedListKeyNode<ServiceBinding, ActionList<object>>? finalizers = Interlocked.Exchange(ref _finalizers, null);;
