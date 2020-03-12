@@ -12,7 +12,7 @@ namespace Singularity.Test
             Assert.Throws<ArgumentNullException>(() =>
             {
                 IEnumerable<IModule>? modules = null;
-                var container = new Container(modules);
+                var container = new Container(modules!);
             });
         }
     }

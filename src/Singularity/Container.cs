@@ -26,7 +26,8 @@ namespace Singularity
         internal readonly Scoped ContainerScope;
         internal readonly InstanceFactoryResolver DependencyGraph;
         private readonly ThreadSafeDictionary<Type, Action<Scoped, object>?> _injectionCache = new ThreadSafeDictionary<Type, Action<Scoped, object>?>();
-        private readonly ThreadSafeDictionary<Type, Func<Scoped, object?>?> _getInstanceCache = new ThreadSafeDictionary<Type, Func<Scoped, object?>?>();
+        private readonly ThreadSafeDictionary<Type, Func<Scoped, object>?> _getInstanceCache = new ThreadSafeDictionary<Type, Func<Scoped, object>?>();
+        private readonly ThreadSafeDictionary<Type, Func<Scoped, object?>?> _getInstanceOrDefaultCache = new ThreadSafeDictionary<Type, Func<Scoped, object?>?>();
         private readonly Container? _parentContainer;
 
         /// <summary>
@@ -115,7 +116,7 @@ namespace Singularity
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         internal object GetInstance(Type type, Scoped scope)
         {
-            Func<Scoped, object?>? func = _getInstanceCache.GetOrDefault(type);
+            Func<Scoped, object>? func = _getInstanceCache.GetOrDefault(type);
             if (func == null)
             {
                 func = DependencyGraph.Resolve(type).Factory;
@@ -138,11 +139,16 @@ namespace Singularity
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         internal object? GetInstanceOrDefault(Type type, Scoped scope)
         {
-            Func<Scoped, object?>? func = _getInstanceCache.GetOrDefault(type);
+            Func<Scoped, object?>? func = _getInstanceOrDefaultCache.GetOrDefault(type);
             if (func == null)
             {
-                func = DependencyGraph.TryResolve(type)?.Factory ?? (s => null);
-                _getInstanceCache.Add(type, func);
+                func = DependencyGraph.TryResolve(type)?.Factory;
+                if (func == null)
+                {
+                    func = s => null;
+                }
+
+                _getInstanceOrDefaultCache.Add(type, func);
             }
             return func(scope);
         }

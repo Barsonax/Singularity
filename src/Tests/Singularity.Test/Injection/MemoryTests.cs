@@ -22,7 +22,7 @@ namespace Singularity.Test.Injection
                 var references = new List<MetadataReference>
                 {
                     MetadataReference.CreateFromFile(typeof(Binder).Assembly.Location),
-                    MetadataReference.CreateFromFile(AppDomain.CurrentDomain.GetAssemblies().FirstOrDefault(x => x.FullName.Substring(0, x.FullName.IndexOf(',')) == "netstandard").Location),
+                    MetadataReference.CreateFromFile(AppDomain.CurrentDomain.GetAssemblies().First(x => x.FullName?.Substring(0, x.FullName.IndexOf(',')) == "netstandard").Location),
                 };
                 var parseOpts = new CSharpParseOptions(
                     kind: SourceCodeKind.Regular,
@@ -45,7 +45,7 @@ namespace Singularity.Test.Injection
                 var container = new Container();
 
                 //ACT
-                container.GetInstance(assembly.GetType("A"));
+                container.GetInstance(assembly.GetType("A")!);
                 container.Dispose();
                 unloadableLoadContext.Unload();
 

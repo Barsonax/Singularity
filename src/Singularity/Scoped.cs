@@ -167,7 +167,7 @@ namespace Singularity
                     return obj;
                 }
 
-                computedValue = initialValue.Add(key, new ActionList<object>(key.Finalizer));
+                computedValue = initialValue.Add(key, new ActionList<object>(key.Finalizer!));
             }
             while (!ReferenceEquals(Interlocked.CompareExchange(ref _finalizers, computedValue, initialValue), initialValue));
             computedValue.Value.Add(obj);
