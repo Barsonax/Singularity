@@ -9,8 +9,12 @@ using Singularity.Resolving;
 
 namespace Singularity
 {
+    /// <summary>
+    /// A resolver that picks the constructor with the most arguments that can still be resolved.
+    /// </summary>
     public class BestMatchConstructorResolver : IConstructorResolver
     {
+        /// <inheritdoc />
         public ConstructorInfo? StaticSelectConstructor(Type type)
         {
             ConstructorInfo[] constructors = type.GetConstructorCandidates().ToArray();
@@ -23,6 +27,7 @@ namespace Singularity
             return constructors.Single();
         }
 
+        /// <inheritdoc />
         public ConstructorInfo DynamicSelectConstructor(Type type, IInstanceFactoryResolver instanceFactoryResolver)
         {
             ConstructorInfo[] constructors = type.GetConstructorCandidates().ToArray();
@@ -42,13 +47,11 @@ namespace Singularity
             return constructors.FirstOrDefault();
         }
 
+        /// <inheritdoc />
         public Expression? ResolveConstructorExpression(Type type, ConstructorInfo? constructorInfo)
         {
             if (constructorInfo == null) return null;
             return type.ResolveConstructorExpression(constructorInfo);
         }
-
-
-        internal BestMatchConstructorResolver() { }
     }
 }

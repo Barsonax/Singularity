@@ -4,6 +4,10 @@ using System.Collections.Generic;
 
 namespace Singularity.Collections
 {
+    /// <summary>
+    /// A list with some utility methods for configuration purposes.
+    /// </summary>
+    /// <typeparam name="T"></typeparam>
     public class ConfigurationList<T> : IEnumerable<T>
     {
         private List<T> Elements { get; } = new List<T>();
@@ -90,6 +94,7 @@ namespace Singularity.Collections
             throw new ArgumentException($"No element matched with the predicate {predicate}");
         }
 
+        /// <inheritdoc />
         public IEnumerator<T> GetEnumerator() => Elements.GetEnumerator();
 
         IEnumerator IEnumerable.GetEnumerator() => GetEnumerator();

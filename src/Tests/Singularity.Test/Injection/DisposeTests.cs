@@ -1,4 +1,5 @@
 ﻿using System;
+using Singularity.Test.Utils;
 using Singularity.TestClasses.TestClasses;
 using Xunit;
 
@@ -171,6 +172,26 @@ namespace Singularity.Test.Injection
             Assert.False(castedTopLevelInstance.IsDisposed);
             container.Dispose();
             Assert.True(castedTopLevelInstance.IsDisposed);
+        }
+
+        [Fact]
+        public void GetInstance_PerCallLifetime_IsGarbageCollected()
+        {
+            GarbageCollectionUtils.CheckIfCleanedUp(() =>
+            {
+                //ARRANGE
+                var container = new Container(c =>
+                {
+                    c.Register<Disposable>(s => s.With(ServiceAutoDispose.Always));
+                });
+
+                //ACT
+                var weakRef = new WeakReference(container.GetInstance<Disposable>());
+                container.Dispose();
+
+                //ASSERT
+                return new CleanupTestSet(weakRef, new []{ container });
+            });
         }
     }
 }

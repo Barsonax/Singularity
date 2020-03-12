@@ -74,43 +74,78 @@ namespace Singularity
 
         private SingularitySettings(Action<SingularitySettings>? configurator = null) { configurator?.Invoke(this); }
 
+        /// <summary>
+        /// Configures the <see cref="IServiceBindingGenerator"/>s that will be used.
+        /// </summary>
+        /// <param name="configurator"></param>
         public void ConfigureServiceBindingGenerators(Action<ConfigurationList<IServiceBindingGenerator>> configurator)
         {
             configurator.Invoke(ServiceBindingGenerators);
         }
 
+        /// <summary>
+        /// Ignores any error during resolving a type and returns null if the type matches with the passed <paramref name="match"/>.
+        /// </summary>
+        /// <param name="match"></param>
         public void IgnoreResolveError(ITypeMatcher match)
         {
             ResolveErrorsExclusions.Add(match);
         }
 
+        /// <summary>
+        /// Prevents a <see cref="IServiceBindingGenerator"/> from being executed if the to be resolved type matches with <paramref name="match"/>
+        /// </summary>
+        /// <typeparam name="TResolverType"></typeparam>
+        /// <param name="match"></param>
         public void ExcludeAutoRegistration<TResolverType>(ITypeMatcher match)
             where TResolverType : IServiceBindingGenerator
         {
             ExcludeAutoRegistration(typeof(TResolverType), match);
         }
 
-        public void ExcludeAutoRegistration(Type resolverType, ITypeMatcher match)
+        /// <summary>
+        /// Prevents the <paramref name="serviceBindingGeneratorType"/>> from being executed if the to be resolved type matches with <paramref name="match"/>
+        /// </summary>
+        /// <param name="serviceBindingGeneratorType"></param>
+        /// <param name="match"></param>
+        public void ExcludeAutoRegistration(Type serviceBindingGeneratorType, ITypeMatcher match)
         {
-            if (!ResolverExclusions.TryGetValue(resolverType, out List<ITypeMatcher> exclusions))
+            if (!ResolverExclusions.TryGetValue(serviceBindingGeneratorType, out List<ITypeMatcher> exclusions))
             {
                 exclusions = new List<ITypeMatcher>();
-                ResolverExclusions.Add(resolverType, exclusions);
+                ResolverExclusions.Add(serviceBindingGeneratorType, exclusions);
             }
             exclusions.Add(match);
         }
 
+        /// <summary>
+        /// Changes the logger.
+        /// </summary>
+        /// <param name="logger"></param>
         public void With(ISingularityLogger logger) => Logger = logger;
 
+        /// <summary>
+        /// Changes the default <see cref="IConstructorResolver"/>
+        /// </summary>
+        /// <param name="constructorResolver"></param>
         public void With(IConstructorResolver constructorResolver) => ConstructorResolver = constructorResolver;
 
-        public void AutoDispose(params ILifetime[] autoDisposeLifetimes)
+        /// <summary>
+        /// Automatically disposes instances that use the passed <paramref name="lifetimes"/>
+        /// </summary>
+        /// <param name="lifetimes"></param>
+        public void AutoDispose(params ILifetime[] lifetimes)
         {
-            foreach (ILifetime autoDisposeLifetime in autoDisposeLifetimes)
+            foreach (ILifetime autoDisposeLifetime in lifetimes)
             {
                 AutoDispose(autoDisposeLifetime);
             }
         }
+
+        /// <summary>
+        /// Automatically disposes instances that use the passed <paramref name="lifetime"/>
+        /// </summary>
+        /// <param name="lifetime"></param>
         public void AutoDispose(ILifetime lifetime) => AutoDisposeLifetimes.Add(lifetime.GetType());
     }
 }

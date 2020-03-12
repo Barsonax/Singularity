@@ -107,14 +107,31 @@ namespace Singularity.Collections
         }
     }
 
+    /// <summary>
+    /// Extensions for <see cref="SinglyLinkedListNode{T}"/>
+    /// </summary>
     public static class SinglyLinkedListNodeExtensions
     {
+        /// <summary>
+        /// returns a new <see cref="SinglyLinkedListNode{T}"/> that points to the passed <paramref name="previous"/> node.
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        /// <param name="previous"></param>
+        /// <param name="value"></param>
+        /// <returns></returns>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static SinglyLinkedListNode<T> Add<T>(this SinglyLinkedListNode<T>? previous, in T value)
         {
             return new SinglyLinkedListNode<T>(previous, in value);
         }
 
+        /// <summary>
+        /// Converts the passed <paramref name="collection"/> to a <see cref="SinglyLinkedListNode{T}"/>
+        /// Note: reverses the order of the elements.
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        /// <param name="collection"></param>
+        /// <returns></returns>
         public static SinglyLinkedListNode<T>? ToSinglyLinkedList<T>(this IEnumerable<T> collection)
         {
             SinglyLinkedListNode<T>? previous = null;
