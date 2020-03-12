@@ -7,24 +7,33 @@ namespace Singularity.Test.Utils
 {
     public class GarbageCollectionUtils
     {
-        public static void CheckIfCleanedUp(Func<WeakReference> func)
-        {
-            CheckIfCleanedUp(() => new[] { func() });
-        }
-
         [MethodImpl(MethodImplOptions.NoInlining)]
-        public static void CheckIfCleanedUp(Func<WeakReference[]> func)
+        public static void CheckIfCleanedUp(Func<CleanupTestSet> func)
         {
-            var weakRefs = func();
+            CleanupTestSet cleanupTestSet = func();
 
             // In some cases unloading something happens async and can take some time such as with AssemblyLoadContext. Workaround this by retrying a couple of times..
-            for (int i = 0; weakRefs.Any(x => x.IsAlive) && i < 10; i++)
+            for (int i = 0; cleanupTestSet.WeakReferences.Any(x => x.IsAlive) && i < 10; i++)
             {
                 GC.Collect(2, GCCollectionMode.Forced, true);
                 GC.WaitForPendingFinalizers();
             }
 
-            Assert.Collection(weakRefs, x => Assert.False(x.IsAlive));
+            Assert.Collection(cleanupTestSet.WeakReferences, x => Assert.False(x.IsAlive));
         }
+    }
+
+    public class CleanupTestSet
+    {
+        public CleanupTestSet(WeakReference weakReference, object[]? keepAliveInstances = null) : this(new[] { weakReference }, keepAliveInstances) { }
+
+        public CleanupTestSet(WeakReference[] weakReferences, object[]? keepAliveInstances = null)
+        {
+            WeakReferences = weakReferences;
+            KeepAliveInstances = keepAliveInstances;
+        }
+
+        public WeakReference[] WeakReferences { get; }
+        public object[]? KeepAliveInstances { get; }
     }
 }

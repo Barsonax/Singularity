@@ -18,6 +18,7 @@ namespace Singularity.Test.Injection
         {
             GarbageCollectionUtils.CheckIfCleanedUp(() =>
             {
+                //ARRANGE
                 var references = new List<MetadataReference>
                 {
                     MetadataReference.CreateFromFile(typeof(Binder).Assembly.Location),
@@ -41,13 +42,15 @@ namespace Singularity.Test.Injection
                 var weakRef = new WeakReference(unloadableLoadContext);
 
                 Assembly assembly = unloadableLoadContext.LoadFromStream(memoryStream);
-                using (var container = new Container())
-                {
-                    container.GetInstance(assembly.GetType("A"));
-                }
+                var container = new Container();
+
+                //ACT
+                container.GetInstance(assembly.GetType("A"));
+                container.Dispose();
                 unloadableLoadContext.Unload();
 
-                return weakRef;
+                //ASSERT
+                return new CleanupTestSet(weakRef);
             });
         }
     }

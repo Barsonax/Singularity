@@ -190,7 +190,7 @@ namespace Singularity.Test.Injection
                 container.Dispose();
 
                 //ASSERT
-                return weakRef;
+                return new CleanupTestSet(weakRef, new []{ container });
             });
         }
     }
