@@ -5,6 +5,7 @@
     <AssemblyName>Singularity.Duality.core</AssemblyName>
     <PackageTags>Duality Plugin ioc di inversion control dependency injection container</PackageTags>
     <Description>Plugin that adds a ioc container to duality</Description>
+    <NoWarn>1701;1702;NU1701</NoWarn>
   </PropertyGroup>
 
   <ItemGroup>
@@ -16,7 +17,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <None Include="$(ProjectDir)..\..\..\..\icon.png" Pack="true" PackagePath="\"/>
+    <None Include="$(ProjectDir)..\..\..\..\icon.png" Pack="true" PackagePath="\" />
   </ItemGroup>
 
   <Import Project="$(ProjectDir)../../../../DefaultLibrarySettings.targets" />

@@ -6,6 +6,9 @@ using Singularity.Resolving;
 
 namespace Singularity.Expressions
 {
+    /// <summary>
+    /// Interface for classes that can select a constructor.
+    /// </summary>
     public interface IConstructorResolver
     {
         /// <summary>
@@ -23,6 +26,12 @@ namespace Singularity.Expressions
         /// <returns></returns>
         ConstructorInfo DynamicSelectConstructor(Type type, IInstanceFactoryResolver instanceFactoryResolver);
 
+        /// <summary>
+        /// Resolves the constructor to a expression.
+        /// </summary>
+        /// <param name="type"></param>
+        /// <param name="constructorInfo"></param>
+        /// <returns></returns>
         Expression? ResolveConstructorExpression(Type type, ConstructorInfo? constructorInfo);
     }
 }

@@ -10,11 +10,11 @@ namespace Singularity
         /// <summary>
         /// The default strict constructor injector
         /// </summary>
-        public static IConstructorResolver Default { get; } = new ConstructorResolverCache(new DefaultConstructorResolver());
+        public static IConstructorResolver Default { get; } = new DefaultConstructorResolver();
 
         /// <summary>
         /// A resolver that picks the constructor with the most arguments that can still be resolved.
         /// </summary>
-        public static IConstructorResolver BestMatch { get; } = new ConstructorResolverCache(new BestMatchConstructorResolver());
+        public static IConstructorResolver BestMatch { get; } = new BestMatchConstructorResolver();
     }
 }

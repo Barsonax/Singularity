@@ -9,7 +9,7 @@ using Singularity.Resolving;
 namespace Singularity
 {
     /// <summary>
-    /// Wraps around a <see cref="IConstructorResolver"/> to add caching.
+    /// Provides caching for <see cref="IConstructorResolver"/>
     /// </summary>
     public class ConstructorResolverCache : IConstructorResolver
     {
@@ -17,6 +17,10 @@ namespace Singularity
         private readonly ConcurrentDictionary<Type, Expression?> ResolveConstructorExpressionCache = new ConcurrentDictionary<Type, Expression?>();
         private readonly IConstructorResolver _constructorResolver;
 
+        /// <summary>
+        /// Wraps around the passed <paramref name="constructorResolver"></paramref> to add caching.
+        /// </summary>
+        /// <param name="constructorResolver"></param>
         public ConstructorResolverCache(IConstructorResolver constructorResolver)
         {
             _constructorResolver = constructorResolver;

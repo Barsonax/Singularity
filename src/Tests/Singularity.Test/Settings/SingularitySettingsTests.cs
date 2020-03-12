@@ -1,5 +1,5 @@
 ﻿using Singularity.Resolving.Generators;
-
+using Singularity.TestClasses.TestClasses;
 using Xunit;
 
 namespace Singularity.Test.Settings
