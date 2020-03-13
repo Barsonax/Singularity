@@ -44,7 +44,7 @@ namespace Singularity
                 }
                 else
                 {
-                    _expression = constructorSelector.ResolveConstructorExpression(_instanceType);
+                    _expression = constructorSelector.TryResolveConstructorExpression(_instanceType);
                 }
             }
             return new ServiceBinding(_dependencyTypes, _bindingMetadata, _expression, _instanceType, constructorSelector, _lifetime, _finalizer, _disposeBehavior);

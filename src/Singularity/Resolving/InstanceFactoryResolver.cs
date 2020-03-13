@@ -39,6 +39,9 @@ namespace Singularity.Resolving
         {
             if (Settings.ResolveErrorsExclusions.Match(type))
             {
+                // TODO Bit of a hack since the signature of this method means it cannot return null.. However this is needed for integration with microsoft dependency injection.
+                // The reason this is needed is because the of way IServiceProvider is used in ASP .NET it has to return null in some cases instead of throwing a exception.
+                // Ideally IServiceProvider should have different methods for this so this hack is not needed.
                 return TryResolve(type)!;
             }
 

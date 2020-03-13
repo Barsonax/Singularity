@@ -1,6 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
-
+using System.Diagnostics.CodeAnalysis;
 using Duality.Resources;
 using Singularity.Duality.Resources;
 
@@ -30,7 +30,7 @@ namespace Singularity.Duality.Scopes
 					}
 					else if (TryCreateModule(moduleRef, out IModule? module))
 					{
-						modules.Add(module!);
+						modules.Add(module);
 					}
 				}
 			}
@@ -48,14 +48,14 @@ namespace Singularity.Duality.Scopes
 			}
 		}
 
-		private bool TryCreateModule(ModuleRef moduleRef, out IModule? module)
+		private bool TryCreateModule(ModuleRef moduleRef, [NotNullWhen(true)] out IModule? module)
 		{
 			Type type = moduleRef.Type;
 			if (type == null)
 			{
 				_logger.WriteWarning($"{nameof(Singularity)}: Could not resolve the type {moduleRef}");
 			}
-			else
+            else
 			{
 				try
 				{

@@ -27,6 +27,20 @@ namespace Singularity.Test.Injection
         }
 
         [Fact]
+        public void GetInstanceOrDefault_FollowedByGetInstance_UnregisteredService_Throws()
+        {
+            //ARRANGE
+            var container = new Container();
+
+            //ACT
+            var value1 = container.GetInstanceOrDefault<ITestService10>();
+
+            //ASSERT
+            Assert.Throws<DependencyNotFoundException>(() => { container.GetInstance<ITestService10>(); });
+            Assert.Null(value1);
+        }
+
+        [Fact]
         public void GetService_AsServiceProvider_ReturnsCorrectDependency()
         {
             //ARRANGE

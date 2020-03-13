@@ -68,7 +68,7 @@ namespace Singularity.Resolving.Generators
                 typeof(Func<Scoped, TElement>[]),
             }, BindingMetadata.GeneratedInstance, Expression.Constant(instanceFactories), typeof(Func<Scoped, TElement>[]), ConstructorResolvers.Default, Lifetimes.PerContainer);
 
-            Expression expression = ConstructorResolvers.Default.ResolveConstructorExpression(typeof(InstanceFactoryList<TElement>))!;
+            Expression expression = ConstructorResolvers.Default.ResolveConstructorExpression(typeof(InstanceFactoryList<TElement>));
 
             yield return new ServiceBinding(new[]
             {

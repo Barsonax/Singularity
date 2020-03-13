@@ -20,7 +20,7 @@ namespace Singularity.Resolving.Generators
                 {
                     Type openGenericType = openGenericBinding.ConcreteType;
                     Type closedGenericType = openGenericType.MakeGenericType(type.GenericTypeArguments);
-                    Expression? newExpression = openGenericBinding.ConstructorResolver.ResolveConstructorExpression(closedGenericType);
+                    Expression? newExpression = openGenericBinding.ConstructorResolver.TryResolveConstructorExpression(closedGenericType);
 
                     yield return new ServiceBinding(type, openGenericBinding.BindingMetadata, newExpression, closedGenericType,
                         openGenericBinding.ConstructorResolver, openGenericBinding.Lifetime, openGenericBinding.Finalizer,

@@ -27,7 +27,7 @@ namespace Singularity.Expressions
             else
             {
                 InstanceFactory factory = _factories.First(x => x.DependencyType == node.Type);
-                return factory.Context.Expression!;
+                return factory.Context.Expression;
             }
         }
     }

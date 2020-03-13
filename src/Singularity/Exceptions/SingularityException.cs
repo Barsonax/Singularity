@@ -9,7 +9,7 @@ namespace Singularity.Exceptions
     [Serializable]
 	public class SingularityException : Exception
 	{
-        internal SingularityException(string message, Exception? innerException = null) : base(message, innerException) { }
+         internal SingularityException(string message, Exception? innerException = null) : base(message, innerException) { }
 
         /// <summary>
         /// Deserialization constructor

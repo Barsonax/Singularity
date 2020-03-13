@@ -5,7 +5,7 @@ using Singularity.FastExpressionCompiler;
 
 namespace Singularity.Benchmark
 {
-    class Program 
+    class Program
     {
         static void Main()
         {

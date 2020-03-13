@@ -3,6 +3,7 @@
 namespace Singularity.TestClasses.TestClasses
 {
     public class TypeEqualityComparer<T> : IEqualityComparer<T>
+        where T : notnull
     {
         public bool Equals(T x, T y)
         {

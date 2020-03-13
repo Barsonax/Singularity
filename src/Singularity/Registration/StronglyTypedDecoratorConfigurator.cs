@@ -25,7 +25,7 @@ namespace Singularity
 
         private readonly BindingMetadata _bindingMetadata;
         private readonly Type _dependencyType;
-        private readonly Expression? _expression;
+        private readonly Expression _expression;
 
         internal Expression ToBinding()
         {
