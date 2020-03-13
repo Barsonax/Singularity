@@ -1,4 +1,5 @@
-﻿using System;
+﻿#if NETCOREAPP3_0
+using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
@@ -13,6 +14,7 @@ namespace Singularity.Test.Injection
 {
     public class MemoryTests
     {
+
         [Fact]
         public void GetInstance_DynamicallyCompiledType_IsGarbageCollected()
         {
@@ -53,5 +55,7 @@ namespace Singularity.Test.Injection
                 return new CleanupTestSet(weakRef);
             });
         }
+
     }
 }
+#endif
