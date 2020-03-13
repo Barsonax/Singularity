@@ -1,7 +1,7 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <TargetFramework>netstandard2.0</TargetFramework>
+    <TargetFrameworks>netstandard2.0;netstandard2.1</TargetFrameworks>
     <Description>The microsoft dependency injection integration library for the singularity ioc container</Description>
     <PackageTags>ioc di inversion control dependency injection container microsoftdi microsoftdependencyinjection</PackageTags>
     <RootNamespace>Singularity</RootNamespace>
