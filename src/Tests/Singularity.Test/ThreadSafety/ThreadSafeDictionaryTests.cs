@@ -24,7 +24,7 @@ namespace Singularity.Test.ThreadSafety
             tester.Test(testCase =>
             {
                 dic.Add(testCase.input, testCase.expectedOutput);
-                object output = dic.GetOrDefault(testCase.input);
+                object? output = dic.GetOrDefault(testCase.input);
                 Assert.Equal(testCase.expectedOutput, output);
             });
 

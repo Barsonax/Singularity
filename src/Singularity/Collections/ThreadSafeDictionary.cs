@@ -1,5 +1,6 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
+using System.Diagnostics.CodeAnalysis;
 using System.Runtime.CompilerServices;
 using System.Threading;
 
@@ -34,6 +35,7 @@ namespace Singularity.Collections
             while (initialValue != Interlocked.CompareExchange(ref _immutableHashTable, computedValue, initialValue));
         }
 
+        [return: MaybeNull]
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public TValue GetOrDefault(TKey key)
         {
