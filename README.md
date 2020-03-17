@@ -85,7 +85,6 @@ Platform=X64  IterationTime=1.0000 s
 
 |    Method |          Job |       Jit |       Runtime |          Mean |       Error |      StdDev |  Gen 0 |  Gen 1 | Gen 2 | Allocated |
 |---------- |------------- |---------- |-------------- |--------------:|------------:|------------:|-------:|-------:|------:|----------:|
-|  Register | LegacyJitX64 | LegacyJit |    .NET 4.7.2 | 17,918.890 ns | 101.5440 ns |  94.9844 ns | 9.3947 |      - |     - |   15600 B |
 | Singleton | LegacyJitX64 | LegacyJit |    .NET 4.7.2 |     10.539 ns |   0.1156 ns |   0.1082 ns |      - |      - |     - |         - |
 | Transient | LegacyJitX64 | LegacyJit |    .NET 4.7.2 |     15.095 ns |   0.0562 ns |   0.0525 ns | 0.0145 |      - |     - |      24 B |
 |  Combined | LegacyJitX64 | LegacyJit |    .NET 4.7.2 |     20.722 ns |   0.0707 ns |   0.0552 ns | 0.0338 |      - |     - |      56 B |
