@@ -63,18 +63,19 @@ namespace Singularity.Collections
         /// <returns></returns>
         public sealed class Enumerator : IEnumerator<TValue>
         {
-            private SinglyLinkedListKeyNode<TKey, TValue> _node;
+            private SinglyLinkedListKeyNode<TKey, TValue>? _node;
 
             /// <summary>
             /// The value of the current node.
             /// </summary>
-            public TValue Current => _node.Value;
+            public TValue Current { get; private set; }
 
             object? IEnumerator.Current => Current;
 
             internal Enumerator(SinglyLinkedListKeyNode<TKey, TValue> list)
             {
                 _node = list;
+                Current = list.Value;
             }
 
             /// <inheritdoc />
@@ -82,9 +83,11 @@ namespace Singularity.Collections
             {
                 if (_node != null)
                 {
-                    _node = _node.Next!;
+                    Current = _node.Value;
+                    _node = _node.Next;
                     return true;
                 }
+
                 return false;
             }
 

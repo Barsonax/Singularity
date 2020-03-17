@@ -17,7 +17,7 @@ namespace Singularity.Benchmark
             //benchmark.Setup();
             //benchmark.AspNetCore();
             //BenchmarkRunner.Run<ImmutableDictionaryBenchmarks>();
-            //BenchmarkRunner.Run<SimpleContainerBenchmark>();
+            BenchmarkRunner.Run<SimpleContainerBenchmark>();
             //BenchmarkRunner.Run<AdvancedContainerBenchmark>();
             //BenchmarkRunner.Run()
             //BenchmarkSwitcher.FromTypes(new[] {typeof(SimpleContainerBenchmark), typeof(AdvancedContainerBenchmark)}).RunAllJoined();

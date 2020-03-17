@@ -70,28 +70,31 @@ namespace Singularity.Collections
         /// <returns></returns>
         public sealed class Enumerator : IEnumerator<T>
         {
-            private SinglyLinkedListNode<T> _node;
+            private SinglyLinkedListNode<T>? _node;
 
             /// <summary>
             /// The value of the current node.
             /// </summary>
-            public T Current => _node.Value;
+            public T Current { get; private set; }
 
             object? IEnumerator.Current => Current;
 
             internal Enumerator(SinglyLinkedListNode<T> list)
             {
                 _node = list;
+                Current = list.Value;
             }
 
             /// <inheritdoc />
             public bool MoveNext()
             {
-                if(_node != null)
+                if (_node != null)
                 {
-                    _node = _node.Next!;
+                    Current = _node.Value;
+                    _node = _node.Next;
                     return true;
                 }
+
                 return false;
             }
 
