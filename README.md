@@ -74,25 +74,32 @@ More info about `Singularity` can be found on the documentation website which ca
 ### Benchmarks
 The code used in the benchmark can be found [here](https://github.com/Barsonax/Singularity/blob/master/Singularity.TestClasses/Benchmark/SimpleSingularityContainerBenchmark.cs)
 ```
-BenchmarkDotNet=v0.11.4, OS=Windows 10.0.17763.437 (1809/October2018Update/Redstone5)
-Intel Core i7-4790K CPU 4.00GHz (Haswell), 1 CPU, 8 logical and 4 physical cores
-.NET Core SDK=3.0.100-preview3-010431
-  [Host]       : .NET Core 2.1.9 (CoreCLR 4.6.27414.06, CoreFX 4.6.27415.01), 64bit RyuJIT
-  LegacyJitX64 : .NET Framework 4.7.2 (CLR 4.0.30319.42000), 64bit RyuJIT-v4.7.3324.0
-  RyuJitX64    : .NET Core 2.1.9 (CoreCLR 4.6.27414.06, CoreFX 4.6.27415.01), 64bit RyuJIT
+BenchmarkDotNet=v0.12.0, OS=Windows 10.0.18363
+AMD Ryzen 9 3900X, 1 CPU, 24 logical and 12 physical cores
+.NET Core SDK=3.1.200
+  [Host]       : .NET Core 3.1.2 (CoreCLR 4.700.20.6602, CoreFX 4.700.20.6702), X64 RyuJIT
+  LegacyJitX64 : .NET Framework 4.8 (4.8.4150.0), X64 RyuJIT
+  RyuJitX64    : .NET Core 2.1.16 (CoreCLR 4.6.28516.03, CoreFX 4.6.28516.10), X64 RyuJIT
 
-Platform=X64  IterationTime=500.0000 ms
+Platform=X64  IterationTime=1.0000 s
 
-|    Method |          Job |       Jit | Runtime |      Mean |     Error |    StdDev | Gen 0/1k Op | Gen 1/1k Op | Gen 2/1k Op | Allocated Memory/Op |
-|---------- |------------- |---------- |-------- |----------:|----------:|----------:|------------:|------------:|------------:|--------------------:|
-| Singleton | LegacyJitX64 | LegacyJit |     Clr |  7.700 ns | 0.0722 ns | 0.0675 ns |           - |           - |           - |                   - |
-| Transient | LegacyJitX64 | LegacyJit |     Clr | 10.086 ns | 0.0220 ns | 0.0195 ns |      0.0057 |           - |           - |                24 B |
-|  Combined | LegacyJitX64 | LegacyJit |     Clr | 15.067 ns | 0.0568 ns | 0.0532 ns |      0.0133 |           - |           - |                56 B |
-|   Complex | LegacyJitX64 | LegacyJit |     Clr | 26.822 ns | 0.1198 ns | 0.1121 ns |      0.0229 |           - |           - |                96 B |
-| Singleton |    RyuJitX64 |    RyuJit |    Core |  7.744 ns | 0.0743 ns | 0.0695 ns |           - |           - |           - |                   - |
-| Transient |    RyuJitX64 |    RyuJit |    Core | 10.031 ns | 0.0172 ns | 0.0161 ns |      0.0057 |           - |           - |                24 B |
-|  Combined |    RyuJitX64 |    RyuJit |    Core | 16.454 ns | 0.0564 ns | 0.0500 ns |      0.0133 |           - |           - |                56 B |
-|   Complex |    RyuJitX64 |    RyuJit |    Core | 23.667 ns | 0.0410 ns | 0.0342 ns |      0.0229 |           - |           - |                96 B |
+|    Method |          Job |       Jit |       Runtime |          Mean |       Error |      StdDev |  Gen 0 |  Gen 1 | Gen 2 | Allocated |
+|---------- |------------- |---------- |-------------- |--------------:|------------:|------------:|-------:|-------:|------:|----------:|
+|  Register | LegacyJitX64 | LegacyJit |    .NET 4.7.2 | 17,918.890 ns | 101.5440 ns |  94.9844 ns | 9.3947 |      - |     - |   15600 B |
+| Singleton | LegacyJitX64 | LegacyJit |    .NET 4.7.2 |     10.539 ns |   0.1156 ns |   0.1082 ns |      - |      - |     - |         - |
+| Transient | LegacyJitX64 | LegacyJit |    .NET 4.7.2 |     15.095 ns |   0.0562 ns |   0.0525 ns | 0.0145 |      - |     - |      24 B |
+|  Combined | LegacyJitX64 | LegacyJit |    .NET 4.7.2 |     20.722 ns |   0.0707 ns |   0.0552 ns | 0.0338 |      - |     - |      56 B |
+|   Complex | LegacyJitX64 | LegacyJit |    .NET 4.7.2 |     27.218 ns |   0.2894 ns |   0.2566 ns | 0.0580 |      - |     - |      96 B |
+|  Register |    RyuJitX64 |    RyuJit | .NET Core 2.1 | 22,300.706 ns | 109.0636 ns | 102.0181 ns | 8.6912 |      - |     - |   14464 B |
+| Singleton |    RyuJitX64 |    RyuJit | .NET Core 2.1 |      9.569 ns |   0.0634 ns |   0.0593 ns |      - |      - |     - |         - |
+| Transient |    RyuJitX64 |    RyuJit | .NET Core 2.1 |     14.755 ns |   0.1025 ns |   0.0959 ns | 0.0145 |      - |     - |      24 B |
+|  Combined |    RyuJitX64 |    RyuJit | .NET Core 2.1 |     22.506 ns |   0.3656 ns |   0.3420 ns | 0.0337 |      - |     - |      56 B |
+|   Complex |    RyuJitX64 |    RyuJit | .NET Core 2.1 |     26.756 ns |   0.3521 ns |   0.3294 ns | 0.0578 |      - |     - |      96 B |
+|  Register |    RyuJitX64 |    RyuJit | .NET Core 3.1 | 15,413.451 ns |  67.0614 ns |  62.7292 ns | 1.7130 | 0.0309 |     - |   14347 B |
+| Singleton |    RyuJitX64 |    RyuJit | .NET Core 3.1 |     12.167 ns |   0.1213 ns |   0.1135 ns |      - |      - |     - |         - |
+| Transient |    RyuJitX64 |    RyuJit | .NET Core 3.1 |     14.461 ns |   0.0698 ns |   0.0653 ns | 0.0029 |      - |     - |      24 B |
+|  Combined |    RyuJitX64 |    RyuJit | .NET Core 3.1 |     20.933 ns |   0.2406 ns |   0.2251 ns | 0.0067 |      - |     - |      56 B |
+|   Complex |    RyuJitX64 |    RyuJit | .NET Core 3.1 |     24.196 ns |   0.1059 ns |   0.0991 ns | 0.0115 |      - |     - |      96 B |
 ```
 
 ### Nuget
