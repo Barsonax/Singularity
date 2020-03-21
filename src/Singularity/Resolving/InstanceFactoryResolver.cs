@@ -81,6 +81,11 @@ namespace Singularity.Resolving
             lock (SyncRoot)
             {
                 if (RegistrationStore.Registrations.TryGetValue(type, out Registration parent)) return parent;
+                var parentDependency = _parentPipeline?.TryGetDependency2(type);
+                if (parentDependency != null)
+                {
+                    if(!parentDependency.Value.Default.BindingMetadata.Generated) return parentDependency;
+                }
 
                 foreach (IServiceBindingGenerator dependencyResolver in _resolvers)
                 {
@@ -99,7 +104,17 @@ namespace Singularity.Resolving
                     }
                 }
 
-                return _parentPipeline?.TryGetDependency(type);
+                return null;
+            }
+        }
+
+        private Registration? TryGetDependency2(Type type)
+        {
+            lock (SyncRoot)
+            {
+                if (RegistrationStore.Registrations.TryGetValue(type, out Registration parent)) return parent;
+
+                return _parentPipeline?.TryGetDependency2(type);
             }
         }
 
