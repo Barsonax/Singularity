@@ -1,4 +1,5 @@
-﻿using Singularity.Exceptions;
+﻿using System;
+using Singularity.Exceptions;
 using Singularity.TestClasses.TestClasses;
 using Xunit;
 
@@ -29,20 +30,88 @@ namespace Singularity.Test.Injection
         }
 
         [Fact]
-        public void Foo()
+        public void GetInstance_Singleton_MultiInterface()
         {
+            //ARRANGE
             var container = new Container(builder =>
             {
-                // Both registrations result in two initializations of WritingSingleton
                 builder.Register<ISingleton1, Singleton1>(c => c.As<Singleton1>().With(Lifetimes.PerContainer));
-                //builder.Register(typeof(WritingSingleton), c => c.As(typeof(ISingleton)).With(Lifetimes.PerContainer));
             });
 
+            //ACT
             var childContainer = container.GetNestedContainer();
 
+            var instance0 = container.GetInstance<ISingleton1>();
             var instance1 = childContainer.GetInstance<ISingleton1>();
             var instance2 = childContainer.GetInstance<Singleton1>();
 
+            //ASSERT
+            Assert.Equal(instance0, instance1);
+            Assert.Equal(instance0, instance2);
+        }
+
+        [Fact]
+        public void GetInstance_Singleton_MultiInterface_Func()
+        {
+            //ARRANGE
+            var container = new Container(builder =>
+            {
+                builder.Register<ISingleton1, Singleton1>(c => c.As<Singleton1>().With(Lifetimes.PerContainer));
+            });
+
+            //ACT
+            var childContainer = container.GetNestedContainer();
+
+            var instance0 = container.GetInstance<Func<ISingleton1>>().Invoke();
+            var instance1 = childContainer.GetInstance<Func<ISingleton1>>().Invoke();
+            var instance2 = childContainer.GetInstance<Func<Singleton1>>().Invoke();
+
+            //ASSERT
+            Assert.Equal(instance0, instance1);
+            Assert.Equal(instance0, instance2);
+        }
+
+        [Fact]
+        public void GetInstance_Scoped_MultiInterface()
+        {
+            //ARRANGE
+            var container = new Container(builder =>
+            {
+                builder.Register<ISingleton1, Singleton1>(c => c.As<Singleton1>().With(Lifetimes.PerScope));
+            });
+
+            //ACT
+            var childContainer = container.GetNestedContainer();
+
+            var instance0 = container.GetInstance<ISingleton1>();
+            var instance1 = childContainer.GetInstance<ISingleton1>();
+            var instance2 = childContainer.GetInstance<Singleton1>();
+
+            //ASSERT
+            Assert.NotEqual(instance0, instance1);
+            Assert.NotEqual(instance0, instance2);
+            Assert.Equal(instance1, instance2);
+        }
+
+        [Fact]
+        public void GetInstance_Scoped_MultiInterface_Func()
+        {
+            //ARRANGE
+            var container = new Container(builder =>
+            {
+                builder.Register<ISingleton1, Singleton1>(c => c.As<Singleton1>().With(Lifetimes.PerScope));
+            });
+
+            //ACT
+            var childContainer = container.GetNestedContainer();
+
+            var instance0 = container.GetInstance<Func<ISingleton1>>().Invoke();
+            var instance1 = childContainer.GetInstance<Func<ISingleton1>>().Invoke();
+            var instance2 = childContainer.GetInstance<Func<Singleton1>>().Invoke();
+
+            //ASSERT
+            Assert.NotEqual(instance0, instance1);
+            Assert.NotEqual(instance0, instance2);
             Assert.Equal(instance1, instance2);
         }
     }

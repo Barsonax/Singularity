@@ -100,6 +100,8 @@ namespace Singularity
         /// <returns></returns>
         public WeaklyTypedServiceConfigurator As(Type serviceType)
         {
+            ServiceTypeValidator.CheckIsEnumerable(serviceType);
+            ServiceTypeValidator.CheckIsAssignable(serviceType, _instanceType);
             _dependencyTypes = new SinglyLinkedListNode<Type>(_dependencyTypes, serviceType);
             return this;
         }

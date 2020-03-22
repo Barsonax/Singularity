@@ -84,6 +84,8 @@ namespace Singularity
         /// <returns></returns>
         public StronglyTypedServiceConfigurator<TDependency, TInstance> As<TService>()
         {
+            ServiceTypeValidator.Cache<TDependency>.CheckIsEnumerable();
+            ServiceTypeValidator.CheckIsAssignable(typeof(TService), typeof(TInstance));
             _dependencyTypes = new SinglyLinkedListNode<Type>(_dependencyTypes, typeof(TService));
             return this;
         }

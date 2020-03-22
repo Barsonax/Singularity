@@ -57,7 +57,7 @@ namespace Singularity.Resolving
 
         public ServiceBinding? TryGetBinding(Type type)
         {
-            return TryGetDependency(type)?.Default;
+            return TryResolveRegistration(type)?.Default;
         }
 
         public ServiceBinding GetBinding(Type type)
@@ -67,7 +67,7 @@ namespace Singularity.Resolving
 
         public IEnumerable<InstanceFactory> TryResolveAll(Type type)
         {
-            Registration? registration = TryGetDependency(type);
+            Registration? registration = TryResolveRegistration(type);
             if (registration == null) yield break;
             foreach (ServiceBinding registrationBinding in registration.Value.Bindings.Array)
             {
@@ -76,12 +76,12 @@ namespace Singularity.Resolving
             }
         }
 
-        private Registration? TryGetDependency(Type type)
+        private Registration? TryResolveRegistration(Type type)
         {
             lock (SyncRoot)
             {
                 if (RegistrationStore.Registrations.TryGetValue(type, out Registration parent)) return parent;
-                var parentDependency = _parentPipeline?.TryGetDependency2(type);
+                var parentDependency = _parentPipeline?.TryGetRegistration(type);
                 if (parentDependency != null)
                 {
                     if(!parentDependency.Value.Default.BindingMetadata.Generated) return parentDependency;
@@ -100,7 +100,7 @@ namespace Singularity.Resolving
                         {
                             RegistrationStore.AddBinding(binding);
                         }
-                        return TryGetDependency(type);
+                        return TryResolveRegistration(type);
                     }
                 }
 
@@ -108,19 +108,19 @@ namespace Singularity.Resolving
             }
         }
 
-        private Registration? TryGetDependency2(Type type)
+        private Registration? TryGetRegistration(Type type)
         {
             lock (SyncRoot)
             {
                 if (RegistrationStore.Registrations.TryGetValue(type, out Registration parent)) return parent;
 
-                return _parentPipeline?.TryGetDependency2(type);
+                return _parentPipeline?.TryGetRegistration(type);
             }
         }
 
         private Registration GetDependency(Type type)
         {
-            Registration? dependency = TryGetDependency(type);
+            Registration? dependency = TryResolveRegistration(type);
             if (dependency == null) throw new DependencyNotFoundException(type);
             return dependency.Value;
         }
