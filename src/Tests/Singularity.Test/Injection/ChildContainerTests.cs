@@ -30,6 +30,56 @@ namespace Singularity.Test.Injection
         }
 
         [Fact]
+        public void GetInstance_Singleton_Disposable()
+        {
+            //ARRANGE
+            var container = new Container(builder =>
+            {
+                builder.Register<IDisposable, Disposable>(c => c.As<Disposable>().With(Lifetimes.PerContainer).With(ServiceAutoDispose.Always));
+            });
+
+            //ACT
+            var childContainer = container.GetNestedContainer();
+
+            var instance1 = container.GetInstance<Disposable>();
+            var instance2 = childContainer.GetInstance<Disposable>();
+
+            //ASSERT
+            Assert.Equal(instance1, instance2);
+            Assert.False(instance1.IsDisposed);
+            childContainer.Dispose();
+            Assert.False(instance1.IsDisposed);
+            container.Dispose();
+            Assert.True(instance1.IsDisposed);
+        }
+
+        [Fact]
+        public void GetInstance_Scoped_Disposable()
+        {
+            //ARRANGE
+            var container = new Container(builder =>
+            {
+                builder.Register<IDisposable, Disposable>(c => c.As<Disposable>().With(Lifetimes.PerScope).With(ServiceAutoDispose.Always));
+            });
+
+            //ACT
+            var childContainer = container.GetNestedContainer();
+
+            var instance1 = container.GetInstance<Disposable>();
+            var instance2 = childContainer.GetInstance<Disposable>();
+
+            //ASSERT
+            Assert.NotEqual(instance1, instance2);
+            Assert.False(instance1.IsDisposed);
+            Assert.False(instance2.IsDisposed);
+            childContainer.Dispose();
+            Assert.False(instance1.IsDisposed);
+            Assert.True(instance2.IsDisposed);
+            container.Dispose();
+            Assert.True(instance1.IsDisposed);
+        }
+
+        [Fact]
         public void GetInstance_Singleton_MultiInterface()
         {
             //ARRANGE
