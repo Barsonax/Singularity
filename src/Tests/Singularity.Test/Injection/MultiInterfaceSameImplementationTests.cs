@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
+using Singularity.Exceptions;
 using Singularity.TestClasses.TestClasses;
 using Xunit;
 
@@ -7,6 +8,22 @@ namespace Singularity.Test.Injection
 {
     public class MultiInterfaceSameImplementationTests
     {
+        [Fact]
+        public void GetInstance_WrongInterfaceType_Throws()
+        {
+            //ARRANGE
+            //ACT
+            //ASSERT
+            Assert.Throws<TypeNotAssignableException>(() =>
+            {
+                var container = new Container(builder =>
+                {
+                    builder.Register<IService1, Implementation1>(c => c
+                        .As<ITestService10>());
+                });
+            });
+        }
+
         [Fact]
         public void GetInstance_2Interfaces_ReturnsCorrectDependency()
         {
