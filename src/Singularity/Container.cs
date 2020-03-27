@@ -26,7 +26,7 @@ namespace Singularity
         internal readonly Scoped ContainerScope;
         internal readonly InstanceFactoryResolver DependencyGraph;
         private readonly ThreadSafeDictionary<Type, Action<Scoped, object>?> _injectionCache = new ThreadSafeDictionary<Type, Action<Scoped, object>?>();
-        private readonly ThreadSafeDictionary<Type, Func<Scoped, object>?> _getInstanceCache = new ThreadSafeDictionary<Type, Func<Scoped, object>?>();
+        private readonly ThreadSafeDictionary<Type, Func<Scoped, object?>?> _getInstanceCache = new ThreadSafeDictionary<Type, Func<Scoped, object?>?>();
         private readonly ThreadSafeDictionary<Type, Func<Scoped, object?>?> _getInstanceOrDefaultCache = new ThreadSafeDictionary<Type, Func<Scoped, object?>?>();
         private readonly Container? _parentContainer;
 
@@ -104,19 +104,19 @@ namespace Singularity
 
         /// <inheritdoc />
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public T GetInstance<T>() where T : class => GetInstance<T>(ContainerScope);
+        public T? GetInstance<T>() where T : class => GetInstance<T>(ContainerScope);
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        private T GetInstance<T>(Scoped scope) where T : class => (T)GetInstance(typeof(T), scope);
+        private T? GetInstance<T>(Scoped scope) where T : class => (T?)GetInstance(typeof(T), scope);
 
         /// <inheritdoc />
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public object GetInstance(Type type) => GetInstance(type, ContainerScope);
+        public object? GetInstance(Type type) => GetInstance(type, ContainerScope);
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        internal object GetInstance(Type type, Scoped scope)
+        internal object? GetInstance(Type type, Scoped scope)
         {
-            Func<Scoped, object>? func = _getInstanceCache.GetOrDefault(type);
+            Func<Scoped, object?>? func = _getInstanceCache.GetOrDefault(type);
             if (func == null)
             {
                 func = DependencyGraph.Resolve(type).Factory;
@@ -252,7 +252,7 @@ namespace Singularity
         }
 
         /// <inheritdoc />
-        object IServiceProvider.GetService(Type serviceType)
+        object? IServiceProvider.GetService(Type serviceType)
         {
             return GetInstance(serviceType);
         }

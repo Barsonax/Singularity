@@ -63,9 +63,9 @@ namespace Singularity.Test.Registrations
 
             //ASSERT
             ServiceBinding[] serviceBindings = Assert.Single(registrations).Bindings.ToArray();
-            Assert.Equal(typeof(Plugin1), serviceBindings[0].Expression!.Type);
-            Assert.Equal(typeof(Plugin2), serviceBindings[1].Expression!.Type);
-            Assert.Equal(typeof(Plugin3), serviceBindings[2].Expression!.Type);
+            Assert.Equal(typeof(Plugin1), serviceBindings[0].Expression?.Type);
+            Assert.Equal(typeof(Plugin2), serviceBindings[1].Expression?.Type);
+            Assert.Equal(typeof(Plugin3), serviceBindings[2].Expression?.Type);
         }
 
         [Fact]
@@ -88,9 +88,9 @@ namespace Singularity.Test.Registrations
 
             //ASSERT
             ServiceBinding[] serviceBindings = Assert.Single(registrations).Bindings.ToArray();
-            Assert.Equal(typeof(Plugin1), serviceBindings[0].Expression!.Type);
-            Assert.Equal(typeof(Plugin2), serviceBindings[1].Expression!.Type);
-            Assert.Equal(typeof(Plugin3), serviceBindings[2].Expression!.Type);
+            Assert.Equal(typeof(Plugin1), serviceBindings[0].Expression?.Type);
+            Assert.Equal(typeof(Plugin2), serviceBindings[1].Expression?.Type);
+            Assert.Equal(typeof(Plugin3), serviceBindings[2].Expression?.Type);
             Assert.True(registrations[0].Bindings.All(x => x.Lifetime == Lifetimes.PerContainer));
         }
 
@@ -117,9 +117,9 @@ namespace Singularity.Test.Registrations
 
             //ASSERT
             ServiceBinding[] serviceBindings = Assert.Single(readOnlyBindingConfig.Registrations).Value.Bindings.ToArray();
-            Assert.Equal(typeof(Plugin1), serviceBindings[0].Expression!.Type);
-            Assert.Equal(typeof(Plugin2), serviceBindings[1].Expression!.Type);
-            Assert.Equal(typeof(Plugin3), serviceBindings[2].Expression!.Type);
+            Assert.Equal(typeof(Plugin1), serviceBindings[0].Expression?.Type);
+            Assert.Equal(typeof(Plugin2), serviceBindings[1].Expression?.Type);
+            Assert.Equal(typeof(Plugin3), serviceBindings[2].Expression?.Type);
 
             ArrayList<Expression> decorators = Assert.Single(readOnlyBindingConfig.Decorators.Values);
 
