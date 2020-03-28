@@ -5,6 +5,7 @@
     <Description>The AspNetCore hosting integration library for the singularity ioc container</Description>
     <PackageTags>ioc di inversion control dependency injection container microsoftdi microsoftdependencyinjection hosting</PackageTags>
     <RootNamespace>Singularity</RootNamespace>
+    <WarningsAsErrors>CS8600;CS8602;CS8603</WarningsAsErrors>
   </PropertyGroup>
 
   <ItemGroup>

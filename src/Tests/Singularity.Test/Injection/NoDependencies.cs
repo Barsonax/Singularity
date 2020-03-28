@@ -11,6 +11,22 @@ namespace Singularity.Test.Injection
     public class NoDependencies
     {
         [Fact]
+        public void GetInstance_IgnoreResolveError_ReturnsNullInsteadOfException()
+        {
+            //ARRANGE
+            var container = new Container(builder =>
+            {
+                builder.ConfigureSettings(s => s.IgnoreResolveError(new PatternTypeMatcher($"*{nameof(ITestService10)}*")));
+            });
+
+            //ACT
+            var value = container.GetInstance<ITestService10>();
+
+            //ASSERT
+            Assert.Null(value);
+        }
+
+        [Fact]
         public void GetInstance_ReturnsCorrectDependency()
         {
             //ARRANGE
