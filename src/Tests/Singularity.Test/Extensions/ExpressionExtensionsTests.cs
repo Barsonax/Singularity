@@ -11,7 +11,7 @@ namespace Singularity.Test.Extensions
         [Fact]
         public void GetParameterExpressions_Null_Throws()
         {
-            Expression? expression = null;
+            Expression expression = null;
             Assert.Throws<ArgumentNullException>(() => { expression!.GetParameterExpressions(); });
         }
 

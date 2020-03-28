@@ -13,7 +13,7 @@ namespace Singularity.Test.Collections
         [Fact]
         public void Enumerate_ConcreteType()
         {
-            SinglyLinkedListKeyNode<int, int>? list = null;
+            SinglyLinkedListKeyNode<int, int> list = null;
 
             list = list.Add(0, 1);
             list = list.Add(1, 2);
@@ -29,7 +29,7 @@ namespace Singularity.Test.Collections
         [Fact]
         public void Enumerate_EnumerableGenericType()
         {
-            SinglyLinkedListKeyNode<int, int>? list = null;
+            SinglyLinkedListKeyNode<int, int> list = null;
 
             list = list.Add(0, 1);
             list = list.Add(1, 2);
@@ -45,7 +45,7 @@ namespace Singularity.Test.Collections
         [Fact]
         public void Enumerate_EnumerableNonGenericType()
         {
-            SinglyLinkedListKeyNode<int, int>? list = null;
+            SinglyLinkedListKeyNode<int, int> list = null;
 
             list = list.Add(0, 1);
             list = list.Add(1, 2);

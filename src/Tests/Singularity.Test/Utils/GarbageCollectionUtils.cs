@@ -25,15 +25,15 @@ namespace Singularity.Test.Utils
 
     public class CleanupTestSet
     {
-        public CleanupTestSet(WeakReference weakReference, object[]? keepAliveInstances = null) : this(new[] { weakReference }, keepAliveInstances) { }
+        public CleanupTestSet(WeakReference weakReference, object[] keepAliveInstances = null) : this(new[] { weakReference }, keepAliveInstances) { }
 
-        public CleanupTestSet(WeakReference[] weakReferences, object[]? keepAliveInstances = null)
+        public CleanupTestSet(WeakReference[] weakReferences, object[] keepAliveInstances = null)
         {
             WeakReferences = weakReferences;
             KeepAliveInstances = keepAliveInstances;
         }
 
         public WeakReference[] WeakReferences { get; }
-        public object[]? KeepAliveInstances { get; }
+        public object[] KeepAliveInstances { get; }
     }
 }

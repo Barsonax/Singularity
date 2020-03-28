@@ -1,5 +1,6 @@
 ﻿using System;
 using Microsoft.Extensions.DependencyInjection;
+using Singularity.Exceptions;
 
 namespace Singularity
 {
@@ -27,7 +28,7 @@ namespace Singularity
         public IServiceProvider CreateServiceProvider(ContainerBuilder containerBuilder)
         {
             var container = new Container(containerBuilder);
-            return container.GetInstance<IServiceProvider>();
+            return container.GetInstance<IServiceProvider>()!;
         }
     }
 }

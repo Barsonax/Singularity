@@ -19,12 +19,12 @@ namespace Singularity.Resolving
         /// </summary>
         public ReadOnlyExpressionContext Context { get; }
 
-        private Func<Scoped, object>? _factory;
+        private Func<Scoped, object?>? _factory;
 
         /// <summary>
         /// <see cref="Context"/> compiled into a generic delegate.
         /// </summary>
-        public Func<Scoped, object> Factory => _factory ??= ExpressionCompiler.Compile(Context);
+        public Func<Scoped, object?> Factory => _factory ??= ExpressionCompiler.Compile(Context);
 
         /// <summary>
         /// Creates a new <see cref="InstanceFactory"/>

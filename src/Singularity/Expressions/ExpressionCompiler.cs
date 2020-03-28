@@ -8,10 +8,10 @@ namespace Singularity.Expressions
 {
     internal static class ExpressionCompiler
     {
-        public static Func<Scoped, object> Compile(ReadOnlyExpressionContext context)
+        public static Func<Scoped, object?> Compile(ReadOnlyExpressionContext context)
         {
             Expression expression = OptimizeExpression(context);
-            return (Func<Scoped, object>)Expression.Lambda(expression, ExpressionGenerator.ScopeParameter).CompileFast();
+            return (Func<Scoped, object?>)Expression.Lambda(expression, ExpressionGenerator.ScopeParameter).CompileFast();
         }
 
         public static Expression OptimizeExpression(ReadOnlyExpressionContext context)

@@ -33,9 +33,9 @@ namespace Singularity
         /// <typeparam name="T"></typeparam>
         /// <returns></returns>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public T GetInstance<T>() where T : class
+        public T? GetInstance<T>() where T : class
         {
-            return (T)GetInstance(typeof(T));
+            return (T?)GetInstance(typeof(T));
         }
 
         /// <summary>
@@ -44,7 +44,7 @@ namespace Singularity
         /// <param name="type"></param>
         /// <returns></returns>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public object GetInstance(Type type)
+        public object? GetInstance(Type type)
         {
             return Container.GetInstance(type, this);
         }
@@ -72,7 +72,7 @@ namespace Singularity
         }
 
         /// <inheritdoc />
-        object IServiceProvider.GetService(Type serviceType)
+        object? IServiceProvider.GetService(Type serviceType)
         {
             return Container.GetInstance(serviceType, this);
         }
