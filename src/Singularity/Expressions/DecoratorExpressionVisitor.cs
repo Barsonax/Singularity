@@ -9,24 +9,24 @@ namespace Singularity.Expressions
     internal sealed class DecoratorExpressionVisitor : ExpressionVisitor
     {
         private readonly InstanceFactory[] _factories;
-        private readonly Type _instanceType;
+        private readonly Type _serviceType;
         public Expression? PreviousDecorator;
 
-        public DecoratorExpressionVisitor(InstanceFactory[] factories, Type instanceType)
+        public DecoratorExpressionVisitor(InstanceFactory[] factories, Type serviceType)
         {
             _factories = factories;
-            _instanceType = instanceType;
+            _serviceType = serviceType;
         }
 
         protected override Expression VisitParameter(ParameterExpression node)
         {
-            if (node.Type == _instanceType)
+            if (node.Type == _serviceType)
             {
                 return PreviousDecorator ?? throw new InvalidOperationException($"You should assign {nameof(PreviousDecorator)} first");
             }
             else
             {
-                InstanceFactory factory = _factories.First(x => x.DependencyType == node.Type);
+                InstanceFactory factory = _factories.First(x => x.ServiceType == node.Type);
                 return factory.Context.Expression;
             }
         }

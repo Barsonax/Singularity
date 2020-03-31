@@ -128,6 +128,25 @@ namespace Singularity.Collections
         }
 
         /// <summary>
+        /// returns a new <see cref="SinglyLinkedListNode{T}"/> that points to the passed <paramref name="previous"/> node.
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        /// <param name="previous"></param>
+        /// <param name="collection"></param>
+        /// <returns></returns>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        [return: NotNullIfNotNull("previous")]
+        public static SinglyLinkedListNode<T>? Add<T>(this SinglyLinkedListNode<T>? previous, IEnumerable<T> collection)
+        {
+            foreach (var element in collection)
+            {
+                previous = new SinglyLinkedListNode<T>(previous, element);
+            }
+
+            return previous;
+        }
+
+        /// <summary>
         /// Converts the passed <paramref name="collection"/> to a <see cref="SinglyLinkedListNode{T}"/>
         /// Note: reverses the order of the elements.
         /// </summary>

@@ -8,44 +8,44 @@ namespace Singularity
 {
     internal static class ServiceTypeValidator
     {
-        public static void CheckIsEnumerable(Type dependencyType)
+        public static void CheckIsEnumerable(Type serviceType)
         {
-            if (IsEnumerable(dependencyType))
-                ThrowEnumerableRegistrationException(dependencyType);
+            if (IsEnumerable(serviceType))
+                ThrowEnumerableRegistrationException(serviceType);
         }
 
-        public static void CheckIsAssignable(Type dependencyType, Type instanceType)
+        public static void CheckIsAssignable(Type serviceType, Type implementationType)
         {
-            if (dependencyType.ContainsGenericParameters)
+            if (serviceType.ContainsGenericParameters)
             {
-                if (!instanceType.ContainsGenericParameters || instanceType.GenericTypeArguments.Length != dependencyType.GenericTypeArguments.Length)
+                if (!implementationType.ContainsGenericParameters || implementationType.GenericTypeArguments.Length != serviceType.GenericTypeArguments.Length)
                 {
-                    throw new TypeNotAssignableException($"Open generic type {dependencyType} is not implemented by {instanceType}");
+                    throw new TypeNotAssignableException($"Open generic type {serviceType} is not implemented by {implementationType}");
                 }
             }
             else
             {
-                if (!dependencyType.IsAssignableFrom(instanceType)) throw new TypeNotAssignableException($"{dependencyType} is not implemented by {instanceType}");
+                if (!serviceType.IsAssignableFrom(implementationType)) throw new TypeNotAssignableException($"{serviceType} is not implemented by {implementationType}");
             }
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static void CheckIsAssignable(SinglyLinkedListNode<Type> dependencyTypes, Type instanceType)
+        public static void CheckIsAssignable(SinglyLinkedListNode<Type> serviceTypes, Type implementationType)
         {
-            foreach (Type dependencyType in dependencyTypes)
+            foreach (Type serviceType in serviceTypes)
             {
-                CheckIsAssignable(dependencyType, instanceType);
+                CheckIsAssignable(serviceType, implementationType);
             }
         }
 
-        private static void ThrowEnumerableRegistrationException(Type dependencyType)
+        private static void ThrowEnumerableRegistrationException(Type serviceType)
         {
-            throw new EnumerableRegistrationException($"don't register {dependencyType} as IEnumerable directly. Instead register them as you would normally.");
+            throw new EnumerableRegistrationException($"don't register {serviceType} as IEnumerable directly. Instead register them as you would normally.");
         }
 
-        private static bool IsEnumerable(Type dependencyType)
+        private static bool IsEnumerable(Type serviceType)
         {
-            if (dependencyType.IsGenericType && dependencyType.GetGenericTypeDefinition() == typeof(IEnumerable<>))
+            if (serviceType.IsGenericType && serviceType.GetGenericTypeDefinition() == typeof(IEnumerable<>))
             {
                 return true;
             }

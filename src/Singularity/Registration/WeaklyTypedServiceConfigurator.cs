@@ -11,22 +11,25 @@ namespace Singularity
     /// </summary>
     public sealed class WeaklyTypedServiceConfigurator
     {
-        internal WeaklyTypedServiceConfigurator(Type dependencyType, Type instanceType, in BindingMetadata bindingMetadata, SingularitySettings settings, IConstructorResolver? constructorSelector)
+        internal WeaklyTypedServiceConfigurator(SinglyLinkedListNode<Type> serviceTypes, Type implementationType, in BindingMetadata bindingMetadata, SingularitySettings settings)
         {
-            ServiceTypeValidator.CheckIsEnumerable(dependencyType);
-            ServiceTypeValidator.CheckIsAssignable(dependencyType, instanceType);
-            _instanceType = instanceType;
+            foreach (var serviceType in serviceTypes)
+            {
+                ServiceTypeValidator.CheckIsEnumerable(serviceType);
+                ServiceTypeValidator.CheckIsAssignable(serviceType, implementationType);
+            }
+
+            _implementationType = implementationType;
             _bindingMetadata = bindingMetadata;
-            _dependencyTypes = new SinglyLinkedListNode<Type>(dependencyType);
+            _serviceTypes = serviceTypes;
             _settings = settings;
-            _constructorSelector = constructorSelector;
         }
 
         private readonly BindingMetadata _bindingMetadata;
         private readonly SingularitySettings _settings;
-        private readonly IConstructorResolver? _constructorSelector;
-        private readonly Type _instanceType;
-        private SinglyLinkedListNode<Type> _dependencyTypes;
+        private IConstructorResolver? _constructorSelector;
+        private readonly Type _implementationType;
+        private SinglyLinkedListNode<Type> _serviceTypes;
         private Expression? _expression;
         private ILifetime _lifetime = Lifetimes.Transient;
         private Action<object>? _finalizer;
@@ -38,16 +41,16 @@ namespace Singularity
             var constructorSelector = _constructorSelector ?? _settings.ConstructorResolver;
             if (_expression == null)
             {
-                if (_instanceType.ContainsGenericParameters)
+                if (_implementationType.ContainsGenericParameters)
                 {
-                    return new ServiceBinding(_dependencyTypes, _bindingMetadata, null, _instanceType, constructorSelector, _lifetime, _finalizer, _disposeBehavior);
+                    return new ServiceBinding(_serviceTypes, _bindingMetadata, null, _implementationType, constructorSelector, _lifetime, _finalizer, _disposeBehavior);
                 }
                 else
                 {
-                    _expression = constructorSelector.TryResolveConstructorExpression(_instanceType);
+                    _expression = constructorSelector.TryResolveConstructorExpression(_implementationType);
                 }
             }
-            return new ServiceBinding(_dependencyTypes, _bindingMetadata, _expression, _instanceType, constructorSelector, _lifetime, _finalizer, _disposeBehavior);
+            return new ServiceBinding(_serviceTypes, _bindingMetadata, _expression, _implementationType, constructorSelector, _lifetime, _finalizer, _disposeBehavior);
         }
 
         /// <summary>
@@ -88,21 +91,18 @@ namespace Singularity
         /// <returns></returns>
         public WeaklyTypedServiceConfigurator Inject(Expression expression)
         {
-            ServiceTypeValidator.CheckIsAssignable(_dependencyTypes, expression.GetReturnType());
+            ServiceTypeValidator.CheckIsAssignable(_serviceTypes, expression.GetReturnType());
             _expression = expression;
             return this;
         }
 
         /// <summary>
-        /// Adds a alternative service type.
+        /// Overrides the default constructor selector for this dependency
+        /// <param name="value"></param>
         /// </summary>
-        /// <param name="serviceType"></param>
-        /// <returns></returns>
-        public WeaklyTypedServiceConfigurator As(Type serviceType)
+        public WeaklyTypedServiceConfigurator With(IConstructorResolver value)
         {
-            ServiceTypeValidator.CheckIsEnumerable(serviceType);
-            ServiceTypeValidator.CheckIsAssignable(serviceType, _instanceType);
-            _dependencyTypes = new SinglyLinkedListNode<Type>(_dependencyTypes, serviceType);
+            _constructorSelector = value;
             return this;
         }
     }

@@ -12,7 +12,7 @@ namespace Singularity.Resolving
         /// <summary>
         /// The service type.
         /// </summary>
-        public Type DependencyType { get; }
+        public Type ServiceType { get; }
 
         /// <summary>
         /// Expression that is used to create the instance of the service
@@ -29,12 +29,12 @@ namespace Singularity.Resolving
         /// <summary>
         /// Creates a new <see cref="InstanceFactory"/>
         /// </summary>
-        /// <param name="dependencyType"></param>
+        /// <param name="serviceType"></param>
         /// <param name="context"></param>
         /// <param name="factory"></param>
-        public InstanceFactory(Type dependencyType, ReadOnlyExpressionContext context, Func<Scoped, object>? factory = null)
+        public InstanceFactory(Type serviceType, ReadOnlyExpressionContext context, Func<Scoped, object>? factory = null)
         {
-            DependencyType = dependencyType;
+            ServiceType = serviceType;
             Context = context;
             _factory = factory;
         }

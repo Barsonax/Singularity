@@ -38,10 +38,13 @@ namespace Singularity.Test.Registrations
             KeyValuePair<Type, Registration>[] registrations = builder.Registrations.Registrations.ToArray();
 
             //ASSERT
-            Assert.Equal(3, registrations.Length);
+            Assert.Equal(6, registrations.Length);
             Assert.Equal(typeof(ITestService10), registrations[0].Key);
-            Assert.Equal(typeof(ITestService11), registrations[1].Key);
-            Assert.Equal(typeof(ITestService12), registrations[2].Key);
+            Assert.Equal(typeof(TestService10), registrations[1].Key);
+            Assert.Equal(typeof(ITestService11), registrations[2].Key);
+            Assert.Equal(typeof(TestService11), registrations[3].Key);
+            Assert.Equal(typeof(ITestService12), registrations[4].Key);
+            Assert.Equal(typeof(TestService12), registrations[5].Key);
         }
 
         [Fact]
@@ -50,6 +53,7 @@ namespace Singularity.Test.Registrations
             //ARRANGE
             var builder = new ContainerBuilder(cb =>
             {
+                //ACT
                 cb.Register(typeof(IPlugin), new[]
                 {
                     typeof(Plugin1),
@@ -58,14 +62,26 @@ namespace Singularity.Test.Registrations
                 });
             });
 
-            //ACT
-            Registration[] registrations = builder.Registrations.Registrations.Values.ToArray();
-
             //ASSERT
-            ServiceBinding[] serviceBindings = Assert.Single(registrations).Bindings.ToArray();
+            var registrations = builder.Registrations.Registrations;
+
+            Assert.Equal(4, registrations.Count());
+
+            var multiServiceBinding = registrations[typeof(IPlugin)];
+
+            ServiceBinding[] serviceBindings = multiServiceBinding.Bindings.ToArray();
             Assert.Equal(typeof(Plugin1), serviceBindings[0].Expression?.Type);
             Assert.Equal(typeof(Plugin2), serviceBindings[1].Expression?.Type);
             Assert.Equal(typeof(Plugin3), serviceBindings[2].Expression?.Type);
+
+            var plugin1Binding = registrations[typeof(Plugin1)];
+            Assert.Single(plugin1Binding.Bindings);
+
+            var plugin2Binding = registrations[typeof(Plugin2)];
+            Assert.Single(plugin2Binding.Bindings);
+
+            var plugin3Binding = registrations[typeof(Plugin3)];
+            Assert.Single(plugin3Binding.Bindings);
         }
 
         [Fact]
@@ -74,6 +90,7 @@ namespace Singularity.Test.Registrations
             //ARRANGE
             var builder = new ContainerBuilder(cb =>
             {
+                //ACT
                 cb.Register(typeof(IPlugin), new[]
                 {
                     typeof(Plugin1),
@@ -83,15 +100,29 @@ namespace Singularity.Test.Registrations
                     .With(Lifetimes.PerContainer));
             });
 
-            //ACT
-            Registration[] registrations = builder.Registrations.Registrations.Values.ToArray();
 
             //ASSERT
-            ServiceBinding[] serviceBindings = Assert.Single(registrations).Bindings.ToArray();
+            var registrations = builder.Registrations.Registrations;
+
+            Assert.Equal(4, registrations.Count());
+
+            var multiServiceBinding = registrations[typeof(IPlugin)];
+
+            ServiceBinding[] serviceBindings = multiServiceBinding.Bindings.ToArray();
             Assert.Equal(typeof(Plugin1), serviceBindings[0].Expression?.Type);
             Assert.Equal(typeof(Plugin2), serviceBindings[1].Expression?.Type);
             Assert.Equal(typeof(Plugin3), serviceBindings[2].Expression?.Type);
-            Assert.True(registrations[0].Bindings.All(x => x.Lifetime == Lifetimes.PerContainer));
+
+            var plugin1Binding = registrations[typeof(Plugin1)];
+            Assert.Single(plugin1Binding.Bindings);
+
+            var plugin2Binding = registrations[typeof(Plugin2)];
+            Assert.Single(plugin2Binding.Bindings);
+
+            var plugin3Binding = registrations[typeof(Plugin3)];
+            Assert.Single(plugin3Binding.Bindings);
+
+            Assert.True(registrations.Values.All(x => x.Bindings.All(y => y.Lifetime == Lifetimes.PerContainer)));
         }
 
         [Fact]
@@ -116,10 +147,24 @@ namespace Singularity.Test.Registrations
             RegistrationStore readOnlyBindingConfig = builder.Registrations;
 
             //ASSERT
-            ServiceBinding[] serviceBindings = Assert.Single(readOnlyBindingConfig.Registrations).Value.Bindings.ToArray();
+
+            Assert.Equal(4, readOnlyBindingConfig.Registrations.Count());
+
+            var multiServiceBinding = readOnlyBindingConfig.Registrations[typeof(IPlugin)];
+
+            ServiceBinding[] serviceBindings = multiServiceBinding.Bindings.ToArray();
             Assert.Equal(typeof(Plugin1), serviceBindings[0].Expression?.Type);
             Assert.Equal(typeof(Plugin2), serviceBindings[1].Expression?.Type);
             Assert.Equal(typeof(Plugin3), serviceBindings[2].Expression?.Type);
+
+            var plugin1Binding = readOnlyBindingConfig.Registrations[typeof(Plugin1)];
+            Assert.Single(plugin1Binding.Bindings);
+
+            var plugin2Binding = readOnlyBindingConfig.Registrations[typeof(Plugin2)];
+            Assert.Single(plugin2Binding.Bindings);
+
+            var plugin3Binding = readOnlyBindingConfig.Registrations[typeof(Plugin3)];
+            Assert.Single(plugin3Binding.Bindings);
 
             ArrayList<Expression> decorators = Assert.Single(readOnlyBindingConfig.Decorators.Values);
 
@@ -193,7 +238,7 @@ namespace Singularity.Test.Registrations
         {
             var builder = new ContainerBuilder(cb =>
             {
-                cb.Register(typeof(object),c => c.Inject(Expression.Constant(new object())));
+                cb.Register(typeof(object), c => c.Inject(Expression.Constant(new object())));
             });
 
             KeyValuePair<Type, Registration> registration = Assert.Single(builder.Registrations.Registrations);

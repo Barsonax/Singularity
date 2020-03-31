@@ -83,7 +83,7 @@ namespace Singularity
         /// <returns></returns>
         public bool TryGetInstanceFactory(Type type, out InstanceFactory factory)
         {
-            factory = Factories.Array.FirstOrDefault(x => x.DependencyType == type);
+            factory = Factories.Array.FirstOrDefault(x => x.ServiceType == type);
             return factory != null;
         }
 
@@ -111,9 +111,9 @@ namespace Singularity
         /// </summary>
         /// <exception cref="ArgumentNullException"></exception>
         /// <exception cref="InvalidEnumValueException{T}"></exception>
-        public ServiceBinding(Type[] dependencyTypes, in BindingMetadata bindingMetadata, Expression? expression, Type concreteType, IConstructorResolver constructorResolver,
+        public ServiceBinding(Type[] serviceTypes, in BindingMetadata bindingMetadata, Expression? expression, Type concreteType, IConstructorResolver constructorResolver,
             ILifetime lifetime, Action<object>? finalizer = null,
-            ServiceAutoDispose needsDispose = ServiceAutoDispose.Default) : this(dependencyTypes.ToSinglyLinkedList() ?? throw new ArgumentException("there should be atleast 1 dependency type", nameof(dependencyTypes)), bindingMetadata, expression, concreteType, constructorResolver, lifetime, finalizer, needsDispose)
+            ServiceAutoDispose needsDispose = ServiceAutoDispose.Default) : this(serviceTypes.ToSinglyLinkedList() ?? throw new ArgumentException("there should be atleast 1 dependency type", nameof(serviceTypes)), bindingMetadata, expression, concreteType, constructorResolver, lifetime, finalizer, needsDispose)
         {
         }
 
@@ -122,9 +122,9 @@ namespace Singularity
         /// </summary>
         /// <exception cref="ArgumentNullException"></exception>
         /// <exception cref="InvalidEnumValueException{T}"></exception>
-        public ServiceBinding(Type dependencyType, in BindingMetadata bindingMetadata, Expression? expression, Type concreteType, IConstructorResolver constructorResolver,
+        public ServiceBinding(Type serviceType, in BindingMetadata bindingMetadata, Expression? expression, Type concreteType, IConstructorResolver constructorResolver,
             ILifetime lifetime, Action<object>? finalizer = null,
-            ServiceAutoDispose needsDispose = ServiceAutoDispose.Default) : this(new SinglyLinkedListNode<Type>(dependencyType), bindingMetadata, expression, concreteType, constructorResolver, lifetime, finalizer, needsDispose)
+            ServiceAutoDispose needsDispose = ServiceAutoDispose.Default) : this(new SinglyLinkedListNode<Type>(serviceType), bindingMetadata, expression, concreteType, constructorResolver, lifetime, finalizer, needsDispose)
         {
         }
     }

@@ -9,29 +9,12 @@ namespace Singularity.Test.Injection
     public class MultiInterfaceSameImplementationTests
     {
         [Fact]
-        public void GetInstance_WrongInterfaceType_Throws()
-        {
-            //ARRANGE
-            //ACT
-            //ASSERT
-            Assert.Throws<TypeNotAssignableException>(() =>
-            {
-                var container = new Container(builder =>
-                {
-                    builder.Register<IService1, Implementation1>(c => c
-                        .As<ITestService10>());
-                });
-            });
-        }
-
-        [Fact]
         public void GetInstance_2Interfaces_ReturnsCorrectDependency()
         {
             //ARRANGE
             var container = new Container(builder =>
             {
-                builder.Register<IService1, Implementation1>(c => c
-                    .As<IService2>());
+                builder.Register<IService1, IService2, Implementation1>();
             });
 
             //ACT
@@ -54,9 +37,7 @@ namespace Singularity.Test.Injection
             //ARRANGE
             var container = new Container(builder =>
             {
-                builder.Register<IService1, Implementation1>(c => c
-                    .As<IService2>()
-                    .As<IService3>());
+                builder.Register<IService1, IService2, IService3, Implementation1>();
             });
 
             //ACT
@@ -82,9 +63,7 @@ namespace Singularity.Test.Injection
             //ARRANGE
             var container = new Container(builder =>
             {
-                builder.Register<IService1, Implementation1>(c => c
-                    .As<IService2>()
-                    .As<IService3>());
+                builder.Register<IService1, IService2, IService3, Implementation1>();
                 builder.Decorate<IService2, Service2Decorator>();
             });
 
@@ -112,9 +91,7 @@ namespace Singularity.Test.Injection
             var container = new Container(builder =>
             {
                 builder.Register<IService1, Implementation2>();
-                builder.Register<IService1, Implementation1>(c => c
-                    .As<IService2>()
-                    .As<IService3>());
+                builder.Register<IService1, IService2, IService3, Implementation1>();
                 builder.Decorate<IService1, Service1Decorator>();
                 builder.Decorate<IService2, Service2Decorator>();
             });
@@ -151,10 +128,10 @@ namespace Singularity.Test.Injection
             var container = new Container(builder =>
             {
                 builder.Register<IService1, Implementation2>();
-                builder.Register<IService1, Implementation1>(c => c
-                    .As<IService2>()
-                    .As<IService3>()
-                    .With(Lifetimes.PerContainer));
+                builder.Register<IService1, IService2, IService3, Implementation1>(c =>
+                {
+                    c.With(Lifetimes.PerContainer);
+                });
                 builder.Decorate<IService1, Service1Decorator>();
                 builder.Decorate<IService2, Service2Decorator>();
             });
@@ -190,9 +167,7 @@ namespace Singularity.Test.Injection
             //ARRANGE
             var container = new Container(builder =>
             {
-                builder.Register(typeof(IService1), typeof(Implementation1), c => c
-                    .As(typeof(IService2))
-                    .As(typeof(IService3)));
+                builder.Register(new[] { typeof(IService1), typeof(IService2), typeof(IService3) }, typeof(Implementation1));
             });
 
             //ACT
@@ -218,11 +193,10 @@ namespace Singularity.Test.Injection
             //ARRANGE
             var container = new Container(builder =>
             {
-                builder.Register<IService1, Implementation1>(c => c
-                    .As<IService2>()
-                    .As<IService3>()
-                    .As<Implementation1>()
-                    .With(Lifetimes.PerContainer));
+                builder.Register<IService1, IService2, IService3, Implementation1>(c =>
+                {
+                    c.With(Lifetimes.PerContainer);
+                });
             });
 
             //ACT
@@ -248,10 +222,7 @@ namespace Singularity.Test.Injection
             //ARRANGE
             var container = new Container(builder =>
             {
-                builder.Register(typeof(IService1), typeof(Implementation1), c => c
-                    .As(typeof(IService2))
-                    .As(typeof(IService3))
-                    .As(typeof(Implementation1))
+                builder.Register(new[] { typeof(IService1), typeof(IService2), typeof(IService3) }, typeof(Implementation1), c => c
                     .With(Lifetimes.PerContainer));
             });
 

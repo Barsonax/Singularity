@@ -12,12 +12,12 @@ namespace Singularity.Collections
 
         internal IModule? CurrentModule;
 
-        public void AddDecorator(Type dependencyType, Expression expression)
+        public void AddDecorator(Type serviceType, Expression expression)
         {
-            if (!Decorators.TryGetValue(dependencyType, out ArrayList<Expression> list))
+            if (!Decorators.TryGetValue(serviceType, out ArrayList<Expression> list))
             {
                 list = new ArrayList<Expression>();
-                Decorators.Add(dependencyType, list);
+                Decorators.Add(serviceType, list);
             }
             list.Add(expression);
         }

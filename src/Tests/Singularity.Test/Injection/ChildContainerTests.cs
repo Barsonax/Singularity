@@ -35,7 +35,7 @@ namespace Singularity.Test.Injection
             //ARRANGE
             var container = new Container(builder =>
             {
-                builder.Register<IDisposable, Disposable>(c => c.As<Disposable>().With(Lifetimes.PerContainer).With(ServiceAutoDispose.Always));
+                builder.Register<IDisposable, Disposable>(c => c.With(Lifetimes.PerContainer).With(ServiceAutoDispose.Always));
             });
 
             //ACT
@@ -59,7 +59,7 @@ namespace Singularity.Test.Injection
             //ARRANGE
             var container = new Container(builder =>
             {
-                builder.Register<IDisposable, Disposable>(c => c.As<Disposable>().With(Lifetimes.PerScope).With(ServiceAutoDispose.Always));
+                builder.Register<IDisposable, Disposable>(c => c.With(Lifetimes.PerScope).With(ServiceAutoDispose.Always));
             });
 
             //ACT
@@ -85,7 +85,7 @@ namespace Singularity.Test.Injection
             //ARRANGE
             var container = new Container(builder =>
             {
-                builder.Register<ISingleton1, Singleton1>(c => c.As<Singleton1>().With(Lifetimes.PerContainer));
+                builder.Register<ISingleton1, Singleton1>(c => c.With(Lifetimes.PerContainer));
             });
 
             //ACT
@@ -106,7 +106,7 @@ namespace Singularity.Test.Injection
             //ARRANGE
             var container = new Container(builder =>
             {
-                builder.Register<ISingleton1, Singleton1>(c => c.As<Singleton1>().With(Lifetimes.PerContainer));
+                builder.Register<ISingleton1, Singleton1>(c => c.With(Lifetimes.PerContainer));
             });
 
             //ACT
@@ -127,7 +127,7 @@ namespace Singularity.Test.Injection
             //ARRANGE
             var container = new Container(builder =>
             {
-                builder.Register<ISingleton1, Singleton1>(c => c.As<Singleton1>().With(Lifetimes.PerScope));
+                builder.Register<ISingleton1, Singleton1>(c => c.With(Lifetimes.PerScope));
             });
 
             //ACT
@@ -149,7 +149,7 @@ namespace Singularity.Test.Injection
             //ARRANGE
             var container = new Container(builder =>
             {
-                builder.Register<ISingleton1, Singleton1>(c => c.As<Singleton1>().With(Lifetimes.PerScope));
+                builder.Register<ISingleton1, Singleton1>(c => c.With(Lifetimes.PerScope));
             });
 
             //ACT

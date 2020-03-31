@@ -42,14 +42,14 @@ namespace Singularity.Expressions
                    serviceBinding.NeedsDispose != ServiceAutoDispose.Never && typeof(IDisposable).IsAssignableFrom(context.Expression.Type) && settings.AutoDisposeLifetimes.Contains(serviceBinding.Lifetime.GetType());
         }
 
-        public ReadOnlyExpressionContext ApplyDecorators(Type dependencyType, ServiceBinding serviceBinding, InstanceFactory[] children, Expression[] decorators, Scoped containerScope)
+        public ReadOnlyExpressionContext ApplyDecorators(Type serviceType, ServiceBinding serviceBinding, InstanceFactory[] children, Expression[] decorators, Scoped containerScope)
         {
             ExpressionContext context = (ExpressionContext)(serviceBinding.BaseExpression ?? throw new ArgumentNullException($"{nameof(serviceBinding)}.{nameof(serviceBinding.BaseExpression)}"));
             if (decorators.Length > 0)
             {
                 var body = new List<Expression>();
-                ParameterExpression instanceParameter = Expression.Variable(dependencyType, $"{dependencyType} instance");
-                body.Add(Expression.Assign(instanceParameter, Expression.Convert(context.Expression, dependencyType)));
+                ParameterExpression instanceParameter = Expression.Variable(serviceType, $"{serviceType} instance");
+                body.Add(Expression.Assign(instanceParameter, Expression.Convert(context.Expression, serviceType)));
 
                 var decoratorExpressionVisitor = new DecoratorExpressionVisitor(children, instanceParameter.Type);
                 decoratorExpressionVisitor.PreviousDecorator = instanceParameter;

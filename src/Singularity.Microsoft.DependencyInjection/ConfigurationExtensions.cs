@@ -59,31 +59,42 @@ namespace Singularity
             }
             else if (registration.ImplementationInstance != null)
             {
-                config.Register(registration.ServiceType, c => c.Inject(Expression.Constant(registration.ImplementationInstance)), ConstructorResolvers.BestMatch);
+                config.Register(registration.ServiceType, c =>
+                {
+                    c.Inject(Expression.Constant(registration.ImplementationInstance))
+                     .With(ConstructorResolvers.BestMatch);
+                });
             }
             else
             {
-                config.Register(registration.ServiceType, registration.ImplementationType, c => c.With(ConvertLifetime(registration.Lifetime)), ConstructorResolvers.BestMatch);
+                config.Register(registration.ServiceType, registration.ImplementationType, c =>
+                {
+                    c.With(ConvertLifetime(registration.Lifetime))
+                     .With(ConstructorResolvers.BestMatch);
+                });
             }
         }
 
         private static void RegisterWithFactory(ContainerBuilder config, ServiceDescriptor registration)
         {
             ParameterExpression serviceProviderParameter = Expression.Parameter(typeof(IServiceProvider));
-            config.Register(registration.ServiceType, c => c.Inject(
-                    Expression.Lambda(
-                        Expression.Convert(
-                            Expression.Invoke(
-                                Expression.Constant(registration.ImplementationFactory), serviceProviderParameter),
-                            registration.ServiceType), serviceProviderParameter))
-                .With(ConvertLifetime(registration.Lifetime)), ConstructorResolvers.BestMatch);
+            config.Register(registration.ServiceType, c =>
+            {
+                c.Inject(Expression.Lambda(
+                             Expression.Convert(
+                                 Expression.Invoke(
+                                     Expression.Constant(registration.ImplementationFactory), serviceProviderParameter),
+                                 registration.ServiceType), serviceProviderParameter))
+                 .With(ConvertLifetime(registration.Lifetime))
+                 .With(ConstructorResolvers.BestMatch);
+            });
         }
 
         private static ILifetime ConvertLifetime(ServiceLifetime serviceLifetime)
         {
             return serviceLifetime switch
             {
-                ServiceLifetime.Singleton => (ILifetime) Lifetimes.PerContainer,
+                ServiceLifetime.Singleton => Lifetimes.PerContainer,
                 ServiceLifetime.Scoped => Lifetimes.PerScope,
                 ServiceLifetime.Transient => Lifetimes.Transient,
                 _ => throw new ArgumentOutOfRangeException(nameof(serviceLifetime), serviceLifetime, null)
