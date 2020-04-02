@@ -26,6 +26,7 @@ THE SOFTWARE.
 
 using System;
 using System.Collections.Generic;
+using System.Diagnostics.CodeAnalysis;
 using System.Linq;
 using System.Linq.Expressions;
 using System.Reflection;
@@ -42,6 +43,7 @@ namespace Singularity.FastExpressionCompiler
     /// <summary>Compiles expression to delegate ~20 times faster than Expression.Compile.
     /// Partial to extend with your things when used as source file.</summary>
     // ReSharper disable once PartialTypeWithSinglePart
+    [ExcludeFromCodeCoverage]
     internal static partial class ExpressionCompiler
     {
         #region Expression.CompileFast overloads for Delegate, Funcs, and Actions
@@ -3446,6 +3448,7 @@ namespace Singularity.FastExpressionCompiler
 
     // Helpers targeting the performance. Extensions method names may be a bit funny (non standard),
     // in order to prevent conflicts with YOUR helpers with standard names
+    [ExcludeFromCodeCoverage]
     internal static class Tools
     {
         internal static bool IsValueType(this Type type) => type.GetTypeInfo().IsValueType;

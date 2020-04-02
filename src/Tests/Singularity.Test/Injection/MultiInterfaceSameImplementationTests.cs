@@ -32,6 +32,29 @@ namespace Singularity.Test.Injection
         }
 
         [Fact]
+        public void GetInstance_2Interfaces_PerContainerLifetime_ReturnsSameInstance()
+        {
+            //ARRANGE
+            var container = new Container(builder =>
+            {
+                builder.Register<IService1, IService2, Implementation1>(c => c.With(Lifetimes.PerContainer));
+            });
+
+            //ACT
+            var value1 = container.GetInstance<IService1>();
+            var value2 = container.GetInstance<IService2>();
+            var value3 = container.GetInstance<Implementation1>();
+
+            //ASSERT
+            Assert.IsType<Implementation1>(value1);
+            Assert.IsType<Implementation1>(value2);
+            Assert.IsType<Implementation1>(value3);
+
+            Assert.Same(value1, value2);
+            Assert.Same(value1, value3);
+        }
+
+        [Fact]
         public void GetInstance_3Interfaces_ReturnsCorrectDependency()
         {
             //ARRANGE
@@ -55,6 +78,35 @@ namespace Singularity.Test.Injection
             Assert.NotSame(value1, value2);
             Assert.NotSame(value1, value3);
             Assert.NotSame(value1, value4);
+        }
+
+        [Fact]
+        public void GetInstance_4Interfaces_ReturnsCorrectDependency()
+        {
+            //ARRANGE
+            var container = new Container(builder =>
+            {
+                builder.Register<IService1, IService2, IService3, IService4, Implementation1>();
+            });
+
+            //ACT
+            var value1 = container.GetInstance<IService1>();
+            var value2 = container.GetInstance<IService2>();
+            var value3 = container.GetInstance<IService3>();
+            var value4 = container.GetInstance<IService4>();
+            var value5 = container.GetInstance<Implementation1>();
+
+            //ASSERT
+            Assert.IsType<Implementation1>(value1);
+            Assert.IsType<Implementation1>(value2);
+            Assert.IsType<Implementation1>(value3);
+            Assert.IsType<Implementation1>(value4);
+            Assert.IsType<Implementation1>(value5);
+
+            Assert.NotSame(value1, value2);
+            Assert.NotSame(value1, value3);
+            Assert.NotSame(value1, value4);
+            Assert.NotSame(value1, value5);
         }
 
         [Fact]

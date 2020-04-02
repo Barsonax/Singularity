@@ -46,7 +46,7 @@ namespace Singularity
         }
 
         /// <summary>
-        /// Registers a new strongly typed binding.
+        /// Registers a new service using the strongly typed API. The service can be resolved using <typeparamref name="TImplementation"/>
         /// </summary>
         /// <typeparam name="TImplementation"></typeparam>
         /// <param name="configurator"></param>
@@ -61,7 +61,7 @@ namespace Singularity
         }
 
         /// <summary>
-        /// Registers a new strongly typed binding.
+        /// Registers a new service using the strongly typed API. The service can be resolved using <typeparamref name="TImplementation"/> or <typeparamref name="TService1"/>
         /// </summary>
         /// <typeparam name="TService1"></typeparam>
         /// <typeparam name="TImplementation"></typeparam>
@@ -79,7 +79,7 @@ namespace Singularity
         }
 
         /// <summary>
-        /// Registers a new strongly typed binding.
+        /// Registers a new service using the strongly typed API. The service can be resolved using <typeparamref name="TImplementation"/>, <typeparamref name="TService1"/> or <typeparamref name="TService2"/>
         /// </summary>
         /// <typeparam name="TService1"></typeparam>
         /// <typeparam name="TService2"></typeparam>
@@ -100,7 +100,7 @@ namespace Singularity
         }
 
         /// <summary>
-        /// Registers a new strongly typed binding.
+        /// Registers a new service using the strongly typed API. The service can be resolved using <typeparamref name="TImplementation"/>, <typeparamref name="TService1"/>, <typeparamref name="TService2"/> or <typeparamref name="TService3"/>
         /// </summary>
         /// <typeparam name="TService1"></typeparam>
         /// <typeparam name="TService2"></typeparam>
@@ -120,6 +120,33 @@ namespace Singularity
                                 .Add(typeof(TService1))
                                 .Add(typeof(TService2))
                                 .Add(typeof(TService3));
+            RegisterInternal(configurator, serviceTypes, callerFilePath, callerLineNumber);
+        }
+
+        /// <summary>
+        /// Registers a new service using the strongly typed API. The service can be resolved using <typeparamref name="TImplementation"/>, <typeparamref name="TService1"/>, <typeparamref name="TService2"/>, <typeparamref name="TService3"/> or <typeparamref name="TService4"/>
+        /// </summary>
+        /// <typeparam name="TService1"></typeparam>
+        /// <typeparam name="TService2"></typeparam>
+        /// <typeparam name="TService3"></typeparam>
+        /// <typeparam name="TService4"></typeparam>
+        /// <typeparam name="TImplementation"></typeparam>
+        /// <param name="configurator"></param>
+        /// <param name="callerFilePath"></param>
+        /// <param name="callerLineNumber"></param>
+        public void Register<TService1, TService2, TService3, TService4, TImplementation>(Action<StronglyTypedServiceConfigurator<TImplementation>>? configurator = null, [CallerFilePath]string callerFilePath = "", [CallerLineNumber] int callerLineNumber = -1)
+            where TImplementation : class, TService1, TService2, TService3, TService4
+        {
+            ServiceTypeValidator.Cache<TImplementation>.CheckIsEnumerable();
+            ServiceTypeValidator.Cache<TService1>.CheckIsEnumerable();
+            ServiceTypeValidator.Cache<TService2>.CheckIsEnumerable();
+            ServiceTypeValidator.Cache<TService3>.CheckIsEnumerable();
+            ServiceTypeValidator.Cache<TService4>.CheckIsEnumerable();
+            var serviceTypes = SinglyLinkedListNodeTypeCache<TImplementation>.Instance
+                                .Add(typeof(TService1))
+                                .Add(typeof(TService2))
+                                .Add(typeof(TService3))
+                                .Add(typeof(TService4));
             RegisterInternal(configurator, serviceTypes, callerFilePath, callerLineNumber);
         }
 

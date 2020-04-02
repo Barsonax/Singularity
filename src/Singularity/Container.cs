@@ -234,7 +234,7 @@ namespace Singularity
         /// </summary>
 		public void Dispose()
         {
-            ContainerScope?.Dispose();
+            ContainerScope.Dispose();
             IsDisposed = true;
         }
 
