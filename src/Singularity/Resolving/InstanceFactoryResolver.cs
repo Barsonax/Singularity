@@ -16,6 +16,12 @@ namespace Singularity.Resolving
         private RegistrationStore RegistrationStore { get; }
         private object SyncRoot { get; }
         private readonly IServiceBindingGenerator[] _resolvers;
+        private readonly IGenericWrapperGenerator[] _genericWrapperGenerators = new IGenericWrapperGenerator[]
+        {
+            new FactoryServiceBindingGenerator(),
+            new LazyServiceBindingGenerator(),
+            new ExpressionServiceBindingGenerator(),
+        };
         private readonly InstanceFactoryResolver? _parentPipeline;
         private readonly Scoped _containerScope;
         private readonly ExpressionGenerator _expressionGenerator = new ExpressionGenerator();
@@ -55,36 +61,75 @@ namespace Singularity.Resolving
             return serviceBinding == null ? null : TryResolveDependency(type, serviceBinding);
         }
 
-        public ServiceBinding? TryGetBinding(Type type)
+        public IEnumerable<Type> GetResolvableTypes()
         {
-            return TryResolveRegistration(type)?.Default;
-        }
+            var valid = RegistrationStore.Registrations.SelectMany(x => x.Value.Bindings).Select(x => x.ConcreteType).Distinct().ToArray();
 
-        public ServiceBinding GetBinding(Type type)
-        {
-            return GetDependency(type).Default;
-        }
-
-        public IEnumerable<InstanceFactory> TryResolveAll(Type type)
-        {
-            Registration? registration = TryResolveRegistration(type);
-            if (registration == null) yield break;
-            foreach (ServiceBinding registrationBinding in registration.Value.Bindings.Array)
+            var foo = valid.ToList();
+            foreach (var genericWrapper in _genericWrapperGenerators)
             {
-                var factory = TryResolveDependency(type, registrationBinding);
-                if (factory != null) yield return factory;
+                foreach (var type in valid)
+                {
+                    foo.Add(genericWrapper.Target(type));
+                }                
             }
+            return foo;
         }
 
-        private Registration? TryResolveRegistration(Type type)
+        //// TODO move to collectionservicebindinggenerator..
+        //public IEnumerable<InstanceFactory> TryResolveAll(Type type)
+        //{
+        //    var genericWrapper = _genericWrapperGenerators.FirstOrDefault(x => x.CanResolve(type));
+
+        //    if (genericWrapper != null)
+        //    {
+        //        var unwrappedType = genericWrapper.Target(type);
+        //        TryResolveAll(unwrappedType);
+
+        //    }
+        //    else
+        //    {
+        //        var valid = RegistrationStore.Registrations.SelectMany(x => x.Value.Bindings).Where(x => type.IsAssignableFrom(x.ConcreteType)).Distinct().ToArray();
+
+        //        foreach (ServiceBinding registrationBinding in valid)
+        //        {
+        //            var factory = TryResolveDependency(type, registrationBinding);
+        //            if (factory != null) yield return factory;
+        //        }
+        //    }
+        //}
+
+        public ServiceBinding? TryGetBinding(Type type)
         {
             lock (SyncRoot)
             {
-                if (RegistrationStore.Registrations.TryGetValue(type, out Registration parent)) return parent;
+                if (RegistrationStore.Registrations.TryGetValue(type, out Registration parent)) return parent.Default;
                 var parentDependency = _parentPipeline?.TryGetRegistration(type);
                 if (parentDependency != null)
                 {
-                    if(!parentDependency.Value.Default.BindingMetadata.Generated) return parentDependency;
+                    if (!parentDependency.Value.Default.BindingMetadata.Generated) return parentDependency.Value.Default;
+                }
+
+                var genericWrapper = _genericWrapperGenerators.FirstOrDefault(x => x.CanResolve(type));
+
+                if (genericWrapper != null)
+                {
+                    var innerType = type.GetGenericArguments()[0];
+                    var dependentType = genericWrapper.DependsOn(innerType) ?? innerType;
+                    var serviceBinding = TryGetBinding(dependentType);
+                    if(serviceBinding != null)
+                    {
+                        var factory = TryResolveDependency(innerType, serviceBinding);
+                        if (factory != null)
+                        {
+                            var expression = genericWrapper.Wrap(factory.Context.Expression, dependentType, type);
+
+                            return new ServiceBinding(type, BindingMetadata.GeneratedInstance, expression, type, ConstructorResolvers.Default, Lifetimes.Transient)
+                            {
+                                BaseExpression = new ExpressionContext(expression)
+                            };
+                        }
+                    }
                 }
 
                 foreach (IServiceBindingGenerator dependencyResolver in _resolvers)
@@ -100,7 +145,7 @@ namespace Singularity.Resolving
                         {
                             RegistrationStore.AddBinding(binding);
                         }
-                        return TryResolveRegistration(type);
+                        return TryGetBinding(type);
                     }
                 }
 
@@ -118,11 +163,9 @@ namespace Singularity.Resolving
             }
         }
 
-        private Registration GetDependency(Type type)
+        private ServiceBinding GetBinding(Type type)
         {
-            Registration? dependency = TryResolveRegistration(type);
-            if (dependency == null) throw new DependencyNotFoundException(type);
-            return dependency.Value;
+            return TryGetBinding(type) ?? throw new DependencyNotFoundException(type);
         }
 
         private InstanceFactory ResolveDependency(Type type, ServiceBinding dependency)
@@ -209,7 +252,7 @@ namespace Singularity.Resolving
             for (var i = 0; i < parameters.Length; i++)
             {
                 ParameterExpression parameter = parameters[i];
-                ServiceBinding child = GetDependency(parameter.Type).Default;
+                ServiceBinding child = GetBinding(parameter.Type);
                 InstanceFactory? factory = TryResolveDependency(parameter.Type, child, circularDependencyDetector);
                 factories[i] = factory ?? throw (child.ResolveError ?? throw new NotImplementedException());
             }

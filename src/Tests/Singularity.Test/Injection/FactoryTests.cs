@@ -27,7 +27,7 @@ namespace Singularity.Test.Injection
         }
 
         [Fact]
-        public void GetInstance_AsEnumerableFactory()
+        public void GetInstance_AsInstanceFactoryListFactory()
         {
             //ARRANGE
             var container = new Container(builder =>

@@ -34,27 +34,13 @@ namespace Singularity.Resolving
         InstanceFactory? TryResolve(Type type);
 
         /// <summary>
-        /// Tries to resolve all the factories for a type, returning a <see cref="IEnumerable{T}"/>
-        /// If one of the factories fail to resolve it will be skipped.
-        /// </summary>
-        /// <param name="type"></param>
-        /// <returns></returns>
-        IEnumerable<InstanceFactory> TryResolveAll(Type type);
-
-        /// <summary>
-        /// Returns the <see cref="ServiceBinding"/> for the passed <paramref name="type"/>
-        /// Throws a error if this is not possible.
-        /// </summary>
-        /// <param name="type"></param>
-        /// <returns></returns>
-        ServiceBinding GetBinding(Type type);
-
-        /// <summary>
         /// Tries to returns the <see cref="ServiceBinding"/> for the passed <paramref name="type"/>
         /// Returns null if this is not possible.
         /// </summary>
         /// <param name="type"></param>
         /// <returns></returns>
         ServiceBinding? TryGetBinding(Type type);
+
+        IEnumerable<Type> GetResolvableTypes();
     }
 }

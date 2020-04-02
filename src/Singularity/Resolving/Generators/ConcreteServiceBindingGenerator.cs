@@ -12,7 +12,7 @@ namespace Singularity.Resolving.Generators
         /// <inheritdoc />
         public IEnumerable<ServiceBinding> Resolve(IInstanceFactoryResolver resolver, Type type)
         {
-            if (!type.IsInterface && !type.IsAbstract && !type.IsPrimitive && type != typeof(string))
+            if (!type.IsInterface && !type.IsAbstract && !type.IsPrimitive && type != typeof(string) && type != typeof(object))
             {
                 if (type.GetConstructorCandidates().Any())
                 {

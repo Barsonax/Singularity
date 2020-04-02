@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 
 using Singularity.Collections;
@@ -348,6 +349,48 @@ namespace Singularity.Test.Injection
 
             //ASSERT
             Assert.IsType<Plugin3>(plugin);
+        }
+
+        [Fact]
+        public void GetInstance_MultiRegistration_AsObjectEnumerable_ResolvesAll()
+        {
+            //ARRANGE
+            var container = new Container(builder =>
+            {
+                builder.Register<IPlugin, Plugin1>();
+                builder.Register<IPlugin, Plugin2>();
+                builder.Register<IPlugin, Plugin3>();
+            });
+
+            //ACT
+            var plugin = container.GetInstance<IEnumerable<object>>();
+
+            //ASSERT
+            Assert.Collection(plugin, 
+                e => Assert.IsType<Plugin1>(e),
+                e => Assert.IsType<Plugin2>(e),
+                e => Assert.IsType<Plugin3>(e));
+        }
+
+        [Fact]
+        public void GetInstance_MultiRegistration_AsObjectFuncEnumerable_ResolvesAll()
+        {
+            //ARRANGE
+            var container = new Container(builder =>
+            {
+                builder.Register<IPlugin, Plugin1>();
+                builder.Register<IPlugin, Plugin2>();
+                builder.Register<IPlugin, Plugin3>();
+            });
+
+            //ACT
+            var plugin = container.GetInstance<IEnumerable<Func<object>>>();
+
+            //ASSERT
+            Assert.Collection(plugin,
+                e => Assert.IsType<Func<Plugin1>>(e),
+                e => Assert.IsType<Func<Plugin2>>(e),
+                e => Assert.IsType<Func<Plugin3>>(e));
         }
 
         [Fact]

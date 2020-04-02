@@ -1,33 +1,28 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Linq.Expressions;
-
-using Singularity.Expressions;
 
 namespace Singularity.Resolving.Generators
 {
     /// <summary>
     /// Creates bindings so that the factory itself of a binding can be resolved
     /// </summary>
-    public sealed class FactoryServiceBindingGenerator : IServiceBindingGenerator
+    public sealed class FactoryServiceBindingGenerator : IGenericWrapperGenerator
     {
-        /// <inheritdoc />
-        public IEnumerable<ServiceBinding> Resolve(IInstanceFactoryResolver resolver, Type type)
+        public bool CanResolve(Type type)
         {
-            if (type.IsGenericType && type.GetGenericTypeDefinition() == typeof(Func<>))
-            {
-                Type serviceType = type.GenericTypeArguments[0];
+            return type.IsGenericType && type.GetGenericTypeDefinition() == typeof(Func<>);
+        }
 
-                foreach (InstanceFactory factory in resolver.TryResolveAll(serviceType))
-                {
-                    LambdaExpression baseExpression = Expression.Lambda(factory.Context.Expression);
+        public Type? DependsOn(Type type) => null;
 
-                    yield return new ServiceBinding(type, BindingMetadata.GeneratedInstance, baseExpression, type, ConstructorResolvers.Default, Lifetimes.Transient)
-                    {
-                        BaseExpression = new ExpressionContext(baseExpression)
-                    };
-                }
-            }
+        public Type Target(Type type)
+        {
+            return typeof(Func<>).MakeGenericType(type);
+        }
+
+        public Expression Wrap(Expression expression, Type unWrappedType, Type wrappedType)
+        {
+            return Expression.Lambda(wrappedType, expression);
         }
     }
 }

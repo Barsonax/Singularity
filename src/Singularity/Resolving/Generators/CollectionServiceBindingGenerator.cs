@@ -61,7 +61,13 @@ namespace Singularity.Resolving.Generators
 
         private IEnumerable<ServiceBinding> Resolve<TElement>(IInstanceFactoryResolver resolver, Type type)
         {
-            Func<Scoped, TElement>[] instanceFactories = resolver.TryResolveAll(typeof(TElement)).Select(x => (Func<Scoped, TElement>)(Delegate)x.Factory).ToArray();
+            var foo = resolver.GetResolvableTypes().Where(x => typeof(TElement).IsAssignableFrom(x));
+            Func<Scoped, TElement>[] instanceFactories = resolver.GetResolvableTypes()
+                .Where(x => typeof(TElement).IsAssignableFrom(x))
+                .Select(x => resolver.TryResolve(x))
+                .Where(x => x != null)
+                .Select(x => (Func<Scoped, TElement>)((Scoped scoped) => (TElement)x!.Factory(scoped)!))
+                .ToArray();
 
             yield return new ServiceBinding(new[]
             {
