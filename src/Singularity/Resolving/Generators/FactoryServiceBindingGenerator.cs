@@ -16,9 +16,9 @@ namespace Singularity.Resolving.Generators
         {
             if (type.IsGenericType && type.GetGenericTypeDefinition() == typeof(Func<>))
             {
-                Type dependencyType = type.GenericTypeArguments[0];
+                Type serviceType = type.GenericTypeArguments[0];
 
-                foreach (InstanceFactory factory in resolver.TryResolveAll(dependencyType))
+                foreach (InstanceFactory factory in resolver.TryResolveAll(serviceType))
                 {
                     LambdaExpression baseExpression = Expression.Lambda(factory.Context.Expression);
 

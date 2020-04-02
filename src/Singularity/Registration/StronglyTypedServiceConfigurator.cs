@@ -11,25 +11,21 @@ namespace Singularity
     /// <summary>
     /// A strongly typed configurator for registering new service bindings.
     /// </summary>
-    /// <typeparam name="TDependency"></typeparam>
-    /// <typeparam name="TInstance"></typeparam>
-    public sealed class StronglyTypedServiceConfigurator<TDependency, TInstance>
-        where TInstance : class, TDependency
+    /// <typeparam name="TImplementation"></typeparam>
+    public sealed class StronglyTypedServiceConfigurator<TImplementation>
     {
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        internal StronglyTypedServiceConfigurator(in BindingMetadata bindingMetadata, SingularitySettings settings, IConstructorResolver? constructorSelector)
+        internal StronglyTypedServiceConfigurator(in BindingMetadata bindingMetadata, SinglyLinkedListNode<Type> serviceTypes, SingularitySettings settings)
         {
-            ServiceTypeValidator.Cache<TDependency>.CheckIsEnumerable();
             _bindingMetadata = bindingMetadata;
-            _dependencyTypes = SinglyLinkedListNodeTypeCache<TDependency>.Instance;
+            _serviceTypes = serviceTypes;
             _settings = settings;
-            _constructorSelector = constructorSelector;
         }
 
         private readonly BindingMetadata _bindingMetadata;
         private readonly SingularitySettings _settings;
-        private readonly IConstructorResolver? _constructorSelector;
-        private SinglyLinkedListNode<Type> _dependencyTypes;
+        private readonly SinglyLinkedListNode<Type> _serviceTypes;
+        private IConstructorResolver? _constructorSelector;        
         private Expression? _expression;
         private ILifetime _lifetime = Lifetimes.Transient;
         private Action<object>? _finalizer;
@@ -40,19 +36,19 @@ namespace Singularity
             var constructorSelector = _constructorSelector ?? _settings.ConstructorResolver;
             if (_expression == null)
             {
-                if (TypeMetadataCache<TInstance>.IsInterface) throw new BindingConfigException($"{typeof(TInstance)} cannot be a interface");
-                _expression = constructorSelector.TryResolveConstructorExpression(typeof(TInstance));
+                if (TypeMetadataCache<TImplementation>.IsInterface) throw new BindingConfigException($"{typeof(TImplementation)} cannot be a interface");
+                _expression = constructorSelector.TryResolveConstructorExpression(typeof(TImplementation));
             }
-            return new ServiceBinding(_dependencyTypes, _bindingMetadata, _expression, typeof(TInstance), constructorSelector, _lifetime, _finalizer, _disposeBehavior);
+            return new ServiceBinding(_serviceTypes, _bindingMetadata, _expression, typeof(TImplementation), constructorSelector, _lifetime, _finalizer, _disposeBehavior);
         }
 
         /// <summary>
         /// A action that is executed when the <see cref="Scoped"/> or <see cref="Container"/> is disposed.
         /// <param name="onDeathAction"></param>.
         /// </summary>
-        public StronglyTypedServiceConfigurator<TDependency, TInstance> WithFinalizer(Action<TInstance> onDeathAction)
+        public StronglyTypedServiceConfigurator<TImplementation> WithFinalizer(Action<TImplementation> onDeathAction)
         {
-            _finalizer = obj => onDeathAction((TInstance)obj);
+            _finalizer = obj => onDeathAction((TImplementation)obj);
             return this;
         }
 
@@ -61,7 +57,7 @@ namespace Singularity
         /// </summary>
         /// <param name="value"></param>
         /// <returns></returns>
-        public StronglyTypedServiceConfigurator<TDependency, TInstance> With(ServiceAutoDispose value)
+        public StronglyTypedServiceConfigurator<TImplementation> With(ServiceAutoDispose value)
         {
             _disposeBehavior = value;
             return this;
@@ -71,22 +67,19 @@ namespace Singularity
         /// Controls when should new instances be created. See <see cref="Lifetimes"/> for more detailed information.
         /// <param name="value"></param>
         /// </summary>
-        public StronglyTypedServiceConfigurator<TDependency, TInstance> With(ILifetime value)
+        public StronglyTypedServiceConfigurator<TImplementation> With(ILifetime value)
         {
             _lifetime = value;
             return this;
         }
 
         /// <summary>
-        /// Adds a alternative service type.
+        /// Overrides the default constructor selector for this dependency
+        /// <param name="value"></param>
         /// </summary>
-        /// <typeparam name="TService"></typeparam>
-        /// <returns></returns>
-        public StronglyTypedServiceConfigurator<TDependency, TInstance> As<TService>()
+        public StronglyTypedServiceConfigurator<TImplementation> With(IConstructorResolver value)
         {
-            ServiceTypeValidator.Cache<TDependency>.CheckIsEnumerable();
-            ServiceTypeValidator.CheckIsAssignable(typeof(TService), typeof(TInstance));
-            _dependencyTypes = new SinglyLinkedListNode<Type>(_dependencyTypes, typeof(TService));
+            _constructorSelector = value;
             return this;
         }
 
@@ -95,49 +88,49 @@ namespace Singularity
         /// Be careful as there will be no exception if this expression returns a null instance.
         /// </summary>
         /// <returns></returns>
-        public StronglyTypedServiceConfigurator<TDependency, TInstance> Inject(Expression<Func<TInstance>> expression) => InjectInternal(expression);
+        public StronglyTypedServiceConfigurator<TImplementation> Inject(Expression<Func<TImplementation>> expression) => InjectInternal(expression);
 
         /// <summary>
-        /// <see cref="Inject(Expression{Func{TInstance}})"/>
+        /// <see cref="Inject(Expression{Func{TImplementation}})"/>
         /// </summary>
-		public StronglyTypedServiceConfigurator<TDependency, TInstance> Inject<TP1>(Expression<Func<TP1, TInstance>> expression) => InjectInternal(expression);
+		public StronglyTypedServiceConfigurator<TImplementation> Inject<TP1>(Expression<Func<TP1, TImplementation>> expression) => InjectInternal(expression);
 
         /// <summary>
-        /// <see cref="Inject(Expression{Func{TInstance}})"/>
+        /// <see cref="Inject(Expression{Func{TImplementation}})"/>
         /// </summary>
-        public StronglyTypedServiceConfigurator<TDependency, TInstance> Inject<TP1, TP2>(Expression<Func<TP1, TP2, TInstance>> expression) => InjectInternal(expression);
+        public StronglyTypedServiceConfigurator<TImplementation> Inject<TP1, TP2>(Expression<Func<TP1, TP2, TImplementation>> expression) => InjectInternal(expression);
 
         /// <summary>
-        /// <see cref="Inject(Expression{Func{TInstance}})"/>
+        /// <see cref="Inject(Expression{Func{TImplementation}})"/>
         /// </summary>
-        public StronglyTypedServiceConfigurator<TDependency, TInstance> Inject<TP1, TP2, TP3>(Expression<Func<TP1, TP2, TP3, TInstance>> expression) => InjectInternal(expression);
+        public StronglyTypedServiceConfigurator<TImplementation> Inject<TP1, TP2, TP3>(Expression<Func<TP1, TP2, TP3, TImplementation>> expression) => InjectInternal(expression);
 
         /// <summary>
-        /// <see cref="Inject(Expression{Func{TInstance}})"/>
+        /// <see cref="Inject(Expression{Func{TImplementation}})"/>
         /// </summary>
-        public StronglyTypedServiceConfigurator<TDependency, TInstance> Inject<TP1, TP2, TP3, TP4>(Expression<Func<TP1, TP2, TP3, TP4, TInstance>> expression) => InjectInternal(expression);
+        public StronglyTypedServiceConfigurator<TImplementation> Inject<TP1, TP2, TP3, TP4>(Expression<Func<TP1, TP2, TP3, TP4, TImplementation>> expression) => InjectInternal(expression);
 
         /// <summary>
-        /// <see cref="Inject(Expression{Func{TInstance}})"/>
+        /// <see cref="Inject(Expression{Func{TImplementation}})"/>
         /// </summary>
-        public StronglyTypedServiceConfigurator<TDependency, TInstance> Inject<TP1, TP2, TP3, TP4, TP5>(Expression<Func<TP1, TP2, TP3, TP4, TP5, TInstance>> expression) => InjectInternal(expression);
+        public StronglyTypedServiceConfigurator<TImplementation> Inject<TP1, TP2, TP3, TP4, TP5>(Expression<Func<TP1, TP2, TP3, TP4, TP5, TImplementation>> expression) => InjectInternal(expression);
 
         /// <summary>
-        /// <see cref="Inject(Expression{Func{TInstance}})"/>
+        /// <see cref="Inject(Expression{Func{TImplementation}})"/>
         /// </summary>
-        public StronglyTypedServiceConfigurator<TDependency, TInstance> Inject<TP1, TP2, TP3, TP4, TP5, TP6>(Expression<Func<TP1, TP2, TP3, TP4, TP5, TP6, TInstance>> expression) => InjectInternal(expression);
+        public StronglyTypedServiceConfigurator<TImplementation> Inject<TP1, TP2, TP3, TP4, TP5, TP6>(Expression<Func<TP1, TP2, TP3, TP4, TP5, TP6, TImplementation>> expression) => InjectInternal(expression);
 
         /// <summary>
-        /// <see cref="Inject(Expression{Func{TInstance}})"/>
+        /// <see cref="Inject(Expression{Func{TImplementation}})"/>
         /// </summary>
-        public StronglyTypedServiceConfigurator<TDependency, TInstance> Inject<TP1, TP2, TP3, TP4, TP5, TP6, TP7>(Expression<Func<TP1, TP2, TP3, TP4, TP5, TP6, TP7, TInstance>> expression) => InjectInternal(expression);
+        public StronglyTypedServiceConfigurator<TImplementation> Inject<TP1, TP2, TP3, TP4, TP5, TP6, TP7>(Expression<Func<TP1, TP2, TP3, TP4, TP5, TP6, TP7, TImplementation>> expression) => InjectInternal(expression);
 
         /// <summary>
-        /// <see cref="Inject(Expression{Func{TInstance}})"/>
+        /// <see cref="Inject(Expression{Func{TImplementation}})"/>
         /// </summary>
-        public StronglyTypedServiceConfigurator<TDependency, TInstance> Inject<TP1, TP2, TP3, TP4, TP5, TP6, TP7, TP8>(Expression<Func<TP1, TP2, TP3, TP4, TP5, TP6, TP7, TP8, TInstance>> expression) => InjectInternal(expression);
+        public StronglyTypedServiceConfigurator<TImplementation> Inject<TP1, TP2, TP3, TP4, TP5, TP6, TP7, TP8>(Expression<Func<TP1, TP2, TP3, TP4, TP5, TP6, TP7, TP8, TImplementation>> expression) => InjectInternal(expression);
 
-        private StronglyTypedServiceConfigurator<TDependency, TInstance> InjectInternal(Expression expression)
+        private StronglyTypedServiceConfigurator<TImplementation> InjectInternal(Expression expression)
         {
             _expression = expression;
             return this;

@@ -2,16 +2,18 @@
 
 namespace Singularity.TestClasses.TestClasses
 {
-    public class Implementation1 : IService1, IService2, IService3
+    public class Implementation1 : IService1, IService2, IService3, IService4
     {
     }
 
-    public class Implementation2 : IService1, IService2, IService3
+    public class Implementation2 : IService1, IService2, IService3, IService4
     {
     }
 
     public interface IService1 { }
     public interface IService2 { }
+    public interface IService3 { }
+    public interface IService4 { }
 
     public class Service1Decorator : IService1
     {
@@ -30,6 +32,4 @@ namespace Singularity.TestClasses.TestClasses
             Service = service ?? throw new ArgumentNullException(nameof(service));
         }
     }
-    public interface IService3 { }
-
 }

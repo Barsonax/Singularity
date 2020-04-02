@@ -9,7 +9,7 @@ using Singularity.Expressions;
 namespace Singularity
 {
     /// <summary>
-    /// A class to make configuring dependencies easier
+    /// A class to make configuring services easier
     /// </summary>
     public sealed class ContainerBuilder
     {
@@ -46,124 +46,214 @@ namespace Singularity
         }
 
         /// <summary>
-        /// Registers a new strongly typed binding.
+        /// Registers a new service using the strongly typed API. The service can be resolved using <typeparamref name="TImplementation"/>
         /// </summary>
-        /// <typeparam name="TInstance"></typeparam>
+        /// <typeparam name="TImplementation"></typeparam>
         /// <param name="configurator"></param>
-        /// <param name="constructorSelector"></param>
         /// <param name="callerFilePath"></param>
         /// <param name="callerLineNumber"></param>
-        public void Register<TInstance>(Action<StronglyTypedServiceConfigurator<TInstance, TInstance>>? configurator = null, IConstructorResolver? constructorSelector = null, [CallerFilePath]string callerFilePath = "", [CallerLineNumber] int callerLineNumber = -1)
-            where TInstance : class
+        public void Register<TImplementation>(Action<StronglyTypedServiceConfigurator<TImplementation>>? configurator = null, [CallerFilePath]string callerFilePath = "", [CallerLineNumber] int callerLineNumber = -1)
+            where TImplementation : class
         {
-            RegisterInternal(configurator, constructorSelector, callerFilePath, callerLineNumber);
+            ServiceTypeValidator.Cache<TImplementation>.CheckIsEnumerable();
+            var serviceTypes = SinglyLinkedListNodeTypeCache<TImplementation>.Instance;
+            RegisterInternal(configurator, serviceTypes, callerFilePath, callerLineNumber);
         }
 
         /// <summary>
-        /// Registers a new strongly typed binding.
+        /// Registers a new service using the strongly typed API. The service can be resolved using <typeparamref name="TImplementation"/> or <typeparamref name="TService1"/>
         /// </summary>
-        /// <typeparam name="TDependency"></typeparam>
-        /// <typeparam name="TInstance"></typeparam>
+        /// <typeparam name="TService1"></typeparam>
+        /// <typeparam name="TImplementation"></typeparam>
         /// <param name="configurator"></param>
-        /// <param name="constructorSelector"></param>
         /// <param name="callerFilePath"></param>
         /// <param name="callerLineNumber"></param>
-        public void Register<TDependency, TInstance>(Action<StronglyTypedServiceConfigurator<TDependency, TInstance>>? configurator = null, IConstructorResolver? constructorSelector = null, [CallerFilePath]string callerFilePath = "", [CallerLineNumber] int callerLineNumber = -1)
-            where TInstance : class, TDependency
+        public void Register<TService1, TImplementation>(Action<StronglyTypedServiceConfigurator<TImplementation>>? configurator = null, [CallerFilePath]string callerFilePath = "", [CallerLineNumber] int callerLineNumber = -1)
+            where TImplementation : class, TService1
         {
-            RegisterInternal(configurator, constructorSelector, callerFilePath, callerLineNumber);
+            ServiceTypeValidator.Cache<TImplementation>.CheckIsEnumerable();
+            ServiceTypeValidator.Cache<TService1>.CheckIsEnumerable();
+            var serviceTypes = SinglyLinkedListNodeTypeCache<TImplementation>.Instance
+                                  .Add(typeof(TService1));
+            RegisterInternal(configurator, serviceTypes, callerFilePath, callerLineNumber);
+        }
+
+        /// <summary>
+        /// Registers a new service using the strongly typed API. The service can be resolved using <typeparamref name="TImplementation"/>, <typeparamref name="TService1"/> or <typeparamref name="TService2"/>
+        /// </summary>
+        /// <typeparam name="TService1"></typeparam>
+        /// <typeparam name="TService2"></typeparam>
+        /// <typeparam name="TImplementation"></typeparam>
+        /// <param name="configurator"></param>
+        /// <param name="callerFilePath"></param>
+        /// <param name="callerLineNumber"></param>
+        public void Register<TService1, TService2, TImplementation>(Action<StronglyTypedServiceConfigurator<TImplementation>>? configurator = null, [CallerFilePath]string callerFilePath = "", [CallerLineNumber] int callerLineNumber = -1)
+            where TImplementation : class, TService1, TService2
+        {
+            ServiceTypeValidator.Cache<TImplementation>.CheckIsEnumerable();
+            ServiceTypeValidator.Cache<TService1>.CheckIsEnumerable();
+            ServiceTypeValidator.Cache<TService2>.CheckIsEnumerable();
+            var serviceTypes = SinglyLinkedListNodeTypeCache<TImplementation>.Instance
+                                  .Add(typeof(TService1))
+                                  .Add(typeof(TService2));
+            RegisterInternal(configurator, serviceTypes, callerFilePath, callerLineNumber);
+        }
+
+        /// <summary>
+        /// Registers a new service using the strongly typed API. The service can be resolved using <typeparamref name="TImplementation"/>, <typeparamref name="TService1"/>, <typeparamref name="TService2"/> or <typeparamref name="TService3"/>
+        /// </summary>
+        /// <typeparam name="TService1"></typeparam>
+        /// <typeparam name="TService2"></typeparam>
+        /// <typeparam name="TService3"></typeparam>
+        /// <typeparam name="TImplementation"></typeparam>
+        /// <param name="configurator"></param>
+        /// <param name="callerFilePath"></param>
+        /// <param name="callerLineNumber"></param>
+        public void Register<TService1, TService2, TService3, TImplementation>(Action<StronglyTypedServiceConfigurator<TImplementation>>? configurator = null, [CallerFilePath]string callerFilePath = "", [CallerLineNumber] int callerLineNumber = -1)
+            where TImplementation : class, TService1, TService2, TService3
+        {
+            ServiceTypeValidator.Cache<TImplementation>.CheckIsEnumerable();
+            ServiceTypeValidator.Cache<TService1>.CheckIsEnumerable();
+            ServiceTypeValidator.Cache<TService2>.CheckIsEnumerable();
+            ServiceTypeValidator.Cache<TService3>.CheckIsEnumerable();
+            var serviceTypes = SinglyLinkedListNodeTypeCache<TImplementation>.Instance
+                                .Add(typeof(TService1))
+                                .Add(typeof(TService2))
+                                .Add(typeof(TService3));
+            RegisterInternal(configurator, serviceTypes, callerFilePath, callerLineNumber);
+        }
+
+        /// <summary>
+        /// Registers a new service using the strongly typed API. The service can be resolved using <typeparamref name="TImplementation"/>, <typeparamref name="TService1"/>, <typeparamref name="TService2"/>, <typeparamref name="TService3"/> or <typeparamref name="TService4"/>
+        /// </summary>
+        /// <typeparam name="TService1"></typeparam>
+        /// <typeparam name="TService2"></typeparam>
+        /// <typeparam name="TService3"></typeparam>
+        /// <typeparam name="TService4"></typeparam>
+        /// <typeparam name="TImplementation"></typeparam>
+        /// <param name="configurator"></param>
+        /// <param name="callerFilePath"></param>
+        /// <param name="callerLineNumber"></param>
+        public void Register<TService1, TService2, TService3, TService4, TImplementation>(Action<StronglyTypedServiceConfigurator<TImplementation>>? configurator = null, [CallerFilePath]string callerFilePath = "", [CallerLineNumber] int callerLineNumber = -1)
+            where TImplementation : class, TService1, TService2, TService3, TService4
+        {
+            ServiceTypeValidator.Cache<TImplementation>.CheckIsEnumerable();
+            ServiceTypeValidator.Cache<TService1>.CheckIsEnumerable();
+            ServiceTypeValidator.Cache<TService2>.CheckIsEnumerable();
+            ServiceTypeValidator.Cache<TService3>.CheckIsEnumerable();
+            ServiceTypeValidator.Cache<TService4>.CheckIsEnumerable();
+            var serviceTypes = SinglyLinkedListNodeTypeCache<TImplementation>.Instance
+                                .Add(typeof(TService1))
+                                .Add(typeof(TService2))
+                                .Add(typeof(TService3))
+                                .Add(typeof(TService4));
+            RegisterInternal(configurator, serviceTypes, callerFilePath, callerLineNumber);
         }
 
         /// <summary>
         /// Registers a new weakly typed binding.
         /// </summary>
-        /// <param name="instanceType"></param>
+        /// <param name="implementationType"></param>
         /// <param name="configurator"></param>
-        /// <param name="constructorSelector"></param>
         /// <param name="callerFilePath"></param>
         /// <param name="callerLineNumber"></param>
-        public void Register(Type instanceType, Action<WeaklyTypedServiceConfigurator>? configurator = null, IConstructorResolver? constructorSelector = null, [CallerFilePath]string callerFilePath = "", [CallerLineNumber] int callerLineNumber = -1)
+        public void Register(Type implementationType, Action<WeaklyTypedServiceConfigurator>? configurator = null, [CallerFilePath]string callerFilePath = "", [CallerLineNumber] int callerLineNumber = -1)
         {
-            RegisterInternal(instanceType, instanceType, configurator, constructorSelector, callerFilePath, callerLineNumber);
+            RegisterInternal(new SinglyLinkedListNode<Type>(implementationType), implementationType, configurator, callerFilePath, callerLineNumber);
         }
 
         /// <summary>
         /// Registers a new weakly typed binding.
         /// </summary>
-        /// <param name="dependencyType"></param>
-        /// <param name="instanceType"></param>
+        /// <param name="serviceType"></param>
+        /// <param name="implementationType"></param>
         /// <param name="configurator"></param>
-        /// <param name="constructorSelector"></param>
         /// <param name="callerFilePath"></param>
         /// <param name="callerLineNumber"></param>
-        public void Register(Type dependencyType, Type instanceType, Action<WeaklyTypedServiceConfigurator>? configurator = null, IConstructorResolver? constructorSelector = null, [CallerFilePath]string callerFilePath = "", [CallerLineNumber] int callerLineNumber = -1)
+        public void Register(Type serviceType, Type implementationType, Action<WeaklyTypedServiceConfigurator>? configurator = null, [CallerFilePath]string callerFilePath = "", [CallerLineNumber] int callerLineNumber = -1)
         {
-            RegisterInternal(dependencyType, instanceType, configurator, constructorSelector, callerFilePath, callerLineNumber);
+            var serviceTypes = new SinglyLinkedListNode<Type>(implementationType)
+                                    .Add(serviceType);
+            RegisterInternal(serviceTypes, implementationType, configurator, callerFilePath, callerLineNumber);
+        }
+
+        /// <summary>
+        /// Registers a new weakly typed binding.
+        /// </summary>
+        /// <param name="serviceTypes"></param>
+        /// <param name="implementationType"></param>
+        /// <param name="configurator"></param>
+        /// <param name="callerFilePath"></param>
+        /// <param name="callerLineNumber"></param>
+        public void Register(Type[] serviceTypes, Type implementationType, Action<WeaklyTypedServiceConfigurator>? configurator = null, [CallerFilePath]string callerFilePath = "", [CallerLineNumber] int callerLineNumber = -1)
+        {
+            var serviceTypes2 = new SinglyLinkedListNode<Type>(implementationType)
+                                    .Add(serviceTypes);
+            RegisterInternal(serviceTypes2, implementationType, configurator, callerFilePath, callerLineNumber);
         }
 
         /// <summary>
         /// Registers a batch of new weakly typed bindings.
         /// </summary>
-        /// <param name="dependencyType"></param>
-        /// <param name="instanceTypes"></param>
+        /// <param name="serviceType"></param>
+        /// <param name="implementationTypes"></param>
         /// <param name="configurator"></param>
-        /// <param name="constructorSelector"></param>
         /// <param name="callerFilePath"></param>
         /// <param name="callerLineNumber"></param>
         /// <returns></returns>
-        public void Register(Type dependencyType, Type[] instanceTypes, Action<WeaklyTypedServiceConfigurator>? configurator = null, IConstructorResolver? constructorSelector = null, [CallerFilePath] string callerFilePath = "", [CallerLineNumber] int callerLineNumber = -1)
+        public void Register(Type serviceType, Type[] implementationTypes, Action<WeaklyTypedServiceConfigurator>? configurator = null, [CallerFilePath] string callerFilePath = "", [CallerLineNumber] int callerLineNumber = -1)
         {
-            foreach (Type instanceType in instanceTypes)
+            foreach (Type implementationType in implementationTypes)
             {
-                RegisterInternal(dependencyType, instanceType, configurator, constructorSelector, callerFilePath, callerLineNumber);
+                var serviceTypes = new SinglyLinkedListNode<Type>(implementationType)
+                                    .Add(serviceType);
+                RegisterInternal(serviceTypes, implementationType, configurator, callerFilePath, callerLineNumber);
             }
         }
 
 
         /// <summary>
-        /// Registers a new strongly typed decorator for <typeparamref name="TDependency"/>.
+        /// Registers a new strongly typed decorator for <typeparamref name="TService"/>.
         /// </summary>
-        /// <typeparam name="TDependency">The type to decorate</typeparam>
+        /// <typeparam name="TService">The type to decorate</typeparam>
         /// <typeparam name="TDecorator">The type of the decorator</typeparam>
-        /// <exception cref="InterfaceExpectedException">If <typeparamref name="TDependency"/> is not a interface</exception>
+        /// <exception cref="InterfaceExpectedException">If <typeparamref name="TService"/> is not a interface</exception>
         /// <returns></returns>
-        public void Decorate<TDependency, TDecorator>(Action<StronglyTypedDecoratorConfigurator<TDependency, TDecorator>>? configurator = null, IConstructorResolver? constructorSelector = null, [CallerFilePath]string callerFilePath = "", [CallerLineNumber] int callerLineNumber = -1)
-            where TDependency : class
-            where TDecorator : TDependency
+        public void Decorate<TService, TDecorator>(Action<StronglyTypedDecoratorConfigurator<TService, TDecorator>>? configurator = null, [CallerFilePath]string callerFilePath = "", [CallerLineNumber] int callerLineNumber = -1)
+            where TService : class
+            where TDecorator : TService
         {
-            DecorateInternal(configurator, constructorSelector, callerFilePath, callerLineNumber);
+            DecorateInternal(configurator, callerFilePath, callerLineNumber);
         }
 
         /// <summary>
-        /// Registers a new weakly typed decorator for <paramref name="dependencyType"/>
+        /// Registers a new weakly typed decorator for <paramref name="serviceType"/>
         /// </summary>
-        /// <param name="dependencyType"></param>
+        /// <param name="serviceType"></param>
         /// <param name="decoratorType"></param>
         /// <param name="configurator"></param>
-        /// <param name="constructorSelector"></param>
         /// <param name="callerFilePath"></param>
         /// <param name="callerLineNumber"></param>
         /// <returns></returns>
-        public void Decorate(Type dependencyType, Type decoratorType, Action<WeaklyTypedDecoratorConfigurator>? configurator = null, IConstructorResolver? constructorSelector = null, [CallerFilePath]string callerFilePath = "", [CallerLineNumber] int callerLineNumber = -1)
+        public void Decorate(Type serviceType, Type decoratorType, Action<WeaklyTypedDecoratorConfigurator>? configurator = null, [CallerFilePath]string callerFilePath = "", [CallerLineNumber] int callerLineNumber = -1)
         {
-            DecorateInternal(dependencyType, decoratorType, configurator, constructorSelector, callerFilePath, callerLineNumber);
+            DecorateInternal(serviceType, decoratorType, configurator, callerFilePath, callerLineNumber);
         }
 
         /// <summary>
-        /// Registers a batch of new weakly typed decorators for <paramref name="dependencyType"/>.
+        /// Registers a batch of new weakly typed decorators for <paramref name="serviceType"/>.
         /// </summary>
-        /// <param name="dependencyType"></param>
+        /// <param name="serviceType"></param>
         /// <param name="decoratorTypes"></param>
         /// <param name="configurator"></param>
-        /// <param name="constructorSelector"></param>
         /// <param name="callerFilePath"></param>
         /// <param name="callerLineNumber"></param>
         /// <returns></returns>
-        public void Decorate(Type dependencyType, Type[] decoratorTypes, Action<WeaklyTypedDecoratorConfigurator>? configurator = null, IConstructorResolver? constructorSelector = null, [CallerFilePath]string callerFilePath = "", [CallerLineNumber] int callerLineNumber = -1)
+        public void Decorate(Type serviceType, Type[] decoratorTypes, Action<WeaklyTypedDecoratorConfigurator>? configurator = null, [CallerFilePath]string callerFilePath = "", [CallerLineNumber] int callerLineNumber = -1)
         {
             foreach (Type decoratorType in decoratorTypes)
             {
-                DecorateInternal(dependencyType, decoratorType, configurator, constructorSelector, callerFilePath, callerLineNumber);
+                DecorateInternal(serviceType, decoratorType, configurator, callerFilePath, callerLineNumber);
             }
         }
 
@@ -191,43 +281,42 @@ namespace Singularity
             LateInjectInternal(instanceType, configurator, callerFilePath, callerLineNumber);
         }
 
-        private void RegisterInternal<TDependency, TInstance>(Action<StronglyTypedServiceConfigurator<TDependency, TInstance>>? configurator, IConstructorResolver? constructorSelector, string callerFilePath, int callerLineNumber)
-            where TInstance : class, TDependency
+        private void RegisterInternal<TImplementation>(Action<StronglyTypedServiceConfigurator<TImplementation>>? configurator, SinglyLinkedListNode<Type> serviceTypes, string callerFilePath, int callerLineNumber)
         {
             var metadata = new BindingMetadata(callerFilePath, callerLineNumber, Registrations.CurrentModule);
-            var context = new StronglyTypedServiceConfigurator<TDependency, TInstance>(metadata, Settings, constructorSelector);
+            var context = new StronglyTypedServiceConfigurator<TImplementation>(metadata, serviceTypes, Settings);
             configurator?.Invoke(context);
             ServiceBinding serviceBinding = context.ToBinding();
             Registrations.AddBinding(serviceBinding);
         }
 
-        private void RegisterInternal(Type dependencyType, Type instanceType, Action<WeaklyTypedServiceConfigurator>? configurator, IConstructorResolver? constructorSelector, string callerFilePath, int callerLineNumber)
+        private void RegisterInternal(SinglyLinkedListNode<Type> serviceTypes, Type implementationType, Action<WeaklyTypedServiceConfigurator>? configurator, string callerFilePath, int callerLineNumber)
         {
             var metadata = new BindingMetadata(callerFilePath, callerLineNumber, Registrations.CurrentModule);
-            var context = new WeaklyTypedServiceConfigurator(dependencyType, instanceType, metadata, Settings, constructorSelector);
+            var context = new WeaklyTypedServiceConfigurator(serviceTypes, implementationType, metadata, Settings);
             configurator?.Invoke(context);
             ServiceBinding serviceBinding = context.ToBinding();
             Registrations.AddBinding(serviceBinding);
         }
 
-        private void DecorateInternal<TDependency, TDecorator>(Action<StronglyTypedDecoratorConfigurator<TDependency, TDecorator>>? configurator, IConstructorResolver? constructorSelector, string callerFilePath, int callerLineNumber)
-            where TDependency : class
-            where TDecorator : TDependency
+        private void DecorateInternal<TService, TDecorator>(Action<StronglyTypedDecoratorConfigurator<TService, TDecorator>>? configurator, string callerFilePath, int callerLineNumber)
+            where TService : class
+            where TDecorator : TService
         {
             var metadata = new BindingMetadata(callerFilePath, callerLineNumber, Registrations.CurrentModule);
-            var context = new StronglyTypedDecoratorConfigurator<TDependency, TDecorator>(metadata, Settings, constructorSelector);
+            var context = new StronglyTypedDecoratorConfigurator<TService, TDecorator>(metadata, Settings);
             configurator?.Invoke(context);
             Expression binding = context.ToBinding();
-            Registrations.AddDecorator(typeof(TDependency), binding);
+            Registrations.AddDecorator(typeof(TService), binding);
         }
 
-        private void DecorateInternal(Type dependencyType, Type decoratorType, Action<WeaklyTypedDecoratorConfigurator>? configurator, IConstructorResolver? constructorSelector, string callerFilePath, int callerLineNumber)
+        private void DecorateInternal(Type serviceType, Type decoratorType, Action<WeaklyTypedDecoratorConfigurator>? configurator, string callerFilePath, int callerLineNumber)
         {
             var metadata = new BindingMetadata(callerFilePath, callerLineNumber, Registrations.CurrentModule);
-            var context = new WeaklyTypedDecoratorConfigurator(dependencyType, decoratorType, metadata, Settings, constructorSelector);
+            var context = new WeaklyTypedDecoratorConfigurator(serviceType, decoratorType, metadata, Settings);
             configurator?.Invoke(context);
             Expression binding = context.ToBinding();
-            Registrations.AddDecorator(dependencyType, binding);
+            Registrations.AddDecorator(serviceType, binding);
         }
 
         private void LateInjectInternal<TInstance>(Action<StronglyTypedLateInjectorConfigurator<TInstance>>? configurator, string callerFilePath, int callerLineNumber)

@@ -23,8 +23,8 @@ namespace Singularity.Resolving.Generators
                 Type funcType = type.GenericTypeArguments[0];
                 if (funcType.GetGenericTypeDefinition() == typeof(Func<>) && funcType.GenericTypeArguments.Length == 1)
                 {
-                    Type dependencyType = funcType.GenericTypeArguments[0];
-                    MethodInfo resolveMethod = GenericResolveMethod.MakeGenericMethod(dependencyType);
+                    Type serviceType = funcType.GenericTypeArguments[0];
+                    MethodInfo resolveMethod = GenericResolveMethod.MakeGenericMethod(serviceType);
 
                     var bindings = (IEnumerable<ServiceBinding>)resolveMethod.Invoke(this, new object[] { resolver, type });
                     foreach (var binding in bindings)

@@ -10,22 +10,36 @@ namespace Singularity
     /// </summary>
     public sealed class WeaklyTypedDecoratorConfigurator
     {
-        internal WeaklyTypedDecoratorConfigurator(Type dependencyType, Type decoratorType, in BindingMetadata bindingMetadata, SingularitySettings settings, IConstructorResolver? constructorSelector)
+        internal WeaklyTypedDecoratorConfigurator(Type serviceType, Type decoratorType, in BindingMetadata bindingMetadata, SingularitySettings settings)
         {
             _bindingMetadata = bindingMetadata;
-            _dependencyType = dependencyType;
-            _expression = (constructorSelector ?? settings.ConstructorResolver).ResolveConstructorExpression(decoratorType);
-            DecoratorTypeValidator.CheckIsInterface(dependencyType);
-            DecoratorTypeValidator.CheckParameters(_expression, dependencyType, decoratorType);
+            _serviceType = serviceType;
+            _settings = settings;
+            _decoratorType = decoratorType;
+            DecoratorTypeValidator.CheckIsInterface(serviceType);
         }
 
         private readonly BindingMetadata _bindingMetadata;
-        private readonly Type _dependencyType;
-        private readonly Expression _expression;
+        private readonly Type _serviceType;
+        private readonly Type _decoratorType;
+        private readonly SingularitySettings _settings;
+        private IConstructorResolver? _constructorSelector;
+
+        /// <summary>
+        /// Overrides the default constructor selector for this decorator
+        /// <param name="value"></param>
+        /// </summary>
+        public WeaklyTypedDecoratorConfigurator With(IConstructorResolver value)
+        {
+            _constructorSelector = value;
+            return this;
+        }
 
         internal Expression ToBinding()
         {
-            return _expression;
+            var expression = (_constructorSelector ?? _settings.ConstructorResolver).ResolveConstructorExpression(_decoratorType);
+            DecoratorTypeValidator.CheckParameters(expression, _serviceType, _decoratorType);
+            return expression;
         }
     }
 }

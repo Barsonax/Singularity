@@ -8,28 +8,38 @@ namespace Singularity
     /// <summary>
     /// A strongly typed configurator for registering new decorators.
     /// </summary>
-    /// <typeparam name="TDependency"></typeparam>
+    /// <typeparam name="TService"></typeparam>
     /// <typeparam name="TDecorator"></typeparam>
-    public sealed class StronglyTypedDecoratorConfigurator<TDependency, TDecorator>
-        where TDependency : class
-        where TDecorator : TDependency
+    public sealed class StronglyTypedDecoratorConfigurator<TService, TDecorator>
+        where TService : class
+        where TDecorator : TService
     {
-        internal StronglyTypedDecoratorConfigurator(in BindingMetadata bindingMetadata, SingularitySettings settings, IConstructorResolver? constructorSelector)
+        internal StronglyTypedDecoratorConfigurator(in BindingMetadata bindingMetadata, SingularitySettings settings)
         {
             _bindingMetadata = bindingMetadata;
-            _dependencyType = typeof(TDependency);
-            _expression = (constructorSelector ?? settings.ConstructorResolver).ResolveConstructorExpression(typeof(TDecorator));
-            DecoratorTypeValidator.CheckIsInterface(typeof(TDependency));
-            DecoratorTypeValidator.CheckParameters(_expression, typeof(TDependency), typeof(TDecorator));
+            _settings = settings;
+            DecoratorTypeValidator.CheckIsInterface(typeof(TService));
         }
 
         private readonly BindingMetadata _bindingMetadata;
-        private readonly Type _dependencyType;
-        private readonly Expression _expression;
+        private readonly SingularitySettings _settings;
+        private IConstructorResolver? _constructorSelector;
+
+        /// <summary>
+        /// Overrides the default constructor selector for this decorator
+        /// <param name="value"></param>
+        /// </summary>
+        public StronglyTypedDecoratorConfigurator<TService, TDecorator> With(IConstructorResolver value)
+        {
+            _constructorSelector = value;
+            return this;
+        }
 
         internal Expression ToBinding()
         {
-            return _expression;
+            var expression = (_constructorSelector ?? _settings.ConstructorResolver).ResolveConstructorExpression(typeof(TDecorator));
+            DecoratorTypeValidator.CheckParameters(expression, typeof(TService), typeof(TDecorator));
+            return expression;
         }
     }
 }
