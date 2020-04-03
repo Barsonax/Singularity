@@ -11,7 +11,7 @@ namespace Singularity.Collections
 
         public InstanceFactoryList(Scoped scope, Func<Scoped, T>[] instanceFactories)
         {
-            _instanceFactories = instanceFactories;
+            _instanceFactories = instanceFactories ?? throw new ArgumentNullException(nameof(instanceFactories));
             _scope = scope;
         }
 

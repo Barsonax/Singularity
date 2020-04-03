@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using System.Linq.Expressions;
@@ -11,7 +12,7 @@ namespace Singularity.Resolving.Generators
     /// <summary>
     /// Creates bindings for resolving all services of a given type.
     /// </summary>
-    public sealed class CollectionServiceBindingGenerator : IServiceBindingGenerator
+    public sealed class CollectionServiceBindingGenerator : IServiceBindingGenerator, IGenericWrapperGenerator
     {
         private static readonly MethodInfo GenericResolveMethod = typeof(CollectionServiceBindingGenerator).GetRuntimeMethods().Single(x => x.Name == nameof(Resolve) && x.ContainsGenericParameters);
 
@@ -61,10 +62,8 @@ namespace Singularity.Resolving.Generators
 
         private IEnumerable<ServiceBinding> Resolve<TElement>(IInstanceFactoryResolver resolver, Type type)
         {
-            var foo = resolver.GetResolvableTypes().Where(x => typeof(TElement).IsAssignableFrom(x));
-            Func<Scoped, TElement>[] instanceFactories = resolver.GetResolvableTypes()
-                .Where(x => typeof(TElement).IsAssignableFrom(x))
-                .Select(x => resolver.TryResolve(x))
+            Func<Scoped, TElement>[] instanceFactories = resolver.FindApplicableBindings(typeof(TElement))
+                .Select(x => resolver.TryResolveDependency(typeof(TElement), x))
                 .Where(x => x != null)
                 .Select(x => (Func<Scoped, TElement>)((Scoped scoped) => (TElement)x!.Factory(scoped)!))
                 .ToArray();
@@ -73,15 +72,6 @@ namespace Singularity.Resolving.Generators
             {
                 typeof(Func<Scoped, TElement>[]),
             }, BindingMetadata.GeneratedInstance, Expression.Constant(instanceFactories), typeof(Func<Scoped, TElement>[]), ConstructorResolvers.Default, Lifetimes.PerContainer);
-
-            Expression expression = ConstructorResolvers.Default.ResolveConstructorExpression(typeof(InstanceFactoryList<TElement>));
-
-            yield return new ServiceBinding(new[]
-            {
-                typeof(IEnumerable<TElement>),
-                typeof(IReadOnlyCollection<TElement>),
-                typeof(IReadOnlyList<TElement>),
-            }, BindingMetadata.GeneratedInstance, expression, expression.GetReturnType(), ConstructorResolvers.Default, Lifetimes.Transient);
 
             //lists
             Expression<Func<Scoped, List<TElement>>> listExpression = scope => CreateList(scope, instanceFactories);
@@ -106,6 +96,16 @@ namespace Singularity.Resolving.Generators
             {
                 typeof(TElement[]),
             }, BindingMetadata.GeneratedInstance, arrayExpression, arrayExpression.GetReturnType(), ConstructorResolvers.Default, Lifetimes.Transient);
+
+            //enumerable
+            Expression expression = ConstructorResolvers.Default.ResolveConstructorExpression(typeof(InstanceFactoryList<TElement>));
+
+            yield return new ServiceBinding(new[]
+            {
+                typeof(IEnumerable<TElement>),
+                typeof(IReadOnlyCollection<TElement>),
+                typeof(IReadOnlyList<TElement>),
+            }, BindingMetadata.GeneratedInstance, expression, expression.GetReturnType(), ConstructorResolvers.Default, Lifetimes.Transient);
         }
 
         private static List<TElement> CreateList<TElement>(Scoped scope, Func<Scoped, TElement>[] instanceFactories)
@@ -142,6 +142,50 @@ namespace Singularity.Resolving.Generators
             }
 
             return list;
+        }
+
+        public bool CanResolve(Type type) => type.IsGenericType && new[] { typeof(IEnumerable<>), typeof(IReadOnlyCollection<>), typeof(IReadOnlyList<>), }.Contains(type.GetGenericTypeDefinition());
+
+        public Expression Wrap(IInstanceFactoryResolver resolver, Expression expression, Type unWrappedType, Type wrappedType)
+        {
+            var elementType = wrappedType.GetGenericArguments()[0];
+            var ex = ConstructorResolvers.Default.ResolveConstructorExpression(typeof(InstanceFactoryList<>).MakeGenericType(elementType));
+
+            return ex;
+        }
+
+        public Type? DependsOn(Type type) => typeof(Func<,>).MakeGenericType(typeof(Scoped), type).MakeArrayType();
+    }
+
+    public class ScopedFuncGenerator : IGenericWrapperGenerator
+    {
+        private static readonly MethodInfo GenericResolveMethod = typeof(ScopedFuncGenerator).GetRuntimeMethods().Single(x => x.Name == nameof(Resolve) && x.ContainsGenericParameters);
+
+        public bool CanResolve(Type type)
+        {
+            return type.IsArray && type.GetElementType().IsGenericType && type.GetElementType().GetGenericTypeDefinition() == typeof(Func<,>) && type.GetElementType().GetGenericArguments()[0] == typeof(Scoped);
+        }
+
+        public Type? DependsOn(Type type)
+        {
+            return null;
+        }
+
+        public Expression Wrap(IInstanceFactoryResolver resolver, Expression expression, Type unWrappedType, Type wrappedType)
+        {
+            var elementType = wrappedType.GetGenericArguments()[1];
+            MethodInfo resolveMethod = GenericResolveMethod.MakeGenericMethod(elementType);
+            return (Expression)resolveMethod.Invoke(this, new object[] { resolver });
+        }
+
+        public Expression Resolve<TElement>(IInstanceFactoryResolver resolver)
+        {
+            Func<Scoped, TElement>[] instanceFactories = resolver.FindApplicableBindings(typeof(TElement))
+                .Select(x => resolver.TryResolveDependency(typeof(TElement), x))
+                .Where(x => x != null)
+                .Select(x => (Func<Scoped, TElement>)((Scoped scoped) => (TElement)x!.Factory(scoped)!))
+                .ToArray();
+            return Expression.Constant(instanceFactories);
         }
     }
 }

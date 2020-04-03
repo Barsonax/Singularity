@@ -15,12 +15,7 @@ namespace Singularity.Resolving.Generators
 
         public Type? DependsOn(Type type) => null;
 
-        public Type Target(Type type)
-        {
-            return typeof(Func<>).MakeGenericType(type);
-        }
-
-        public Expression Wrap(Expression expression, Type unWrappedType, Type wrappedType)
+        public Expression Wrap(IInstanceFactoryResolver resolver, Expression expression, Type unWrappedType, Type wrappedType)
         {
             return Expression.Lambda(wrappedType, expression);
         }

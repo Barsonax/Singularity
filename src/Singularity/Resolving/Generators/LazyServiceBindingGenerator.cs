@@ -13,9 +13,7 @@ namespace Singularity.Resolving.Generators
 
         public Type DependsOn(Type type) => typeof(Func<>).MakeGenericType(type);
 
-        public Type Target(Type type) => typeof(Lazy<>).MakeGenericType(type);
-
-        public Expression Wrap(Expression expression, Type unWrappedType, Type wrappedType)
+        public Expression Wrap(IInstanceFactoryResolver resolver, Expression expression, Type unWrappedType, Type wrappedType)
         {
             ConstructorInfo constructor = wrappedType.GetConstructor(new[] { unWrappedType });
 
