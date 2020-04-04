@@ -41,7 +41,7 @@ namespace Singularity.Resolving
         /// <returns></returns>
         ServiceBinding? TryGetBinding(Type type);
 
-        IEnumerable<ServiceBinding> FindApplicableBindings(Type type);
+        IEnumerable<ServiceBinding> FindOrGenerateApplicableBindings(Type type);
         InstanceFactory? TryResolveDependency(Type type, ServiceBinding dependency);
     }
 }

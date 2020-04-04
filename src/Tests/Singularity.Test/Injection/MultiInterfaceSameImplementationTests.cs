@@ -149,28 +149,20 @@ namespace Singularity.Test.Injection
             });
 
             //ACT
-            IService1[] service1s = container.GetInstance<IEnumerable<IService1>>().ToArray();
-            IService2[] service2s = container.GetInstance<IEnumerable<IService2>>().ToArray();
-            IService3[] service3s = container.GetInstance<IEnumerable<IService3>>().ToArray();
+            var service1s = container.GetInstance<IEnumerable<IService1>>();
+            var service2s = container.GetInstance<IEnumerable<IService2>>();
+            var service3s = container.GetInstance<IEnumerable<IService3>>();
 
             //ASSERT
-            Assert.Equal(2, service1s.Length);
-            IService2 service2 = Assert.Single(service2s);
-            IService3 service3 = Assert.Single(service3s);
+            Assert.Collection(service1s,
+                e => Assert.IsType<Implementation1>(Assert.IsType<Service1Decorator>(e).Service),
+                e => Assert.IsType<Implementation2>(Assert.IsType<Service1Decorator>(e).Service));
 
-            var service1Decorator1 = Assert.IsType<Service1Decorator>(service1s[0]);
-            var service1Decorator2 = Assert.IsType<Service1Decorator>(service1s[1]);
-            Assert.NotSame(service1Decorator1, service1Decorator2);
+            Assert.Collection(service2s,
+                e => Assert.IsType<Implementation1>(Assert.IsType<Service2Decorator>(e).Service));
 
-            Assert.IsType<Implementation2>(service1Decorator1.Service);
-            var implementation1_1 = Assert.IsType<Implementation1>(service1Decorator2.Service);
-
-            var service2Decorator = Assert.IsType<Service2Decorator>(service2);
-            var implementation1_2 = Assert.IsType<Implementation1>(service2Decorator.Service);
-            var implementation1_3 = Assert.IsType<Implementation1>(service3);
-
-            Assert.NotSame(implementation1_1, implementation1_2);
-            Assert.NotSame(implementation1_1, implementation1_3);
+            Assert.Collection(service3s,
+                e => Assert.IsType<Implementation1>(e));
         }
 
         [Fact]
@@ -179,11 +171,12 @@ namespace Singularity.Test.Injection
             //ARRANGE
             var container = new Container(builder =>
             {
-                builder.Register<IService1, Implementation2>();
                 builder.Register<IService1, IService2, IService3, Implementation1>(c =>
                 {
                     c.With(Lifetimes.PerContainer);
                 });
+                builder.Register<IService1, Implementation2>();
+
                 builder.Decorate<IService1, Service1Decorator>();
                 builder.Decorate<IService2, Service2Decorator>();
             });

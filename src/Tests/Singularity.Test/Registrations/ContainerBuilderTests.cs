@@ -35,7 +35,7 @@ namespace Singularity.Test.Registrations
             });
 
             //ACT
-            KeyValuePair<Type, Registration>[] registrations = builder.Registrations.Registrations.ToArray();
+            var registrations = builder.Registrations.Registrations.ToArray();
 
             //ASSERT
             Assert.Equal(6, registrations.Length);
@@ -69,19 +69,19 @@ namespace Singularity.Test.Registrations
 
             var multiServiceBinding = registrations[typeof(IPlugin)];
 
-            ServiceBinding[] serviceBindings = multiServiceBinding.Bindings.ToArray();
-            Assert.Equal(typeof(Plugin1), serviceBindings[0].Expression?.Type);
-            Assert.Equal(typeof(Plugin2), serviceBindings[1].Expression?.Type);
-            Assert.Equal(typeof(Plugin3), serviceBindings[2].Expression?.Type);
+            Assert.Collection(multiServiceBinding, 
+                e => Assert.Equal(typeof(Plugin3), e.Expression?.Type),
+                e => Assert.Equal(typeof(Plugin2), e.Expression?.Type),
+                e => Assert.Equal(typeof(Plugin1), e.Expression?.Type));
 
             var plugin1Binding = registrations[typeof(Plugin1)];
-            Assert.Single(plugin1Binding.Bindings);
+            Assert.Single(plugin1Binding);
 
             var plugin2Binding = registrations[typeof(Plugin2)];
-            Assert.Single(plugin2Binding.Bindings);
+            Assert.Single(plugin2Binding);
 
             var plugin3Binding = registrations[typeof(Plugin3)];
-            Assert.Single(plugin3Binding.Bindings);
+            Assert.Single(plugin3Binding);
         }
 
         [Fact]
@@ -108,21 +108,21 @@ namespace Singularity.Test.Registrations
 
             var multiServiceBinding = registrations[typeof(IPlugin)];
 
-            ServiceBinding[] serviceBindings = multiServiceBinding.Bindings.ToArray();
-            Assert.Equal(typeof(Plugin1), serviceBindings[0].Expression?.Type);
-            Assert.Equal(typeof(Plugin2), serviceBindings[1].Expression?.Type);
-            Assert.Equal(typeof(Plugin3), serviceBindings[2].Expression?.Type);
+            Assert.Collection(multiServiceBinding,
+                e => Assert.Equal(typeof(Plugin3), e.Expression?.Type),
+                e => Assert.Equal(typeof(Plugin2), e.Expression?.Type),
+                e => Assert.Equal(typeof(Plugin1), e.Expression?.Type));
 
             var plugin1Binding = registrations[typeof(Plugin1)];
-            Assert.Single(plugin1Binding.Bindings);
+            Assert.Single(plugin1Binding);
 
             var plugin2Binding = registrations[typeof(Plugin2)];
-            Assert.Single(plugin2Binding.Bindings);
+            Assert.Single(plugin2Binding);
 
             var plugin3Binding = registrations[typeof(Plugin3)];
-            Assert.Single(plugin3Binding.Bindings);
+            Assert.Single(plugin3Binding);
 
-            Assert.True(registrations.Values.All(x => x.Bindings.All(y => y.Lifetime == Lifetimes.PerContainer)));
+            Assert.True(registrations.Values.All(x => x.All(y => y.Lifetime == Lifetimes.PerContainer)));
         }
 
         [Fact]
@@ -152,19 +152,19 @@ namespace Singularity.Test.Registrations
 
             var multiServiceBinding = readOnlyBindingConfig.Registrations[typeof(IPlugin)];
 
-            ServiceBinding[] serviceBindings = multiServiceBinding.Bindings.ToArray();
-            Assert.Equal(typeof(Plugin1), serviceBindings[0].Expression?.Type);
-            Assert.Equal(typeof(Plugin2), serviceBindings[1].Expression?.Type);
-            Assert.Equal(typeof(Plugin3), serviceBindings[2].Expression?.Type);
+            Assert.Collection(multiServiceBinding,
+                e => Assert.Equal(typeof(Plugin3), e.Expression?.Type),
+                e => Assert.Equal(typeof(Plugin2), e.Expression?.Type),
+                e => Assert.Equal(typeof(Plugin1), e.Expression?.Type));
 
             var plugin1Binding = readOnlyBindingConfig.Registrations[typeof(Plugin1)];
-            Assert.Single(plugin1Binding.Bindings);
+            Assert.Single(plugin1Binding);
 
             var plugin2Binding = readOnlyBindingConfig.Registrations[typeof(Plugin2)];
-            Assert.Single(plugin2Binding.Bindings);
+            Assert.Single(plugin2Binding);
 
             var plugin3Binding = readOnlyBindingConfig.Registrations[typeof(Plugin3)];
-            Assert.Single(plugin3Binding.Bindings);
+            Assert.Single(plugin3Binding);
 
             ArrayList<Expression> decorators = Assert.Single(readOnlyBindingConfig.Decorators.Values);
 
@@ -241,9 +241,9 @@ namespace Singularity.Test.Registrations
                 cb.Register(typeof(object), c => c.Inject(Expression.Constant(new object())));
             });
 
-            KeyValuePair<Type, Registration> registration = Assert.Single(builder.Registrations.Registrations);
+            KeyValuePair<Type, SinglyLinkedListNode<ServiceBinding>> registration = Assert.Single(builder.Registrations.Registrations);
             Assert.Equal(typeof(object), registration.Key);
-            Assert.Equal(typeof(object), registration.Value.Bindings.Single().Expression?.Type);
+            Assert.Equal(typeof(object), registration.Value.Single().Expression?.Type);
         }
 
         [Fact]
@@ -254,12 +254,12 @@ namespace Singularity.Test.Registrations
                 cb.Register<object>(c => c.Inject<object>(obj0 => new ArgumentArity1TestClass(obj0)));
             });
 
-            KeyValuePair<Type, Registration> registration = Assert.Single(builder.Registrations.Registrations);
+            KeyValuePair<Type, SinglyLinkedListNode<ServiceBinding>> registration = Assert.Single(builder.Registrations.Registrations);
             Assert.Equal(typeof(object), registration.Key);
-            var binding = Assert.Single(registration.Value.Bindings);
+            var binding = Assert.Single(registration.Value);
             var expression = Assert.IsType<NewExpression>(binding.Expression);
             Assert.Equal(typeof(ArgumentArity1TestClass), expression.Type);
-            Assert.Equal(1, expression.Arguments.Count);
+            Assert.Single(expression.Arguments);
         }
 
         [Fact]
@@ -270,9 +270,9 @@ namespace Singularity.Test.Registrations
                 cb.Register<object>(c => c.Inject<object, object>((obj0, obj1) => new ArgumentArity2TestClass(obj0, obj1)));
             });
 
-            KeyValuePair<Type, Registration> registration = Assert.Single(builder.Registrations.Registrations);
+            KeyValuePair<Type, SinglyLinkedListNode<ServiceBinding>> registration = Assert.Single(builder.Registrations.Registrations);
             Assert.Equal(typeof(object), registration.Key);
-            var binding = Assert.Single(registration.Value.Bindings);
+            var binding = Assert.Single(registration.Value);
             var expression = Assert.IsType<NewExpression>(binding.Expression);
             Assert.Equal(typeof(ArgumentArity2TestClass), expression.Type);
             Assert.Equal(2, expression.Arguments.Count);
@@ -286,9 +286,9 @@ namespace Singularity.Test.Registrations
                 cb.Register<object>(c => c.Inject<object, object, object>((obj0, obj1, obj2) => new ArgumentArity3TestClass(obj0, obj1, obj2)));
             });
 
-            KeyValuePair<Type, Registration> registration = Assert.Single(builder.Registrations.Registrations);
+            KeyValuePair<Type, SinglyLinkedListNode<ServiceBinding>> registration = Assert.Single(builder.Registrations.Registrations);
             Assert.Equal(typeof(object), registration.Key);
-            var binding = Assert.Single(registration.Value.Bindings);
+            var binding = Assert.Single(registration.Value);
             var expression = Assert.IsType<NewExpression>(binding.Expression);
             Assert.Equal(typeof(ArgumentArity3TestClass), expression.Type);
             Assert.Equal(3, expression.Arguments.Count);
@@ -302,9 +302,9 @@ namespace Singularity.Test.Registrations
                 cb.Register<object>(c => c.Inject<object, object, object, object>((obj0, obj1, obj2, obj3) => new ArgumentArity4TestClass(obj0, obj1, obj2, obj3)));
             });
 
-            KeyValuePair<Type, Registration> registration = Assert.Single(builder.Registrations.Registrations);
+            KeyValuePair<Type, SinglyLinkedListNode<ServiceBinding>> registration = Assert.Single(builder.Registrations.Registrations);
             Assert.Equal(typeof(object), registration.Key);
-            var binding = Assert.Single(registration.Value.Bindings);
+            var binding = Assert.Single(registration.Value);
             var expression = Assert.IsType<NewExpression>(binding.Expression);
             Assert.Equal(typeof(ArgumentArity4TestClass), expression.Type);
             Assert.Equal(4, expression.Arguments.Count);
@@ -318,9 +318,9 @@ namespace Singularity.Test.Registrations
                 cb.Register<object>(c => c.Inject<object, object, object, object, object>((obj0, obj1, obj2, obj3, obj4) => new ArgumentArity5TestClass(obj0, obj1, obj2, obj3, obj4)));
             });
 
-            KeyValuePair<Type, Registration> registration = Assert.Single(builder.Registrations.Registrations);
+            KeyValuePair<Type, SinglyLinkedListNode<ServiceBinding>> registration = Assert.Single(builder.Registrations.Registrations);
             Assert.Equal(typeof(object), registration.Key);
-            var binding = Assert.Single(registration.Value.Bindings);
+            var binding = Assert.Single(registration.Value);
             var expression = Assert.IsType<NewExpression>(binding.Expression);
             Assert.Equal(typeof(ArgumentArity5TestClass), expression.Type);
             Assert.Equal(5, expression.Arguments.Count);
@@ -334,9 +334,9 @@ namespace Singularity.Test.Registrations
                 cb.Register<object>(c => c.Inject<object, object, object, object, object, object>((obj0, obj1, obj2, obj3, obj4, obj5) => new ArgumentArity6TestClass(obj0, obj1, obj2, obj3, obj4, obj5)));
             });
 
-            KeyValuePair<Type, Registration> registration = Assert.Single(builder.Registrations.Registrations);
+            KeyValuePair<Type, SinglyLinkedListNode<ServiceBinding>> registration = Assert.Single(builder.Registrations.Registrations);
             Assert.Equal(typeof(object), registration.Key);
-            var binding = Assert.Single(registration.Value.Bindings);
+            var binding = Assert.Single(registration.Value);
             var expression = Assert.IsType<NewExpression>(binding.Expression);
             Assert.Equal(typeof(ArgumentArity6TestClass), expression.Type);
             Assert.Equal(6, expression.Arguments.Count);
@@ -350,9 +350,9 @@ namespace Singularity.Test.Registrations
                 cb.Register<object>(c => c.Inject<object, object, object, object, object, object, object>((obj0, obj1, obj2, obj3, obj4, obj5, obj6) => new ArgumentArity7TestClass(obj0, obj1, obj2, obj3, obj4, obj5, obj6)));
             });
 
-            KeyValuePair<Type, Registration> registration = Assert.Single(builder.Registrations.Registrations);
+            KeyValuePair<Type, SinglyLinkedListNode<ServiceBinding>> registration = Assert.Single(builder.Registrations.Registrations);
             Assert.Equal(typeof(object), registration.Key);
-            var binding = Assert.Single(registration.Value.Bindings);
+            var binding = Assert.Single(registration.Value);
             var expression = Assert.IsType<NewExpression>(binding.Expression);
             Assert.Equal(typeof(ArgumentArity7TestClass), expression.Type);
             Assert.Equal(7, expression.Arguments.Count);
@@ -366,9 +366,9 @@ namespace Singularity.Test.Registrations
                 cb.Register<object>(c => c.Inject<object, object, object, object, object, object, object, object>((obj0, obj1, obj2, obj3, obj4, obj5, obj6, obj7) => new ArgumentArity8TestClass(obj0, obj1, obj2, obj3, obj4, obj5, obj6, obj7)));
             });
 
-            KeyValuePair<Type, Registration> registration = Assert.Single(builder.Registrations.Registrations);
+            KeyValuePair<Type, SinglyLinkedListNode<ServiceBinding>> registration = Assert.Single(builder.Registrations.Registrations);
             Assert.Equal(typeof(object), registration.Key);
-            var binding = Assert.Single(registration.Value.Bindings);
+            var binding = Assert.Single(registration.Value);
             var expression = Assert.IsType<NewExpression>(binding.Expression);
             Assert.Equal(typeof(ArgumentArity8TestClass), expression.Type);
             Assert.Equal(8, expression.Arguments.Count);

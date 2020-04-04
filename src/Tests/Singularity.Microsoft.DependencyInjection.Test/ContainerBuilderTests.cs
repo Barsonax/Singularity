@@ -26,7 +26,7 @@ namespace Singularity.Microsoft.DependencyInjection.Test
 
             var registration = registrationStore.Registrations[typeof(IRepositoryTransient1)];
             Assert.Empty(registrationStore.Decorators);
-            ServiceBinding serviceBinding = Assert.Single(registration.Bindings);
+            ServiceBinding serviceBinding = Assert.Single(registration);
             Assert.Equal(typeof(RepositoryTransient1), serviceBinding.Expression?.Type);
         }
     }

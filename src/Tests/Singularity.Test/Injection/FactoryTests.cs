@@ -42,10 +42,10 @@ namespace Singularity.Test.Injection
 
             //ASSERT
             Assert.IsType<InstanceFactoryList<Func<IPlugin>>>(factories);
-            Assert.Equal(3, factories.Count);
-            Assert.IsType<Plugin1>(factories[0].Invoke());
-            Assert.IsType<Plugin2>(factories[1].Invoke());
-            Assert.IsType<Plugin3>(factories[2].Invoke());
+            Assert.Collection(factories,
+                e => Assert.IsType<Plugin3>(e()),
+                e => Assert.IsType<Plugin2>(e()),
+                e => Assert.IsType<Plugin1>(e()));
         }
 
         [Fact]

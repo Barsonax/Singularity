@@ -42,10 +42,10 @@ namespace Singularity.Test.Injection
 
             //ASSERT
             Assert.IsType<InstanceFactoryList<Lazy<IPlugin>>>(lazyInstances);
-            Assert.Equal(3, lazyInstances.Count);
-            Assert.IsType<Plugin1>(lazyInstances[0].Value);
-            Assert.IsType<Plugin2>(lazyInstances[1].Value);
-            Assert.IsType<Plugin3>(lazyInstances[2].Value);
+            Assert.Collection(lazyInstances,
+                e => Assert.IsType<Plugin3>(e.Value), 
+                e => Assert.IsType<Plugin2>(e.Value), 
+                e => Assert.IsType<Plugin1>(e.Value));
         }
 
         [Fact]

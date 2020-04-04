@@ -28,7 +28,7 @@ namespace Singularity.Resolving.Generators
 
         public Expression Resolve<TElement>(IInstanceFactoryResolver resolver)
         {
-            Func<Scoped, TElement>[] instanceFactories = resolver.FindApplicableBindings(typeof(TElement))
+            Func<Scoped, TElement>[] instanceFactories = resolver.FindOrGenerateApplicableBindings(typeof(TElement))
                 .Select(x => resolver.TryResolveDependency(typeof(TElement), x))
                 .Where(x => x != null)
                 .Select(x => (Func<Scoped, TElement>)((Scoped scoped) => (TElement)x!.Factory(scoped)!))

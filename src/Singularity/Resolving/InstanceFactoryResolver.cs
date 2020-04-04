@@ -74,7 +74,7 @@ namespace Singularity.Resolving
                 case IGenericWrapperGenerator genericWrapperGenerator:
                     {
                         var dependentType = genericWrapperGenerator.DependsOn(typeof(TUnwrapped)) ?? typeof(TUnwrapped);
-                        var unwrappedBindings = FindApplicableBindings(dependentType);
+                        var unwrappedBindings = FindOrGenerateApplicableBindings(dependentType);
                         foreach (var unwrappedBinding in unwrappedBindings)
                         {
                             var factory = TryResolveDependency(dependentType, unwrappedBinding);
@@ -100,7 +100,7 @@ namespace Singularity.Resolving
             }
         }
 
-        public IEnumerable<ServiceBinding> FindApplicableBindings(Type type)
+        public IEnumerable<ServiceBinding> FindOrGenerateApplicableBindings(Type type)
         {
             lock (SyncRoot)
             {
@@ -115,10 +115,10 @@ namespace Singularity.Resolving
                 }
                 else
                 {
-                    var bindings = RegistrationStore.Registrations.SelectMany(x => x.Value.Bindings).Where(x => x.ServiceTypes.Contains(type)).Distinct();
+                    var bindings = RegistrationStore.Registrations.Where(x => x.Key == type).SelectMany(x => x.Value).Distinct();
                     if (_parentPipeline != null)
                     {
-                        bindings = bindings.Concat(_parentPipeline.FindApplicableBindings(type).Where(x => x.BindingMetadata.Generated == false));
+                        bindings = bindings.Concat(_parentPipeline.FindApplicableBindings(type));
                     }
                     if (bindings.Any())
                     {
@@ -151,71 +151,17 @@ namespace Singularity.Resolving
             }
         }
 
-        public ServiceBinding? TryGetBinding(Type type)
+        public IEnumerable<ServiceBinding> FindApplicableBindings(Type type)
         {
-            lock (SyncRoot)
+            var bindings = RegistrationStore.Registrations.Where(x => x.Key == type).SelectMany(x => x.Value).Distinct();
+            if (_parentPipeline != null)
             {
-                var foo = FindApplicableBindings(type).ToArray();
-                return FindApplicableBindings(type).LastOrDefault();
-                if (RegistrationStore.Registrations.TryGetValue(type, out Registration parent)) return parent.Default;
-                var parentDependency = _parentPipeline?.TryGetRegistration(type);
-                if (parentDependency != null)
-                {
-                    if (!parentDependency.Value.Default.BindingMetadata.Generated) return parentDependency.Value.Default;
-                }
-
-                //var genericWrapper = _genericWrapperGenerators.FirstOrDefault(x => x.CanResolve(type));
-
-                //if (genericWrapper != null)
-                //{
-                //    var unWrappedType = type.GetGenericArguments()[0];
-                //    var dependentType = genericWrapper.DependsOn(unWrappedType) ?? unWrappedType;
-                //    var serviceBinding = TryGetBinding(dependentType);
-                //    if (serviceBinding != null)
-                //    {
-                //        var factory = TryResolveDependency(unWrappedType, serviceBinding);
-                //        if (factory != null)
-                //        {
-                //            var expression = genericWrapper.Wrap(factory.Context.Expression, dependentType, type);
-
-                //            return new ServiceBinding(type, BindingMetadata.GeneratedInstance, expression, type, ConstructorResolvers.Default, Lifetimes.Transient)
-                //            {
-                //                BaseExpression = new ExpressionContext(expression)
-                //            };
-                //        }
-                //    }
-                //}
-
-                foreach (IServiceBindingGenerator dependencyResolver in _resolvers)
-                {
-                    if (Settings.ResolverExclusions.TryGetValue(dependencyResolver.GetType(), out var exclusions))
-                    {
-                        if (exclusions.Any(x => x.Match(type))) continue;
-                    }
-                    ServiceBinding[] serviceBindings = dependencyResolver.Resolve(this, type).ToArray();
-                    if (serviceBindings.Length > 0)
-                    {
-                        foreach (ServiceBinding binding in serviceBindings)
-                        {
-                            RegistrationStore.AddBinding(binding);
-                        }
-                        return TryGetBinding(type);
-                    }
-                }
-
-                return null;
+                bindings = bindings.Concat(_parentPipeline.FindApplicableBindings(type).Where(x => x.BindingMetadata.Generated == false));
             }
+            return bindings;
         }
 
-        private Registration? TryGetRegistration(Type type)
-        {
-            lock (SyncRoot)
-            {
-                if (RegistrationStore.Registrations.TryGetValue(type, out Registration parent)) return parent;
-
-                return _parentPipeline?.TryGetRegistration(type);
-            }
-        }
+        public ServiceBinding? TryGetBinding(Type type) => FindOrGenerateApplicableBindings(type).FirstOrDefault();
 
         private ServiceBinding GetBinding(Type type)
         {
@@ -319,11 +265,11 @@ namespace Singularity.Resolving
             return RegistrationStore.Decorators.TryGetValue(type, out ArrayList<Expression> decorators) ? decorators.Array : ArrayList<Expression>.Empty;
         }
 
-        private static void CheckChildRegistrations(Dictionary<Type, Registration> parentRegistrations, Dictionary<Type, Registration> childRegistrations, object syncRoot)
+        private static void CheckChildRegistrations(Dictionary<Type, SinglyLinkedListNode<ServiceBinding>> parentRegistrations, Dictionary<Type, SinglyLinkedListNode<ServiceBinding>> childRegistrations, object syncRoot)
         {
             lock (syncRoot)
             {
-                foreach (KeyValuePair<Type, Registration> registration in childRegistrations)
+                foreach (KeyValuePair<Type, SinglyLinkedListNode<ServiceBinding>> registration in childRegistrations)
                 {
                     Type type = registration.Key;
                     if (parentRegistrations.TryGetValue(type, out _))

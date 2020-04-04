@@ -6,7 +6,7 @@ namespace Singularity.Collections
 {
     internal sealed class RegistrationStore
     {
-        public Dictionary<Type, Registration> Registrations { get; } = new Dictionary<Type, Registration>();
+        public Dictionary<Type, SinglyLinkedListNode<ServiceBinding>> Registrations { get; } = new Dictionary<Type, SinglyLinkedListNode<ServiceBinding>>();
         public Dictionary<Type, ArrayList<Expression>> Decorators { get; } = new Dictionary<Type, ArrayList<Expression>>();
         public Dictionary<Type, ArrayList<LateInjectorBinding>> LateInjectorBindings { get; } = new Dictionary<Type, ArrayList<LateInjectorBinding>>();
 
@@ -28,14 +28,14 @@ namespace Singularity.Collections
             while (currentNode != null)
             {
                 Type type = currentNode.Value;
-                if (!Registrations.TryGetValue(type, out Registration registration))
+                if (!Registrations.TryGetValue(type, out SinglyLinkedListNode<ServiceBinding> registration))
                 {
-                    registration = new Registration(serviceBinding);
+                    registration = new SinglyLinkedListNode<ServiceBinding>(serviceBinding);
                     Registrations.Add(type, registration);
                 }
                 else
                 {
-                    registration.AddBinding(serviceBinding);
+                    Registrations[type] = registration.Add(serviceBinding);
                 }
 
                 currentNode = currentNode.Next;
