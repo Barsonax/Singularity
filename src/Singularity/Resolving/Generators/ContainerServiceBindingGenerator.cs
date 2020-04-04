@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Linq.Expressions;
 using System.Reflection;
-
+using Singularity.Collections;
 using Singularity.Expressions;
 
 namespace Singularity.Resolving.Generators
@@ -21,13 +21,13 @@ namespace Singularity.Resolving.Generators
             if (type == typeof(Container))
             {
                 Expression expression = Expression.Call(null, _getContainer, ExpressionGenerator.ScopeParameter);
-                yield return new ServiceBinding(type, BindingMetadata.GeneratedInstance, expression, type, ConstructorResolvers.Default, Lifetimes.PerContainer, null, ServiceAutoDispose.Never);
+                yield return new ServiceBinding(typeof(Container), BindingMetadata.GeneratedInstance, expression, typeof(Container), ConstructorResolvers.Default, Lifetimes.PerContainer, null, ServiceAutoDispose.Never);
             }
 
             if (type == typeof(Scoped) || type == typeof(IServiceProvider))
             {
                 Expression expression = Expression.Call(null, _getScope, ExpressionGenerator.ScopeParameter);
-                yield return new ServiceBinding(type, BindingMetadata.GeneratedInstance, expression, type, ConstructorResolvers.Default, Lifetimes.PerContainer, null, ServiceAutoDispose.Never);
+                yield return new ServiceBinding(new SinglyLinkedListNode<Type>(typeof(IServiceProvider)).Add(typeof(Scoped)), BindingMetadata.GeneratedInstance, expression, typeof(Scoped), ConstructorResolvers.Default, Lifetimes.PerContainer, null, ServiceAutoDispose.Never);
             }
         }
 

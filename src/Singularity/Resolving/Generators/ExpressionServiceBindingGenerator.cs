@@ -20,9 +20,9 @@ namespace Singularity.Resolving.Generators
 
         public Type DependsOn(Type type) => typeof(Func<>).MakeGenericType(type);
 
-        public Expression Wrap(IInstanceFactoryResolver resolver, Expression expression, Type unWrappedType, Type wrappedType)
+        public Expression Wrap<TUnwrapped, TWrapped>(Expression expression, Type unWrappedType)
         {
-            return Expression.Constant(((LambdaExpression)expression).Body, wrappedType);
+            return Expression.Constant(((LambdaExpression)expression).Body, typeof(TWrapped));
         }
     }
 }

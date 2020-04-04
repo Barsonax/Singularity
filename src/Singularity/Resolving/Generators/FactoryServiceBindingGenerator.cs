@@ -15,9 +15,9 @@ namespace Singularity.Resolving.Generators
 
         public Type? DependsOn(Type type) => null;
 
-        public Expression Wrap(IInstanceFactoryResolver resolver, Expression expression, Type unWrappedType, Type wrappedType)
+        public Expression Wrap<TUnwrapped, TWrapped>(Expression expression, Type unWrappedType)
         {
-            return Expression.Lambda(wrappedType, expression);
+            return Expression.Lambda<TWrapped>(expression);
         }
     }
 }

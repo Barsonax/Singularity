@@ -1,4 +1,5 @@
-﻿using System.Linq;
+﻿using System;
+using System.Linq;
 using System.Linq.Expressions;
 
 using Singularity.Resolving;
@@ -17,7 +18,7 @@ namespace Singularity.Expressions
 
         protected override Expression VisitParameter(ParameterExpression node)
         {
-            if (node.Type == typeof(Scoped)) return ExpressionGenerator.ScopeParameter;
+            if (node.Type == typeof(Scoped) || node.Type == typeof(IServiceProvider)) return ExpressionGenerator.ScopeParameter;
             InstanceFactory factory = _factories.First(x => x.ServiceType == node.Type);
             if (factory.Context.Expression is MethodCallExpression methodCallExpression && methodCallExpression.Method.IsGenericMethod && methodCallExpression.Method.GetGenericMethodDefinition() == Scoped.GetOrAddScopedInstanceMethod)
             {
@@ -31,6 +32,11 @@ namespace Singularity.Expressions
                 }
             }
             return factory.Context.Expression;
+        }
+
+        protected override Expression VisitLambda<T>(Expression<T> node)
+        {
+            return node;
         }
     }
 }

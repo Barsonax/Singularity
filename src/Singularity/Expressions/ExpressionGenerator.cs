@@ -15,7 +15,7 @@ namespace Singularity.Expressions
 
         public ReadOnlyExpressionContext GenerateBaseExpression(ServiceBinding serviceBinding, InstanceFactory[] children, Scoped containerScope, SingularitySettings settings)
         {
-            var context = new ExpressionContext(serviceBinding.Expression is LambdaExpression lambdaExpression ? lambdaExpression.Body : serviceBinding.Expression ?? throw new ArgumentNullException(nameof(serviceBinding.Expression)));
+            var context = new ExpressionContext(serviceBinding.Expression ?? throw new ArgumentNullException(nameof(serviceBinding.Expression)));
             var parameterExpressionVisitor = new ParameterExpressionVisitor(context, children);
             context.Expression = parameterExpressionVisitor.Visit(context.Expression);
 

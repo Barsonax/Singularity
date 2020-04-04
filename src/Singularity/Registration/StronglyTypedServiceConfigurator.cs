@@ -130,9 +130,9 @@ namespace Singularity
         /// </summary>
         public StronglyTypedServiceConfigurator<TImplementation> Inject<TP1, TP2, TP3, TP4, TP5, TP6, TP7, TP8>(Expression<Func<TP1, TP2, TP3, TP4, TP5, TP6, TP7, TP8, TImplementation>> expression) => InjectInternal(expression);
 
-        private StronglyTypedServiceConfigurator<TImplementation> InjectInternal(Expression expression)
+        private StronglyTypedServiceConfigurator<TImplementation> InjectInternal(LambdaExpression expression)
         {
-            _expression = expression;
+            _expression = expression.Body;
             return this;
         }
     }

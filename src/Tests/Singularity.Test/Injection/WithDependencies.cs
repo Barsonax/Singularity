@@ -29,8 +29,8 @@ namespace Singularity.Test.Injection
             //ARRANGE
             var container = new Container(builder =>
             {
-                builder.Register<ITestService10, TestService10>(c => c.Inject((object x) => TestService10(x)));
-                builder.Register<ITestService11, TestService11>();
+                builder.Register<ITestService10, TestService10>();
+                builder.Register<ITestService11, TestService11>(c => c.Inject((ITestService10 x) => TestService11(x)));
             });
             //ACT
             var value = container.GetInstance<ITestService11>();
@@ -40,9 +40,9 @@ namespace Singularity.Test.Injection
             Assert.IsType<TestService10>(value.TestService10);
         }
 
-        TestService10 TestService10(object bla)
+        TestService11 TestService11(ITestService10 bla)
         {
-            return new TestService10();
+            return new TestService11(bla);
         }
 
         [Fact]

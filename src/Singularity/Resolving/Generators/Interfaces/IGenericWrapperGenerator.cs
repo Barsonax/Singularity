@@ -3,10 +3,19 @@ using System.Linq.Expressions;
 
 namespace Singularity.Resolving.Generators
 {
-    public interface IGenericWrapperGenerator
+    public interface IGenericGenerator
     {
         bool CanResolve(Type type);
-        Expression Wrap(IInstanceFactoryResolver resolver, Expression expression, Type unWrappedType, Type wrappedType);
         Type? DependsOn(Type type);
+    }
+
+    public interface IGenericWrapperGenerator : IGenericGenerator
+    {
+        Expression Wrap<TUnwrapped, TWrapped>(Expression expression, Type unWrappedType);
+    }
+
+    public interface IGenericServiceGenerator: IGenericGenerator
+    {
+        Expression Wrap(IInstanceFactoryResolver resolver, Type targetType);
     }
 }

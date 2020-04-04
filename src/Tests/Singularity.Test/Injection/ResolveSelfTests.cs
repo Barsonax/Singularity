@@ -90,7 +90,6 @@ namespace Singularity.Test.Injection
 
             //ASSERT
             Assert.Equal(container.ContainerScope, resolvedScope);
-            Assert.Single(container.Registrations.Registrations);
         }
 
         [Fact]
@@ -109,9 +108,6 @@ namespace Singularity.Test.Injection
             Assert.Equal(childContainer.ContainerScope, resolvedChildScope);
 
             Assert.NotEqual(resolvedScope, resolvedChildScope);
-
-            Assert.Single(container.Registrations.Registrations);
-            Assert.Single(childContainer.Registrations.Registrations);
         }
     }
 }

@@ -21,7 +21,6 @@ namespace Singularity.Test.Settings
             Assert.Equal(settings.ServiceBindingGenerators, new IServiceBindingGenerator[]
             {
                 new ConcreteServiceBindingGenerator(),
-                new CollectionServiceBindingGenerator(),
                 new ConcreteServiceBindingGenerator(),
                 new OpenGenericBindingGenerator()
             }, new TypeEqualityComparer<IServiceBindingGenerator>());
@@ -39,7 +38,6 @@ namespace Singularity.Test.Settings
 
             Assert.Equal(settings.ServiceBindingGenerators, new IServiceBindingGenerator[]
             {
-                new CollectionServiceBindingGenerator(),
                 new ConcreteServiceBindingGenerator(),
                 new OpenGenericBindingGenerator()
             }, new TypeEqualityComparer<IServiceBindingGenerator>());
@@ -59,7 +57,6 @@ namespace Singularity.Test.Settings
             Assert.Equal(settings.ServiceBindingGenerators, new IServiceBindingGenerator[]
             {
                 new ContainerServiceBindingGenerator(),
-                new CollectionServiceBindingGenerator(),
                 new ConcreteServiceBindingGenerator(),
                 new OpenGenericBindingGenerator(),
                 new ConcreteServiceBindingGenerator(),
@@ -81,7 +78,6 @@ namespace Singularity.Test.Settings
             Assert.Equal(settings.ServiceBindingGenerators, new IServiceBindingGenerator[]
             {
                 new ContainerServiceBindingGenerator(),
-                new CollectionServiceBindingGenerator(),
                 new ConcreteServiceBindingGenerator(),
                 new ConcreteServiceBindingGenerator(),
                 new OpenGenericBindingGenerator(),
@@ -103,7 +99,6 @@ namespace Singularity.Test.Settings
             Assert.Equal(settings.ServiceBindingGenerators, new IServiceBindingGenerator[]
             {
                 new ContainerServiceBindingGenerator(),
-                new CollectionServiceBindingGenerator(),
                 new ConcreteServiceBindingGenerator(),
                 new OpenGenericBindingGenerator(),
                 new ConcreteServiceBindingGenerator(),

@@ -80,11 +80,10 @@ namespace Singularity
             ParameterExpression serviceProviderParameter = Expression.Parameter(typeof(IServiceProvider));
             config.Register(registration.ServiceType, c =>
             {
-                c.Inject(Expression.Lambda(
-                             Expression.Convert(
+                c.Inject(Expression.Convert(
                                  Expression.Invoke(
                                      Expression.Constant(registration.ImplementationFactory), serviceProviderParameter),
-                                 registration.ServiceType), serviceProviderParameter))
+                                 registration.ServiceType))
                  .With(ConvertLifetime(registration.Lifetime))
                  .With(ConstructorResolvers.BestMatch);
             });
