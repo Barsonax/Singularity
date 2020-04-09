@@ -18,17 +18,17 @@ namespace Singularity.Resolving.Generators
         }
 
         /// <inheritdoc />
-        public IEnumerable<ServiceBinding> Wrap(IInstanceFactoryResolver resolver, Type type)
+        public IEnumerable<ServiceBinding> Wrap<TTarget>(IInstanceFactoryResolver resolver)
         {
-            Type genericTypeDefinition = type.GetGenericTypeDefinition();
+            Type genericTypeDefinition = typeof(TTarget).GetGenericTypeDefinition();
             ServiceBinding? openGenericBinding = resolver.TryGetBinding(genericTypeDefinition);
             if (openGenericBinding != null)
             {
                 Type openGenericType = openGenericBinding.ConcreteType;
-                Type closedGenericType = openGenericType.MakeGenericType(type.GenericTypeArguments);
+                Type closedGenericType = openGenericType.MakeGenericType(typeof(TTarget).GenericTypeArguments);
                 Expression? newExpression = openGenericBinding.ConstructorResolver.TryResolveConstructorExpression(closedGenericType);
 
-                yield return new ServiceBinding(type, openGenericBinding.BindingMetadata, newExpression, closedGenericType,
+                yield return new ServiceBinding(typeof(TTarget), openGenericBinding.BindingMetadata, newExpression, closedGenericType,
                     openGenericBinding.ConstructorResolver, openGenericBinding.Lifetime, openGenericBinding.Finalizer,
                     openGenericBinding.NeedsDispose);
             }

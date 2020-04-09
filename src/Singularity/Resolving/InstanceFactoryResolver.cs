@@ -94,9 +94,9 @@ namespace Singularity.Resolving
                     break;
                 case IGenericServiceGenerator genericServiceGenerator:
                     {
-                        foreach (var item in genericServiceGenerator.Wrap(this, typeof(TTarget)))
+                        foreach (var item in genericServiceGenerator.Wrap<TTarget>(this))
                         {
-                            if (!typeof(TTarget).IsAssignableFrom(item.Expression!.Type)) throw new InvalidOperationException($"Expression {item.Expression} is not assignable to {typeof(TTarget)}");
+                            if (!typeof(TTarget).IsAssignableFrom(item.Expression!.Type)) throw new InvalidOperationException($"Expression {item.Expression!.Type} is not assignable to {typeof(TTarget)}");
                             yield return item;
                         }
 

@@ -24,10 +24,10 @@ namespace Singularity.Resolving.Generators
                 type.GetConstructorCandidates().Any();
         }
 
-        public IEnumerable<ServiceBinding> Wrap(IInstanceFactoryResolver resolver, Type targetType)
+        public IEnumerable<ServiceBinding> Wrap<TTarget>(IInstanceFactoryResolver resolver)
         {
-            var expression = resolver.Settings.ConstructorResolver.ResolveConstructorExpression(targetType);
-            yield return new ServiceBinding(targetType, BindingMetadata.GeneratedInstance, expression, targetType, ConstructorResolvers.Default, Lifetimes.Transient);
+            var expression = resolver.Settings.ConstructorResolver.ResolveConstructorExpression(typeof(TTarget));
+            yield return new ServiceBinding(typeof(TTarget), BindingMetadata.GeneratedInstance, expression, typeof(TTarget), ConstructorResolvers.Default, Lifetimes.Transient);
         }
     }
 }

@@ -19,16 +19,18 @@ namespace Singularity.Resolving.Generators
             return false;
         }
 
-        public IEnumerable<ServiceBinding> Wrap(IInstanceFactoryResolver resolver, Type targetType)
+        public IEnumerable<ServiceBinding> Wrap<TTarget>(IInstanceFactoryResolver resolver)
         {
-            var innerType = targetType.GetGenericArguments()[0].GetGenericArguments()[0];
+            var funcType =  typeof(TTarget).GetGenericArguments()[0];
+            var funcReturnType = funcType.GetGenericArguments()[0];
 
-            foreach (var item in resolver.FindOrGenerateApplicableBindings(innerType))
+            foreach (var item in resolver.FindOrGenerateApplicableBindings(funcReturnType))
             {
-                var factory = resolver.TryResolveDependency(innerType, item);
+                var factory = resolver.TryResolveDependency(funcReturnType, item);
                 if(factory != null)
                 {
-                    yield return new ServiceBinding(targetType, BindingMetadata.GeneratedInstance, Expression.Constant(factory.Context.Expression), targetType, ConstructorResolvers.Default, Lifetimes.PerContainer);
+                    var expression = Expression.Constant(Expression.Lambda(funcType, factory.Context.Expression));
+                    yield return new ServiceBinding(typeof(TTarget), BindingMetadata.GeneratedInstance, expression, typeof(TTarget), ConstructorResolvers.Default, Lifetimes.PerContainer);
                 }
             }
         }

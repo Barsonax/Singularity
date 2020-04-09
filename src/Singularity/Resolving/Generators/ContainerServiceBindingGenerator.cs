@@ -23,7 +23,7 @@ namespace Singularity.Resolving.Generators
             return type == typeof(Container);
         }
 
-        public IEnumerable<ServiceBinding> Wrap(IInstanceFactoryResolver resolver, Type targetType)
+        public IEnumerable<ServiceBinding> Wrap<TTarget>(IInstanceFactoryResolver resolver)
         {
             var expression = Expression.Call(_getContainer, Expression.Parameter(typeof(Scoped)));
 
@@ -44,7 +44,7 @@ namespace Singularity.Resolving.Generators
             return scope;
         }
 
-        public IEnumerable<ServiceBinding> Wrap(IInstanceFactoryResolver resolver, Type targetType)
+        public IEnumerable<ServiceBinding> Wrap<TTarget>(IInstanceFactoryResolver resolver)
         {
             var expression = Expression.Call(_getScope, Expression.Parameter(typeof(Scoped)));
             yield return new ServiceBinding(new SinglyLinkedListNode<Type>(typeof(IServiceProvider)).Add(typeof(Scoped)), BindingMetadata.GeneratedInstance, expression, typeof(Scoped), ConstructorResolvers.Default, Lifetimes.PerContainer, null, ServiceAutoDispose.Never);

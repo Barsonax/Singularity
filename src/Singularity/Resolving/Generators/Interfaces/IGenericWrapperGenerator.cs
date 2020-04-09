@@ -17,6 +17,6 @@ namespace Singularity.Resolving.Generators
 
     public interface IGenericServiceGenerator: IGenericGenerator
     {
-        IEnumerable<ServiceBinding> Wrap(IInstanceFactoryResolver resolver, Type targetType);
+        IEnumerable<ServiceBinding> Wrap<TTarget>(IInstanceFactoryResolver resolver);
     }
 }

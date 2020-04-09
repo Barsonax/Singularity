@@ -26,9 +26,9 @@ namespace Singularity.Resolving.Generators
             return new ServiceBinding(typeof(Func<Scoped, TElement>), BindingMetadata.GeneratedInstance, expression, typeof(Func<Scoped, TElement>), ConstructorResolvers.Default, Lifetimes.PerContainer);
         }
 
-        public IEnumerable<ServiceBinding> Wrap(IInstanceFactoryResolver resolver, Type targetType)
+        public IEnumerable<ServiceBinding> Wrap<TTarget>(IInstanceFactoryResolver resolver)
         {
-            var elementType = targetType.GetGenericArguments()[1];
+            var elementType = typeof(TTarget).GetGenericArguments()[1];
             MethodInfo resolveMethod = GenericResolveMethod.MakeGenericMethod(elementType);
             var binding = (ServiceBinding)resolveMethod.Invoke(this, new object[] { resolver });
             yield return binding;
