@@ -116,9 +116,9 @@ Platform=X64  IterationTime=1.0000 s
 [![Build History](https://buildstats.info/azurepipelines/chart/Barsonax/Singularity/7?branch=master)](https://dev.azure.com/Barsonax/Singularity/_build?definitionId=7)
 
 ### Donations
-| Paypal | Beerpay |
-|-------------|--------|
-|[![paypal](https://www.paypalobjects.com/en_US/NL/i/btn/btn_donateCC_LG.gif)](https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_id=VTXT9EBQ3CF5E)|[![Beerpay](https://img.shields.io/beerpay/Barsonax/Singularity.svg)](https://beerpay.io/Barsonax/Singularity)|
+| Paypal |
+|-------------|
+|[![paypal](https://www.paypalobjects.com/en_US/NL/i/btn/btn_donateCC_LG.gif)](https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_id=VTXT9EBQ3CF5E)|
 
 ### Licensing
 Licensed under LGPL.
