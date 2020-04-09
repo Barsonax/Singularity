@@ -12,9 +12,9 @@ namespace Singularity.Resolving.Generators
 
         public bool CanResolve(Type type) => type.IsGenericType && new[] { typeof(HashSet<>), typeof(ISet<>), }.Contains(type.GetGenericTypeDefinition());
 
-        public Type? DependsOn(Type type) => typeof(Func<,>).MakeGenericType(typeof(Scoped), type).MakeArrayType();
+        public Type? DependsOn(Type type) => typeof(Func<,>).MakeGenericType(typeof(Scoped), type.GetGenericArguments()[0]).MakeArrayType();
 
-        public Expression Wrap<TUnwrapped, TWrapped>(Expression expression, Type unWrappedType)
+        public Expression Wrap<TUnwrapped, TWrapped>()
         {
             return Expression.Call(CreateListMethod.MakeGenericMethod(typeof(TUnwrapped)), Expression.Parameter(typeof(Scoped)), Expression.Parameter(typeof(Func<Scoped, TUnwrapped>[])));
         }

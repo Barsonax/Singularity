@@ -33,9 +33,8 @@ namespace Singularity
         /// </summary>
         [EditorBrowsable(EditorBrowsableState.Never)]
         public ConfigurationList<IServiceBindingGenerator> ServiceBindingGenerators { get; } = new ConfigurationList<IServiceBindingGenerator> {
-            new ContainerServiceBindingGenerator(),
-            new ConcreteServiceBindingGenerator(),
-            new OpenGenericBindingGenerator(),        
+            //new ContainerServiceBindingGenerator(),
+            //new OpenGenericBindingGenerator(),        
         };
 
         /// <summary>

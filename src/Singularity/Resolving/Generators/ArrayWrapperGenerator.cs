@@ -11,9 +11,9 @@ namespace Singularity.Resolving.Generators
 
         public bool CanResolve(Type type) => type.IsArray && !(type.GetElementType().IsGenericType && type.GetElementType().GetGenericTypeDefinition() == typeof(Func<,>) && type.GetElementType().GetGenericArguments()[0] == typeof(Scoped));
 
-        public Type? DependsOn(Type type) => typeof(Func<,>).MakeGenericType(typeof(Scoped), type).MakeArrayType();
+        public Type? DependsOn(Type type) => typeof(Func<,>).MakeGenericType(typeof(Scoped), type.GetElementType()).MakeArrayType();
 
-        public Expression Wrap<TUnwrapped, TWrapped>(Expression expression, Type unWrappedType)
+        public Expression Wrap<TUnwrapped, TWrapped>()
         {
             return Expression.Call(CreateArrayMethod.MakeGenericMethod(typeof(TUnwrapped)), Expression.Parameter(typeof(Scoped)), Expression.Parameter(typeof(Func<Scoped, TUnwrapped>[])));
         }

@@ -11,8 +11,8 @@ namespace Singularity.Resolving.Generators
     {
         public bool CanResolve(Type type) => type.IsGenericType && new[] { typeof(IEnumerable<>), typeof(IReadOnlyCollection<>), typeof(IReadOnlyList<>), }.Contains(type.GetGenericTypeDefinition());
 
-        public Expression Wrap<TUnwrapped, TWrapped>(Expression expression, Type unWrappedType) => ConstructorResolvers.Default.ResolveConstructorExpression(typeof(InstanceFactoryList<TUnwrapped>));
+        public Expression Wrap<TUnwrapped, TWrapped>() => ConstructorResolvers.Default.ResolveConstructorExpression(typeof(InstanceFactoryList<TUnwrapped>));
 
-        public Type? DependsOn(Type type) => typeof(Func<,>).MakeGenericType(typeof(Scoped), type).MakeArrayType();
+        public Type? DependsOn(Type type) => typeof(Func<,>).MakeGenericType(typeof(Scoped), type.GetGenericArguments()[0]).MakeArrayType();
     }
 }

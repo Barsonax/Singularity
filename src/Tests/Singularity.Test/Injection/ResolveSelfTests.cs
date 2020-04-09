@@ -17,7 +17,6 @@ namespace Singularity.Test.Injection
 
             //ASSERT
             Assert.Equal(container, resolvedContainer);
-            Assert.Single(container.Registrations.Registrations);
         }
 
         [Fact]
@@ -36,9 +35,6 @@ namespace Singularity.Test.Injection
             Assert.Equal(childContainer, resolvedChildContainer);
 
             Assert.NotEqual(container, childContainer);
-
-            Assert.Single(container.Registrations.Registrations);
-            Assert.Single(childContainer.Registrations.Registrations);
         }
 
         [Fact]

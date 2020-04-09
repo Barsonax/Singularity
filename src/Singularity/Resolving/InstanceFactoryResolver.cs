@@ -26,6 +26,10 @@ namespace Singularity.Resolving
             new ListWrapperGenerator(),
             new SetWrapperGenerator(),
             new ScopedFuncGenerator(),
+            new ScopedServiceGenerator(),
+            new ContainerServiceBindingGenerator(),
+            new ConcreteServiceBindingGenerator(),
+            new OpenGenericBindingGenerator()
         };
         private readonly InstanceFactoryResolver? _parentPipeline;
         private readonly Scoped _containerScope;
@@ -67,22 +71,22 @@ namespace Singularity.Resolving
         }
 
         private static readonly MethodInfo GenericResolveMethod = typeof(InstanceFactoryResolver).GetRuntimeMethods().Single(x => x.Name == nameof(RunGenerators) && x.ContainsGenericParameters);
-        public IEnumerable<ServiceBinding> RunGenerators<TUnwrapped, TWrapped>(IGenericGenerator genericGenerator)
+        public IEnumerable<ServiceBinding> RunGenerators<TUnwrapped, TTarget>(IGenericGenerator genericGenerator)
         {
             switch (genericGenerator)
             {
                 case IGenericWrapperGenerator genericWrapperGenerator:
                     {
-                        var dependentType = genericWrapperGenerator.DependsOn(typeof(TUnwrapped)) ?? typeof(TUnwrapped);
+                        var dependentType = genericWrapperGenerator.DependsOn(typeof(TTarget)) ?? typeof(TTarget);
                         var unwrappedBindings = FindOrGenerateApplicableBindings(dependentType);
                         foreach (var unwrappedBinding in unwrappedBindings)
                         {
                             var factory = TryResolveDependency(dependentType, unwrappedBinding);
                             if (factory != null)
                             {
-                                var expression = genericWrapperGenerator.Wrap<TUnwrapped, TWrapped>(factory.Context.Expression, dependentType);
-                                if (!typeof(TWrapped).IsAssignableFrom(expression.Type)) throw new InvalidOperationException($"Expression {expression} is not assignable to {typeof(TWrapped)}");
-                                var binding = new ServiceBinding(typeof(TWrapped), BindingMetadata.GeneratedInstance, expression, typeof(TWrapped), ConstructorResolvers.Default, Lifetimes.Transient);
+                                var expression = genericWrapperGenerator.Wrap<TUnwrapped, TTarget>();
+                                if (!typeof(TTarget).IsAssignableFrom(expression.Type)) throw new InvalidOperationException($"Expression {expression} is not assignable to {typeof(TTarget)}");
+                                var binding = new ServiceBinding(typeof(TTarget), BindingMetadata.GeneratedInstance, expression, typeof(TTarget), ConstructorResolvers.Default, Lifetimes.Transient);
                                 yield return binding;
                             }
                         }
@@ -90,9 +94,15 @@ namespace Singularity.Resolving
                     break;
                 case IGenericServiceGenerator genericServiceGenerator:
                     {
-                        var expression = genericServiceGenerator.Wrap(this, typeof(TWrapped));
-                        var binding = new ServiceBinding(typeof(TWrapped), BindingMetadata.GeneratedInstance, expression, typeof(TWrapped), ConstructorResolvers.Default, Lifetimes.Transient);
-                        yield return binding;
+                        foreach (var item in genericServiceGenerator.Wrap(this, typeof(TTarget)))
+                        {
+                            if (!typeof(TTarget).IsAssignableFrom(item.Expression!.Type)) throw new InvalidOperationException($"Expression {item.Expression} is not assignable to {typeof(TTarget)}");
+                            yield return item;
+                        }
+
+                        //if (!typeof(TTarget).IsAssignableFrom(expression.Type)) throw new InvalidOperationException($"Expression {expression} is not assignable to {typeof(TTarget)}");
+                        //var binding = new ServiceBinding(typeof(TTarget), BindingMetadata.GeneratedInstance, expression, typeof(TTarget), ConstructorResolvers.Default, Lifetimes.Transient);
+                        //yield return binding;
                     }
                     break;
                 default:
@@ -104,47 +114,23 @@ namespace Singularity.Resolving
         {
             lock (SyncRoot)
             {
-                var genericGenerator = _genericWrapperGenerators.SingleOrDefault(x => x.CanResolve(type));
-                if (genericGenerator != null)
+                var bindings = FindApplicableBindings(type);
+                if (bindings.Any())
                 {
-                    var unWrappedType = type.IsArray ? type.GetElementType() : type.GetGenericArguments().Last();
-                    foreach (var item in (IEnumerable<ServiceBinding>)GenericResolveMethod.MakeGenericMethod(unWrappedType, type).Invoke(this, new[] { genericGenerator }))
+                    foreach (var item in bindings)
                     {
                         yield return item;
                     }
                 }
                 else
                 {
-                    var bindings = RegistrationStore.Registrations.Where(x => x.Key == type).SelectMany(x => x.Value).Distinct();
-                    if (_parentPipeline != null)
+                    var genericGenerator = _genericWrapperGenerators.SingleOrDefault(x => x.CanResolve(type));
+                    if (genericGenerator != null)
                     {
-                        bindings = bindings.Concat(_parentPipeline.FindApplicableBindings(type));
-                    }
-                    if (bindings.Any())
-                    {
-                        foreach (var item in bindings)
+                        var unWrappedType = type.IsArray ? type.GetElementType() : type.GetGenericArguments().LastOrDefault() ?? type;
+                        foreach (var item in (IEnumerable<ServiceBinding>)GenericResolveMethod.MakeGenericMethod(unWrappedType, type).Invoke(this, new[] { genericGenerator }))
                         {
                             yield return item;
-                        }
-                    }
-                    else
-                    {
-                        foreach (IServiceBindingGenerator dependencyResolver in _resolvers)
-                        {
-                            if (Settings.ResolverExclusions.TryGetValue(dependencyResolver.GetType(), out var exclusions))
-                            {
-                                if (exclusions.Any(x => x.Match(type))) continue;
-                            }
-                            ServiceBinding[] serviceBindings = dependencyResolver.Resolve(this, type).ToArray();
-                            if (serviceBindings.Length > 0)
-                            {
-                                foreach (ServiceBinding binding in serviceBindings)
-                                {
-                                    RegistrationStore.AddBinding(binding);
-                                    yield return binding;
-                                }
-                                yield break;
-                            }
                         }
                     }
                 }

@@ -35,6 +35,8 @@ namespace Singularity
                 case UnaryExpression _:
                 case MemberExpression _:
                     return new ParameterExpression[0];
+                case ParameterExpression parameter:
+                    return new ParameterExpression[] { parameter };
                 case LambdaExpression lambdaExpression:
 					return lambdaExpression.Parameters.ToArray();
 				case NewExpression newExpression:
