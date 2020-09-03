@@ -13,5 +13,16 @@ namespace Singularity.Test.Extensions
 			var instance = container.GetInstance<ITestService10>();
 			Assert.IsType<TestService10>(instance);
 		}
+
+        [Fact]
+        public void RegisterModule_Generic()
+        {
+			var container = new Container(cb =>
+            {
+				cb.RegisterModule<TestModule1>();
+            });
+            var instance = container.GetInstance<ITestService10>();
+            Assert.IsType<TestService10>(instance);
+        }
 	}
 }
