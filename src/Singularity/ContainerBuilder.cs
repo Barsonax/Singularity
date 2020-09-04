@@ -214,6 +214,16 @@ namespace Singularity
         /// <summary>
         /// Registers services defined in an <see cref="IModule"/>.
         /// </summary>
+        /// <typeparam name="TModule"></typeparam>
+        public void RegisterModule<TModule>()
+            where TModule : IModule, new()
+        {
+            RegisterModule(new TModule());
+        }
+
+        /// <summary>
+        /// Registers services defined in an <see cref="IModule"/>.
+        /// </summary>
         /// <param name="module">The <see cref="IModule"/> to register services from</param>
         /// <exception cref="ArgumentNullException">If <paramref name="module"/> is <c>null</c></exception>
         /// <returns></returns>
