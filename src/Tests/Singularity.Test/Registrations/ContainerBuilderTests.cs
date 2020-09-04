@@ -174,7 +174,7 @@ namespace Singularity.Test.Registrations
         [Fact]
         public void GetDependencies_RegisterModule()
         {
-            //Arrange
+            //ARRANGE
             var builder = new ContainerBuilder(cb =>
             {
                 //ACT
