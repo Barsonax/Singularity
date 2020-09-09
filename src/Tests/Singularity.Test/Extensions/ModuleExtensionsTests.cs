@@ -20,12 +20,13 @@ namespace Singularity.Test.Extensions
             //ARRANGE
             var container = new Container(cb =>
             {
-                //ACT
                 cb.RegisterModule<TestModule1>();
             });
 
-            //ASSERT
+            //ACT
             var instance = container.GetInstance<ITestService10>();
+            
+            //ASSERT
             Assert.IsType<TestService10>(instance);
         }
 	}

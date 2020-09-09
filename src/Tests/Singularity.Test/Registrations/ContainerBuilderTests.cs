@@ -177,13 +177,13 @@ namespace Singularity.Test.Registrations
             //ARRANGE
             var builder = new ContainerBuilder(cb =>
             {
-                //ACT
                 cb.RegisterModule(new TestModule1());
             });
 
-            //ASSERT
+            //ACT
             var registrations = builder.Registrations.Registrations.ToArray();
 
+            //ASSERT
             Assert.Equal(2, registrations.Length);
             Assert.Equal(typeof(ITestService10), registrations[0].Key);
             Assert.Equal(typeof(TestService10), registrations[1].Key);
