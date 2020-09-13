@@ -172,6 +172,24 @@ namespace Singularity.Test.Registrations
         }
 
         [Fact]
+        public void GetDependencies_RegisterModule()
+        {
+            //ARRANGE
+            var builder = new ContainerBuilder(cb =>
+            {
+                cb.RegisterModule(new TestModule1());
+            });
+
+            //ACT
+            var registrations = builder.Registrations.Registrations.ToArray();
+
+            //ASSERT
+            Assert.Equal(2, registrations.Length);
+            Assert.Equal(typeof(ITestService10), registrations[0].Key);
+            Assert.Equal(typeof(TestService10), registrations[1].Key);
+        }
+
+        [Fact]
         public void Register_InvalidDisposeBehavior_StronglyTyped()
         {
             Assert.Throws<InvalidEnumValueException<ServiceAutoDispose>>(() =>
@@ -205,6 +223,19 @@ namespace Singularity.Test.Registrations
                 new ContainerBuilder(cb =>
                 {
                     cb.Register(typeof(ITestService10), typeof(TestService11));
+                });
+            });
+        }
+
+        [Fact]
+        public void RegisterModule_ArgumentNull()
+        {
+            Assert.Throws<ArgumentNullException>(() =>
+            {
+                IModule nullModule = null;
+                new ContainerBuilder(cb =>
+                {
+                    cb.RegisterModule(nullModule);
                 });
             });
         }

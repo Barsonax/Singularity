@@ -13,6 +13,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Singularity.Duality", "Dual
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{F07B1110-A580-458C-92DB-09A67CEF6CBA}"
 	ProjectSection(SolutionItems) = preProject
+		.editorconfig = .editorconfig
 		AggregateUserPlugins.targets = AggregateUserPlugins.targets
 		DefaultLibrarySettings.targets = DefaultLibrarySettings.targets
 		..\README.md = ..\README.md
@@ -45,9 +46,9 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "_build", "..\_build\_build.
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Singularity.AspNetCore.MVC.Examples", "examples\Singularity.Aspnet.MVC.Examples\Singularity.AspNetCore.MVC.Examples.csproj", "{35046F81-A919-41F0-AC99-8C561ED089E1}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Singularity.AspNetCore.MVC", "Singularity.AspNetCore.MVC\Singularity.AspNetCore.MVC.csproj", "{CDA045F0-0166-4351-A81B-50439D41A697}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Singularity.AspNetCore.MVC", "Singularity.AspNetCore.MVC\Singularity.AspNetCore.MVC.csproj", "{CDA045F0-0166-4351-A81B-50439D41A697}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Singularity.AspNetCore.Hosting", "Singularity.AspNetCore.Hosting\Singularity.AspNetCore.Hosting.csproj", "{F7779074-8026-47F7-8193-926223A74F55}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Singularity.AspNetCore.Hosting", "Singularity.AspNetCore.Hosting\Singularity.AspNetCore.Hosting.csproj", "{F7779074-8026-47F7-8193-926223A74F55}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

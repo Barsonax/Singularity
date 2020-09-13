@@ -211,6 +211,33 @@ namespace Singularity
             }
         }
 
+        /// <summary>
+        /// Registers services defined in an <see cref="IModule"/>.
+        /// </summary>
+        /// <typeparam name="TModule"></typeparam>
+        public void RegisterModule<TModule>()
+            where TModule : IModule, new()
+        {
+            RegisterModule(new TModule());
+        }
+
+        /// <summary>
+        /// Registers services defined in an <see cref="IModule"/>.
+        /// </summary>
+        /// <param name="module">The <see cref="IModule"/> to register services from</param>
+        /// <exception cref="ArgumentNullException">If <paramref name="module"/> is <c>null</c></exception>
+        /// <returns></returns>
+        public void RegisterModule(IModule module)
+        {
+            if (module == null) throw new ArgumentNullException(nameof(module));
+            Registrations.CurrentModule = module;
+            module.Register(this);
+            // CurrentModule is used in detailed error messages. If it isn't reset,
+            // it may indicate that all subsequent registrations are from the passed
+            // module.
+            Registrations.CurrentModule = null;
+        }
+
 
         /// <summary>
         /// Registers a new strongly typed decorator for <typeparamref name="TService"/>.

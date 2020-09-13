@@ -245,8 +245,7 @@ namespace Singularity
             {
                 foreach (IModule module in modules)
                 {
-                    builder.Registrations.CurrentModule = module;
-                    module.Register(builder);
+                    builder.RegisterModule(module);
                 }
             };
         }

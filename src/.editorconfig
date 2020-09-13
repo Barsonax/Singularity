@@ -1,0 +1,16 @@
+# To learn more about .editorconfig see https://aka.ms/editorconfigdocs
+###############################
+# Core EditorConfig Options   #
+###############################
+# Code files
+[*.cs]
+indent_size = 4
+indent_style = space
+insert_final_newline = true
+charset = utf-8
+
+###############################
+# .NET Coding Conventions     #
+###############################
+# Organize usings
+dotnet_sort_system_directives_first = true
